@@ -1,0 +1,16 @@
+{
+  "item.shincolle.grudge_0": "Grudge",
+  "item.shincolle.grudge_1": "Sublimation Grudge",
+  "item.shincolle.light_ammo": "Grudgeful Ammo",
+  "item.shincolle.light_ammo_container": "Grudgeful Ammo Container",
+  "item.shincolle.heavy_ammo": "Heavy Grudgeful Ammo",
+  "item.shincolle.heavy_ammo_container": "Heavy Grudgeful Ammo Container",
+  "item.shincolle.abyssium_ingot": "Abyssium Ingot",
+  "item.shincolle.abyssium_nugget": "Abyssium Nugget",
+  "item.shincolle.polymetalic_nodules": "Polymetallic Nodules",
+  "item.shincolle.polymetalic_nugget": "Polymetallic Nugget",
+
+  "entity.shincolle.destroyer_ro": "Destroyer Ro-Class",
+
+  "creativetab.tab_0": "Shincolle"
+}
