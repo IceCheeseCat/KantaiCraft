@@ -2,6 +2,7 @@ package com.github.icecheesecat.shincolle.init;
 
 import com.github.icecheesecat.shincolle.Shincolle;
 import com.github.icecheesecat.shincolle.entity.destroyer.DestroyerRo.EntityDestroyerRo;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.registries.DeferredRegister;
@@ -14,7 +15,7 @@ public class ModEntity {
             Shincolle.MODID);
 
     public static final RegistryObject<EntityType<EntityDestroyerRo>> DestroyerRo = ENTITIES.register("destroyer_ro", () ->
-            EntityType.Builder.of(EntityDestroyerRo::new, MobCategory.CREATURE).sized(1.0f, 0.8f).build("destroyer_ro"));
+            EntityType.Builder.of(EntityDestroyerRo::new, MobCategory.CREATURE).sized(1.0f, 1.0f).build(new ResourceLocation(Shincolle.MODID, "destroyer_ro").toString()));
 
 }
 //

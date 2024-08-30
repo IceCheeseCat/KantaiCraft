@@ -12,8 +12,6 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ModItemModelProvider extends ItemModelProvider {
 
-    String modelName;
-
     public ModItemModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper) {
         super(output, modid, existingFileHelper);
 //        this.modelName = modelName;
@@ -21,16 +19,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        simpleItem(ModItems.Grudge_0);
-        simpleItem(ModItems.Grudge_1);
-        simpleItem(ModItems.LightAmmo);
-        simpleItem(ModItems.LightAmmoContainer);
-        simpleItem(ModItems.HeavyAmmo);
-        simpleItem(ModItems.HeavyAmmoContainer);
-        simpleItem(ModItems.AbyssiumIngot);
-        simpleItem(ModItems.PolymetallicNodules);
-        simpleItem(ModItems.AbyssiumNugget);
-        simpleItem(ModItems.PolymetallicNugget);
+//        simpleItem(ModItems.TwelveCMSmallGunMount);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

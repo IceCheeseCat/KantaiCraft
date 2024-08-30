@@ -308,7 +308,7 @@ entity.shincolle.EntityTransportWa.name=Transport Wa-Class
 
 # GUI: Book Text Chap 0
 gui.shincolle:book.chap0.title=Introduction
-gui.shincolle:book.chap0.text0d0=§cShinkeiseikan§0 is a group of lovely ship girls born from iron and grudge, they live freely in the ocean originally.<br><br>But one day, a fleet called §9Kanmusu§0 appeared with horrible weapons and began to attack §cShinkeiseikan§0's habitat without reason.
+gui.shincolle:book.chap0.text0d0=§cShinkeiseikan§0 is a group of lovely ship girls born from iron and grudge, they live freely in the ocean originally.<br><br>But one day, a fleet called §9Kanmusu§0 appeared with horrible equipments and began to attack §cShinkeiseikan§0's habitat without reason.
 gui.shincolle:book.chap0.text0d1=Because the vandalism, §cShinkeiseikan§0 is facing a serious crisis of survival.<br><br>Only one person can lead the ladies out of despair, it is YOU... become an §4Abyssal Admiral§0 and save them from the crisis!
 gui.shincolle:book.chap0.text1d0=Exploring the world and collecting four resources: §dGrudge§0, §dAbyssium§0, §dGrudgeful Ammo§0 and §dPolymetal§0 to construct §cShinkeiseikan§0.<br><br>§cShinkeiseikan§0 will protect the owner and attack any hostile mobs at a sufficient supply of resources.
 gui.shincolle:book.chap0.text1d1=Now go to collect these lovely ladies!
@@ -611,7 +611,7 @@ gui.shincolle:book.chap5.text9d0=
 gui.shincolle:book.chap5.text9d1=§9Name:§0 Hibiki<br>§9Class:§0 Akatsuki Class DD<br>§9AuraEffect:§0<br>+"Jump Boost" to owner<br>§9OtherEffect:§0<br>Pick up items<br>Dodge +30%%<br><br>хорошо~
 gui.shincolle:book.chap5.title10=
 gui.shincolle:book.chap5.text10d0=
-gui.shincolle:book.chap5.text10d1=§9Name:§0 Ikazuchi<br>§9Class:§0 Akatsuki Class DD<br>§9AuraEffect:§0<br>+"Strength" to owner<br>§9OtherEffect:§0<br>Pick up items<br>Enhanced melee to 100%% firepower<br><br>The expedition leader with a very dangerous weapon in hand.
+gui.shincolle:book.chap5.text10d1=§9Name:§0 Ikazuchi<br>§9Class:§0 Akatsuki Class DD<br>§9AuraEffect:§0<br>+"Strength" to owner<br>§9OtherEffect:§0<br>Pick up items<br>Enhanced melee to 100%% firepower<br><br>The expedition leader with a very dangerous equipment in hand.
 gui.shincolle:book.chap5.title11=
 gui.shincolle:book.chap5.text11d0=
 gui.shincolle:book.chap5.text11d1=§9Name:§0 Inazuma<br>§9Class:§0 Akatsuki Class DD<br>§9AuraEffect:§0<br>+"Speed" to owner<br>§9OtherEffect:§0<br>Pick up items<br><br>Inazuma is the NANODEATH angel that can purify nearby shinkeiseikan, be careful!  

@@ -4,30 +4,12 @@ import com.github.icecheesecat.shincolle.Shincolle;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 public class ModItems
 {
 
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Shincolle.MODID);
 
-	// Materials
-	public static final RegistryObject<Item> Grudge_0 = ITEMS.register("grudge_0", () -> new Item(new Item.Properties()));
-	public static final RegistryObject<Item> Grudge_1 = ITEMS.register("grudge_1", () -> new Item(new Item.Properties()));
-	public static final RegistryObject<Item> LightAmmo = ITEMS.register("light_ammo", () -> new Item(new Item.Properties()));
-	public static final RegistryObject<Item> LightAmmoContainer = ITEMS.register("light_ammo_container", () -> new Item(new Item.Properties()));
-	public static final RegistryObject<Item> HeavyAmmo = ITEMS.register("heavy_ammo", () -> new Item(new Item.Properties()));
-	public static final RegistryObject<Item> HeavyAmmoContainer = ITEMS.register("heavy_ammo_container", () -> new Item(new Item.Properties()));
-	public static final RegistryObject<Item> AbyssiumIngot = ITEMS.register("abyssium_ingot", () -> new Item(new Item.Properties()));
-	public static final RegistryObject<Item> AbyssiumNugget = ITEMS.register("abyssium_nugget", () -> new Item(new Item.Properties()));
-	public static final RegistryObject<Item> PolymetallicNodules = ITEMS.register("polymetalic_nodules", () -> new Item(new Item.Properties()));
-	public static final RegistryObject<Item> PolymetallicNugget = ITEMS.register("polymetalic_nugget", () -> new Item(new Item.Properties()));
-
-
-	// Equip
-	public static final RegistryObject<Item> EquipAirplane = ITEMS.register("equip_airplane", () -> new Item(new Item.Properties()));
-	public static final RegistryObject<Item> EquipAmmo = ITEMS.register("equip_ammo", () -> new Item(new Item.Properties()));
-	public static final RegistryObject<Item> EquipArmor= ITEMS.register("equip_armor", () -> new Item(new Item.Properties()));
 
 
 //	//spawn egg

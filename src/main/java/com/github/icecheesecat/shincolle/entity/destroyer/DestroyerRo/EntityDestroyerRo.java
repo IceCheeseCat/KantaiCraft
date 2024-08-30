@@ -1,14 +1,14 @@
 package com.github.icecheesecat.shincolle.entity.destroyer.DestroyerRo;
 
-import com.github.icecheesecat.shincolle.entity.util.attack.ShipCanonAttack;
-import com.github.icecheesecat.shincolle.weaponary.canon.Canon;
-import com.github.icecheesecat.shincolle.entity.util.ShipAttrs;
-import com.github.icecheesecat.shincolle.entity.util.ShipFields;
-import com.github.icecheesecat.shincolle.entity.util.BasicCanonShip;
-import com.github.icecheesecat.shincolle.entity.util.BasicEntityShip;
-import com.github.icecheesecat.shincolle.entity.util.goal.ShipMeleeAttackGoal;
+import com.github.icecheesecat.shincolle.entity.BasicEntityShip;
+import com.github.icecheesecat.shincolle.util.ShipAttrs;
+import com.github.icecheesecat.shincolle.util.ShipFields;
+import com.github.icecheesecat.shincolle.util.EquipmentSlots;
+import com.github.icecheesecat.shincolle.util.goal.ShipCannonAttackGoal;
+import com.github.icecheesecat.shincolle.equipment.EquipmentType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -17,17 +17,15 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
+
 /**
  * model state:
  *   0:head
  */
-public class EntityDestroyerRo extends BasicCanonShip
+public class EntityDestroyerRo extends BasicEntityShip
 {
-	/*
-		Base status
-	 */
 
-	//TODO Equipments
 	public static final ShipAttrs INITATTRS = new ShipAttrs.Builder()
 			.withFirePower(10.0f)
 			.withTorpedo(10.0f)
@@ -46,7 +44,8 @@ public class EntityDestroyerRo extends BasicCanonShip
 
 	public EntityDestroyerRo(EntityType<? extends PathfinderMob> entityType, Level level)
 	{
-		super(entityType, level);
+		super(entityType, level , new EquipmentSlots(4, List.of(EquipmentType.CANNON, EquipmentType.CANNON, EquipmentType.CANNON, EquipmentType.CANNON)));
+		// Base states
 		this.shipAttrs = new ShipAttrs.Builder()
 				.withFirePower(10.0f)
 				.withTorpedo(10.0f)
@@ -66,6 +65,7 @@ public class EntityDestroyerRo extends BasicCanonShip
 		this.setShipName(ShipFields.ShipName.DestroyerRo);
 		this.setCustomShipName("Destroyer Ro-Class");
 		this.setCanMelee(true);
+
 		if (level != null && !level.isClientSide) {
 			this.goalSelector.removeAllGoals((g) -> true);
 			this.targetSelector.removeAllGoals((g) -> true);
@@ -78,12 +78,12 @@ public class EntityDestroyerRo extends BasicCanonShip
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new FloatGoal(this));
-//		this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
-		this.goalSelector.addGoal(1, new ShipMeleeAttackGoal(this, 1.0D, false, this.shipMeleeAttack));
-		this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-		this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 3.0F));
+		this.goalSelector.addGoal(1, new ShipCannonAttackGoal(this, true));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Monster.class, true));
+		this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0d, true));
+		this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1.0D));
 		this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-		this.targetSelector.addGoal(0, new NearestAttackableTargetGoal<>(this, Monster.class, true));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 10.0F));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -97,16 +97,14 @@ public class EntityDestroyerRo extends BasicCanonShip
 	@Override
 	public void tick() {
 		super.tick();
-		this.shipMeleeAttack.tick();
-		for (var sca: this.shipCanonAttack_list) {
-			sca.tick();
-		}
+		if (level().isClientSide) return;
+		this.actionHandler.tick();
 	}
 
-	@Override
-	protected boolean addCanon(Canon c) {
-		if (c == null) return false;
-		return shipCanonAttack_list.add(new ShipCanonAttack(this, c));
-	}
+	public void modifyMaxHealth(float newHealth) {
 
+		AttributeInstance oldAttribute = this.getAttribute(Attributes.MAX_HEALTH);
+		oldAttribute.setBaseValue(newHealth);
+
+	}
 }
