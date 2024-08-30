@@ -3,6 +3,8 @@ package com.github.icecheesecat.shincolle;
 import com.github.icecheesecat.shincolle.init.ModCreativeTabs;
 import com.github.icecheesecat.shincolle.init.ModEntity;
 import com.github.icecheesecat.shincolle.init.ModItems;
+import com.github.icecheesecat.shincolle.init.ModMenus;
+import com.github.icecheesecat.shincolle.network.ModPacketHandler;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -33,7 +35,9 @@ public class Shincolle
         ModItems.ITEMS.register(modEventBus);
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
         ModEntity.ENTITIES.register(modEventBus);
+        ModMenus.MENUS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
+        ModPacketHandler.registerMessages();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
