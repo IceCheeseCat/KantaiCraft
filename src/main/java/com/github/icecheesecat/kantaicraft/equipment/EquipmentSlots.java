@@ -97,40 +97,40 @@ public class EquipmentSlots implements INBTSerializable<CompoundTag> {
         return equipmentTypes;
     }
 
-    public ByteBuffer writeBuffer() {
-
-        ByteBuffer buffer = ByteBuffer.allocate(slotSize * Integer.BYTES * 5);
-        for (int i = 0; i < slotSize; i++) {
-            Equipment equipment = equipments.get(i);
-            buffer.putInt(equipment.getEquipmentType().ordinal());
-            buffer.putInt(equipment.getUid());
-            buffer.putInt(equipment.getEquipmentLevel().getLevel());
-            buffer.putFloat(equipment.getEquipmentLevel().getDifficulty());
-        }
-
-        for (int i = 0; i < slotSize; i++) {
-            buffer.putInt(equipmentTypes.get(i).ordinal());
-        }
-
-        return buffer;
-    }
-
-    public static EquipmentSlots readBuffer(int size, ByteBuffer buffer) {
-
-        int slotSize = size;
-        buffer.rewind();
-
-        List<Equipment> equipments = new ArrayList<>();
-        for (int i = 0; i < slotSize; i++) {
-            equipments.add(new Equipment(EquipmentType.get(buffer.getInt()), buffer.getInt(), new EquipmentLevel(buffer.getInt(), buffer.getFloat())));
-        }
-        List<EquipmentType> equipmentTypes = new ArrayList<>();
-        for (int i = 0; i < slotSize; i++) {
-            equipmentTypes.add(EquipmentType.get(buffer.getInt()));
-        }
-
-        return new EquipmentSlots(slotSize, equipments, equipmentTypes);
-    }
+//    public ByteBuffer writeBuffer() {
+//
+//        ByteBuffer buffer = ByteBuffer.allocate(slotSize * Integer.BYTES * 5);
+//        for (int i = 0; i < slotSize; i++) {
+//            Equipment equipment = equipments.get(i);
+//            buffer.putInt(equipment.getEquipmentType().ordinal());
+//            buffer.putInt(equipment.getUid());
+//            buffer.putInt(equipment.getEquipmentLevel().getLevel());
+//            buffer.putFloat(equipment.getEquipmentLevel().getDifficulty());
+//        }
+//
+//        for (int i = 0; i < slotSize; i++) {
+//            buffer.putInt(equipmentTypes.get(i).ordinal());
+//        }
+//
+//        return buffer;
+//    }
+//
+//    public static EquipmentSlots readBuffer(int size, ByteBuffer buffer) {
+//
+//        int slotSize = size;
+//        buffer.rewind();
+//
+//        List<Equipment> equipments = new ArrayList<>();
+//        for (int i = 0; i < slotSize; i++) {
+//            equipments.add(new Equipment(EquipmentType.get(buffer.getInt()), buffer.getInt(), new EquipmentLevel(buffer.getInt(), buffer.getFloat())));
+//        }
+//        List<EquipmentType> equipmentTypes = new ArrayList<>();
+//        for (int i = 0; i < slotSize; i++) {
+//            equipmentTypes.add(EquipmentType.get(buffer.getInt()));
+//        }
+//
+//        return new EquipmentSlots(slotSize, equipments, equipmentTypes);
+//    }
 
 
 }

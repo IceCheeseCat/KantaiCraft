@@ -251,7 +251,7 @@
  - 45.0.42 Temporary fix for Canceling ProjectileImpactEvents of Piercing ammo.
            Event needs to be re-worked to have finer control. #9370
  - 45.0.41 Fix dummy air blocks not being marked as air (#9440)
- - 45.0.40 Add support for splitting the login packet (#9367)
+ - 45.0.40 Add support for splitting the login equipmentS2CPacket (#9367)
            It contains full copies of data registries and can easily surpass vanilla's limits
  - 45.0.39 Remove Attack Range and Reach Distance and add Block Reach and Entity Reach (#9361)
  - 45.0.38 Add default bucket sounds for milk (#9432)
@@ -588,7 +588,7 @@
  - 41.0.111 Fix PlayerEvent.BreakSpeed using magic block position to signify invalid position. Closes #8906
  - 41.0.110 Fix cases where URIs would not work properly with JarInJar (#8900)
  - 41.0.109 Add new hook to allow modification of lightmap via Dimension special effects (#8863)
- - 41.0.108 Fix Forge's packet handling on play messages. (#8875)
+ - 41.0.108 Fix Forge's equipmentS2CPacket handling on play messages. (#8875)
  - 41.0.107 Add API for tab list header/footer (#8803)
  - 41.0.106 Allow modded blocks overriding canStickTo prevent sticking to vanilla blocks/other modded blocks (#8837)
  - 41.0.105 Multiple tweaks and fixes to the recent changes in the client refactor PR: Part 3 (#8864)
@@ -679,7 +679,7 @@
             * Handle modded packets on the network thread
              - On the server we simply need to remove the call to
                ensureRunningOnSameThread.
-             - On the client side, we now handle the packet at the very start of the
+             - On the client side, we now handle the equipmentS2CPacket at the very start of the
                call. We make sure we're running from a network thread to prevent
                calling the handling code twice.
                While this does mean we no longer call .release(), in practice this

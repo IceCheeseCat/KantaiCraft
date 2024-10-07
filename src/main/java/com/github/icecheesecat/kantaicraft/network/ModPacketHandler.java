@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.network;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.entitySync.EquipmentS2CPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
@@ -24,6 +25,14 @@ public class ModPacketHandler {
                 TrajectoryPacket::Encode,
                 TrajectoryPacket::Decode,
                 TrajectoryPacket::clientHandle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                EquipmentS2CPacket.class,
+                EquipmentS2CPacket::Encode,
+                EquipmentS2CPacket::Decode,
+                EquipmentS2CPacket::handle
         );
     }
 }

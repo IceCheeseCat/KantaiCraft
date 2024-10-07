@@ -5,14 +5,13 @@ import com.github.icecheesecat.kantaicraft.equipment.EquipmentLevel;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 
 public class Cannon extends Equipment {
-    private final String name;
     private final CannonStats cannonStats;
     private int maxCooldown;
     private final float cannon_vel;
     private float cannon_range;
 
     public Cannon(int uid, String name, CannonStats cannonStats, int cooldown, float cannon_vel, float cannonRange) {
-        super(EquipmentType.CANNON, uid, EquipmentLevel.LEVEL_ONE);
+        super(EquipmentLevel.LEVEL_ONE, uid);
         this.name = name;
         this.cannonStats = cannonStats;
         this.maxCooldown = cooldown;

@@ -1,8 +1,12 @@
 package com.github.icecheesecat.kantaicraft.entity;
 
+import com.github.icecheesecat.kantaicraft.entitySync.EquipmentS2CPacket;
+import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
+import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.stats.IStatsGrowth;
 import com.github.icecheesecat.kantaicraft.stats.ShipAttribute;
 import com.github.icecheesecat.kantaicraft.util.*;
@@ -33,6 +37,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,6 +51,8 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     private static final EntityDataAccessor<Integer> DATA_AIRCRAFT = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DATA_FUEL = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_AMMO = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.FLOAT);
+    protected static final EntityDataAccessor<String> DATA_EQUIPMENT_TYPES = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.STRING);
+
 
     private ShipFields.ShipClass shipClass;
     private ShipFields.ShipName shipName;
@@ -56,7 +63,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     private boolean canPickUpItem = false;
     private String ownerName = "";
 
-    protected final EquipmentSlots equipmentSlot;
+    protected EquipmentSlots equipmentSlot;
     private final LazyOptional<EquipmentSlots> lazyEquipmentSlot;
 //    private ItemSlots itemSlots;
     public static final Capability<EquipmentSlots> WEAPON_SLOTS = CapabilityManager.get(new CapabilityToken<>(){});
@@ -158,6 +165,12 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         return this.entityData.get(DATA_AMMO);
     }
 
+    public EquipmentType getSlotType(int i) {
+        String str = this.entityData.get(DATA_EQUIPMENT_TYPES);
+        int num = str.charAt(i) - '0';
+        return EquipmentType.get(num);
+    }
+
     public boolean hasAircraft() {
         return this.entityData.get(DATA_AIRCRAFT) > 0;
     }
@@ -236,7 +249,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new ShipMenu(containerId, inventory, this, this.equipmentSlot);
+        return new ShipMenu(containerId, inventory, this);
     }
 
     @Override
@@ -248,11 +261,10 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         if (player.isCrouching() && hand == InteractionHand.MAIN_HAND && player instanceof ServerPlayer serverPlayer) {
 
             NetworkHooks.openScreen(serverPlayer, this, (friendlyByteBuf -> {
-                ByteBuffer buffer = this.equipmentSlot.writeBuffer();
-
                 friendlyByteBuf.writeInt(this.getId());
-                friendlyByteBuf.writeByte((byte) this.equipmentSlot.getSlotSize());
-                friendlyByteBuf.writeByteArray(buffer.array());
+                for (int i = 0; i < this.getAttributeValue(ModShipAttributes.SLOT_SIZE.get()); i++) {
+                    ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer),  new EquipmentS2CPacket(this.equipmentSlot.getEquipments().get(i), i, this.getId()));
+                }
             }));
             return InteractionResult.SUCCESS;
         }
@@ -316,7 +328,11 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         return radar;
     }
 
-    public EquipmentSlots getWeaponSlot() {
+    public void setEquipmentSlots(EquipmentSlots slots) {
+        this.equipmentSlot = slots;
+    }
+
+    public EquipmentSlots getEquipmentSlots() {
         return equipmentSlot;
     }
 

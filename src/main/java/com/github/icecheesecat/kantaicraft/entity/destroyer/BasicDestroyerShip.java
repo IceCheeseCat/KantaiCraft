@@ -52,4 +52,9 @@ public class BasicDestroyerShip extends BasicEntityShip {
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 10.0F));
     }
 
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_EQUIPMENT_TYPES, "1111");
+    }
 }

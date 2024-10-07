@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.equipment;
 
 public enum EquipmentType {
 
-    NULL,
+    NONE,
     CANNON,
     PLANE;
 

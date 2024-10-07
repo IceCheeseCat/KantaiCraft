@@ -24,6 +24,7 @@ public class ShipClassAttributes {
             .add(ModShipAttributes.AMMO.get(), 12.0f)
             .add(Attributes.ATTACK_DAMAGE, 1.0d)
             .add(Attributes.ATTACK_SPEED)
+            .add(ModShipAttributes.SLOT_SIZE.get(), 2.0d)
             .build();
 
 }

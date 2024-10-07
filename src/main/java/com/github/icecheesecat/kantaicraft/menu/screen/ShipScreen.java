@@ -22,13 +22,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     private static final ResourceLocation BACKGROUND_1 = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_menu_background_1.png");
+    private static final ResourceLocation FIREPOWER_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/firepower_icon.png");
+    private static final ResourceLocation TORPEDO_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/torpedo_icon.png");
+    private static final ResourceLocation ANTIAIR_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/antiair_icon.png");
+    private static final ResourceLocation ASW_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/asw_icon.png");
 
+    EquipmentSlots slots;
     public ShipScreen(ShipMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
 
         this.imageWidth = 320;
         this.imageHeight = 180;
-
+        slots = this.getMenu().getEntityShip().getEquipmentSlots();
     }
 
     /*
@@ -36,7 +41,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
          ResourceLocation,
          leftCornerX, leftCornerY,
          imageStartX, imageStartY,
-         bottomRightX, bottomRightT,
+         bottomRightX, bottomRightY,
          sizeX, sizeY
         )
      */
@@ -46,19 +51,18 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 //        super.render(p_283479_, p_283661_, p_281248_, p_281886_);
         guiGraphics.blit(BACKGROUND_1, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
 
+        //show status
+        if (menu.getEntityShip() != null) {
+            renderShipAttrs(guiGraphics, menu.getEntityShip(), 24, 5, FastColor.ABGR32.color(255, 255, 255 , 255));
+        }
+
         for (var r: renderables) {
             r.render(guiGraphics, mouseX, mouseY, partialTick);
         }
 
-        EquipmentSlots slots = this.menu.getEquipmentSlots();
         for (int i = 0; i < slots.getSlotSize(); i++) {
             Equipment equipment = slots.getEquipments().get(i);
             EquipmentType type = slots.getEquipmentTypes().get(i);
-
-            //show status
-            if (menu.getEntityShip() != null) {
-                renderShipAttrs(guiGraphics, menu.getEntityShip(), 24, 5, FastColor.ABGR32.color(255, 255, 255 , 255));
-            }
 
             // show equipments
             if (equipment == Equipment.EMPTY) {
@@ -78,6 +82,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         int xOffset = 12;
 
 //        var attributes = entity.getAttributes();
+        guiGraphics.blit(FIREPOWER_ICON, x, y, 0, 0, 64, 64, 64, 64);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.FIREPOWER.get())) , x, y, color);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.TORPEDO.get())) , x, y + offset * 1, color);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.ANTIAIR.get())) , x, y + offset * 2, color);

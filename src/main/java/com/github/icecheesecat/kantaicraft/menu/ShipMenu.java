@@ -22,27 +22,21 @@ import java.nio.ByteBuffer;
 public class ShipMenu extends AbstractContainerMenu implements IContainerFactory<ShipMenu> {
 
     final Inventory inventory;
-    EquipmentSlots equipmentSlots;
     @NotNull BasicEntityShip entityShip;
 
-
     // server
-    public ShipMenu(int containerId, Inventory inv, @Nullable BasicEntityShip entityShip, EquipmentSlots equipmentSlots) {
+    public ShipMenu(int containerId, Inventory inv, @Nullable BasicEntityShip entityShip) {
         super(ModMenus.SHIP_MENU.get(), containerId);
 
         this.inventory = inv;
-        this.equipmentSlots = equipmentSlots;
         this.entityShip = entityShip;
-
     }
 
     // client
     public ShipMenu(int containerId, Inventory inv, FriendlyByteBuf buf) {
         super(ModMenus.SHIP_MENU.get(), containerId);
         int id = buf.readInt();
-        int slotSize = buf.readByte();
         this.inventory = inv;
-        this.equipmentSlots = EquipmentSlots.readBuffer(slotSize, ByteBuffer.wrap(buf.readByteArray()));
 
         ClientLevel c_level = Minecraft.getInstance().level;
         if (c_level == null) {
@@ -79,10 +73,6 @@ public class ShipMenu extends AbstractContainerMenu implements IContainerFactory
 
     public Inventory getInventory() {
         return inventory;
-    }
-
-    public EquipmentSlots getEquipmentSlots() {
-        return equipmentSlots;
     }
 
     public @Nullable BasicEntityShip getEntityShip() {
