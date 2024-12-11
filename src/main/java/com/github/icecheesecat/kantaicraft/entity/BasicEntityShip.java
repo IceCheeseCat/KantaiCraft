@@ -53,7 +53,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     private static final EntityDataAccessor<Float> DATA_AMMO = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.FLOAT);
     protected static final EntityDataAccessor<String> DATA_EQUIPMENT_TYPES = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.STRING);
 
-
     private ShipFields.ShipClass shipClass;
     private ShipFields.ShipName shipName;
     private final Radar radar;
