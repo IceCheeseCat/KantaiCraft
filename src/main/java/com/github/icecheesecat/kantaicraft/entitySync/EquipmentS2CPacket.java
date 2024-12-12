@@ -1,10 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entitySync;
 
 import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentLevel;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
+import com.github.icecheesecat.kantaicraft.equipment.*;
 import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,7 +36,7 @@ public class EquipmentS2CPacket {
         int index = buffer.getInt();
         int entityId = buffer.getInt();
 
-        return new EquipmentS2CPacket(new Equipment(level, uid), index, entityId);
+        return new EquipmentS2CPacket(Equipments.get(uid)., index, entityId);
     }
 
     public static void Encode(EquipmentS2CPacket equipmentS2CPacket, FriendlyByteBuf buf) {

@@ -1,18 +1,23 @@
 package com.github.icecheesecat.kantaicraft.equipment;
 
-public class EquipmentStat {
+import com.google.common.collect.ImmutableSet;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
 
-    public String name;
-    public int value;
+public class EquipmentStat<U> {
 
-    public EquipmentStat(String name, int value) {
-        this.name = name;
+    public EquipmentStatType type;
+    public U value;
+
+    public EquipmentStat(EquipmentStatType type, U value) {
+        this.type = type;
         this.value = value;
     }
 
-    public static final String FirePower = "firepower";
-    public static final String Torpedo = "torpedo";
-    public static final String CannonSize = "cannon_size";
-    public static final String CannonRange = "cannon_range";
+    public static <U> EquipmentStat<U> of(EquipmentStatType type, U value) {
+        return new EquipmentStat<>(type, value);
+    }
 
 }
+
+

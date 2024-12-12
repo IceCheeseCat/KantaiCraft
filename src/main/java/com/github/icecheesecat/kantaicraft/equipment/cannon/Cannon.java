@@ -2,40 +2,17 @@ package com.github.icecheesecat.kantaicraft.equipment.cannon;
 
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentLevel;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentStat;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 
-public abstract class Cannon extends Equipment {
-    private final int maxCooldown;
-    private final float cannon_vel;
-    private final float cannon_range;
-    private final int size;
+public class Cannon extends Equipment {
 
-    public Cannon(int uid, String name, int cooldown, float cannon_vel, float cannonRange, int size) {
-        super(EquipmentLevel.LEVEL_ONE, uid);
-        this.size = size;
-        this.name = name;
-        this.maxCooldown = cooldown;
-        this.cannon_vel = cannon_vel;
-        this.cannon_range = cannonRange;
-    }
-
-    public float getCannon_vel() {
-        return cannon_vel;
-    }
-
-    public int getMaxCooldown() {
-        return maxCooldown;
-    }
-
-    public float getCannon_range() {
-        return cannon_range;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getSize() {
-        return size;
+    public Cannon(int uid, String name, double cooldown, double cannon_vel, double cannonRange, double size) {
+        super(uid, name, EquipmentLevel.LEVEL_ONE);
+        this.addStat(EquipmentStatType.CANNON_COOLDOWN, cooldown);
+        this.addStat(EquipmentStatType.CANNON_MISSLE_VELOCITY, cannon_vel);
+        this.addStat(EquipmentStatType.CANNON_RANGE, cannonRange);
+        this.addStat(EquipmentStatType.CANNON_SIZE, size);
     }
 
 }

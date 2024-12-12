@@ -17,9 +17,9 @@ public abstract class BasicCarrierShip extends BasicEntityShip {
 
     public BasicEntityPlane launchPlane() {
 
-        this.level().addFreshEntity(new Zombie());
+//        this.level().addFreshEntity(new Zombie());
         Equipment equipment = this.equipmentSlot.getEquipments().get(0);
 
-
+        return null;
     }
 }

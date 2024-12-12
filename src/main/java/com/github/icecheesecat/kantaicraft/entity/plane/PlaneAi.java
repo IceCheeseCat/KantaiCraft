@@ -2,20 +2,16 @@ package com.github.icecheesecat.kantaicraft.entity.plane;
 
 import com.github.icecheesecat.kantaicraft.init.ModBrainActivity;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
-import net.minecraft.util.Unit;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.behavior.DoNothing;
-import net.minecraft.world.entity.ai.behavior.RandomLookAround;
-import net.minecraft.world.entity.ai.behavior.SleepInBed;
-import net.minecraft.world.entity.ai.behavior.Swim;
-import net.minecraft.world.entity.ai.behavior.declarative.BehaviorBuilder;
-import net.minecraft.world.entity.ai.behavior.warden.SetWardenLookTarget;
+import net.minecraft.world.entity.ai.behavior.*;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.schedule.Activity;
 
 import java.util.List;
@@ -32,13 +28,41 @@ public class PlaneAi {
 
         Brain.Provider<BasicEntityPlane> brainProvider = Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
         Brain<BasicEntityPlane> brain = brainProvider.makeBrain(dyn);
-        brain.addActivity(ModBrainActivity.CIRCLE.get(), 0, ImmutableList.of(.));
-        brain.addActivityWithConditions(ModBrainActivity.SWOOP.get(), 1, ImmutableList.of(.));
+        initCoreActivity(brain);
+        initCircleActivity(brain);
+        brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
+        brain.setDefaultActivity(ModBrainActivity.CIRCLE.get());
+        brain.useDefaultActivity();
 
+        return brain;
+    }
+
+    private static void initCoreActivity(Brain<BasicEntityPlane> brain) {
+        brain.addActivity(Activity.CORE, 0,
+                ImmutableList.of(
+                        new DoNothing(10, 100),
+                        new RandomLookAround(ConstantInt.of(1), 0.1f, 0.1f, 0.1f)));
     }
 
     private static void initCircleActivity(Brain<BasicEntityPlane> brain) {
-        brain.addActivity(Activity.CORE, 0, ImmutableList.of(new DoNothing(10, 100), new RandomLookAround(ConstantInt.of(1), 0.1f, 0.1f, 0.1f)));
+        brain.addActivityWithConditions(ModBrainActivity.CIRCLE.get(),
+                ImmutableList.of(
+                        Pair.of(0, new DoNothing(10, 100))),
+                ImmutableSet.of(
+                        Pair.of(MemoryModuleType.DUMMY, null)));
+    }
+
+    private static void initStrikeActivity(Brain<BasicEntityPlane> brain) {
+        brain.addActivityAndRemoveMemoryWhenStopped(ModBrainActivity.STRIKE.get(),
+                10,
+                ImmutableList.of(new PlaneCircle()),
+                MemoryModuleType.ATTACK_TARGET);
+    }
+
+    private static void initReturnActivity(Brain<BasicEntityPlane> brain) {
+        brain.addActivityWithConditions(ModBrainActivity.RETURN.get(),
+                ImmutableList.of(Pair.of(0, new DoNothing(10, 100))),
+                ImmutableSet.of(Pair.of(ModBrainActivity.PLANE_TIMEOUT.get(), MemoryStatus.VALUE_ABSENT)));
     }
 
     static {

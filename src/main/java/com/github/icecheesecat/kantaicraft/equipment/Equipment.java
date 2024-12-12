@@ -3,34 +3,44 @@ package com.github.icecheesecat.kantaicraft.equipment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import java.util.ArrayList;
+import java.util.Map;
 
 public abstract class Equipment implements INBTSerializable<CompoundTag> {
 
-    private ArrayList<EquipmentStat> stats;
+    private Map<EquipmentStatType, Double> stats;
     private EquipmentLevel equipmentLevel;
     private int uid;
-    protected String name;
+    private String name;
 
-    public Equipment(EquipmentLevel level, int uid) {
+    public Equipment(int uid, String name, EquipmentLevel level) {
         this.uid = uid;
         this.equipmentLevel = level;
-        setupStats();
+        this.name = name;
     }
 
-    protected void addStat(EquipmentStat stat) {
-        this.addStat(stat);
+    public void addStat(EquipmentStatType type, Double v) {
+        this.stats.put(type, v);
+    }
+
+    public double getStat(EquipmentStatType type) {
+        return stats.get(type);
+    }
+
+    private void setStats(Map<EquipmentStatType, Double> s) {
+        this.stats = s;
     }
 
     public int getUid() {
         return uid;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public EquipmentLevel getEquipmentLevel() {
         return equipmentLevel;
     }
-
-    public abstract void setupStats();
 
     @Override
     public CompoundTag serializeNBT() {
@@ -61,10 +71,12 @@ public abstract class Equipment implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public static final Equipment EMPTY = new Equipment(EquipmentLevel.NULL,-1) {
-        @Override
-        public void setupStats() {
-        }
-    };
+    public Equipment asCopy(EquipmentLevel level) {
+        Equipment n_equipment = new Equipment(this.uid, this.name, level){};
+
+        n_equipment.setStats();
+    }
+
+    public static final Equipment EMPTY = new Equipment(-1, "null", EquipmentLevel.NULL){};
 
 }
