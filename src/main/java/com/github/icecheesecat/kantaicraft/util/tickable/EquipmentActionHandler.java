@@ -1,6 +1,5 @@
 package com.github.icecheesecat.kantaicraft.util.tickable;
 
-import com.github.icecheesecat.kantaicraft.common.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
 import com.github.icecheesecat.kantaicraft.util.tickable.attack.ShipCannonAttack;

@@ -11,13 +11,17 @@ public class Equipments {
 
     private static final Map<Integer, Equipment> EQUIPMENTS;
 
-    public static Equipment get(int uid) {
+    private static Equipment get(int uid) {
         if (!EQUIPMENTS.containsKey(uid)) {
             throw new IllegalArgumentException("No such uid for equipment.");
         }
         else {
             return EQUIPMENTS.get(uid);
         }
+    }
+
+    public static Equipment getInstance(int uid, EquipmentLevel level) {
+        return get(uid).asCopy(level);
     }
 
     static {

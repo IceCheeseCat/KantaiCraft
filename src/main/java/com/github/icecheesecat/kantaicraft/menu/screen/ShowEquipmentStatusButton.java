@@ -1,16 +1,12 @@
 package com.github.icecheesecat.kantaicraft.menu.screen;
 
 
-import com.github.icecheesecat.kantaicraft.common.EquipmentManager;
-import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.common.Equipments;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
-
-import java.util.List;
 
 public class ShowEquipmentStatusButton extends Button {
 
@@ -19,7 +15,7 @@ public class ShowEquipmentStatusButton extends Button {
         super(p_259075_, p_259271_, p_260232_, p_260028_, p_259351_, onPress, p_259552_);
 
         this.equipment = equipment;
-        String str = String.format("%s\nLv: %s\n", EquipmentManager.getEquipmentById(equipment.getUid()), equipment.getEquipmentLevel().getLevel());
+        String str = String.format("%s\nLv: %s\n", equipment.getName(), equipment.getEquipmentLevel().getLevel());
         setTooltip(Tooltip.create(Component.translatable(str)));
     }
 

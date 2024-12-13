@@ -1,11 +1,12 @@
 package com.github.icecheesecat.kantaicraft.entity.plane;
 
+import com.github.icecheesecat.kantaicraft.entity.plane.behavior.PlaneCircle;
+import com.github.icecheesecat.kantaicraft.entity.plane.behavior.PlaneGlide;
 import com.github.icecheesecat.kantaicraft.init.ModBrainActivity;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
-import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.*;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -40,8 +41,8 @@ public class PlaneAi {
     private static void initCoreActivity(Brain<BasicEntityPlane> brain) {
         brain.addActivity(Activity.CORE, 0,
                 ImmutableList.of(
-                        new DoNothing(10, 100),
-                        new RandomLookAround(ConstantInt.of(1), 0.1f, 0.1f, 0.1f)));
+                        new PlaneGlide(10)
+                        ));
     }
 
     private static void initCircleActivity(Brain<BasicEntityPlane> brain) {

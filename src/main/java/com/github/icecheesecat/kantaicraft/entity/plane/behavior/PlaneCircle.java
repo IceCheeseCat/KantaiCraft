@@ -1,14 +1,11 @@
-package com.github.icecheesecat.kantaicraft.entity.plane;
+package com.github.icecheesecat.kantaicraft.entity.plane.behavior;
 
-import com.github.icecheesecat.kantaicraft.init.ModBrainActivity;
-import com.google.common.collect.ImmutableList;
+import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-
-import java.util.Map;
 
 public class PlaneCircle extends Behavior<BasicEntityPlane> {
 

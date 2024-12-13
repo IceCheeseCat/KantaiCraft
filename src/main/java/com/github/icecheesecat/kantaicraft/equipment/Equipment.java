@@ -73,8 +73,7 @@ public abstract class Equipment implements INBTSerializable<CompoundTag> {
 
     public Equipment asCopy(EquipmentLevel level) {
         Equipment n_equipment = new Equipment(this.uid, this.name, level){};
-
-        n_equipment.setStats();
+        return n_equipment;
     }
 
     public static final Equipment EMPTY = new Equipment(-1, "null", EquipmentLevel.NULL){};

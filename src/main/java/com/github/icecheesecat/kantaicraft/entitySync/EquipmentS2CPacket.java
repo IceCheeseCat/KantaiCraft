@@ -36,7 +36,7 @@ public class EquipmentS2CPacket {
         int index = buffer.getInt();
         int entityId = buffer.getInt();
 
-        return new EquipmentS2CPacket(Equipments.get(uid)., index, entityId);
+        return new EquipmentS2CPacket(Equipments.getInstance(uid, level), index, entityId);
     }
 
     public static void Encode(EquipmentS2CPacket equipmentS2CPacket, FriendlyByteBuf buf) {
