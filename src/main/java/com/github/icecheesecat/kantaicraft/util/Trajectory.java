@@ -158,7 +158,7 @@ public class Trajectory {
         this.alive = alive;
     }
 
-    public static double calculateAngle(Vec3 start, Vec3 end, Vec3 gravity, float canon_vel) {
+    public static double calculateAngle(Vec3 start, Vec3 end, Vec3 gravity, double canon_vel) {
 
         double d, h, g, v;
         d = Math.sqrt(Math.pow(start.x - end.x, 2) + Math.pow(start.z - end.z, 2));
@@ -209,7 +209,7 @@ public class Trajectory {
         }
     }
 
-    public static Vec3 calculateFireDir(Vec3 start, Vec3 end, double angle, float canon_vel) {
+    public static Vec3 calculateFireDir(Vec3 start, Vec3 end, double angle, double canon_vel) {
         Vec3 r = Vec3.ZERO.add(end.x, 0, end.z).subtract(start.x, 0, start.z);
         Vec3 r1 = r.add(0, r.length() * Math.sin(angle), 0);
         return r1.normalize().scale(canon_vel);

@@ -18,6 +18,7 @@ public class CommonEntityEvent {
     public static void registerAttributes(EntityAttributeCreationEvent event) {
 
         event.put(ModEntity.DestroyerRo.get(), ShipClassAttributes.DESTROYER_CLASS);
+        event.put(ModEntity.TEST_PLANE.get(), ShipClassAttributes.DESTROYER_CLASS);
 
     }
 

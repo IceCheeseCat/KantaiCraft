@@ -1,7 +1,9 @@
 package com.github.icecheesecat.kantaicraft.init;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.entity.destroyer.DestroyerRo.EntityDestroyerRo;
+import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -16,6 +18,9 @@ public class ModEntity {
 
     public static final RegistryObject<EntityType<EntityDestroyerRo>> DestroyerRo = ENTITIES.register("destroyer_ro", () ->
             EntityType.Builder.of(EntityDestroyerRo::new, MobCategory.CREATURE).sized(1.0f, 1.0f).build(new ResourceLocation(KantaiCraft.MODID, "destroyer_ro").toString()));
+
+    public static final RegistryObject<EntityType<BasicEntityPlane>> TEST_PLANE = ENTITIES.register("test_plane", () ->
+            EntityType.Builder.of(BasicEntityPlane::new, MobCategory.CREATURE).sized(1.0f, 1.0f).build(new ResourceLocation(KantaiCraft.MODID, "test_plane").toString()));
 
 }
 //

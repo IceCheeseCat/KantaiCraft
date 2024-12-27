@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.entity.plane.behavior;
+package com.github.icecheesecat.kantaicraft.entity.plane.brain.behavior;
 
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import com.google.common.collect.ImmutableMap;

@@ -5,11 +5,11 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
-public class DestroyerRoRenderer<T extends EntityDestroyerRo> extends MobRenderer<T, ModelDestroyerRo<T>> {
+public class RendererDestroyerRo<T extends EntityDestroyerRo> extends MobRenderer<T, ModelDestroyerRo<T>> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(KantaiCraft.MODID, "textures/entity/destroyer_ro.png");
 
-    public DestroyerRoRenderer(EntityRendererProvider.Context context) {
+    public RendererDestroyerRo(EntityRendererProvider.Context context) {
         super(context, new ModelDestroyerRo<>(context.bakeLayer(ModelDestroyerRo.LAYER_LOCATION)), 0.5f);
     }
 

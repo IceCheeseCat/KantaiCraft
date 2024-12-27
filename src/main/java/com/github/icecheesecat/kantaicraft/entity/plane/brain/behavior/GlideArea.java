@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.entity.plane.behavior;
+package com.github.icecheesecat.kantaicraft.entity.plane.brain.behavior;
 
 import net.minecraft.world.phys.Vec3;
 

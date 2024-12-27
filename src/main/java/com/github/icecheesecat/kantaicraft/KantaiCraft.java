@@ -27,6 +27,9 @@ public class KantaiCraft
         ModEntity.ENTITIES.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModShipAttributes.ATTRIBUTES.register(modEventBus);
+        ModBrain.ACTIVITIES.register(modEventBus);
+        ModBrain.MEMORY_MODULE_TYPES.register(modEventBus);
+        ModBrain.SENSOR_TYPES.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         ModPacketHandler.registerMessages();
 

@@ -1,36 +1,50 @@
 package com.github.icecheesecat.kantaicraft.entity.plane;
 
-import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.init.ModBrainActivity;
+import com.github.icecheesecat.kantaicraft.entity.plane.brain.PlaneAi;
+import com.github.icecheesecat.kantaicraft.init.ModBrain;
 import com.mojang.serialization.Dynamic;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
-public abstract class BasicEntityPlane extends Mob {
+public class BasicEntityPlane extends Mob {
 
-    public BasicEntityPlane(EntityType<? extends PathfinderMob> p_21683_, Level p_21684_, BasicEntityShip owner, LivingEntity target, int liveTime) {
-        super(p_21683_, p_21684_);
-        this.setNoGravity(true);
-        this.setAttackTarget(target);
-        this.setOwnerShip(owner);
+    public BasicEntityPlane(EntityType<? extends Mob> p_21683_, Level level) {
+        super(p_21683_, level);
     }
 
-    protected BasicEntityPlane(EntityType<? extends Mob> p_21683_, Level p_21684_) {
-        super(p_21683_, p_21684_);
+    @Override
+    public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor p_21434_, DifficultyInstance p_21435_, MobSpawnType p_21436_, @Nullable SpawnGroupData p_21437_, @Nullable CompoundTag p_21438_) {
+        this.setNoGravity(true);
+        if (!this.getBrain().hasMemoryValue(ModBrain.OWNERSHIP.get())) {
+            this.setOwnerShip(this.level().getNearestPlayer(this, 10.0d));
+        }
+        return super.finalizeSpawn(p_21434_, p_21435_, p_21436_, p_21437_, p_21438_);
+    }
+
+    @Override
+    protected void customServerAiStep() {
+        ServerLevel serverLevel = (ServerLevel) this.level();
+        this.getBrain().tick(serverLevel, this);
     }
 
     @Override
     public void tick() {
         super.tick();
+        if (!isNoGravity()) {
+            this.setNoGravity(true);
+        }
     }
 
     @Override
@@ -63,7 +77,11 @@ public abstract class BasicEntityPlane extends Mob {
     }
 
     private void setOwnerShip(LivingEntity ownerShip) {
-        this.getBrain().setMemory(ModBrainActivity.OWNERSHIP.get(), ownerShip);
+        this.getBrain().setMemory(ModBrain.OWNERSHIP.get(), ownerShip.getUUID());
+    }
+
+    public double getFlySpeed() {
+        return 10.0d;
     }
 
 }
