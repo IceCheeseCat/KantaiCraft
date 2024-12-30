@@ -1,21 +1,18 @@
 package com.github.icecheesecat.kantaicraft.menu.screen;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
-import com.github.icecheesecat.kantaicraft.stats.ShipStats;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;

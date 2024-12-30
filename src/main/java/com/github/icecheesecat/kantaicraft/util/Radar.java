@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.util;
 
-import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.util.tickable.ShipTickableAction;
 import net.minecraft.world.entity.Entity;

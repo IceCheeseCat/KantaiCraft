@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entity.plane.brain.sensor;
 
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
+import com.github.icecheesecat.kantaicraft.entity.plane.EntityFighterPlane;
 import com.github.icecheesecat.kantaicraft.init.ModBrain;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -26,8 +27,9 @@ public class NearestEnemyPlaneSensor extends Sensor<LivingEntity> {
         BasicEntityPlane nearest = null;
         double dis = Double.MAX_VALUE;
         for (int i = 0; i < l.size(); i++) {
-            if (l.get(i).distanceToSqr(livingEntity) < dis) {
-                nearest = l.get(i);
+            BasicEntityPlane plane = l.get(i);
+            if (plane.isEnemy((BasicEntityPlane)livingEntity) && plane.distanceToSqr(livingEntity) < dis) {
+                nearest = plane;
             }
         }
 

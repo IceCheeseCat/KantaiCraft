@@ -1,17 +1,14 @@
 package com.github.icecheesecat.kantaicraft.entity.plane.brain;
 
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
-import com.github.icecheesecat.kantaicraft.entity.plane.brain.behavior.PlaneCircle;
 import com.github.icecheesecat.kantaicraft.entity.plane.brain.behavior.PlaneGlide;
 import com.github.icecheesecat.kantaicraft.entity.plane.brain.behavior.PlaneReturn;
-import com.github.icecheesecat.kantaicraft.entity.plane.brain.behavior.PlaneStrike;
 import com.github.icecheesecat.kantaicraft.init.ModBrain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.behavior.*;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.sensing.Sensor;
@@ -26,7 +23,7 @@ public class PlaneAi {
     private static final List<MemoryModuleType<?>> MEMORY_TYPES;
 
     static {
-        SENSOR_TYPES = List.of(SensorType.NEAREST_ITEMS, );
+        SENSOR_TYPES = List.of(SensorType.NEAREST_ITEMS, ModBrain.NEAREST_ENEMY_PLANE_SENSOR.get());
         MEMORY_TYPES = List.of(ModBrain.OWNERSHIP.get(), ModBrain.PLANE_TIMEOUT.get(), MemoryModuleType.ATTACK_TARGET);
     }
 

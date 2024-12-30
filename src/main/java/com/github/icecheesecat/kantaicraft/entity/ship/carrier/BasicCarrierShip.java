@@ -1,12 +1,11 @@
-package com.github.icecheesecat.kantaicraft.entity.carrier;
+package com.github.icecheesecat.kantaicraft.entity.ship.carrier;
 
-import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.Level;
 
 public abstract class BasicCarrierShip extends BasicEntityShip {

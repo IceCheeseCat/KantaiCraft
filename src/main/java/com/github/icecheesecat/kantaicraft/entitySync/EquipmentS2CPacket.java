@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entitySync;
 
-import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.*;
 import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
 import net.minecraft.client.Minecraft;

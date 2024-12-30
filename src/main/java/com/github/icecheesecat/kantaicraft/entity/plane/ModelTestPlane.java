@@ -1,7 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entity.plane;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entity.destroyer.DestroyerRo.EntityDestroyerRo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;

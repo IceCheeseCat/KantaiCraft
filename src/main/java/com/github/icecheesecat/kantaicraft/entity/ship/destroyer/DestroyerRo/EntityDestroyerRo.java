@@ -1,20 +1,11 @@
-package com.github.icecheesecat.kantaicraft.entity.destroyer.DestroyerRo;
+package com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerRo;
 
-import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.entity.destroyer.BasicDestroyerShip;
-import com.github.icecheesecat.kantaicraft.stats.ShipStats;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.BasicDestroyerShip;
 import com.github.icecheesecat.kantaicraft.util.ShipFields;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
-import com.github.icecheesecat.kantaicraft.util.goal.ShipCannonAttackGoal;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.util.goal;
 
 import com.github.icecheesecat.kantaicraft.config.ConfigBehaviour;
-import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.util.tickable.ShipTickableAction;
 import com.github.icecheesecat.kantaicraft.util.tickable.attack.ShipCannonAttack;

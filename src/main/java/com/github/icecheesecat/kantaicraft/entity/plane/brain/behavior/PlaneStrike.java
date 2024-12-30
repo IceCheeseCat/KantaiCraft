@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.ai.behavior.Behavior;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.phys.Vec3;
 
@@ -27,7 +26,7 @@ public class PlaneStrike extends Behavior<BasicEntityPlane> {
     @Override
     protected void start(ServerLevel serverLevel, BasicEntityPlane basicEntityPlane, long gametime) {
 //        super.start(serverLevel, basicEntityPlane, gametime);
-        basicEntityPlane.getBrain().setMemoryWithExpiry(ModBrain.STRIKE_COOLDOWN.get(), Unit.INSTANCE, );
+        basicEntityPlane.getBrain().setMemoryWithExpiry(ModBrain.STRIKE_COOLDOWN.get(), Unit.INSTANCE, 60);
     }
 
     @Override

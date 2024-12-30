@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.entity.destroyer.DestroyerRo;
+package com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerRo;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.mojang.blaze3d.vertex.PoseStack;

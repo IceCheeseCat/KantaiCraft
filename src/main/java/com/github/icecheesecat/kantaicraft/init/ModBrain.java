@@ -1,19 +1,16 @@
 package com.github.icecheesecat.kantaicraft.init;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.entity.plane.brain.sensor.NearestEnemyPlaneSensor;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.Registry;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.util.Unit;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.NearestItemSensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -40,6 +37,6 @@ public class ModBrain {
 
 
 
-    public static final RegistryObject<SensorType<?>> NEAREST_ENEMY_PLANE = SENSOR_TYPES.register("sensor_type.nearest_enemy_plane", () -> new SensorType<>(NearestItemSensor::new));
+    public static final RegistryObject<SensorType<NearestEnemyPlaneSensor>> NEAREST_ENEMY_PLANE_SENSOR = SENSOR_TYPES.register("sensor_type.nearest_enemy_plane", () -> new SensorType<>(NearestEnemyPlaneSensor::new));
 
 }

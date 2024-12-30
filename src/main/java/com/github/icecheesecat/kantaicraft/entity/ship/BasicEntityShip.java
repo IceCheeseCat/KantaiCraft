@@ -1,17 +1,17 @@
-package com.github.icecheesecat.kantaicraft.entity;
+package com.github.icecheesecat.kantaicraft.entity.ship;
 
+import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
+import com.github.icecheesecat.kantaicraft.entity.IFaction;
+import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import com.github.icecheesecat.kantaicraft.entitySync.EquipmentS2CPacket;
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.stats.IStatsGrowth;
-import com.github.icecheesecat.kantaicraft.stats.ShipAttribute;
 import com.github.icecheesecat.kantaicraft.util.*;
 import com.github.icecheesecat.kantaicraft.util.tickable.EquipmentActionHandler;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -41,9 +41,7 @@ import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.ByteBuffer;
-
-public abstract class BasicEntityShip extends PathfinderMob implements MenuProvider, IStatsGrowth {
+public abstract class BasicEntityShip extends PathfinderMob implements MenuProvider, IStatsGrowth, IFaction<BasicEntityShip> {
 
     /**
      * ship attributes: hp, def, atk, ...
@@ -52,6 +50,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     private static final EntityDataAccessor<Float> DATA_FUEL = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_AMMO = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.FLOAT);
     protected static final EntityDataAccessor<String> DATA_EQUIPMENT_TYPES = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Integer> DATA_FACTION = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.INT);
 
     private ShipFields.ShipClass shipClass;
     private ShipFields.ShipName shipName;
@@ -85,7 +84,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         else {
             radar = null;
         }
-
     }
 
 //    abstract protected void registerAttributes();
@@ -132,6 +130,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.entityData.define(DATA_AIRCRAFT, 0);
         this.entityData.define(DATA_FUEL, 0.0f);
         this.entityData.define(DATA_AMMO, 0.0f);
+        this.entityData.define(DATA_FACTION, CommonEntityData.noFaction);
     }
 
     public void addShipAttributes(AttributeSupplier sup) {
@@ -180,6 +179,24 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
 
     public boolean hasAmmo() {
         return this.entityData.get(DATA_AMMO) > 0.0f;
+    }
+
+    @Override
+    public int getFactionId() {
+        return this.entityData.get(DATA_FACTION);
+    }
+
+    @Override
+    public void setFactionId(int factionId) {
+        this.entityData.set(DATA_FACTION, factionId);
+    }
+
+    @Override
+    public boolean isEnemy(BasicEntityShip other) {
+        if (this.getFactionId() != other.getFactionId() && other.getFactionId() != CommonEntityData.noFaction) {
+            return true;
+        }
+        return false;
     }
 
     @Override

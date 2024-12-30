@@ -1,15 +1,19 @@
 package com.github.icecheesecat.kantaicraft.init;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.item.DebugFactionChanger;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class ModItems
 {
 
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, KantaiCraft.MODID);
 
+	public static final RegistryObject<Item> DEGUB_FACTION_CHANGER = ITEMS.register("debug_faction_changer", () -> new DebugFactionChanger(new Item.Properties().stacksTo(1)));
 
 
 //	//spawn egg

@@ -1,8 +1,8 @@
 package com.github.icecheesecat.kantaicraft.event;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entity.destroyer.DestroyerRo.RendererDestroyerRo;
-import com.github.icecheesecat.kantaicraft.entity.destroyer.DestroyerRo.ModelDestroyerRo;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerRo.RendererDestroyerRo;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerRo.ModelDestroyerRo;
 import com.github.icecheesecat.kantaicraft.entity.plane.ModelTestPlane;
 import com.github.icecheesecat.kantaicraft.entity.plane.RendererTestPlane;
 import com.github.icecheesecat.kantaicraft.init.ModEntity;

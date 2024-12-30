@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.entity.destroyer.DestroyerRo;
+package com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerRo;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

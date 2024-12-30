@@ -1,6 +1,6 @@
-package com.github.icecheesecat.kantaicraft.entity.destroyer;
+package com.github.icecheesecat.kantaicraft.entity.ship.destroyer;
 
-import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
 import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.util.goal.ShipCannonAttackGoal;

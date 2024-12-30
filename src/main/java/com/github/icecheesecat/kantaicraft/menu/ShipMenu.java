@@ -1,23 +1,17 @@
 package com.github.icecheesecat.kantaicraft.menu;
 
-import ca.weblite.objc.Client;
-import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.init.ModMenus;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
-import com.github.icecheesecat.kantaicraft.stats.ShipStats;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.IContainerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.nio.ByteBuffer;
 
 public class ShipMenu extends AbstractContainerMenu implements IContainerFactory<ShipMenu> {
 

@@ -1,8 +1,7 @@
 package com.github.icecheesecat.kantaicraft.init;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entity.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.entity.destroyer.DestroyerRo.EntityDestroyerRo;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerRo.EntityDestroyerRo;
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
