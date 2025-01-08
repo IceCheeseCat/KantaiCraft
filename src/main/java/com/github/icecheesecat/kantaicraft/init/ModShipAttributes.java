@@ -1,9 +1,8 @@
 package com.github.icecheesecat.kantaicraft.init;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.stats.ShipAttribute;
+import com.github.icecheesecat.kantaicraft.stats.shipAttributes.ShipAttribute;
 import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;

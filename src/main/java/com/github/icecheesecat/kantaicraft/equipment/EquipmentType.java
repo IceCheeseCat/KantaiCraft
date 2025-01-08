@@ -4,6 +4,7 @@ public enum EquipmentType {
 
     NONE,
     CANNON,
+    RADAR,
     PLANE;
 
     public static final EquipmentType values[] = values();

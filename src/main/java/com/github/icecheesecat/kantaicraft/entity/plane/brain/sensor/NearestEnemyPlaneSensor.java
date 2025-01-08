@@ -1,27 +1,25 @@
 package com.github.icecheesecat.kantaicraft.entity.plane.brain.sensor;
 
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
-import com.github.icecheesecat.kantaicraft.entity.plane.EntityFighterPlane;
-import com.github.icecheesecat.kantaicraft.init.ModBrain;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class NearestEnemyPlaneSensor extends Sensor<LivingEntity> {
 
-    private long cooldown = 100;
     private static final double SENSING_RANGE = 100.0d;
 
+    /*
+        Find nearest plane to set memory of attack target if attack target is not valid
+     */
     @Override
     protected void doTick(ServerLevel serverLevel, LivingEntity livingEntity) {
+
+        if (targetIsValid(livingEntity)) return;
+
         List<BasicEntityPlane> l = serverLevel.getEntitiesOfClass(BasicEntityPlane.class, livingEntity.getBoundingBox().inflate(SENSING_RANGE));
 
         BasicEntityPlane nearest = null;
@@ -34,12 +32,21 @@ public class NearestEnemyPlaneSensor extends Sensor<LivingEntity> {
         }
 
         if (nearest != null) {
-            livingEntity.getBrain().setMemoryWithExpiry(MemoryModuleType.ATTACK_TARGET, nearest, 60);
+            livingEntity.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, nearest);
         }
     }
 
     @Override
     public Set<MemoryModuleType<?>> requires() {
         return Set.of(MemoryModuleType.ATTACK_TARGET);
+    }
+
+    private static boolean targetIsValid(LivingEntity livingEntity) {
+        if (livingEntity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).isPresent()) {
+            LivingEntity target = livingEntity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get();
+            return target.isAlive();
+        }
+
+        return false;
     }
 }

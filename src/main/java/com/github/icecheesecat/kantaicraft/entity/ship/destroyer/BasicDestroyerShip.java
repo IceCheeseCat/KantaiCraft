@@ -14,7 +14,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public class BasicDestroyerShip extends BasicEntityShip {
+public abstract class BasicDestroyerShip extends BasicEntityShip {
 
     private static final AttributeSupplier DESTROYER_GROWTH = new AttributeSupplier.Builder()
             .add(ModShipAttributes.FIREPOWER.get(), 0.5d)
@@ -55,6 +55,5 @@ public class BasicDestroyerShip extends BasicEntityShip {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(DATA_EQUIPMENT_TYPES, "1111");
     }
 }

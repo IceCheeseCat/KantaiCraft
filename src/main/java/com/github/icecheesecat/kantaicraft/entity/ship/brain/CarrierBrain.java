@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.entity.plane.brain;
+package com.github.icecheesecat.kantaicraft.entity.ship.brain;
 
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import com.github.icecheesecat.kantaicraft.entity.plane.brain.behavior.PlaneGlide;
@@ -17,14 +17,28 @@ import net.minecraft.world.entity.schedule.Activity;
 
 import java.util.List;
 
-public class PlaneAi {
+public class CarrierBrain {
 
     private static final List<SensorType<? extends Sensor<? super BasicEntityPlane>>> SENSOR_TYPES;
     private static final List<MemoryModuleType<?>> MEMORY_TYPES;
 
     static {
-        SENSOR_TYPES = List.of(SensorType.NEAREST_ITEMS, ModBrain.NEAREST_ENEMY_PLANE_SENSOR.get());
-        MEMORY_TYPES = List.of(ModBrain.OWNERSHIP.get(), ModBrain.PLANE_TIMEOUT.get(), MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN);
+        SENSOR_TYPES = List.of(
+                SensorType.NEAREST_ITEMS,
+                SensorType.NEAREST_LIVING_ENTITIES,
+                SensorType.NEAREST_PLAYERS);
+        MEMORY_TYPES = List.of(
+                ModBrain.OWNERSHIP.get(),
+                MemoryModuleType.NEAREST_LIVING_ENTITIES,
+                MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
+                MemoryModuleType.NEAREST_VISIBLE_PLAYER,
+                MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER,
+                MemoryModuleType.LOOK_TARGET,
+                MemoryModuleType.WALK_TARGET,
+                MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
+                MemoryModuleType.PATH,
+                MemoryModuleType.ATTACK_TARGET,
+                MemoryModuleType.ATTACK_COOLING_DOWN);
     }
 
     public static Brain<BasicEntityPlane> makeBrain(BasicEntityPlane plane, Dynamic<?> dyn) {
@@ -32,7 +46,6 @@ public class PlaneAi {
         Brain.Provider<BasicEntityPlane> brainProvider = Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
         Brain<BasicEntityPlane> brain = brainProvider.makeBrain(dyn);
         initCoreActivity(plane, brain);
-        initReturnActivity(plane, brain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
         brain.setDefaultActivity(Activity.CORE);
         brain.useDefaultActivity();
@@ -44,7 +57,7 @@ public class PlaneAi {
         brain.addActivity(Activity.CORE, 0,
                 ImmutableList.of(
                         new PlaneGlide(plane.getPlaneAttributes().getFlySpeed(), plane.getPlaneAttributes().getTurnAcceleration())
-                        ));
+                ));
     }
 
     private static void initReturnActivity(BasicEntityPlane plane, Brain<BasicEntityPlane> brain) {

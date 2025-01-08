@@ -1,12 +1,8 @@
-package com.github.icecheesecat.kantaicraft.stats;
+package com.github.icecheesecat.kantaicraft.stats.shipAttributes;
 
-import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
-import net.minecraft.nbt.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraftforge.common.util.INBTSerializable;
 
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -6,60 +6,40 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 public class EquipmentSlots implements INBTSerializable<CompoundTag> {
 
     private List<Equipment> equipments;
-    private List<EquipmentType> equipmentTypes;
-    private int slotSize = 4;
+    private List<SlotChecker> eachSlotChecker;
+    private int slotSize;
 
-    public EquipmentSlots(int size, List<EquipmentType> equipmentTypes) {
+    public EquipmentSlots(int size, SlotChecker slotChecker) {
         this.slotSize = size;
         this.equipments = new ArrayList<>();
+        this.eachSlotChecker = new ArrayList<>();
         for (int i = 0; i < slotSize; i++) {
             this.equipments.add(Equipment.EMPTY);
+            this.eachSlotChecker.add(slotChecker);
         }
-
-        if (equipmentTypes.size() < this.slotSize) {
-            throw new RuntimeException("Weapon slots' equipment types size must match parameter size.");
-        }
-        this.equipmentTypes = equipmentTypes;
     }
 
-    public EquipmentSlots(List<EquipmentType> equipmentTypes) {
-        this.equipments = new ArrayList<>();
-        for (int i = 0; i < slotSize; i++) {
-            this.equipments.add(Equipment.EMPTY);
-        }
-
-        if (equipmentTypes.size() < this.slotSize) {
-            throw new RuntimeException("Weapon slots' equipment types size must match parameter size.");
-        }
-        this.equipmentTypes = equipmentTypes;
+    public boolean canApplyAtSlot(int i, Equipment equipment) {
+        return this.eachSlotChecker.get(i).contains(equipment.getType());
     }
 
-    public EquipmentSlots(int slotSize, List<Equipment> equipments, List<EquipmentType> equipmentTypes) {
-        this.slotSize = slotSize;
-        this.equipments = equipments;
-
-        if (equipmentTypes.size() < this.slotSize) {
-            throw new RuntimeException("Weapon slots' equipment types size must match parameter size.");
-        }
-        this.equipmentTypes = equipmentTypes;
-    }
-
-    public ResourceRefund applyAtSlot(int i, Equipment equipment) {
+    public ResourceRefund applyAndRefund(int i, Equipment equipment) {
         Equipment r = this.equipments.set(i, equipment);
-
         return ResourceRefund.get(r.getUid());
     }
 
     public ResourceRefund removeFromSlot(int i) {
-
         Equipment r = this.equipments.set(i, Equipment.EMPTY);
         return ResourceRefund.get(r.getUid());
-
     }
 
     @Override
@@ -91,10 +71,6 @@ public class EquipmentSlots implements INBTSerializable<CompoundTag> {
 
     public List<Equipment> getEquipments() {
         return equipments;
-    }
-
-    public List<EquipmentType> getEquipmentTypes() {
-        return equipmentTypes;
     }
 
 //    public ByteBuffer writeBuffer() {

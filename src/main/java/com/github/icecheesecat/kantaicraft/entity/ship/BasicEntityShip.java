@@ -2,14 +2,14 @@ package com.github.icecheesecat.kantaicraft.entity.ship;
 
 import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
 import com.github.icecheesecat.kantaicraft.entity.IFaction;
-import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
+import com.github.icecheesecat.kantaicraft.entity.IPhysicalEntity;
 import com.github.icecheesecat.kantaicraft.entitySync.EquipmentS2CPacket;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.stats.IStatsGrowth;
+import com.github.icecheesecat.kantaicraft.stats.shipAttributes.IStatsGrowth;
 import com.github.icecheesecat.kantaicraft.util.*;
 import com.github.icecheesecat.kantaicraft.util.tickable.EquipmentActionHandler;
 import net.minecraft.core.Direction;
@@ -41,7 +41,10 @@ import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class BasicEntityShip extends PathfinderMob implements MenuProvider, IStatsGrowth, IFaction<BasicEntityShip> {
+import java.util.List;
+import java.util.Set;
+
+public abstract class BasicEntityShip extends PathfinderMob implements MenuProvider, IStatsGrowth, IFaction<BasicEntityShip>, IPhysicalEntity {
 
     /**
      * ship attributes: hp, def, atk, ...
@@ -49,7 +52,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     private static final EntityDataAccessor<Integer> DATA_AIRCRAFT = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DATA_FUEL = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_AMMO = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.FLOAT);
-    protected static final EntityDataAccessor<String> DATA_EQUIPMENT_TYPES = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> DATA_FACTION = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.INT);
 
     private ShipFields.ShipClass shipClass;
@@ -161,12 +163,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
 
     public float getAmmo() {
         return this.entityData.get(DATA_AMMO);
-    }
-
-    public EquipmentType getSlotType(int i) {
-        String str = this.entityData.get(DATA_EQUIPMENT_TYPES);
-        int num = str.charAt(i) - '0';
-        return EquipmentType.get(num);
     }
 
     public boolean hasAircraft() {
@@ -365,4 +361,5 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
             return Double.NEGATIVE_INFINITY;
         }
     }
+
 }

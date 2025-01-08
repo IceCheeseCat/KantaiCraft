@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.stats;
+package com.github.icecheesecat.kantaicraft.stats.shipAttributes;
 
 import net.minecraft.world.entity.ai.attributes.Attribute;
 

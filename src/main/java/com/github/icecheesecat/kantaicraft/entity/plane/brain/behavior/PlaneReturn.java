@@ -3,54 +3,39 @@ package com.github.icecheesecat.kantaicraft.entity.plane.brain.behavior;
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import com.github.icecheesecat.kantaicraft.init.ModBrain;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.phys.Vec3;
 
-public class PlaneReturn extends Behavior<BasicEntityPlane> {
+public class PlaneReturn extends PhysicalMovementBehavior {
 
-    boolean isReturnToOwner;
-    Vec3 velocity;
-    double flySpeedInTick;
     Entity owner;
 
-    public PlaneReturn() {
-        super(ImmutableMap.of(ModBrain.PLANE_TIMEOUT.get(), MemoryStatus.VALUE_ABSENT));
+    public PlaneReturn(BasicEntityPlane plane) {
+        super(ImmutableMap.of(ModBrain.OWNERSHIP.get(), MemoryStatus.REGISTERED, ModBrain.PLANE_TIMEOUT.get(), MemoryStatus.VALUE_ABSENT),
+            plane.getPlaneAttributes().getFlySpeed(),
+            plane.getPlaneAttributes().getTurnAcceleration(),
+        200);
     }
 
     @Override
-    protected void start(ServerLevel serverLevel, BasicEntityPlane basicEntityPlane, long p_22542_) {
-        flySpeedInTick = basicEntityPlane.getFlySpeed() / 20.0d;
-
-        if (basicEntityPlane.getBrain().hasMemoryValue(ModBrain.OWNERSHIP.get())) {
-            this.isReturnToOwner = true;
-            owner = serverLevel.getEntity(basicEntityPlane.getBrain().getMemory(ModBrain.OWNERSHIP.get()).get());
-            this.velocity = owner.position().subtract(basicEntityPlane.position()).normalize().scale(flySpeedInTick);
-        }
-        else {
-            this.isReturnToOwner = false;
-        }
+    protected void start(ServerLevel serverLevel, LivingEntity basicEntityPlane, long p_22542_) {
+        owner = serverLevel.getEntity(basicEntityPlane.getBrain().getMemory(ModBrain.OWNERSHIP.get()).get());
     }
 
     @Override
-    protected void tick(ServerLevel serverLevel, BasicEntityPlane basicEntityPlane, long gametime) {
-        if (isReturnToOwner) {
-            velocity = owner.position().subtract(basicEntityPlane.position()).normalize().scale(flySpeedInTick);
-        }
-
-        basicEntityPlane.setDeltaMovement(velocity);
+    protected void tick(ServerLevel serverLevel, LivingEntity basicEntityPlane, long gametime) {
+        this.setVelocityDirection(owner.position().subtract(basicEntityPlane.position()));
+        super.tick(serverLevel, basicEntityPlane, gametime);
     }
 
     @Override
-    protected void stop(ServerLevel p_22548_, BasicEntityPlane p_22549_, long p_22550_) {
+    protected void stop(ServerLevel serverLevel, LivingEntity livingEntity, long gametime) {
     }
 
     @Override
-    protected boolean canStillUse(ServerLevel serverLevel, BasicEntityPlane basicEntityPlane, long p_22547_) {
+    protected boolean canStillUse(ServerLevel serverLevel, LivingEntity basicEntityPlane, long p_22547_) {
         if (owner.position().distanceTo(basicEntityPlane.position()) < 0.5d) {
             return false;
         }
@@ -60,10 +45,5 @@ public class PlaneReturn extends Behavior<BasicEntityPlane> {
     @Override
     protected boolean timedOut(long p_22537_) {
         return false;
-    }
-
-    @Override
-    protected boolean checkExtraStartConditions(ServerLevel p_22538_, BasicEntityPlane p_22539_) {
-        return true;
     }
 }

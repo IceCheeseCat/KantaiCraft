@@ -58,14 +58,14 @@ public class EquipmentS2CPacket {
                 Entity entity = Minecraft.getInstance().level.getEntity(equipmentS2CPacket.entityId);
                 if (entity instanceof BasicEntityShip entityShip) {
                     EquipmentSlots slots = entityShip.getEquipmentSlots();
-                    if (slots == null) {
-                        List<EquipmentType> types = new ArrayList<>();
-                        int size = (int) entityShip.getAttributeValue(ModShipAttributes.SLOT_SIZE.get());
-                        for (int i = 0; i < size; i++) {
-                            types.add(entityShip.getSlotType(i));
-                        }
-                        entityShip.setEquipmentSlots(new EquipmentSlots(size, types));
-                    }
+//                    if (slots == null) {
+//                        List<EquipmentType> types = new ArrayList<>();
+//                        int size = (int) entityShip.getAttributeValue(ModShipAttributes.SLOT_SIZE.get());
+//                        for (int i = 0; i < size; i++) {
+//                            types.add(entityShip.getSlotType(i));
+//                        }
+//                        entityShip.setEquipmentSlots(new EquipmentSlots(size, types));
+//                    }
 
                     slots.applyAtSlot(equipmentS2CPacket.index, equipmentS2CPacket.equipment);
                 }

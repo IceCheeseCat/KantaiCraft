@@ -256,7 +256,7 @@
 [3012月2024 14:17:28.442] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v47.3.0 Initialized
 [3012月2024 14:17:28.503] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.config.ConfigTracker/CONFIG]: Config file kantaicraft-common.toml for kantaicraft tracking
 [3012月2024 14:17:28.505] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Attempting to inject @EventBusSubscriber classes into the eventbus for kantaicraft
-[3012月2024 14:17:28.511] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.Config to MOD
+[3012月2024 14:17:28.511] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.config.Config to MOD
 [3012月2024 14:17:28.519] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.datagen.ModelDataGen to MOD
 [3012月2024 14:17:28.525] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.event.ClientEvent$FORGE to FORGE
 [3012月2024 14:17:28.531] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.event.ClientEvent$MOD to MOD

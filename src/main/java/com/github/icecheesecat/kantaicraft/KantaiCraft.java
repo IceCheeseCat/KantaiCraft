@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft;
 
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
+import com.github.icecheesecat.kantaicraft.config.Config;
+import com.github.icecheesecat.kantaicraft.config.ConfigEntityData;
 import com.github.icecheesecat.kantaicraft.init.*;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,7 +34,7 @@ public class KantaiCraft
         MinecraftForge.EVENT_BUS.register(this);
         ModPacketHandler.registerMessages();
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEntityData.SPEC, KantaiCraft.MODID + "_entitydata.toml");
     }
 
 }

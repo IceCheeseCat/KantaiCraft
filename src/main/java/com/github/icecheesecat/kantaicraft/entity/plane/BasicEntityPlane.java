@@ -3,8 +3,9 @@ package com.github.icecheesecat.kantaicraft.entity.plane;
 import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
 import com.github.icecheesecat.kantaicraft.entity.IFaction;
 import com.github.icecheesecat.kantaicraft.entity.plane.brain.PlaneAi;
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.plane.fighter.EntityFighterPlane;
 import com.github.icecheesecat.kantaicraft.init.ModBrain;
+import com.github.icecheesecat.kantaicraft.stats.planeAttributes.PlaneAttributes;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -23,7 +24,9 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-public class BasicEntityPlane extends Mob implements IFaction<BasicEntityPlane> {
+public abstract class BasicEntityPlane extends Mob implements IFaction<BasicEntityPlane> {
+
+    protected PlaneAttributes planeAttributes;
 
     public BasicEntityPlane(EntityType<? extends Mob> p_21683_, Level level) {
         super(p_21683_, level);
@@ -75,12 +78,8 @@ public class BasicEntityPlane extends Mob implements IFaction<BasicEntityPlane> 
         return false;
     }
 
-    private void touchedGround() {
-        this.level().explode(this, this.getX(), this.getY((double)0.0625F), this.getZ(), 0.1F, Level.ExplosionInteraction.MOB);
-    }
-
-    protected void getPath() {
-
+    private void selfDestruction() {
+        this.level().explode(this, this.getX(), this.getY((double) 0.0625F), this.getZ(), 0.1F, Level.ExplosionInteraction.MOB);
     }
 
     private void setAttackTarget(LivingEntity target) {
@@ -89,10 +88,6 @@ public class BasicEntityPlane extends Mob implements IFaction<BasicEntityPlane> 
 
     private void setOwnerShip(LivingEntity ownerShip) {
         this.getBrain().setMemory(ModBrain.OWNERSHIP.get(), ownerShip.getUUID());
-    }
-
-    public double getFlySpeed() {
-        return 10.0d;
     }
 
     @Override
@@ -113,4 +108,9 @@ public class BasicEntityPlane extends Mob implements IFaction<BasicEntityPlane> 
         return false;
     }
 
+    public PlaneAttributes getPlaneAttributes() {
+        return planeAttributes;
+    }
+
+    public abstract void planeHurtTarget(LivingEntity target, double dmgValue);
 }
