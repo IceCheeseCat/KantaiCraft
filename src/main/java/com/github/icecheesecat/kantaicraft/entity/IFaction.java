@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entity;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import net.minecraft.world.entity.LivingEntity;
 
 public interface IFaction<T> {
 
@@ -8,6 +9,6 @@ public interface IFaction<T> {
 
     void setFactionId(int factionId);
 
-    boolean isEnemy(T other);
+    boolean isEnemy(LivingEntity livingEntity);
 
 }

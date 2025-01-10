@@ -1,8 +1,7 @@
 package com.github.icecheesecat.kantaicraft;
 
-import com.github.icecheesecat.kantaicraft.config.Config;
 import com.github.icecheesecat.kantaicraft.config.ConfigEntityData;
-import com.github.icecheesecat.kantaicraft.init.*;
+import com.github.icecheesecat.kantaicraft.customObjects.*;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -23,14 +22,14 @@ public class KantaiCraft
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ModItems.ITEMS.register(modEventBus);
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
         ModEntity.ENTITIES.register(modEventBus);
+        ModItems.ITEMS.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModShipAttributes.ATTRIBUTES.register(modEventBus);
-        ModBrain.ACTIVITIES.register(modEventBus);
-        ModBrain.MEMORY_MODULE_TYPES.register(modEventBus);
-        ModBrain.SENSOR_TYPES.register(modEventBus);
+        ModActitvity.ACTIVITIES.register(modEventBus);
+        ModMemoryModuleType.MEMORY_MODULE_TYPES.register(modEventBus);
+        ModSensor.SENSOR_TYPES.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         ModPacketHandler.registerMessages();
 

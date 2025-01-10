@@ -1,8 +1,10 @@
 package com.github.icecheesecat.kantaicraft.path;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.pathfinder.*;
 
 public class FluidSurfacePathNavigator extends GroundPathNavigation {
@@ -22,6 +24,11 @@ public class FluidSurfacePathNavigator extends GroundPathNavigation {
 
     @Override
     protected boolean canUpdatePath() {
-        return this.mob.isInWater();
+        return this.mob.isInWater() || this.mob.onGround();
+    }
+
+    @Override
+    public boolean isStableDestination(BlockPos blockPos) {
+        return this.mob.level().getBlockState(blockPos).is(Blocks.WATER) || super.isStableDestination(blockPos);
     }
 }

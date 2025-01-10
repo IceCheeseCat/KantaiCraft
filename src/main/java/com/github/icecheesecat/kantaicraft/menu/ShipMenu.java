@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.menu;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.init.ModMenus;
+import com.github.icecheesecat.kantaicraft.customObjects.ModMenus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;

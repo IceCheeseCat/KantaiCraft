@@ -8,6 +8,6 @@ public interface IActionCooldown {
     int getMaxCooldown();
     void resetCooldown();
     void tickCooldown();
-    boolean checkCooldown();
+    boolean inCooldown();
 
 }

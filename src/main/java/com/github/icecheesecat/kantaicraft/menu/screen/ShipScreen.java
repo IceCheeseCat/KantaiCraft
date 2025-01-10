@@ -5,7 +5,7 @@ import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
-import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.customObjects.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -59,7 +59,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
         for (int i = 0; i < slots.getSlotSize(); i++) {
             Equipment equipment = slots.getEquipments().get(i);
-            EquipmentType type = slots.getEquipmentTypes().get(i);
+            EquipmentType type = slots.getEquipments().get(i).getType();
 
             // show equipments
             if (equipment == Equipment.EMPTY) {

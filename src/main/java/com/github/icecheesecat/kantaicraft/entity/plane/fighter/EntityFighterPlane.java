@@ -1,7 +1,8 @@
 package com.github.icecheesecat.kantaicraft.entity.plane.fighter;
 
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
-import com.github.icecheesecat.kantaicraft.entity.plane.brain.FighterPlaneAi;
+import com.github.icecheesecat.kantaicraft.brain.plane.FighterPlaneAi;
+import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,4 +32,13 @@ public class EntityFighterPlane extends BasicEntityPlane {
         target.hurt(target.damageSources().mobProjectile(this, target), (float) dmgValue);
     }
 
+    @Override
+    protected void updateActivity() {
+        // TO-DO
+    }
+
+    @Override
+    public boolean isEnemy(LivingEntity livingEntity) {
+        return livingEntity instanceof BasicEntityPlane plane && this.getFactionId() != plane.getFactionId();
+    }
 }

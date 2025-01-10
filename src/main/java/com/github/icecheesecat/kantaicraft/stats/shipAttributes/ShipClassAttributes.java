@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.stats.shipAttributes;
 
-import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.customObjects.ModShipAttributes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;

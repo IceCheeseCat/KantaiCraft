@@ -1,17 +1,17 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
 import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
+import com.github.icecheesecat.kantaicraft.customObjects.ModActitvity;
 import com.github.icecheesecat.kantaicraft.entity.IFaction;
 import com.github.icecheesecat.kantaicraft.entity.IPhysicalEntity;
 import com.github.icecheesecat.kantaicraft.entitySync.EquipmentS2CPacket;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
-import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.customObjects.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.stats.shipAttributes.IStatsGrowth;
 import com.github.icecheesecat.kantaicraft.util.*;
-import com.github.icecheesecat.kantaicraft.util.tickable.EquipmentActionHandler;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -19,17 +19,21 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -41,8 +45,7 @@ import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
 public abstract class BasicEntityShip extends PathfinderMob implements MenuProvider, IStatsGrowth, IFaction<BasicEntityShip>, IPhysicalEntity {
 
@@ -56,39 +59,26 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
 
     private ShipFields.ShipClass shipClass;
     private ShipFields.ShipName shipName;
-    private final Radar radar;
 
     private String customShipName;
     private boolean canMelee = false;
     private boolean canPickUpItem = false;
-    private String ownerName = "";
+    private UUID owner;
 
     protected EquipmentSlots equipmentSlot;
     private final LazyOptional<EquipmentSlots> lazyEquipmentSlot;
-//    private ItemSlots itemSlots;
     public static final Capability<EquipmentSlots> WEAPON_SLOTS = CapabilityManager.get(new CapabilityToken<>(){});
 
-    protected final EquipmentActionHandler actionHandler;
 
     protected BasicEntityShip(EntityType<? extends PathfinderMob> entityType, Level level, EquipmentSlots equipmentSlot) {
         super(entityType, level);
         this.equipmentSlot = equipmentSlot;
         this.lazyEquipmentSlot = LazyOptional.of(() -> this.equipmentSlot);
-        this.actionHandler = new EquipmentActionHandler(this, equipmentSlot);
 
         this.setAircraft((int) this.getAttributeValue(ModShipAttributes.AIRCRAFT.get()));
         this.setFuel((float) this.getAttributeValue(ModShipAttributes.FUEL.get()));
         this.setAmmo((float) this.getAttributeValue(ModShipAttributes.AMMO.get()));
-
-        if (!this.level().isClientSide) {
-            radar = new Radar(this, 1 * 20);
-        }
-        else {
-            radar = null;
-        }
     }
-
-//    abstract protected void registerAttributes();
 
     @Override
     public void checkDespawn() {
@@ -153,6 +143,17 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.entityData.set(DATA_AMMO, value);
     }
 
+    public void useAmmo() {
+        this.setAmmo(this.getAmmo() - this.getAmmoCost());
+    }
+
+    public boolean hasEnoughAmmo() {
+        return this.getAmmo() > this.getAmmoCost();
+    }
+
+    public abstract float getAmmoCost();
+
+
     public int getAircraft() {
         return this.entityData.get(DATA_AIRCRAFT);
     }
@@ -188,11 +189,8 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     }
 
     @Override
-    public boolean isEnemy(BasicEntityShip other) {
-        if (this.getFactionId() != other.getFactionId() && other.getFactionId() != CommonEntityData.noFaction) {
-            return true;
-        }
-        return false;
+    public boolean isEnemy(LivingEntity other) {
+        return other instanceof BasicEntityShip ship && this.getFactionId() != ship.getFactionId();
     }
 
     @Override
@@ -203,10 +201,10 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
 //                this.shipStats.deserializeNBT(nbt1);
 //        }
 
-        if (nbt.contains("equipmentslots.data")) {
+        if (nbt.contains("basicentityship.equipmentslots.data")) {
             CompoundTag nbt2 = (CompoundTag) nbt.get("equipmentslots.data");
                 equipmentSlot.deserializeNBT(nbt2);
-                this.actionHandler.resetAllActions();
+//                this.actionHandler.resetAllActions();
         }
 
         if (nbt.contains("basicentityship.canmelee")) {
@@ -226,19 +224,31 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         if (nbt.contains("basicentityship.data_ammo")) {
             this.entityData.set(DATA_AMMO, nbt.getFloat("basicentityship.data_ammo"));
         }
+        if (nbt.contains("basicentityship.ship_class")) {
+            this.shipClass = ShipFields.ShipClass.getEnum(nbt.getInt("basicentityship.ship_class"));
+        }
+        if (nbt.contains("basicentityship.ship_name")) {
+            this.shipName = ShipFields.ShipName.getEnum(nbt.getInt("basicentityship.ship_name"));
+        }
+        if (nbt.contains("basicentityship.owner")) {
+            this.owner = nbt.getUUID("basicentityship.owner");
+        }
 
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
-//        nbt.put("basicentityship.shipattrs", this.shipStats.serializeNBT());
-        nbt.put("equipmentslots.data", equipmentSlot.serializeNBT());
+
+        nbt.put("basicentityship.equipmentslots.data", equipmentSlot.serializeNBT());
         nbt.putBoolean("basicentityship.canmelee", this.canMelee);
         nbt.putBoolean("basicentityship.canpickupitem", this.canPickUpItem);
         nbt.putInt("basicentityship.data_aircraft", this.entityData.get(DATA_AIRCRAFT));
         nbt.putFloat("basicentityship.data_fuel", this.entityData.get(DATA_FUEL));
         nbt.putFloat("basicentityship.data_ammo", this.entityData.get(DATA_AMMO));
+        nbt.putInt("basicentityship.ship_class", this.shipClass.ordinal());
+        nbt.putInt("basicentityship.ship_name", this.shipName.ordinal());
+        nbt.putUUID("basicentityship.owner", this.owner);
     }
 
     @Override
@@ -256,7 +266,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     public void tick() {
         super.tick();
         if (level().isClientSide) return;
-        this.radar.tick();
     }
 
     @Override
@@ -308,14 +317,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.customShipName = customShipName;
     }
 
-    public String getOwnerName() {
-        return ownerName;
-    }
-
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
-    }
-
     public boolean isCanPickUpItem() {
         return canPickUpItem;
     }
@@ -324,20 +325,12 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.canPickUpItem = canPickUpItem;
     }
 
-    public boolean isCanMelee() {
+    public boolean canMelee() {
         return canMelee;
     }
 
     public void setCanMelee(boolean canMelee) {
         this.canMelee = canMelee;
-    }
-
-    public void changeRadarCooldown(int cd_in_sec) {
-        this.radar.setMaxCooldown(cd_in_sec);
-    }
-
-    public Radar getRadar() {
-        return radar;
     }
 
     public void setEquipmentSlots(EquipmentSlots slots) {
@@ -348,10 +341,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         return equipmentSlot;
     }
 
-    public EquipmentActionHandler getActionHandler() {
-        return actionHandler;
-    }
-
     public double getAttributeValue(Attribute attribute) {
         if (this.getAttributes().hasAttribute(attribute)) {
             return this.getAttributes().getValue(attribute);
@@ -360,6 +349,35 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
 //            throw new IllegalStateException(String.format("No attribute %s at %s.", attribute.getDescriptionId(), this.getClass().getCanonicalName()));
             return Double.NEGATIVE_INFINITY;
         }
+    }
+
+    @Override
+    public boolean canStandOnFluid(FluidState fluidState) {
+        return fluidState.is(FluidTags.WATER);
+    }
+
+    @Override
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        this.getBrain().tick((ServerLevel) this.level(), this);
+        this.updateActivity();
+    }
+
+    @Override
+    public Brain<BasicEntityShip> getBrain() {
+        return (Brain<BasicEntityShip>) super.getBrain();
+    }
+
+    protected void updateActivity() {
+        this.getBrain().setActiveActivityToFirstValid(ImmutableList.of(ModActitvity.BURN_OUT_FUELS.get(), ModActitvity.GUARD.get()));
+    }
+
+    public void setOwner(UUID owner) {
+        this.owner = owner;
+    }
+
+    public UUID getOwner() {
+        return this.owner;
     }
 
 }

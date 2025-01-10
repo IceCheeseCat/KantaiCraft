@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.event;
 
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.init.ModMenus;
+import com.github.icecheesecat.kantaicraft.customObjects.ModMenus;
 import com.github.icecheesecat.kantaicraft.menu.screen.ShipScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;

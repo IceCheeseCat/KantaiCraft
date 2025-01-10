@@ -2,7 +2,6 @@ package com.github.icecheesecat.kantaicraft.entitySync;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.*;
-import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -11,8 +10,6 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
 public class EquipmentS2CPacket {
@@ -67,7 +64,7 @@ public class EquipmentS2CPacket {
 //                        entityShip.setEquipmentSlots(new EquipmentSlots(size, types));
 //                    }
 
-                    slots.applyAtSlot(equipmentS2CPacket.index, equipmentS2CPacket.equipment);
+                    slots.applyAndRefund(equipmentS2CPacket.index, equipmentS2CPacket.equipment);
                 }
 
             });

@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.datagen;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.init.ModItems;
+import com.github.icecheesecat.kantaicraft.customObjects.ModItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -21,6 +21,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
 //        simpleItem(ModItems.TwelveCMSmallGunMount);
         simpleItem(ModItems.DEGUB_FACTION_CHANGER);
+        simpleItem(ModItems.DESTROYER_RO);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

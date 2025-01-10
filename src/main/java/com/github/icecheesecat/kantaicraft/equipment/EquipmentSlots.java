@@ -16,15 +16,18 @@ public class EquipmentSlots implements INBTSerializable<CompoundTag> {
 
     private List<Equipment> equipments;
     private List<SlotChecker> eachSlotChecker;
+    private List<Boolean> dirty;
     private int slotSize;
 
     public EquipmentSlots(int size, SlotChecker slotChecker) {
         this.slotSize = size;
         this.equipments = new ArrayList<>();
         this.eachSlotChecker = new ArrayList<>();
+        this.dirty = new ArrayList<>();
         for (int i = 0; i < slotSize; i++) {
             this.equipments.add(Equipment.EMPTY);
             this.eachSlotChecker.add(slotChecker);
+            this.dirty.add(false);
         }
     }
 
@@ -34,12 +37,25 @@ public class EquipmentSlots implements INBTSerializable<CompoundTag> {
 
     public ResourceRefund applyAndRefund(int i, Equipment equipment) {
         Equipment r = this.equipments.set(i, equipment);
+        this.dirty.set(i, true);
         return ResourceRefund.get(r.getUid());
     }
 
     public ResourceRefund removeFromSlot(int i) {
         Equipment r = this.equipments.set(i, Equipment.EMPTY);
         return ResourceRefund.get(r.getUid());
+    }
+
+    public boolean isDirty(int index) {
+        return this.dirty.get(index);
+    }
+
+    public void setNotDirty(int index) {
+        this.dirty.set(index, false);
+    }
+
+    public Equipment getEquipment(int index) {
+        return this.equipments.get(index);
     }
 
     @Override

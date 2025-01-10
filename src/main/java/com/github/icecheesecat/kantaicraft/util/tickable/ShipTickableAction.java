@@ -48,7 +48,7 @@ public abstract class ShipTickableAction implements IActionCooldown {
     }
 
     @Override
-    public boolean checkCooldown() {
+    public boolean inCooldown() {
         return this.cooldown <= 0;
     }
 

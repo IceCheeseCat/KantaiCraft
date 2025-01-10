@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.util.tickable.attack;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
-import com.github.icecheesecat.kantaicraft.init.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.customObjects.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
 import com.github.icecheesecat.kantaicraft.util.Trajectory;
@@ -27,8 +27,8 @@ public class ShipCannonAttack extends ShipRangeAttack {
         this.cannon = cannon;
     }
 
-    public void checkAndPerformCanon(LivingEntity target) {
-        if (this.checkCooldown()) {
+    public void checkAndPerformCannon(LivingEntity target) {
+        if (this.inCooldown()) {
             if (target != null && target.isAlive()) {
                 LivingEntity ship = getShip();
                 Vec3 initPos = new Vec3(ship.getX(), ship.getEyeY(), ship.getZ());
