@@ -1,12 +1,10 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
-import com.github.icecheesecat.kantaicraft.brain.ship.CannonShipBrain;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
-import com.github.icecheesecat.kantaicraft.customObjects.ModShipAttributes;
-import com.mojang.serialization.Dynamic;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.util.ShipFields;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
@@ -22,8 +20,8 @@ public abstract class BasicDestroyerShip extends BasicCannonShip {
             .add(Attributes.MAX_HEALTH, 0.2d)
             .add(ModShipAttributes.ARMOR.get(), 0.1d).build();
 
-    protected BasicDestroyerShip(EntityType<? extends PathfinderMob> entityType, Level level, EquipmentSlots equipmentSlot) {
-        super(entityType, level, equipmentSlot);
+    protected BasicDestroyerShip(EntityType<? extends PathfinderMob> entityType, Level level) {
+        super(entityType, level);
     }
 
     @Override
@@ -31,14 +29,18 @@ public abstract class BasicDestroyerShip extends BasicCannonShip {
         return DESTROYER_GROWTH;
     }
 
-    @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-    }
+//    @Override
+//    protected void defineSynchedData() {
+//        super.defineSynchedData();
+//    }
 
     @Override
     public float getAmmoCost() {
         return 1.0f;
     }
 
+    @Override
+    public ShipFields.ShipClass getShipClass() {
+        return ShipFields.ShipClass.DESTROYER;
+    }
 }

@@ -1,13 +1,15 @@
 package com.github.icecheesecat.kantaicraft.brain.ship.behavior;
 
-import com.github.icecheesecat.kantaicraft.customObjects.ModMemoryModuleType;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentProvider;
+import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.util.tickable.EquipmentActionHandler;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+
+import java.util.Optional;
 
 public class TickAndUpdateEquipmentActionHandler extends Behavior<BasicEntityShip> {
 
@@ -17,13 +19,18 @@ public class TickAndUpdateEquipmentActionHandler extends Behavior<BasicEntityShi
 
     @Override
     protected void start(ServerLevel pLevel, BasicEntityShip pEntity, long pGameTime) {
-        pEntity.getBrain().setMemory(ModMemoryModuleType.ACTION_HANDLER.get(), new EquipmentActionHandler(pEntity, pEntity.getEquipmentSlots()));
+        pEntity.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(equipmentHandler ->
+            pEntity.getBrain().setMemory(ModMemoryModuleType.ACTION_HANDLER.get(), new EquipmentActionHandler(pEntity, equipmentHandler))
+        );
     }
 
     @Override
     protected void tick(ServerLevel pLevel, BasicEntityShip pEntity, long pGameTime) {
-        pEntity.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get()).ifPresent(EquipmentActionHandler::tick);
-        this.updateAttackAction(pEntity);
+        // tick actions
+        Optional<EquipmentActionHandler> opHandler = pEntity.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get());
+        opHandler.ifPresent(EquipmentActionHandler::tick);
+        // update action if equipment is changed
+        opHandler.ifPresent(shipTickableActions -> this.updateAttackAction(pEntity, shipTickableActions));
     }
 
     @Override
@@ -36,18 +43,15 @@ public class TickAndUpdateEquipmentActionHandler extends Behavior<BasicEntityShi
         return false;
     }
 
-    private void updateAttackAction(BasicEntityShip ship) {
-        var equipmentSlots = ship.getEquipmentSlots();
-        for (int i = 0; i < equipmentSlots.getSlotSize(); i++) {
-            if (equipmentSlots.isDirty(i)) {
-                Equipment equipment = equipmentSlots.getEquipment(i);
-                var opHandler = ship.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get());
-                if (opHandler.isPresent()) {
-                    opHandler.get().resetAction(i);
+    private void updateAttackAction(BasicEntityShip ship, EquipmentActionHandler actionHandler) {
+        ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(equipmentHandler -> {
+            for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
+                if (equipmentHandler.isDirty(i)) {
+                    actionHandler.resetAction(i);
+                    equipmentHandler.setNotDirty(i);
                 }
-
-                equipmentSlots.setNotDirty(i);
             }
-        }
+        });
+
     }
 }

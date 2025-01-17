@@ -2,12 +2,16 @@ package com.github.icecheesecat.kantaicraft.event;
 
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.customObjects.ModMenus;
+import com.github.icecheesecat.kantaicraft.client.model.ModelDestroyerRo;
+import com.github.icecheesecat.kantaicraft.client.renderer.RendererDestroyerRo;
+import com.github.icecheesecat.kantaicraft.registries.ModEntity;
+import com.github.icecheesecat.kantaicraft.registries.ModMenus;
 import com.github.icecheesecat.kantaicraft.menu.screen.ShipScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,16 +36,6 @@ public class ClientEvent {
             ClientLevel level = Minecraft.getInstance().level;
             if (level == null) return;
             if (Minecraft.getInstance().isPaused()) return;
-//            if (event.phase == TickEvent.Phase.END) {
-//                for (int i = 0; i < level.getEntityCount(); i++) {
-//                    BasicEntityShip entity = (BasicEntityShip) level.getEntity(1);
-//                    System.out.print((entity));
-//                    System.out.print("  " + entity.getAttributeValue(ModShipAttributes.FIREPOWER.get()));
-//                    System.out.print(" " + entity.getAttributeValue(ModShipAttributes.LUCK.get()));
-//                    System.out.print(" " + entity.getAttributeValue(ModShipAttributes.TORPEDO.get()));
-//                    System.out.println(" " + entity.getAttributeValue(ModShipAttributes.LOS.get()));
-//                }
-//            }
         }
     }
 

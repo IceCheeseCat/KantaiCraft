@@ -1,11 +1,9 @@
 package com.github.icecheesecat.kantaicraft.entity.plane;
 
-import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
-import com.github.icecheesecat.kantaicraft.customObjects.ModMemoryModuleType;
+import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entity.IFaction;
 import com.github.icecheesecat.kantaicraft.brain.plane.PlaneAi;
 import com.github.icecheesecat.kantaicraft.entity.plane.fighter.EntityFighterPlane;
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.stats.planeAttributes.PlaneAttributes;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.nbt.CompoundTag;

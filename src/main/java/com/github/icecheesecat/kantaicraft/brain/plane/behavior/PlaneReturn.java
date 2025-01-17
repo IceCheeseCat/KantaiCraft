@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.brain.plane.behavior;
 
-import com.github.icecheesecat.kantaicraft.customObjects.ModMemoryModuleType;
+import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;

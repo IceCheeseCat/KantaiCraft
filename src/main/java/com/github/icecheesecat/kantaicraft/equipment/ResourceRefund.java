@@ -11,6 +11,8 @@ public class ResourceRefund {
     int count = 0;
     public Set<ItemStack> funds;
 
+    public static final ResourceRefund EMPTY = new ResourceRefund();
+
     public ResourceRefund addStack(ItemStack stack) {
         funds.add(stack);
         count++;

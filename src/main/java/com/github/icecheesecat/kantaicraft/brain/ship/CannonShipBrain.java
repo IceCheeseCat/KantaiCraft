@@ -3,13 +3,11 @@ package com.github.icecheesecat.kantaicraft.brain.ship;
 import com.github.icecheesecat.kantaicraft.brain.ship.behavior.CannonAttack;
 import com.github.icecheesecat.kantaicraft.brain.ship.behavior.SoutBurnOut;
 import com.github.icecheesecat.kantaicraft.brain.ship.behavior.TickAndUpdateEquipmentActionHandler;
-import com.github.icecheesecat.kantaicraft.customObjects.ModActitvity;
-import com.github.icecheesecat.kantaicraft.customObjects.ModMemoryModuleType;
+import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
+import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.brain.ship.behavior.BurnFuel;
-import com.github.icecheesecat.kantaicraft.customObjects.ModSensor;
+import com.github.icecheesecat.kantaicraft.registries.ModSensor;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicDestroyerShip;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
@@ -46,6 +44,7 @@ public class CannonShipBrain {
                 ModMemoryModuleType.OUT_OF_FUEL.get(),
                 ModMemoryModuleType.IS_GUARDING.get(),
                 ModMemoryModuleType.NEARBY_MONSTERS.get(),
+                ModMemoryModuleType.ACTION_HANDLER.get(),
                 ModMemoryModuleType.NEARBY_DIFFERENT_FACTION_SHIPS.get(),
                 MemoryModuleType.NEAREST_LIVING_ENTITIES,
                 MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
@@ -74,13 +73,13 @@ public class CannonShipBrain {
         return brain;
     }
 
-
-
     private static void initCoreActivity(BasicCannonShip destroyerShip, Brain<BasicCannonShip> brain) {
         brain.addActivity(Activity.CORE, 0,
                 ImmutableList.of(
                     new BurnFuel(),
-                    new TickAndUpdateEquipmentActionHandler()
+                    new TickAndUpdateEquipmentActionHandler(),
+                    new LookAtTargetSink(45, 90),
+                    new MoveToTargetSink()
                 ));
     }
 
@@ -110,6 +109,7 @@ public class CannonShipBrain {
                         Pair.of(0, StartAttacking.create(CannonShipBrain::findNearestValidAttackTarget)),
                         Pair.of(1, new CannonAttack()),
                         Pair.of(2, BehaviorBuilder.triggerIf(CannonShipBrain::shipCanMelee, MeleeAttack.create(40))),
+                        Pair.of(2, SetWalkTargetFromAttackTargetIfTargetOutOfReach.create(1.0F)),
                         Pair.of(5, StopAttackingIfTargetInvalid.create())),
                 ImmutableSet.of(Pair.of(ModMemoryModuleType.IS_GUARDING.get(), MemoryStatus.VALUE_PRESENT))
         );

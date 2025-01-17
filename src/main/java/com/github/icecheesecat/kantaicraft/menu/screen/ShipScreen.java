@@ -1,14 +1,17 @@
 package com.github.icecheesecat.kantaicraft.menu.screen;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
-import com.github.icecheesecat.kantaicraft.customObjects.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.equipment.*;
+import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
+import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
+import com.github.icecheesecat.kantaicraft.network.packet.SyncShipC2SPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,14 +27,54 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     private static final ResourceLocation ANTIAIR_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/antiair_icon.png");
     private static final ResourceLocation ASW_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/asw_icon.png");
 
-    EquipmentSlots slots;
+    private final BasicEntityShip ship;
+
+    Button toggleGuarding;
+    Button toggleMelee;
+    Button toggleCannonFireMode;
+    Button equipmentSection;
+
+    EquipmentHandler equipmentHandler;
+
     public ShipScreen(ShipMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
 
         this.imageWidth = 320;
         this.imageHeight = 180;
-        slots = this.getMenu().getEntityShip().getEquipmentSlots();
+
+        this.ship = this.getMenu().getEntityShip();
+
+        toggleGuarding = Button.builder(Component.translatable("shipscreen.toggleguarding"), button -> {
+            ModPacketHandler.INSTANCE.sendToServer(new SyncShipC2SPacket(SyncType.GUARD, this.ship.getId(), !this.ship.isGuarding()));
+        }).pos(100, 100).build();
+
+        toggleMelee = Button.builder(Component.translatable("shipscreen.togglemelee"), button -> {
+            ModPacketHandler.INSTANCE.sendToServer(new SyncShipC2SPacket(SyncType.MELEE, this.ship.getId(), !this.ship.canMelee()));
+        }).pos(100, 125).build();
+
+        toggleCannonFireMode = Button.builder(Component.translatable("shipscreen.togglecannonfiremode"), button -> {
+            if (this.ship instanceof BasicCannonShip cannonShip) {
+                ModPacketHandler.INSTANCE.sendToServer(new SyncShipC2SPacket(SyncType.CANNON_FIRE_MODE, cannonShip.getId(), cannonShip.getCannonFireMode().getNext()));
+            }
+        }).pos(100, 150).build();
+
+        equipmentSection = Button.builder(Component.translatable("shipscreen.equipmentsection"), pButton -> {
+            this.minecraft.setScreen(new EquipmentScreen(Component.literal("equipment_screen"), this.ship));
+        }).pos(100, 175).build();
+
+        this.addRenderableWidget(toggleGuarding);
+        this.addRenderableWidget(toggleMelee);
+        this.addRenderableWidget(toggleCannonFireMode);
+        this.addRenderableWidget(equipmentSection);
+
+        this.ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
+            handler -> {
+                this.equipmentHandler = handler;
+            }
+        );
     }
+
+
 
     /*
         blit(
@@ -45,8 +88,14 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-//        super.render(p_283479_, p_283661_, p_281248_, p_281886_);
+//        super.render(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.blit(BACKGROUND_1, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
+
+        toggleGuarding.setMessage(Component.literal("Toggle guarding: " + this.ship.isGuarding()));
+        toggleMelee.setMessage(Component.literal("Toggle melee: " + this.ship.canMelee()));
+        if (ship instanceof BasicCannonShip cannonShip) {
+            toggleCannonFireMode.setMessage(Component.literal("Toggle cannon fire mode: " + cannonShip.getCannonFireMode()));
+        }
 
         //show status
         if (menu.getEntityShip() != null) {
@@ -57,17 +106,17 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
             r.render(guiGraphics, mouseX, mouseY, partialTick);
         }
 
-        for (int i = 0; i < slots.getSlotSize(); i++) {
-            Equipment equipment = slots.getEquipments().get(i);
-            EquipmentType type = slots.getEquipments().get(i).getType();
+        for (int i = 0; i < this.equipmentHandler.getSlotSize(); i++) {
+            Equipment equipment = this.equipmentHandler.getEquipments().get(i);
+            EquipmentType type = this.equipmentHandler.getEquipments().get(i).getType();
 
             // show equipments
-            if (equipment == Equipment.EMPTY) {
-                //draw sth
-            }
-            else {
-
-            }
+//            if (equipment == this.ship.getShipClass().getDefaultEquipment()) {
+//                //draw sth
+//            }
+//            else {
+//
+//            }
         }
         //        guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
@@ -103,6 +152,5 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float v, int i, int i1) {
     }
-
 
 }

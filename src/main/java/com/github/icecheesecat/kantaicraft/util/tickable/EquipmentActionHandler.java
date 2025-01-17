@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.util.tickable;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.util.tickable.attack.ShipCannonAttack;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.cannon.Cannon;
@@ -13,12 +13,12 @@ import java.util.List;
 public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
 
     BasicEntityShip entityShip;
-    EquipmentSlots equipmentSlots;
+    EquipmentHandler equipmentHandler;
 
-    public EquipmentActionHandler(BasicEntityShip entityShip, EquipmentSlots equipmentSlots) {
+    public EquipmentActionHandler(BasicEntityShip entityShip, EquipmentHandler equipmentHandler) {
         this.entityShip = entityShip;
-        this.equipmentSlots = equipmentSlots;
-        for (int i = 0; i < equipmentSlots.getSlotSize(); i++) {
+        this.equipmentHandler = equipmentHandler;
+        for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
             this.add(ShipTickableAction.NULL);
         }
 
@@ -26,17 +26,17 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
     }
 
     public void resetAllActions() {
-        for (int i = 0; i < equipmentSlots.getSlotSize(); i++) {
+        for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
             this.resetAction(i);
         }
     }
 
     public void resetAction(int i) {
-        Equipment equipment = equipmentSlots.getEquipments().get(i);
+        Equipment equipment = equipmentHandler.getEquipments().get(i);
          switch (equipment.getType()) {
              case CANNON -> this.set(i, new ShipCannonAttack(entityShip, ((Cannon) equipment)));
              case NONE -> this.set(i, ShipTickableAction.NULL);
-             default -> throw new RuntimeException("Unknown equipment type at " + entityShip.getCustomShipName());
+             default -> throw new RuntimeException("Unknown equipment type at " + entityShip);
          }
     }
 
@@ -48,8 +48,8 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
     public List<ShipTickableAction> getActionsByWeaponType(EquipmentType type) {
         if (this.contains(type)) {
             List<ShipTickableAction> ret = new ArrayList<>();
-            for (int i = 0; i < equipmentSlots.getSlotSize(); i++) {
-                if (equipmentSlots.getEquipments().get(i).getType() == type) {
+            for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
+                if (equipmentHandler.getEquipments().get(i).getType() == type) {
                     ShipTickableAction a = this.get(i);
                     ret.add(a);
                 }
@@ -63,8 +63,8 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
     public List<ShipTickableAction> getActionsByWeaponTypeAndNotInCooldown(EquipmentType type) {
         if (this.contains(type)) {
             List<ShipTickableAction> ret = new ArrayList<>();
-            for (int i = 0; i < equipmentSlots.getSlotSize(); i++) {
-                if (equipmentSlots.getEquipments().get(i).getType() == type) {
+            for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
+                if (equipmentHandler.getEquipments().get(i).getType() == type) {
                     ShipTickableAction a = this.get(i);
                     if (!a.inCooldown())
                         ret.add(a);

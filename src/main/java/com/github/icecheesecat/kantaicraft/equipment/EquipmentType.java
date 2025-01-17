@@ -7,6 +7,5 @@ public enum EquipmentType {
     RADAR,
     PLANE;
 
-    public static final EquipmentType values[] = values();
-    public static EquipmentType get(int ordinal) { return values[ordinal]; }
+    public static EquipmentType get(int ordinal) { return values()[ordinal]; }
 }

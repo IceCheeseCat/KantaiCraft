@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.customObjects;
+package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.util.tickable.EquipmentActionHandler;
@@ -27,6 +27,6 @@ public class ModMemoryModuleType {
     public static final RegistryObject<MemoryModuleType<List<LivingEntity>>> NEARBY_DIFFERENT_FACTION_SHIPS = MEMORY_MODULE_TYPES.register("memory_module_type.nearby_different_faction_ships", () -> new MemoryModuleType<>(Optional.empty()));
     public static final RegistryObject<MemoryModuleType<List<LivingEntity>>> NEARBY_MONSTERS = MEMORY_MODULE_TYPES.register("memory_module_type.nearby_monsters", () -> new MemoryModuleType<>(Optional.empty()));
     public static final RegistryObject<MemoryModuleType<EquipmentActionHandler>> ACTION_HANDLER = MEMORY_MODULE_TYPES.register("memory_module_type.action_handler", () -> new MemoryModuleType<>(Optional.empty()));
-
+    public static final RegistryObject<MemoryModuleType<Unit>> ROUND_ROBIN_COOLDOWN = MEMORY_MODULE_TYPES.register("memory_module_type.round_robin_cooldown", () -> new MemoryModuleType<>(Optional.empty()));
 
 }

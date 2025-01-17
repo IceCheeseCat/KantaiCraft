@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.brain.ship;
 
-import com.github.icecheesecat.kantaicraft.customObjects.ModActitvity;
-import com.github.icecheesecat.kantaicraft.customObjects.ModMemoryModuleType;
+import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
+import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import com.github.icecheesecat.kantaicraft.brain.plane.behavior.PlaneReturn;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicCarrierShip;

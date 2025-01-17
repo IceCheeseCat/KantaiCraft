@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.customObjects;
+package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.entity.plane.fighter.EntityA6MZeroFighter;

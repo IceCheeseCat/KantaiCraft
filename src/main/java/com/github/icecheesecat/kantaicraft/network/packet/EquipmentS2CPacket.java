@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.entitySync;
+package com.github.icecheesecat.kantaicraft.network.packet;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.*;
@@ -24,7 +24,7 @@ public class EquipmentS2CPacket {
         this.index = index;
     }
 
-    public static EquipmentS2CPacket Decode(FriendlyByteBuf buf) {
+    public static EquipmentS2CPacket decode(FriendlyByteBuf buf) {
         ByteBuffer buffer = ByteBuffer.wrap(buf.readByteArray());
         buffer.rewind();
 
@@ -33,10 +33,10 @@ public class EquipmentS2CPacket {
         int index = buffer.getInt();
         int entityId = buffer.getInt();
 
-        return new EquipmentS2CPacket(Equipments.getInstance(uid, level), index, entityId);
+        return new EquipmentS2CPacket(null, index, entityId);
     }
 
-    public static void Encode(EquipmentS2CPacket equipmentS2CPacket, FriendlyByteBuf buf) {
+    public static void encode(EquipmentS2CPacket equipmentS2CPacket, FriendlyByteBuf buf) {
         ByteBuffer buffer = ByteBuffer.allocate(ALLOCATE_SIZE);
         buffer.putInt(equipmentS2CPacket.equipment.getEquipmentLevel().getLevel());
         buffer.putFloat(equipmentS2CPacket.equipment.getEquipmentLevel().getDifficulty());
@@ -54,17 +54,10 @@ public class EquipmentS2CPacket {
 
                 Entity entity = Minecraft.getInstance().level.getEntity(equipmentS2CPacket.entityId);
                 if (entity instanceof BasicEntityShip entityShip) {
-                    EquipmentSlots slots = entityShip.getEquipmentSlots();
-//                    if (slots == null) {
-//                        List<EquipmentType> types = new ArrayList<>();
-//                        int size = (int) entityShip.getAttributeValue(ModShipAttributes.SLOT_SIZE.get());
-//                        for (int i = 0; i < size; i++) {
-//                            types.add(entityShip.getSlotType(i));
-//                        }
-//                        entityShip.setEquipmentSlots(new EquipmentSlots(size, types));
-//                    }
+                    entityShip.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(equipmentHandler ->
+                        equipmentHandler.applyAndRefund(equipmentS2CPacket.index, equipmentS2CPacket.equipment, entityShip)
+                    );
 
-                    slots.applyAndRefund(equipmentS2CPacket.index, equipmentS2CPacket.equipment);
                 }
 
             });

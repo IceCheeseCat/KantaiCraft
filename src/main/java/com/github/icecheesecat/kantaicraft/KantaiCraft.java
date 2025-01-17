@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft;
 
-import com.github.icecheesecat.kantaicraft.config.ConfigEntityData;
-import com.github.icecheesecat.kantaicraft.customObjects.*;
+import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentData;
+import com.github.icecheesecat.kantaicraft.registries.*;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,7 +17,6 @@ public class KantaiCraft
     // Define mod id in a common place for everything to reference
     public static final String MODID = "kantaicraft";
 
-
     public KantaiCraft()
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -32,8 +31,9 @@ public class KantaiCraft
         ModSensor.SENSOR_TYPES.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         ModPacketHandler.registerMessages();
+        ModEquipment.EQUIPMENTS.register(modEventBus);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEntityData.SPEC, KantaiCraft.MODID + "_entitydata.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentData.SPEC, KantaiCraft.MODID + "_equipment.toml");
     }
 
 }

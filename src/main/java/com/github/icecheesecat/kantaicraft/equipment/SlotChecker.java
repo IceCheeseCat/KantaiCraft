@@ -1,5 +1,8 @@
 package com.github.icecheesecat.kantaicraft.equipment;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.common.util.INBTSerializable;
+
 import java.util.Set;
 
 public class SlotChecker {

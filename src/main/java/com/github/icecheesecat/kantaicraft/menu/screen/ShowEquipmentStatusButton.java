@@ -1,7 +1,6 @@
 package com.github.icecheesecat.kantaicraft.menu.screen;
 
 
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;

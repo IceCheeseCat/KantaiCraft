@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class EquipmentLevel implements INBTSerializable<CompoundTag> {
+public class EquipmentLevel {
 
     private int level;
     private float difficulty;
@@ -60,18 +60,7 @@ public class EquipmentLevel implements INBTSerializable<CompoundTag> {
         return difficulty;
     }
 
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putInt("equipmentlevel.level", this.level);
-        nbt.putFloat("equipmentlevel.difficulty", this.difficulty);
-        return nbt;
+    public String debugString() {
+        return "{\nLevel = " + this.level + "\nDifficulty = " + this.difficulty + "\n}\n";
     }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        this.level = nbt.getInt("equipmentlevel.level");
-        this.difficulty = nbt.getFloat("equipmentlevel.difficulty");
-    }
-
 }

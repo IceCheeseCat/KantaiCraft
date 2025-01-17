@@ -1,7 +1,8 @@
 package com.github.icecheesecat.kantaicraft.network;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entitySync.EquipmentS2CPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.SyncShipC2SPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.SyncShipS2CPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
@@ -22,17 +23,34 @@ public class ModPacketHandler {
         INSTANCE.registerMessage(
                 id++,
                 TrajectoryPacket.class,
-                TrajectoryPacket::Encode,
-                TrajectoryPacket::Decode,
+                TrajectoryPacket::encode,
+                TrajectoryPacket::decode,
                 TrajectoryPacket::clientHandle
+        );
+
+//        INSTANCE.registerMessage(
+//                id++,
+//                EquipmentS2CPacket.class,
+//                EquipmentS2CPacket::encode,
+//                EquipmentS2CPacket::decode,
+//                EquipmentS2CPacket::handle
+//        );
+
+        INSTANCE.registerMessage(
+                id++,
+                SyncShipC2SPacket.class,
+                SyncShipC2SPacket::encode,
+                SyncShipC2SPacket::decode,
+                SyncShipC2SPacket::serverHandle
+
         );
 
         INSTANCE.registerMessage(
                 id++,
-                EquipmentS2CPacket.class,
-                EquipmentS2CPacket::Encode,
-                EquipmentS2CPacket::Decode,
-                EquipmentS2CPacket::handle
+                SyncShipS2CPacket.class,
+                SyncShipS2CPacket::encode,
+                SyncShipS2CPacket::decode,
+                SyncShipS2CPacket::clientHandle
         );
     }
 }

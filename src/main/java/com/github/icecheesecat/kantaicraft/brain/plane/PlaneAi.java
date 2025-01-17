@@ -1,11 +1,11 @@
 package com.github.icecheesecat.kantaicraft.brain.plane;
 
-import com.github.icecheesecat.kantaicraft.customObjects.ModActitvity;
-import com.github.icecheesecat.kantaicraft.customObjects.ModMemoryModuleType;
+import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
+import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import com.github.icecheesecat.kantaicraft.brain.plane.behavior.PlaneGlide;
 import com.github.icecheesecat.kantaicraft.brain.plane.behavior.PlaneReturn;
-import com.github.icecheesecat.kantaicraft.customObjects.ModSensor;
+import com.github.icecheesecat.kantaicraft.registries.ModSensor;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;

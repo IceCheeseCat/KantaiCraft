@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.stats.shipAttributes;
 
-import com.github.icecheesecat.kantaicraft.customObjects.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.brain.plane.sensor;
+package com.github.icecheesecat.kantaicraft.brain.sensor;
 
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import net.minecraft.server.level.ServerLevel;

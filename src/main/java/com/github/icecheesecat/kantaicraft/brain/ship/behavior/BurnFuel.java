@@ -1,19 +1,18 @@
 package com.github.icecheesecat.kantaicraft.brain.ship.behavior;
 
-import com.github.icecheesecat.kantaicraft.customObjects.ModMemoryModuleType;
+import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.ai.behavior.Behavior;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
 
 public class BurnFuel extends Behavior<BasicEntityShip> {
 
     private static final long TIME_PERIOD = 200L;
 
     public BurnFuel() {
-        super(ImmutableMap.of(ModMemoryModuleType.OUT_OF_FUEL.get(), MemoryStatus.VALUE_ABSENT));
+        super(ImmutableMap.of());
     }
 
     @Override
@@ -35,7 +34,17 @@ public class BurnFuel extends Behavior<BasicEntityShip> {
     }
 
     @Override
+    protected boolean canStillUse(ServerLevel pLevel, BasicEntityShip pEntity, long pGameTime) {
+        return true;
+    }
+
+    @Override
     protected boolean checkExtraStartConditions(ServerLevel serverLevel, BasicEntityShip basicEntityShip) {
-        return !basicEntityShip.hasFuel();
+        return basicEntityShip.hasFuel();
+    }
+
+    @Override
+    protected boolean timedOut(long pGameTime) {
+        return false;
     }
 }

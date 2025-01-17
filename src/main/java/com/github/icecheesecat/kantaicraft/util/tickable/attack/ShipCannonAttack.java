@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.util.tickable.attack;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
-import com.github.icecheesecat.kantaicraft.customObjects.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
 import com.github.icecheesecat.kantaicraft.util.Trajectory;

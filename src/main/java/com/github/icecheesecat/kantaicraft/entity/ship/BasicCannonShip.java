@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
 import com.github.icecheesecat.kantaicraft.brain.ship.CannonShipBrain;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentSlots;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentHandler;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
@@ -14,16 +14,18 @@ import net.minecraft.world.level.Level;
 
 public abstract class BasicCannonShip extends BasicEntityShip {
 
-    private static final EntityDataAccessor<CannonFireMode> CANNON_FIRE_MODE = SynchedEntityData.defineId(BasicCannonShip.class, EntityDataSerializer.simpleEnum(CannonFireMode.class));
+    private static final EntityDataSerializer<CannonFireMode> CANNON_FIRE_MODE_ENTITY_DATA_SERIALIZER = EntityDataSerializer.simpleEnum(CannonFireMode.class);
+    private static final EntityDataAccessor<CannonFireMode> CANNON_FIRE_MODE = SynchedEntityData.defineId(BasicCannonShip.class, CANNON_FIRE_MODE_ENTITY_DATA_SERIALIZER);
 
-    protected BasicCannonShip(EntityType<? extends PathfinderMob> entityType, Level level, EquipmentSlots equipmentSlot) {
-        super(entityType, level, equipmentSlot);
+    protected BasicCannonShip(EntityType<? extends PathfinderMob> entityType, Level level) {
+        super(entityType, level);
     }
 
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.set(CANNON_FIRE_MODE, CannonFireMode.ROUND_ROBIN);
+        EntityDataSerializers.registerSerializer(CANNON_FIRE_MODE_ENTITY_DATA_SERIALIZER);
+        this.entityData.define(CANNON_FIRE_MODE, CannonFireMode.ROUND_ROBIN);
     }
 
     public CannonFireMode getCannonFireMode() {

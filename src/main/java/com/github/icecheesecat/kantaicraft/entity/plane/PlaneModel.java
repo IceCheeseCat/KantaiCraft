@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entity.plane;
 
 import com.github.icecheesecat.kantaicraft.entity.plane.fighter.EntityA6MZeroFighter;
-import com.github.icecheesecat.kantaicraft.customObjects.ModEntity;
+import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import net.minecraft.world.level.Level;
 
 public enum PlaneModel {

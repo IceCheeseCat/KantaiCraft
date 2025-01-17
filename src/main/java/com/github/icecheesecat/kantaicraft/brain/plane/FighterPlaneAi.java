@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.brain.plane;
 
-import com.github.icecheesecat.kantaicraft.customObjects.ModActitvity;
+import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
 import com.github.icecheesecat.kantaicraft.entity.plane.BasicEntityPlane;
 import com.github.icecheesecat.kantaicraft.entity.plane.fighter.EntityFighterPlane;
 import com.github.icecheesecat.kantaicraft.brain.plane.behavior.FighterPlaneAttack;

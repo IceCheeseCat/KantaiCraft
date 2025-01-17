@@ -41,7 +41,7 @@ public class TrajectoryPacket {
         this.id = t.getId();
     }
 
-    public static TrajectoryPacket Decode(FriendlyByteBuf buf) {
+    public static TrajectoryPacket decode(FriendlyByteBuf buf) {
         ByteBuffer buffer = ByteBuffer.wrap(buf.readByteArray());
         buffer.rewind();
 
@@ -52,7 +52,7 @@ public class TrajectoryPacket {
         return new TrajectoryPacket(new Trajectory(n_pos, n_vel, n_acc, id));
     }
 
-    public static void Encode(TrajectoryPacket packet, FriendlyByteBuf buf) {
+    public static void encode(TrajectoryPacket packet, FriendlyByteBuf buf) {
         ByteBuffer buffer = ByteBuffer.allocate(ALLOCATE_SIZE);
         buffer.putDouble(packet.pos.x);
         buffer.putDouble(packet.pos.y);

@@ -1,9 +1,9 @@
-package com.github.icecheesecat.kantaicraft.customObjects;
+package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.brain.sensor.NearbyDifferentFactionShipSensor;
 import com.github.icecheesecat.kantaicraft.brain.sensor.NearbyEntityOfClassSensor;
-import com.github.icecheesecat.kantaicraft.brain.plane.sensor.NearestEnemyPlaneSensor;
+import com.github.icecheesecat.kantaicraft.brain.sensor.NearestEnemyPlaneSensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraftforge.registries.DeferredRegister;
