@@ -30,6 +30,7 @@ public class EquipmentScreen extends Screen {
                     for (int i = 0; i < handler.getSlotSize(); i++) {
                         this.equipmentWidgets.add(new EquipmentWidget(this.left, this.top + (EquipmentWidget.sizeY + widgetGap) * i, ship, handler.getEquipment(i), i));
                     }
+                    System.out.println();
                 }
         );
 
