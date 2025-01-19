@@ -4,7 +4,6 @@ import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.util.tickable.attack.ShipCannonAttack;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.cannon.Cannon;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
     public void resetAction(int i) {
         Equipment equipment = equipmentHandler.getEquipments().get(i);
          switch (equipment.getType()) {
-             case CANNON -> this.set(i, new ShipCannonAttack(entityShip, ((Cannon) equipment)));
+             case CANNON -> this.set(i, new ShipCannonAttack(entityShip, equipment));
              case NONE -> this.set(i, ShipTickableAction.NULL);
              default -> throw new RuntimeException("Unknown equipment type at " + entityShip);
          }

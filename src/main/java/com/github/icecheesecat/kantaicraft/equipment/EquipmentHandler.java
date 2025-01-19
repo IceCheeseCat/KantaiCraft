@@ -19,13 +19,11 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     private NonNullList<Equipment> equipments;
     private NonNullList<Boolean> dirty;
     private int slotSize;
-    private Equipment defaultEquipment;
 
-    public EquipmentHandler(int size, Equipment defaultEquipment) {
+    public EquipmentHandler(int size) {
         this.slotSize = size;
-        this.equipments = NonNullList.withSize(size, defaultEquipment);
+        this.equipments = NonNullList.withSize(size, Equipment.EMPTY);
         this.dirty = NonNullList.withSize(size, false);
-        this.defaultEquipment = defaultEquipment;
     }
 
     public boolean canApplyAtSlot(int i, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
@@ -36,7 +34,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
         if (canApplyAtSlot(i, equipment, slotCheckerEntity)) {
             Equipment r = this.equipments.set(i, equipment);
             this.dirty.set(i, true);
-            return ResourceRefund.get(r.getUid());
+            return ResourceRefund.get(r.getId());
         }
         else {
             return ResourceRefund.EMPTY;
@@ -47,10 +45,6 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
         this.equipments.set(i, equipment);
     }
 
-    public ResourceRefund removeFromSlot(int i) {
-        Equipment r = this.equipments.set(i, defaultEquipment);
-        return ResourceRefund.get(r.getUid());
-    }
 
     public boolean isDirty(int index) {
         return this.dirty.get(index);
@@ -68,14 +62,11 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
         nbt.putInt("equipmenthandler.size", slotSize);
-        nbt.putInt("equipmenthandler.defaultequipment", defaultEquipment.getUid());
         for (int i = 0; i < equipments.size(); i++) {
             String str = "equipmenthandler.equipment." + i;
             Equipment equipment = equipments.get(i);
-            EquipmentLevel equipmentLevel = equipment.getEquipmentLevel();
-            nbt.putInt(str + ".level", equipmentLevel.getLevel());
-            nbt.putFloat(str + ".difficulty", equipmentLevel.getDifficulty());
-            nbt.putInt(str + ".uid", equipment.getUid());
+
+            nbt.put(str, equipment.save());
         }
         return nbt;
     }
@@ -83,19 +74,10 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.slotSize = nbt.getInt("equipmenthandler.size");
-        this.defaultEquipment = Equipments.ALL_EQUIPMENTS_MAP.get(nbt.getInt("equipmenthandler.defaultequipment"));
         for (int i = 0; i < this.slotSize; i++) {
             String str = "equipmenthandler.equipment." + i;
-
-            int level = nbt.getInt(str + ".level");
-            float difficulty = nbt.getFloat(str + ".difficulty");
-            int uid = nbt.getInt(str + ".uid");
-            EquipmentLevel equipmentLevel = new EquipmentLevel(level, difficulty);
-
-            Equipment equipment = null;
-                equipment = Equipments.getEquipmentInstanceById(uid);
-                equipment.setEquipmentLevel(equipmentLevel);
-
+            Equipment equipment = Equipment.EMPTY;
+            equipment.load((CompoundTag) nbt.get(str));
             this.equipments.set(i, equipment);
         }
     }

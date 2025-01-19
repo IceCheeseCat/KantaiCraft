@@ -16,20 +16,17 @@ import java.util.List;
 public class EquipmentProvider implements ICapabilitySerializable<CompoundTag> {
 
     public static final Capability<EquipmentHandler> EQUIPMENT_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
-
     private EquipmentHandler equipmentHandler = null;
     private final LazyOptional<EquipmentHandler> lazyEquipmentHandler = LazyOptional.of(this::getEquipmentHandler);
     private final int slotSize;
-    private final Equipment defaultEquipment;
 
-    public EquipmentProvider(int slotSize, Equipment defaultEquipment) {
+    public EquipmentProvider(int slotSize) {
         this.slotSize = slotSize;
-        this.defaultEquipment = defaultEquipment;
     }
 
     private EquipmentHandler getEquipmentHandler() {
         if (this.equipmentHandler == null) {
-            this.equipmentHandler = new EquipmentHandler(this.slotSize, this.defaultEquipment);
+            this.equipmentHandler = new EquipmentHandler(this.slotSize);
         }
 
         return this.equipmentHandler;

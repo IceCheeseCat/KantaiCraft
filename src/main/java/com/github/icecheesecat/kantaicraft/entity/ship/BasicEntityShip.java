@@ -41,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public abstract class BasicEntityShip extends PathfinderMob implements MenuProvider, IStatsGrowth, IFaction<BasicEntityShip>, IPhysicalEntity, ISlotCheckerEntity, IShipClass {
+public abstract class BasicEntityShip extends PathfinderMob implements MenuProvider, IStatsGrowth, IFaction<BasicEntityShip>, IPhysicalEntity, ISlotCheckerEntity, IShipClass, IEquipmentSelector {
 
     /**
      * ship attributes: hp, def, atk, ...

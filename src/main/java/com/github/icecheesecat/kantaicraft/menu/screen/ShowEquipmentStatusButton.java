@@ -14,7 +14,7 @@ public class ShowEquipmentStatusButton extends Button {
         super(p_259075_, p_259271_, p_260232_, p_260028_, p_259351_, onPress, p_259552_);
 
         this.equipment = equipment;
-        String str = String.format("%s\nLv: %s\n", equipment.getName(), equipment.getEquipmentLevel().getLevel());
+        String str = String.format("%s\nLv: %s\n", equipment.getName(), equipment.getLevel());
         setTooltip(Tooltip.create(Component.translatable(str)));
     }
 

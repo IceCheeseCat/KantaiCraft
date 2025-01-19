@@ -18,7 +18,7 @@ public class EquipmentScreen extends Screen {
     private int top;
     private int widgetGap = 10;
 
-    List<EquipmentWidget> equipmentWidgets = new ArrayList<>();
+    public List<EquipmentWidget> equipmentWidgets = new ArrayList<>();
 
     protected EquipmentScreen(Component pTitle, BasicEntityShip ship) {
         super(pTitle);
@@ -28,7 +28,7 @@ public class EquipmentScreen extends Screen {
         ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
                 handler -> {
                     for (int i = 0; i < handler.getSlotSize(); i++) {
-                        this.equipmentWidgets.add(new EquipmentWidget(this.left, this.top + (EquipmentWidget.sizeY + widgetGap) * i, ship, handler.getEquipment(i)));
+                        this.equipmentWidgets.add(new EquipmentWidget(this.left, this.top + (EquipmentWidget.sizeY + widgetGap) * i, ship, handler.getEquipment(i), i));
                     }
                 }
         );
@@ -51,4 +51,5 @@ public class EquipmentScreen extends Screen {
     public void addRenderableWidget(AbstractWidget widget) {
         super.addRenderableWidget(widget);
     }
+
 }

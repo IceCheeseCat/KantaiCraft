@@ -39,7 +39,7 @@ public class ServerEvent {
     public static void onAttachingCapability(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof BasicEntityShip ship) {
             if (!ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).isPresent()) {
-                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "properties"), new EquipmentProvider(4, ship.getShipClass().getDefaultEquipment()));
+                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "properties"), new EquipmentProvider(4));
             }
         }
     }

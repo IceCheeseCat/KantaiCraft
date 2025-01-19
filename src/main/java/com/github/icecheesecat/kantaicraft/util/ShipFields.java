@@ -11,20 +11,6 @@ public class ShipFields {
         public static ShipClass getEnum(int i) {
             return values()[i];
         }
-
-        public Equipment getDefaultEquipment() {
-            switch (this) {
-                case DESTROYER -> {
-                    return Equipments.EMPTY_DESTROYER;
-                }
-                case CARRIER -> {
-                    return Equipments.EMPTY_CARRIER;
-                }
-                default -> {
-                    return null;
-                }
-            }
-        }
     }
 
     public enum ShipName {

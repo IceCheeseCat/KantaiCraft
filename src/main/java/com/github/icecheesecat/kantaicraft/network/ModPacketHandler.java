@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.network;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.network.packet.DoEquipmentLevelUpPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncShipC2SPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncShipS2CPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
@@ -28,14 +29,6 @@ public class ModPacketHandler {
                 TrajectoryPacket::clientHandle
         );
 
-//        INSTANCE.registerMessage(
-//                id++,
-//                EquipmentS2CPacket.class,
-//                EquipmentS2CPacket::encode,
-//                EquipmentS2CPacket::decode,
-//                EquipmentS2CPacket::handle
-//        );
-
         INSTANCE.registerMessage(
                 id++,
                 SyncShipC2SPacket.class,
@@ -51,6 +44,14 @@ public class ModPacketHandler {
                 SyncShipS2CPacket::encode,
                 SyncShipS2CPacket::decode,
                 SyncShipS2CPacket::clientHandle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                DoEquipmentLevelUpPacket.class,
+                DoEquipmentLevelUpPacket::encode,
+                DoEquipmentLevelUpPacket::decode,
+                DoEquipmentLevelUpPacket::handle
         );
     }
 }

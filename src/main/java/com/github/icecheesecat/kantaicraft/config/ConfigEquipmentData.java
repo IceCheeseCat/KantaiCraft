@@ -1,5 +1,6 @@
 package com.github.icecheesecat.kantaicraft.config;
 
+import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import com.google.common.collect.ImmutableList;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -22,17 +23,17 @@ public class ConfigEquipmentData {
 //                                ImmutableList.of(Equipments.__12cm_single_gun_mount__.getUid()),
 //                                Equipments.ALL_EQUIPMENTS_MAP::containsKey);
 
-        EQUIPMENT_TREE_CONFIG.put(Equipments.EMPTY_DESTROYER.getUid(),
+        EQUIPMENT_TREE_CONFIG.put(Equipment.EMPTY.getId(),
                 BUILDER.comment("Default destroyer equipment options")
                         .defineList("default_destroyer_equipment_options",
-                                ImmutableList.of(Equipments.__12cm_single_gun_mount__.getUid()),
+                                ImmutableList.of(Equipments.__12cm_single_gun_mount__.getId()),
                                 Equipments.ALL_EQUIPMENTS_MAP::containsKey));
-        EQUIPMENT_TREE_CONFIG.put(Equipments.__12cm_single_gun_mount__.getUid(),
+        EQUIPMENT_TREE_CONFIG.put(Equipments.__12cm_single_gun_mount__.getId(),
                 BUILDER.comment("12 cm single gun mount")
                         .defineList("12cm_single_gun_mount",
                                 ImmutableList.of(
-                                        Equipments.__12cm_twin_gun_mount__.getUid(),
-                                        Equipments.__12cm_twin_gun_mount_model_B_kai_2__.getUid()),
+                                        Equipments.__12cm_twin_gun_mount__.getId(),
+                                        Equipments.__12cm_twin_gun_mount_model_B_kai_2__.getId()),
                                 Equipments.ALL_EQUIPMENTS_MAP::containsKey));
 
         SPEC = BUILDER.build();

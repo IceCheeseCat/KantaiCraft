@@ -4,6 +4,8 @@ package com.github.icecheesecat.kantaicraft.event;
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.client.model.ModelDestroyerRo;
 import com.github.icecheesecat.kantaicraft.client.renderer.RendererDestroyerRo;
+import com.github.icecheesecat.kantaicraft.menu.screen.EquipmentScreen;
+import com.github.icecheesecat.kantaicraft.menu.screen.WidgetState;
 import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import com.github.icecheesecat.kantaicraft.registries.ModMenus;
 import com.github.icecheesecat.kantaicraft.menu.screen.ShipScreen;
@@ -37,6 +39,19 @@ public class ClientEvent {
             if (level == null) return;
             if (Minecraft.getInstance().isPaused()) return;
         }
+
+//        @SubscribeEvent
+//        public static void renderTickEvent(TickEvent.RenderTickEvent event) {
+//            if (event.phase == TickEvent.Phase.END) {
+//                if (Minecraft.getInstance().screen instanceof EquipmentScreen equipmentScreen) {
+//                    equipmentScreen.equipmentWidgets.forEach(equipmentWidget -> {
+//                        if (equipmentWidget.state != WidgetState.SELECTING) {
+//                            equipmentWidget.getChildrenWidget().clear();
+//                        }
+//                    });
+//                }
+//            }
+//        }
     }
 
 

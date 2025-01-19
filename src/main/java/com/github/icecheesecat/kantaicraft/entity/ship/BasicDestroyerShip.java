@@ -1,6 +1,9 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
+import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.util.ShipFields;
 import net.minecraft.world.entity.EntityType;
@@ -8,6 +11,8 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 public abstract class BasicDestroyerShip extends BasicCannonShip {
 
@@ -29,11 +34,6 @@ public abstract class BasicDestroyerShip extends BasicCannonShip {
         return DESTROYER_GROWTH;
     }
 
-//    @Override
-//    protected void defineSynchedData() {
-//        super.defineSynchedData();
-//    }
-
     @Override
     public float getAmmoCost() {
         return 1.0f;
@@ -42,5 +42,12 @@ public abstract class BasicDestroyerShip extends BasicCannonShip {
     @Override
     public ShipFields.ShipClass getShipClass() {
         return ShipFields.ShipClass.DESTROYER;
+    }
+
+    @Override
+    public List<Equipment> evaluateEquipments(List<Equipment> equipments) {
+        return equipments.stream().filter(equipment ->
+            equipment.getType() == EquipmentType.CANNON && equipment.getStat(EquipmentStatType.CANNON_SIZE) == 0
+        ).toList();
     }
 }

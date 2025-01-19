@@ -1,10 +1,10 @@
 package com.github.icecheesecat.kantaicraft.network.packet;
 
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentProvider;
+import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import com.github.icecheesecat.kantaicraft.registries.ModEquipment;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentLevel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -42,9 +42,8 @@ public class SyncShipS2CPacket {
             case EQUIPMENT -> {
                 Equipment equipment = (Equipment) packet.value;
                 buf.writeInt(packet.index);
-                buf.writeInt(equipment.getEquipmentLevel().getLevel());
-                buf.writeFloat(equipment.getEquipmentLevel().getDifficulty());
-                buf.writeInt(equipment.getUid());
+                buf.writeInt(equipment.getId());
+                buf.writeInt(equipment.getLevel());
             }
         }
 
@@ -60,12 +59,12 @@ public class SyncShipS2CPacket {
             }
             case EQUIPMENT -> {
                 int index = buf.readInt();
-                EquipmentLevel level = new EquipmentLevel(buf.readInt(), buf.readFloat());
-                int uid = buf.readInt();
+                int id = buf.readInt();
+                int level = buf.readInt();
+                Equipment n_equipment = Equipments.getEquipmentInstanceById(id);
+                n_equipment.setLevel(level);
 
-                Equipment equipment = ModEquipment.storage.get(uid).get();
-                equipment.setEquipmentLevel(level);
-                return new SyncShipS2CPacket(syncType, entityId, equipment, index);
+                return new SyncShipS2CPacket(syncType, entityId, n_equipment, index);
             }
             default -> {
                 return null;

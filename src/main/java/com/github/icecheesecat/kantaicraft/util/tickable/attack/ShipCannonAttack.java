@@ -1,12 +1,12 @@
 package com.github.icecheesecat.kantaicraft.util.tickable.attack;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
 import com.github.icecheesecat.kantaicraft.util.Trajectory;
-import com.github.icecheesecat.kantaicraft.equipment.cannon.Cannon;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.EntityHitResult;
@@ -19,10 +19,10 @@ import java.util.List;
 
 public class ShipCannonAttack extends ShipRangeAttack {
 
-    Cannon cannon;
+    Equipment cannon;
     List<Trajectory> trajectories = new ArrayList<>();
 
-    public ShipCannonAttack(BasicEntityShip ship, Cannon cannon) {
+    public ShipCannonAttack(BasicEntityShip ship, Equipment cannon) {
         super(ship);
         this.cannon = cannon;
     }
