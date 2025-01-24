@@ -1,12 +1,12 @@
-package com.github.icecheesecat.kantaicraft.equipment;
+package com.github.icecheesecat.kantaicraft.menu.screen;
 
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentData;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.menu.screen.SelectionWidget;
-import com.github.icecheesecat.kantaicraft.menu.screen.WidgetState;
+import com.github.icecheesecat.kantaicraft.equipment.Equipment;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentResourceLocation;
+import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.DoEquipmentLevelUpPacket;
-import com.github.icecheesecat.kantaicraft.network.packet.SyncShipC2SPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
@@ -16,7 +16,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
-import org.jline.reader.Widget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +28,13 @@ public class EquipmentWidget extends AbstractWidget {
     private static final int BACKGROUND_COLOR = FastColor.ARGB32.color(255, 0, 166, 199);
     public static final int sizeX = 32;
     public static final int sizeY = 32;
-    private static final int width = 100;
+    private static final int width = 200;
     private static final int height = 32;
     private final int imageStartX;
     private final int imageStartY;
     private final int nameStartX;
     private final int textCenterY;
+    private final int levelTextStartX;
     private static final int CHILD_OFFSET_X = 120;
     private static final int CHILD_OFFSET_Y = height;
     public WidgetState state;
@@ -42,9 +42,10 @@ public class EquipmentWidget extends AbstractWidget {
 
     public EquipmentWidget(int pX, int pY, BasicEntityShip ship, Equipment equipment, int index) {
         super(pX, pY, width, height, Component.empty());
-        this.imageStartX = this.getX() + 10;
+        this.imageStartX = this.getX() + 30;
         this.imageStartY = this.getY();
-        this.nameStartX = this.getX() + 20;
+        this.nameStartX = this.getX() + 60;
+        this.levelTextStartX = this.getX() + 10;
         this.textCenterY = this.getY() + height / 2;
         this.ship = ship;
         this.equipment = equipment;
@@ -82,7 +83,7 @@ public class EquipmentWidget extends AbstractWidget {
                 // handled in mouseClicked method
             }
             case LEVEL_UP_EQUIPMENT -> {
-                ModPacketHandler.INSTANCE.sendToServer(new DoEquipmentLevelUpPacket(this.ship.getId(), (byte) this.index));
+                ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.LEVEL_UP_EQUIPMENT, this.ship.getId(), 1, (byte) this.index));
             }
             case UPGRADE_EQUIPMENT -> {
                 this.upgradeEquipmentCase();
@@ -100,17 +101,16 @@ public class EquipmentWidget extends AbstractWidget {
                 }
             }
 
-            if (!flag) {
-                this.childrenWidget.clear();
-            }
+            this.childrenWidget.clear();
         }
 
+        this.evaluateState();
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
     private void emptyEquipmentCase() {
         var list = ConfigEquipmentData.getEquipmentById(this.equipment.getId());
-        List<Equipment> el = list.stream().map(Equipments::getEquipmentInstanceById).toList();
+        List<Equipment> el = list.stream().map((id) -> Equipments.getEquipmentInstanceById(id, 0)).toList();
         el = this.ship.evaluateEquipments(el);
         for (int i = 0; i < el.size(); i++) {
             var widget = new SelectionWidget(this.getX() + CHILD_OFFSET_X, this.getY() + CHILD_OFFSET_Y, el.get(i), this.ship, this.index);
@@ -123,7 +123,7 @@ public class EquipmentWidget extends AbstractWidget {
 
     private void upgradeEquipmentCase() {
         var list = ConfigEquipmentData.getEquipmentById(this.equipment.getId());
-        List<Equipment> el = list.stream().map(Equipments::getEquipmentInstanceById).toList();
+        List<Equipment> el = list.stream().map(id -> Equipments.getEquipmentInstanceById(id, 0)).toList();
         el = this.ship.evaluateEquipments(el);
         for (int i = 0; i < el.size(); i++) {
             this.childrenWidget.add(new SelectionWidget(this.getX() + CHILD_OFFSET_X, this.getY() + CHILD_OFFSET_Y, el.get(i), this.ship, this.index));
@@ -139,7 +139,7 @@ public class EquipmentWidget extends AbstractWidget {
         }
         int equipmentLevel = this.equipment.getLevel();
 
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(equipmentLevel), this.getX() + 2, this.getY() + textCenterY, WHITE);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(equipmentLevel), levelTextStartX, textCenterY, WHITE);
     }
 
     protected void renderEquipmentIcon(GuiGraphics guiGraphics) {
@@ -172,6 +172,10 @@ public class EquipmentWidget extends AbstractWidget {
         else {
             this.state = WidgetState.LEVEL_UP_EQUIPMENT;
         }
+    }
+
+    public void setEquipment(Equipment equipment) {
+        this.equipment = equipment;
     }
 
 }

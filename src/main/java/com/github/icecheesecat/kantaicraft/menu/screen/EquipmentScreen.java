@@ -1,8 +1,7 @@
 package com.github.icecheesecat.kantaicraft.menu.screen;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentProvider;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentWidget;
+import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
@@ -17,6 +16,7 @@ public class EquipmentScreen extends Screen {
     private int left;
     private int top;
     private int widgetGap = 10;
+    BasicEntityShip ship;
 
     public List<EquipmentWidget> equipmentWidgets = new ArrayList<>();
 
@@ -24,13 +24,13 @@ public class EquipmentScreen extends Screen {
         super(pTitle);
         this.left = this.width / 90;
         this.top = this.height / 90;
+        this.ship = ship;
 
         ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
                 handler -> {
                     for (int i = 0; i < handler.getSlotSize(); i++) {
                         this.equipmentWidgets.add(new EquipmentWidget(this.left, this.top + (EquipmentWidget.sizeY + widgetGap) * i, ship, handler.getEquipment(i), i));
                     }
-                    System.out.println();
                 }
         );
 
@@ -42,6 +42,17 @@ public class EquipmentScreen extends Screen {
     @Override
     public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+    }
+
+    @Override
+    public void tick() {
+        this.ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
+                handler -> {
+                    for (int i = 0; i < handler.getSlotSize(); i++) {
+                        equipmentWidgets.get(i).setEquipment(handler.getEquipment(i));
+                    }
+                }
+        );
     }
 
     @Override
