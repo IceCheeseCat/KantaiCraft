@@ -1,16 +1,11 @@
-package com.github.icecheesecat.kantaicraft.equipment;
+package com.github.icecheesecat.kantaicraft.capability;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.ISlotCheckerEntity;
-import com.github.icecheesecat.kantaicraft.util.ShipFields;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 @AutoRegisterCapability
 public class EquipmentProvider implements ICapabilitySerializable<CompoundTag> {

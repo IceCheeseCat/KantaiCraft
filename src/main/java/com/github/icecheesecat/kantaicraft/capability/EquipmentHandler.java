@@ -1,17 +1,11 @@
-package com.github.icecheesecat.kantaicraft.equipment;
+package com.github.icecheesecat.kantaicraft.capability;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.ISlotCheckerEntity;
-import com.github.icecheesecat.kantaicraft.util.ShipFields;
-import net.minecraft.core.Direction;
+import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class EquipmentHandler implements INBTSerializable<CompoundTag> {
@@ -30,14 +24,10 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
         return slotCheckerEntity.get(i).contains(equipment.getType());
     }
 
-    public ResourceRefund applyAndRefund(int i, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
+    public void setEquipment(int i, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
         if (canApplyAtSlot(i, equipment, slotCheckerEntity)) {
             Equipment r = this.equipments.set(i, equipment);
             this.dirty.set(i, true);
-            return ResourceRefund.get(r.getId());
-        }
-        else {
-            return ResourceRefund.EMPTY;
         }
     }
 
@@ -77,8 +67,8 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
         for (int i = 0; i < this.slotSize; i++) {
             String str = "equipmenthandler.equipment." + i;
             Equipment equipment = Equipment.EMPTY;
-            equipment.load((CompoundTag) nbt.get(str));
-            this.equipments.set(i, equipment);
+
+            this.equipments.set(i, equipment.load((CompoundTag) nbt.get(str)));
         }
     }
 

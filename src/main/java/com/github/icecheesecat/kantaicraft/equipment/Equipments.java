@@ -38,10 +38,12 @@ public class Equipments {
         ALL_EQUIPMENTS_MAP.put(__12cm_twin_gun_mount_model_B_kai_2__.getId(), __12cm_twin_gun_mount_model_B_kai_2__);
     }
 
-    public static Equipment getEquipmentInstanceById(int uid) {
+    public static Equipment getEquipmentInstanceById(int uid, int level) {
         Equipment equipment = ALL_EQUIPMENTS_MAP.getOrDefault(uid, null);
         if (equipment != null) {
-            return equipment.asCopy();
+            Equipment e = equipment.asCopy();
+            e.setLevel(level);
+            return e;
         }
         else {
             System.err.println("Equipments does not contain key = " + uid);

@@ -90,7 +90,7 @@ public class Equipment {
         return nbt;
     }
 
-    public void load(CompoundTag nbt) {
+    public Equipment load(CompoundTag nbt) {
 //        int[] statTypes = nbt.getIntArray("equipment.stattypes");
 //        for (int i: statTypes) {
 //            EquipmentStatType type = EquipmentStatType.get(i);
@@ -98,5 +98,6 @@ public class Equipment {
 //        }
         this.id = nbt.getInt("equipment.id");
         this.level = nbt.getInt("equipment.level");
+        return Equipments.getEquipmentInstanceById(this.id, this.level);
     }
 }
