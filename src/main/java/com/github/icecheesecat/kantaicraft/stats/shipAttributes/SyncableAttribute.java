@@ -2,9 +2,9 @@ package com.github.icecheesecat.kantaicraft.stats.shipAttributes;
 
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
-public class ShipAttribute extends Attribute {
+public class SyncableAttribute extends Attribute {
 
-    public ShipAttribute(String name, double defaultValue) {
+    public SyncableAttribute(String name, double defaultValue) {
         super(name, defaultValue);
         this.setSyncable(true);
     }
