@@ -1,15 +1,13 @@
 package com.github.icecheesecat.kantaicraft.brain.ship;
 
-import com.github.icecheesecat.kantaicraft.brain.ship.behavior.CannonAttack;
-import com.github.icecheesecat.kantaicraft.brain.ship.behavior.SoutBurnOut;
-import com.github.icecheesecat.kantaicraft.brain.ship.behavior.TickAndUpdateEquipmentActionHandler;
+import com.github.icecheesecat.kantaicraft.brain.ship.behavior.*;
 import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
-import com.github.icecheesecat.kantaicraft.brain.ship.behavior.BurnFuel;
 import com.github.icecheesecat.kantaicraft.registries.ModSensor;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.kinds.App;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -17,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.*;
 import net.minecraft.world.entity.ai.behavior.declarative.BehaviorBuilder;
+import net.minecraft.world.entity.ai.behavior.declarative.Trigger;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.sensing.Sensor;
@@ -25,6 +24,8 @@ import net.minecraft.world.entity.schedule.Activity;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class CannonShipBrain {
 
@@ -55,17 +56,18 @@ public class CannonShipBrain {
                 MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
                 MemoryModuleType.PATH,
                 MemoryModuleType.ATTACK_TARGET,
-                MemoryModuleType.ATTACK_COOLING_DOWN);
+                MemoryModuleType.ATTACK_COOLING_DOWN,
+                ModMemoryModuleType.KILLED_ENTITY_DROPS.get());
     }
 
-    public static Brain<BasicCannonShip> makeBrain(BasicCannonShip destroyerShip, Dynamic<?> dyn) {
+    public static Brain<BasicCannonShip> makeBrain(BasicCannonShip basicCannonShip, Dynamic<?> dyn) {
 
         Brain.Provider<BasicCannonShip> brainProvider = Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
         Brain<BasicCannonShip> brain = brainProvider.makeBrain(dyn);
-        initCoreActivity(destroyerShip, brain);
-        initGuardActivity(destroyerShip, brain);
-        initBurnOutActivity(destroyerShip, brain);
-        initIdleActivity(destroyerShip, brain);
+        initCoreActivity(basicCannonShip, brain);
+        initGuardActivity(basicCannonShip, brain);
+        initBurnOutActivity(basicCannonShip, brain);
+        initIdleActivity(basicCannonShip, brain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
         brain.setDefaultActivity(Activity.CORE);
         brain.useDefaultActivity();
@@ -73,17 +75,19 @@ public class CannonShipBrain {
         return brain;
     }
 
-    private static void initCoreActivity(BasicCannonShip destroyerShip, Brain<BasicCannonShip> brain) {
+    private static void initCoreActivity(BasicCannonShip basicCannonShip, Brain<BasicCannonShip> brain) {
         brain.addActivity(Activity.CORE, 0,
                 ImmutableList.of(
                     new BurnFuel(),
                     new TickAndUpdateEquipmentActionHandler(),
                     new LookAtTargetSink(45, 90),
-                    new MoveToTargetSink()
+                    new MoveToTargetSink(),
+                    new StayCloseToOwner(5269, 1.0d),
+                    new PickUpKilledMobDrops()
                 ));
     }
 
-    private static void initIdleActivity(BasicCannonShip destroyerShip, Brain<BasicCannonShip> brain) {
+    private static void initIdleActivity(BasicCannonShip basicCannonShip, Brain<BasicCannonShip> brain) {
         brain.addActivity(Activity.IDLE, 10,
                 ImmutableList.of(
                         SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60)),
@@ -94,7 +98,7 @@ public class CannonShipBrain {
                 ));
     }
 
-    private static void initBurnOutActivity(BasicCannonShip destroyerShip, Brain<BasicCannonShip> brain) {
+    private static void initBurnOutActivity(BasicCannonShip basicCannonShip, Brain<BasicCannonShip> brain) {
         brain.addActivityWithConditions(ModActitvity.BURN_OUT_FUELS.get(),
                 ImmutableList.of(
                         Pair.of(0, new SoutBurnOut())
@@ -103,28 +107,43 @@ public class CannonShipBrain {
         );
     }
 
-    private static void initGuardActivity(BasicCannonShip destroyerShip, Brain<BasicCannonShip> brain) {
+    private static void initGuardActivity(BasicCannonShip basicCannonShip, Brain<BasicCannonShip> brain) {
         brain.addActivityWithConditions(ModActitvity.GUARD.get(),
                 ImmutableList.of(
                         Pair.of(0, StartAttacking.create(CannonShipBrain::findNearestValidAttackTarget)),
                         Pair.of(1, new CannonAttack()),
-                        Pair.of(2, BehaviorBuilder.triggerIf(CannonShipBrain::shipCanMelee, MeleeAttack.create(40))),
-                        Pair.of(2, SetWalkTargetFromAttackTargetIfTargetOutOfReach.create(1.0F)),
-                        Pair.of(5, StopAttackingIfTargetInvalid.create())),
+                        Pair.of(2, BehaviorBuilder.triggerIf(CannonShipBrain::shipCanMelee, MeleeAttack.create(15))),
+                        Pair.of(2, SetWalkTargetFromAttackTargetIfTargetOutOfReach.create(1.0f)),
+                        Pair.of(5, StopAttackingIfTargetInvalid.create()),
+                        Pair.of(10,
+                            new RunOne<>(ImmutableList.of(
+                                Pair.of(RandomStroll.stroll(0.4F), 2),
+                                Pair.of(SetWalkTargetFromLookTarget.create(0.4F, 3), 2),
+                                Pair.of(new DoNothing(30, 60), 1)))),
+                        Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60)))
+                ),
                 ImmutableSet.of(Pair.of(ModMemoryModuleType.IS_GUARDING.get(), MemoryStatus.VALUE_PRESENT))
         );
     }
 
-    private static Optional<? extends LivingEntity> findNearestValidAttackTarget(BasicCannonShip destroyerShip) {
+    private static Optional<? extends LivingEntity> findNearestValidAttackTarget(BasicCannonShip cannonShip) {
 
-        Optional<List<LivingEntity>> l = destroyerShip.getBrain().getMemory(ModMemoryModuleType.NEARBY_MONSTERS.get());
+        Optional<List<LivingEntity>> l = cannonShip.getBrain().getMemory(ModMemoryModuleType.NEARBY_MONSTERS.get());
         if (l.isPresent()) {
-            return Optional.of(l.get().get(0));
+            for (var le: l.get()) {
+                if (cannonShip.hasLineOfSight(le)) {
+                    return Optional.of(le);
+                }
+            }
         }
 
-        Optional<List<LivingEntity>> ships = destroyerShip.getBrain().getMemory(ModMemoryModuleType.NEARBY_DIFFERENT_FACTION_SHIPS.get());
+        Optional<List<LivingEntity>> ships = cannonShip.getBrain().getMemory(ModMemoryModuleType.NEARBY_DIFFERENT_FACTION_SHIPS.get());
         if (ships.isPresent()) {
-            return Optional.of(ships.get().get(0));
+            for (var le: ships.get()) {
+                if (cannonShip.hasLineOfSight(le)) {
+                    return Optional.of(le);
+                }
+            }
         }
 
         return Optional.empty();
@@ -134,6 +153,5 @@ public class CannonShipBrain {
     private static boolean shipCanMelee(BasicCannonShip ship) {
         return !ship.hasEnoughAmmo() && ship.canMelee();
     }
-
 
 }
