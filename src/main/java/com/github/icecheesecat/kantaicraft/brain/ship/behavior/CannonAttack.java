@@ -32,7 +32,9 @@ public class CannonAttack extends Behavior<BasicCannonShip> {
         Optional<LivingEntity> target = pEntity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET);
         if (target.isPresent()) {
             this.attack.checkAndPerformCannon(target.get());
+
             pEntity.getBrain().setMemoryWithExpiry(ModMemoryModuleType.ROUND_ROBIN_COOLDOWN.get(), Unit.INSTANCE, 10L);
+            pEntity.useAmmo(); // consume ammo
         }
         else {
             System.err.println(pEntity.toString() + " error: target is not present!");
@@ -54,8 +56,6 @@ public class CannonAttack extends Behavior<BasicCannonShip> {
         if (!basicCannonShip.hasEnoughAmmo()) {
             return false;
         }
-        basicCannonShip.useAmmo(); // consume ammo
-
 
         if (basicCannonShip.getCannonFireMode() == CannonFireMode.ROUND_ROBIN) {
             if (basicCannonShip.getBrain().hasMemoryValue(ModMemoryModuleType.ROUND_ROBIN_COOLDOWN.get())) {
@@ -66,14 +66,9 @@ public class CannonAttack extends Behavior<BasicCannonShip> {
         var opHandler = basicCannonShip.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get());
         if (opHandler.isPresent()) {
             EquipmentActionHandler handler = opHandler.get();
-            var actions = handler.getActionsByWeaponTypeAndNotInCooldown(EquipmentType.CANNON);
-            if (!actions.isEmpty()) {
-                this.attack = (ShipCannonAttack) actions.get(0);
-                return true;
-            }
-            else {
-                return false;
-            }
+            this.attack = (ShipCannonAttack) handler.getActionsByWeaponTypeAndNotInCooldown(EquipmentType.CANNON);
+
+            return this.attack != null;
         }
 
         return false;
