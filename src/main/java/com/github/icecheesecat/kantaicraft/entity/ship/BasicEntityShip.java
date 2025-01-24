@@ -8,8 +8,8 @@ import com.github.icecheesecat.kantaicraft.entity.IPhysicalEntity;
 import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
 import com.github.icecheesecat.kantaicraft.stats.shipAttributes.IStatsGrowth;
-import com.github.icecheesecat.kantaicraft.util.*;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -21,27 +21,32 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.*;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public abstract class BasicEntityShip extends PathfinderMob implements MenuProvider, IStatsGrowth, IFaction<BasicEntityShip>, IPhysicalEntity, ISlotCheckerEntity, IShipClass, IEquipmentSelector {
+public abstract class BasicEntityShip extends PathfinderMob implements MenuProvider, IStatsGrowth, IFaction<BasicEntityShip>, IPhysicalEntity, ISlotCheckerEntity, IShipField, IEquipmentSelector {
 
     /**
      * ship attributes: hp, def, atk, ...
@@ -53,8 +58,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     private static final EntityDataAccessor<Boolean> DATA_IS_GUARDING = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_CAN_MELEE = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.BOOLEAN);
 
-    private ShipFields.ShipName shipName;
-
     private boolean canPickUpItem = false;
     private UUID owner;
     protected boolean debugMode = false;
@@ -65,42 +68,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.setAircraft((int) this.getAttributeValue(ModShipAttributes.AIRCRAFT.get()));
         this.setFuel((float) this.getAttributeValue(ModShipAttributes.FUEL.get()));
         this.setAmmo((float) this.getAttributeValue(ModShipAttributes.AMMO.get()));
-    }
-
-    @Override
-    public void checkDespawn() {
-        // IMPORTANT
-        if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
-            Entity entity = this.level().getNearestPlayer(this, -1.0D);
-            Event.Result result = ForgeEventFactory.canEntityDespawn(this, (ServerLevel) this.level());
-            if (result == Event.Result.DENY) {
-                noActionTime = 0;
-                entity = null;
-            } else if (result == Event.Result.ALLOW) {
-                this.discard();
-                entity = null;
-            }
-            if (entity != null) {
-                double d0 = entity.distanceToSqr(this);
-                int i = this.getType().getCategory().getDespawnDistance();
-                int j = i * i;
-                if (d0 > (double)j && this.removeWhenFarAway(d0)) {
-                    this.discard();
-                }
-
-                int k = this.getType().getCategory().getNoDespawnDistance();
-                int l = k * k;
-                if (this.noActionTime > 600 && this.random.nextInt(800) == 0 && d0 > (double)l && this.removeWhenFarAway(d0)) {
-                    this.discard();
-                } else if (d0 < (double)l) {
-                    this.noActionTime = 0;
-                }
-            }
-
-        } else {
-            this.noActionTime = 0;
-        }
-
     }
 
     @Override
@@ -189,11 +156,9 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         if (nbt.contains("basicentityship.canmelee")) {
             this.entityData.set(DATA_CAN_MELEE, nbt.getBoolean("basicentityship.canmelee"));
         }
-
         if (nbt.contains("basicentityship.canpickupitem")) {
             this.canPickUpItem = nbt.getBoolean("basicentityship.canpickupitem");
         }
-
         if (nbt.contains("basicentityship.data_aircraft")) {
             this.entityData.set(DATA_AIRCRAFT, nbt.getInt("basicentityship.data_aircraft"));
         }
@@ -203,14 +168,14 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         if (nbt.contains("basicentityship.data_ammo")) {
             this.entityData.set(DATA_AMMO, nbt.getFloat("basicentityship.data_ammo"));
         }
-        if (nbt.contains("basicentityship.ship_name")) {
-            this.shipName = ShipFields.ShipName.getEnum(nbt.getInt("basicentityship.ship_name"));
-        }
         if (nbt.contains("basicentityship.owner")) {
             this.owner = nbt.getUUID("basicentityship.owner");
         }
         if (nbt.contains("basicentityship.isguarding")) {
             this.entityData.set(DATA_IS_GUARDING, nbt.getBoolean("basicentityship.isguarding"));
+        }
+        if (nbt.contains("basicentityship.inventory")) {
+            this.inventory.deserializeNBT((CompoundTag) nbt.get("basicentityship.inventory"));
         }
 
     }
@@ -218,31 +183,52 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
-        super.addAdditionalSaveData(nbt);
 
         nbt.putBoolean("basicentityship.canmelee", this.entityData.get(DATA_CAN_MELEE));
         nbt.putBoolean("basicentityship.canpickupitem", this.canPickUpItem);
         nbt.putInt("basicentityship.data_aircraft", this.entityData.get(DATA_AIRCRAFT));
         nbt.putFloat("basicentityship.data_fuel", this.entityData.get(DATA_FUEL));
         nbt.putFloat("basicentityship.data_ammo", this.entityData.get(DATA_AMMO));
-        nbt.putInt("basicentityship.ship_name", this.shipName.ordinal());
         nbt.putUUID("basicentityship.owner", this.owner);
         nbt.putBoolean("basicentityship.isguarding", this.entityData.get(DATA_IS_GUARDING));
         nbt.putBoolean("basicentityship.canmelee", this.entityData.get(DATA_IS_GUARDING));
+        nbt.put("basicentityship.inventory", this.inventory.serializeNBT());
+
     }
+
+
 
     @Override
     public void tick() {
         super.tick();
         if (level().isClientSide) return;
-        if (level().getGameTime() % 20 == 0)
-            System.out.println(this.isGuarding());
+        if (level().getGameTime() % 20 != 0) return;
+        this.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(
+                handler -> {
+                    for (int i = 0; i < handler.getSlots(); i++) {
+                        ItemStack stack = handler.getStackInSlot(i);
+                        System.out.println(stack);
+                    }
+                    System.out.println();
+
+                }
+        );
+
+        this.brain.getMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get()).ifPresent(
+                itemStacks -> {
+                    System.out.println(itemStacks);
+                }
+        );
+
+        System.out.println(this.getNavigation().getPath());
     }
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
         return new ShipMenu(containerId, inventory, this);
     }
+
+
 
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
@@ -258,14 +244,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         }
 
         return InteractionResult.PASS;
-    }
-
-    public ShipFields.ShipName getShipName() {
-        return shipName;
-    }
-
-    public void setShipName(ShipFields.ShipName shipName) {
-        this.shipName = shipName;
     }
 
     public boolean isCanPickUpItem() {
@@ -353,4 +331,72 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     public void setDebugMode(boolean debugMode) {
         this.debugMode = debugMode;
     }
+
+    public void shipPickUpItem(ItemEntity itemEntity) {
+
+        this.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(
+                handler -> {
+                    ItemStack itemStack = itemEntity.getItem();
+                    for (int i = 0; i < handler.getSlots(); i++) {
+                        if (handler.isItemValid(i, itemStack)) {
+                            itemStack = handler.insertItem(i, itemStack, false);
+                            itemEntity.setItem(itemStack);
+                        }
+                        if (itemStack.isEmpty()) {
+                            break;
+                        }
+                    }
+                }
+        );
+
+    }
+
+    public boolean shipCanPickUp(ItemEntity itemEntity) {
+        ItemStack stack = itemEntity.getItem().copy();
+        for (int i = 0; i < this.inventory.getSlots(); i++) {
+            stack = this.inventory.insertItem(i, stack, true);
+            if (stack.isEmpty()) break;
+        }
+
+        if (stack.isEmpty()) return true;
+        return false;
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.getCapabilities().invalidate();
+    }
+
+    ItemStackHandler inventory = new ItemStackHandler((int) this.getAttributeValue(ModShipAttributes.SLOT_SIZE.get()));
+    ItemStackHandler simulateInventory = new ItemStackHandler((int) this.getAttributeValue(ModShipAttributes.SLOT_SIZE.get()));
+    LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> inventory);
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return lazyItemHandler.cast();
+        }
+
+        return super.getCapability(capability, facing);
+    }
+
+    public IItemHandler getShipInventory() {
+        if (this.level().isClientSide) return null;
+        return this.inventory;
+    }
+
+    @Override
+    protected void dropCustomDeathLoot(DamageSource pSource, int pLooting, boolean pRecentlyHit) {
+        super.dropCustomDeathLoot(pSource, pLooting, pRecentlyHit);
+        for (int i = 0; i < this.inventory.getSlots(); i++) {
+            ItemStack stack = this.inventory.extractItem(i, this.inventory.getSlotLimit(i), false);
+            if (stack.isEmpty()) continue;
+            ItemEntity itemEntity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), stack);
+            level().addFreshEntity(itemEntity);
+        }
+    }
+
+
+
 }

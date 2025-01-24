@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
+import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
@@ -50,4 +50,5 @@ public abstract class BasicDestroyerShip extends BasicCannonShip {
             equipment.getType() == EquipmentType.CANNON && equipment.getStat(EquipmentStatType.CANNON_SIZE) == 0
         ).toList();
     }
+
 }

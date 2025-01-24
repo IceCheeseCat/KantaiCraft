@@ -1,7 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
 import com.github.icecheesecat.kantaicraft.brain.ship.CarrierBrain;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentHandler;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
