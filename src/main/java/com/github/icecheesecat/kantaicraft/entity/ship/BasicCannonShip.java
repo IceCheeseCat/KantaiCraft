@@ -1,7 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
 import com.github.icecheesecat.kantaicraft.brain.ship.CannonShipBrain;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentHandler;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
