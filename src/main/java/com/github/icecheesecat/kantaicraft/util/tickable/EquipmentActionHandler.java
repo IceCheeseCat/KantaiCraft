@@ -26,11 +26,11 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
 
     public void resetAllActions() {
         for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
-            this.resetAction(i);
+            this.updateAction(i);
         }
     }
 
-    public void resetAction(int i) {
+    public void updateAction(int i) {
         Equipment equipment = equipmentHandler.getEquipments().get(i);
          switch (equipment.getType()) {
              case CANNON -> this.set(i, new ShipCannonAttack(entityShip, equipment));
@@ -59,20 +59,18 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
         return new ArrayList<>();
     }
 
-    public List<ShipTickableAction> getActionsByWeaponTypeAndNotInCooldown(EquipmentType type) {
-        if (this.contains(type)) {
-            List<ShipTickableAction> ret = new ArrayList<>();
-            for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
-                if (equipmentHandler.getEquipments().get(i).getType() == type) {
-                    ShipTickableAction a = this.get(i);
-                    if (!a.inCooldown())
-                        ret.add(a);
+    public ShipTickableAction getActionsByWeaponTypeAndNotInCooldown(EquipmentType type) {
+
+        for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
+            if (equipmentHandler.getEquipments().get(i).getType() == type) {
+                ShipTickableAction a = this.get(i);
+                if (!a.inCooldown()) {
+                    return a;
                 }
             }
-            return ret;
         }
 
-        return new ArrayList<>();
+        return null;
     }
 
     public void tick() {

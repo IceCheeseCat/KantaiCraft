@@ -28,7 +28,7 @@ public class ShipCannonAttack extends ShipRangeAttack {
     }
 
     public void checkAndPerformCannon(LivingEntity target) {
-        if (this.inCooldown()) {
+        if (!this.inCooldown()) {
             if (target != null && target.isAlive()) {
                 LivingEntity ship = getShip();
                 Vec3 initPos = new Vec3(ship.getX(), ship.getEyeY(), ship.getZ());

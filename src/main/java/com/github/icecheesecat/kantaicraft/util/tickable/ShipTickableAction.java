@@ -49,7 +49,7 @@ public abstract class ShipTickableAction implements IActionCooldown {
 
     @Override
     public boolean inCooldown() {
-        return this.cooldown <= 0;
+        return this.cooldown > 0;
     }
 
     abstract public void tick();

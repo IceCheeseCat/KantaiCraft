@@ -47,7 +47,7 @@ public class TickAndUpdateEquipmentActionHandler extends Behavior<BasicEntityShi
         ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(equipmentHandler -> {
             for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
                 if (equipmentHandler.isDirty(i)) {
-                    actionHandler.resetAction(i);
+                    actionHandler.updateAction(i);
                     equipmentHandler.setNotDirty(i);
                 }
             }
