@@ -1,13 +1,15 @@
 package com.github.icecheesecat.kantaicraft.menu.screen;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.*;
+import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.SyncShipC2SPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -45,16 +47,16 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         this.ship = this.getMenu().getEntityShip();
 
         toggleGuarding = Button.builder(Component.translatable("shipscreen.toggleguarding"), button -> {
-            ModPacketHandler.INSTANCE.sendToServer(new SyncShipC2SPacket(SyncType.GUARD, this.ship.getId(), !this.ship.isGuarding()));
+            ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.GUARD, this.ship.getId(), !this.ship.isGuarding()));
         }).pos(100, 100).build();
 
         toggleMelee = Button.builder(Component.translatable("shipscreen.togglemelee"), button -> {
-            ModPacketHandler.INSTANCE.sendToServer(new SyncShipC2SPacket(SyncType.MELEE, this.ship.getId(), !this.ship.canMelee()));
+            ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.MELEE, this.ship.getId(), !this.ship.canMelee()));
         }).pos(100, 125).build();
 
         toggleCannonFireMode = Button.builder(Component.translatable("shipscreen.togglecannonfiremode"), button -> {
             if (this.ship instanceof BasicCannonShip cannonShip) {
-                ModPacketHandler.INSTANCE.sendToServer(new SyncShipC2SPacket(SyncType.CANNON_FIRE_MODE, cannonShip.getId(), cannonShip.getCannonFireMode().getNext()));
+                ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.CANNON_FIRE_MODE, cannonShip.getId(), cannonShip.getCannonFireMode().getNext()));
             }
         }).pos(100, 150).build();
 

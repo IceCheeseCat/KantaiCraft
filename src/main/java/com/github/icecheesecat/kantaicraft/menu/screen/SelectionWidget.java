@@ -3,9 +3,8 @@ package com.github.icecheesecat.kantaicraft.menu.screen;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentResourceLocation;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentWidget;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.SyncShipC2SPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -55,7 +54,7 @@ public class SelectionWidget extends AbstractWidget {
 
     @Override
     public void onClick(double pMouseX, double pMouseY) {
-        ModPacketHandler.INSTANCE.sendToServer(new SyncShipC2SPacket(SyncType.EQUIPMENT, this.ship.getId(), this.equipment, this.index));
+        ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.EQUIPMENT, this.ship.getId(), this.equipment, (byte) this.index));
     }
 
     @Override

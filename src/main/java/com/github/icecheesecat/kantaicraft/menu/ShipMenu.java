@@ -5,6 +5,7 @@ import com.github.icecheesecat.kantaicraft.registries.ModMenus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -42,6 +43,8 @@ public class ShipMenu extends AbstractContainerMenu implements IContainerFactory
         else {
             throw new IllegalStateException(String.format("Failed to correctly get corresponding entity.getId at %s", this.getClass().getCanonicalName()));
         }
+
+
     }
 
     @Override
