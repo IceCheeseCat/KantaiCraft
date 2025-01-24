@@ -3,7 +3,6 @@ package com.github.icecheesecat.kantaicraft.entity.ship.destroyer;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicDestroyerShip;
 import com.github.icecheesecat.kantaicraft.equipment.SlotChecker;
 import com.github.icecheesecat.kantaicraft.util.ShipFields;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.entity.EntityType;
@@ -16,7 +15,6 @@ public class EntityDestroyerRo extends BasicDestroyerShip
 	public EntityDestroyerRo(EntityType<? extends PathfinderMob> entityType, Level level)
 	{
 		super(entityType, level);
-		this.setShipName(ShipFields.ShipName.DestroyerRo);
 	}
 
 	@Override
@@ -35,5 +33,8 @@ public class EntityDestroyerRo extends BasicDestroyerShip
 	}
 
 
-
+	@Override
+	public ShipFields.ShipName getShipName() {
+		return ShipFields.ShipName.DestroyerRo;
+	}
 }
