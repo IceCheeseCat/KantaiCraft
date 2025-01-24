@@ -32,6 +32,8 @@ public class KantaiCraft
         MinecraftForge.EVENT_BUS.register(this);
         ModPacketHandler.registerMessages();
         ModEquipment.EQUIPMENTS.register(modEventBus);
+        ModBlock.BLOCKS.register(modEventBus);
+        ModBlock.BLOCK_ENTITIES.register(modEventBus);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentData.SPEC, KantaiCraft.MODID + "_equipment.toml");
     }
