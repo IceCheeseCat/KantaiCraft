@@ -21,7 +21,7 @@ public class CannonAttack extends Behavior<BasicCannonShip> {
     ShipCannonAttack attack;
 
     public CannonAttack() {
-        super(ImmutableMap.of(ModMemoryModuleType.IS_GUARDING.get(), MemoryStatus.VALUE_PRESENT,
+        super(ImmutableMap.of(
                 MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT,
                 ModMemoryModuleType.ACTION_HANDLER.get(), MemoryStatus.VALUE_PRESENT));
     }
@@ -54,9 +54,8 @@ public class CannonAttack extends Behavior<BasicCannonShip> {
         if (!basicCannonShip.hasEnoughAmmo()) {
             return false;
         }
-        else {
-            basicCannonShip.useAmmo();
-        }
+        basicCannonShip.useAmmo(); // consume ammo
+
 
         if (basicCannonShip.getCannonFireMode() == CannonFireMode.ROUND_ROBIN) {
             if (basicCannonShip.getBrain().hasMemoryValue(ModMemoryModuleType.ROUND_ROBIN_COOLDOWN.get())) {

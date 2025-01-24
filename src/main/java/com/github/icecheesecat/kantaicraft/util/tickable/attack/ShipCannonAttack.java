@@ -58,7 +58,7 @@ public class ShipCannonAttack extends ShipRangeAttack {
 
     public void doHitTarget(Entity entity) {
         BasicEntityShip ship = getShip();
-        entity.hurt(ship.damageSources().mobProjectile(entity, ship), (float) ship.getAttributeValue(ModShipAttributes.FIREPOWER.get()));
+        entity.hurt(ship.damageSources().mobAttack(ship), (float) ship.getAttributeValue(ModShipAttributes.FIREPOWER.get()));
     }
 
 

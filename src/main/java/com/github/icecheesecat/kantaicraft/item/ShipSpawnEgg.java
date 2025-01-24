@@ -38,6 +38,7 @@ public class ShipSpawnEgg extends ForgeSpawnEggItem {
         if (ownedByUser) {
             BasicEntityShip ship = (BasicEntityShip) entityShip.spawn((ServerLevel) level, pContext.getItemInHand(), pContext.getPlayer(), clickedPos, MobSpawnType.SPAWN_EGG, true, false);
 //            ship.getEquipmentSlots().getEquipments();
+            ship.setAmmo(100.0f);
             consumer.accept(ship);
             ship.setOwner(pContext.getPlayer().getUUID());
             itemStack.shrink(1);
