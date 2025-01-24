@@ -1,7 +1,10 @@
 package com.github.icecheesecat.kantaicraft.brain.ship;
 
+import com.github.icecheesecat.kantaicraft.brain.SetWalkTargetFromAttackTargetIfTargetOutOfReachAndShipCanMelee;
 import com.github.icecheesecat.kantaicraft.brain.ship.behavior.*;
+import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
+import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.registries.ModSensor;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
@@ -112,8 +115,8 @@ public class CannonShipBrain {
                 ImmutableList.of(
                         Pair.of(0, StartAttacking.create(CannonShipBrain::findNearestValidAttackTarget)),
                         Pair.of(1, new CannonAttack()),
-                        Pair.of(2, BehaviorBuilder.triggerIf(CannonShipBrain::shipCanMelee, MeleeAttack.create(15))),
-                        Pair.of(2, SetWalkTargetFromAttackTargetIfTargetOutOfReach.create(1.0f)),
+                        Pair.of(2, BehaviorBuilder.triggerIf(CannonShipBrain::attackTargetIsTooClose, MeleeAttack.create(15))),
+                        Pair.of(2, SetWalkTargetFromAttackTargetIfTargetOutOfReachAndShipCanMelee.create(ship -> 1.0f, basicCannonShip)),
                         Pair.of(5, StopAttackingIfTargetInvalid.create()),
                         Pair.of(10,
                             new RunOne<>(ImmutableList.of(
@@ -152,6 +155,16 @@ public class CannonShipBrain {
 
     private static boolean shipCanMelee(BasicCannonShip ship) {
         return !ship.hasEnoughAmmo() && ship.canMelee();
+    }
+
+    private static boolean attackTargetIsTooClose(BasicEntityShip ship) {
+        if (ship.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).isPresent()) {
+            LivingEntity attackTarget = ship.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get();
+            if (attackTarget.distanceTo(ship) < ship.getAttributeValue(ModAttribute.SHIPSONAL_SPACE.get())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.stats.shipAttributes;
 
-import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
 import java.util.HashMap;
@@ -14,7 +14,7 @@ public class ShipStats <T extends ShipStats<?>> {
     }
 
     public T addStats(Attribute a, double v) {
-        if (ModShipAttributes.ATTRIBUTES.getEntries().contains(a)) {
+        if (ModAttribute.ATTRIBUTES.getEntries().contains(a)) {
             this.statsMap.put(a, v);
         }
 

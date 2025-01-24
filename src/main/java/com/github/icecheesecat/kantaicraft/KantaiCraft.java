@@ -25,7 +25,7 @@ public class KantaiCraft
         ModEntity.ENTITIES.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
-        ModShipAttributes.ATTRIBUTES.register(modEventBus);
+        ModAttribute.ATTRIBUTES.register(modEventBus);
         ModActitvity.ACTIVITIES.register(modEventBus);
         ModMemoryModuleType.MEMORY_MODULE_TYPES.register(modEventBus);
         ModSensor.SENSOR_TYPES.register(modEventBus);

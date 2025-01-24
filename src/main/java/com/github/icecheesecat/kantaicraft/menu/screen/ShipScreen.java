@@ -7,7 +7,7 @@ import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.*;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
-import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
@@ -131,22 +131,22 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
 //        var attributes = entity.getAttributes();
         guiGraphics.blit(FIREPOWER_ICON, x, y, 0, 0, 64, 64, 64, 64);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.FIREPOWER.get())) , x, y, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.TORPEDO.get())) , x, y + offset * 1, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.ANTIAIR.get())) , x, y + offset * 2, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.ASW.get())) , x, y + offset * 3, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.LOS.get())) , x, y + offset * 4, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.LUCK.get())) , x, y + offset * 5, color);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.FIREPOWER.get())) , x, y, color);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.TORPEDO.get())) , x, y + offset * 1, color);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.ANTIAIR.get())) , x, y + offset * 2, color);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.ASW.get())) , x, y + offset * 3, color);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.LOS.get())) , x, y + offset * 4, color);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.LUCK.get())) , x, y + offset * 5, color);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(Attributes.MAX_HEALTH)) , x + xOffset, y + offset * 6, color);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getHealth()) , x - xOffset, y + offset * 6, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.ARMOR.get())) , x, y + offset * 7, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.EVASION.get())) , x, y + offset * 8, color);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.ARMOR.get())) , x, y + offset * 7, color);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.EVASION.get())) , x, y + offset * 8, color);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(Attributes.MOVEMENT_SPEED)) , x, y +  offset * 9, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.AIRCRAFT.get())) , x + xOffset, y +  offset * 10, color);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.AIRCRAFT.get())) , x + xOffset, y +  offset * 10, color);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAircraft()) , x - xOffset, y +  offset * 10, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.FUEL.get())) , x + xOffset, y +  offset * 11, color);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.FUEL.get())) , x + xOffset, y +  offset * 11, color);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getFuel()) , x - xOffset, y +  offset * 11, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModShipAttributes.AMMO.get())) , x + xOffset, y +  offset * 12, color);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.AMMO.get())) , x + xOffset, y +  offset * 12, color);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAmmo()) , x - xOffset, y +  offset * 12, color);
 
     }

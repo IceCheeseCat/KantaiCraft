@@ -2,10 +2,10 @@ package com.github.icecheesecat.kantaicraft.entity.ship;
 
 import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
 import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
+import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entity.IFaction;
 import com.github.icecheesecat.kantaicraft.entity.IPhysicalEntity;
-import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
 import com.github.icecheesecat.kantaicraft.stats.shipAttributes.IStatsGrowth;
 import com.google.common.collect.ImmutableList;
@@ -65,9 +65,9 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     protected BasicEntityShip(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
 
-        this.setAircraft((int) this.getAttributeValue(ModShipAttributes.AIRCRAFT.get()));
-        this.setFuel((float) this.getAttributeValue(ModShipAttributes.FUEL.get()));
-        this.setAmmo((float) this.getAttributeValue(ModShipAttributes.AMMO.get()));
+        this.setAircraft((int) this.getAttributeValue(ModAttribute.AIRCRAFT.get()));
+        this.setFuel((float) this.getAttributeValue(ModAttribute.FUEL.get()));
+        this.setAmmo((float) this.getAttributeValue(ModAttribute.AMMO.get()));
     }
 
     @Override
@@ -203,24 +203,8 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         super.tick();
         if (level().isClientSide) return;
         if (level().getGameTime() % 20 != 0) return;
-        this.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(
-                handler -> {
-                    for (int i = 0; i < handler.getSlots(); i++) {
-                        ItemStack stack = handler.getStackInSlot(i);
-                        System.out.println(stack);
-                    }
-                    System.out.println();
-
-                }
-        );
-
-        this.brain.getMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get()).ifPresent(
-                itemStacks -> {
-                    System.out.println(itemStacks);
-                }
-        );
-
-        System.out.println(this.getNavigation().getPath());
+        this.getBrain().getRunningBehaviors().forEach(System.out::println);
+        System.out.println();
     }
 
     @Override
@@ -368,8 +352,8 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.getCapabilities().invalidate();
     }
 
-    ItemStackHandler inventory = new ItemStackHandler((int) this.getAttributeValue(ModShipAttributes.SLOT_SIZE.get()));
-    ItemStackHandler simulateInventory = new ItemStackHandler((int) this.getAttributeValue(ModShipAttributes.SLOT_SIZE.get()));
+    ItemStackHandler inventory = new ItemStackHandler((int) this.getAttributeValue(ModAttribute.SLOT_SIZE.get()));
+    ItemStackHandler simulateInventory = new ItemStackHandler((int) this.getAttributeValue(ModAttribute.SLOT_SIZE.get()));
     LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> inventory);
 
     @Override

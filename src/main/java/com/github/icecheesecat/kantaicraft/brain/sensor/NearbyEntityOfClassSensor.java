@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.brain.sensor;
 
-import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,7 +36,7 @@ public class NearbyEntityOfClassSensor<T extends LivingEntity> extends Sensor<Ba
 
     protected List<T> findTargets(BasicEntityShip entity) {
 
-        Stream<T> livings = entity.level().getEntitiesOfClass(c, entity.getBoundingBox().inflate(entity.getAttributeValue(ModShipAttributes.LOS.get()))).stream();
+        Stream<T> livings = entity.level().getEntitiesOfClass(c, entity.getBoundingBox().inflate(entity.getAttributeValue(ModAttribute.LOS.get()))).stream();
 
         return livings.sorted(Comparator.comparingDouble(entity::distanceToSqr)).toList();
     }

@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.util.tickable.attack;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.util.tickable.ShipTickableAction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -22,7 +22,7 @@ public abstract class ShipRangeAttack extends ShipTickableAction {
         if (this.ship.level().isClientSide) return;
         Level level = ship.level();
         // TODO search target
-        Monster m = level.getNearestEntity(Monster.class, TargetingConditions.DEFAULT, ship, ship.getX(), ship.getY(), ship.getZ(), ship.getBoundingBox().inflate(this.ship.getAttributeValue(ModShipAttributes.LOS.get())));
+        Monster m = level.getNearestEntity(Monster.class, TargetingConditions.DEFAULT, ship, ship.getX(), ship.getY(), ship.getZ(), ship.getBoundingBox().inflate(this.ship.getAttributeValue(ModAttribute.LOS.get())));
         if (m != null) {
             target = m;
         }

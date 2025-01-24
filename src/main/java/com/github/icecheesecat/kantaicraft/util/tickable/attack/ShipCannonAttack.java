@@ -3,7 +3,7 @@ package com.github.icecheesecat.kantaicraft.util.tickable.attack;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
-import com.github.icecheesecat.kantaicraft.registries.ModShipAttributes;
+import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
 import com.github.icecheesecat.kantaicraft.util.Trajectory;
@@ -48,9 +48,6 @@ public class ShipCannonAttack extends ShipRangeAttack {
                     ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new TrajectoryPacket(t));
                 }
 
-
-
-
                 this.resetCooldown();
             }
         }
@@ -58,7 +55,7 @@ public class ShipCannonAttack extends ShipRangeAttack {
 
     public void doHitTarget(Entity entity) {
         BasicEntityShip ship = getShip();
-        entity.hurt(ship.damageSources().mobAttack(ship), (float) ship.getAttributeValue(ModShipAttributes.FIREPOWER.get()));
+        entity.hurt(ship.damageSources().mobAttack(ship), (float) ship.getAttributeValue(ModAttribute.FIREPOWER.get()));
     }
 
 

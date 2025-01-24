@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.event;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.registries.ModEntity;
-import com.github.icecheesecat.kantaicraft.stats.shipAttributes.ShipClassAttributes;
+import com.github.icecheesecat.kantaicraft.stats.shipAttributes.ShipAttributes;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -13,7 +13,7 @@ public class CommonEntityEvent {
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
 
-        event.put(ModEntity.DestroyerRo.get(), ShipClassAttributes.DESTROYER_CLASS);
+        event.put(ModEntity.DestroyerRo.get(), ShipAttributes.DESTROYER_CLASS);
 
     }
 
