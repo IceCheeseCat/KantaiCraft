@@ -49,7 +49,7 @@ public class TrajectoryPacket {
         Vec3 n_vel = new Vec3(buffer.getDouble(), buffer.getDouble(), buffer.getDouble());
         Vec3 n_acc = new Vec3(buffer.getDouble(), buffer.getDouble(), buffer.getDouble());
         int id = buf.readInt();
-        return new TrajectoryPacket(new Trajectory(n_pos, n_vel, n_acc, id));
+        return new TrajectoryPacket(new Trajectory(n_pos, n_vel, n_acc, id, Trajectory.DEFAULT_PROJECTILE_SIZE));
     }
 
     public static void encode(TrajectoryPacket packet, FriendlyByteBuf buf) {
@@ -179,6 +179,10 @@ public class TrajectoryPacket {
             Stack<Trajectory> q = new Stack<>();
             q.push(t);
             pre_trajectories.put(t.getId(), q);
+        }
+
+        public static void removeTrajectory(int id) {
+            pre_trajectories.remove(id);
         }
 
     }
