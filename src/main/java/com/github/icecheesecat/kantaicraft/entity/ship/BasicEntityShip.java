@@ -28,6 +28,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.schedule.Activity;
@@ -146,7 +147,16 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
 
     @Override
     public boolean isEnemy(LivingEntity other) {
-        return other instanceof BasicEntityShip ship && this.getFactionId() != ship.getFactionId();
+        if (other.getUUID() == this.owner) return false;
+        if (other.is(this)) return false;
+        if (other instanceof BasicEntityShip ship) {
+            return this.getFactionId() != ship.getFactionId();
+        }
+        if (other instanceof Monster) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
