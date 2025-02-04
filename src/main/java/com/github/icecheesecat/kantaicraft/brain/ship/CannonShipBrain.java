@@ -130,7 +130,6 @@ public class CannonShipBrain {
     }
 
     private static Optional<? extends LivingEntity> findNearestValidAttackTarget(BasicCannonShip cannonShip) {
-
         Optional<List<LivingEntity>> l = cannonShip.getBrain().getMemory(ModMemoryModuleType.NEARBY_MONSTERS.get());
         if (l.isPresent()) {
             for (var le: l.get()) {

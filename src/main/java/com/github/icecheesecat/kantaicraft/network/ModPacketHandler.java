@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.network;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.network.packet.ClientRemoveTrajectoryPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -33,6 +34,14 @@ public class ModPacketHandler {
                 SyncShipPacket::encode,
                 SyncShipPacket::decode,
                 SyncShipPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                ClientRemoveTrajectoryPacket.class,
+                ClientRemoveTrajectoryPacket::encode,
+                ClientRemoveTrajectoryPacket::decode,
+                ClientRemoveTrajectoryPacket::handle
         );
     }
 
