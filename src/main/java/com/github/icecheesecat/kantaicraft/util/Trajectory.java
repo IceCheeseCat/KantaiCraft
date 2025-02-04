@@ -2,14 +2,18 @@ package com.github.icecheesecat.kantaicraft.util;
 
 import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -21,13 +25,19 @@ public class Trajectory {
     Vec3 vel;
     Vec3 acc;
     int alive = 4 * 20; // 10 second alive
+    Vec3 prevPos;
     public static final int EULER_METHOD = 0;
+    AABB boundingBox = null;
+    public static final double DEFAULT_PROJECTILE_SIZE = 0.5d;
+    double projSize = DEFAULT_PROJECTILE_SIZE;
 
-    public Trajectory(Vec3 pos, Vec3 vel, Vec3 acc, int id) {
-        this.pos = pos;
+    public Trajectory(Vec3 pos, Vec3 vel, Vec3 acc, int id, double projSize) {
+        this.pos = this.prevPos = pos;
         this.vel = vel;
         this.acc = acc;
         this.id = id;
+        this.projSize = projSize;
+        boundingBox = AABB.ofSize(pos, 0.5d, 0.5d, 0.5d);
     }
 
     public Trajectory(Trajectory t) {
@@ -45,7 +55,7 @@ public class Trajectory {
     }
 
     public Trajectory asCopy() {
-        Trajectory n_t = new Trajectory(this.pos, this.vel, this.acc, this.id);
+        Trajectory n_t = new Trajectory(this.pos, this.vel, this.acc, this.id, this.projSize);
         n_t.alive = this.alive;
 
         return n_t;
@@ -55,14 +65,19 @@ public class Trajectory {
         // euler method
         switch (method) {
             case 0:
+                prevPos = pos;
                 pos = pos.add(vel.scale(dt));
                 vel = vel.add(acc.scale(dt));
                 break;
             default:
+                prevPos = pos;
                 pos = pos.add(vel.scale(dt));
                 vel = vel.add(acc.scale(dt));
                 break;
         }
+
+        // update bounding box position
+        this.boundingBox = AABB.ofSize(pos, projSize, projSize, projSize);
 
         alive--;
 //        this.print();
@@ -72,22 +87,13 @@ public class Trajectory {
         return alive <= 0;
     }
 
-    public HitResult findHitResult(Level level) {
-        return getHitResult(pos, this::canHitEntity, vel, level);
-    }
-
-    private boolean canHitEntity(Entity entity) {
-        return entity.canBeHitByProjectile();
-    }
-
-    public static HitResult getHitResult(Vec3 pos, Predicate<Entity> p, Vec3 delta, Level level) {
-        Vec3 vec3 = pos.add(delta);
-        HitResult hitresult = level.clip(new ClipContext(pos, vec3, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
+    public HitResult getHitResult(Predicate<Entity> pFilter, Level pLevel) {
+        HitResult hitresult = pLevel.clip(new ClipContext(prevPos, pos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
         if (hitresult.getType() != HitResult.Type.MISS) {
-            vec3 = hitresult.getLocation();
+            pos = hitresult.getLocation();
         }
 
-        HitResult hitresult1 = getEntityHitResult(level, pos, vec3, AABB.ofSize(pos, 2.0d, 2.0d, 2.0d), p);
+        HitResult hitresult1 = getEntityHitResult(pLevel, pFilter);
         if (hitresult1 != null) {
             hitresult = hitresult1;
         }
@@ -96,24 +102,17 @@ public class Trajectory {
     }
 
     @Nullable
-    private static EntityHitResult getEntityHitResult(Level level, Vec3 pos, Vec3 vec3, AABB paabb, Predicate<Entity> predicate) {
-        double d0 = Double.MAX_VALUE;
+    public EntityHitResult getEntityHitResult(Level pLevel, Predicate<Entity> pFilter) {
+//        double d0 = Double.MAX_VALUE;
         Entity entity = null;
-
-        for(Entity entity1 : level.getEntities((Entity) null, paabb, predicate)) {
-            AABB aabb = entity1.getBoundingBox().inflate((double)0.3f);
-            Optional<Vec3> optional = aabb.clip(pos, vec3);
-            if (optional.isPresent()) {
-                double d1 = pos.distanceToSqr(optional.get());
-                if (d1 < d0) {
-                    entity = entity1;
-                    d0 = d1;
-                }
-            }
+        List<LivingEntity> entities = pLevel.getEntitiesOfClass(LivingEntity.class, boundingBox, pFilter);
+        if (!entities.isEmpty()) {
+            entity = entities.get(0);
         }
 
         return entity == null ? null : new EntityHitResult(entity);
     }
+
 
     public int getId() {
         return id;
@@ -158,60 +157,46 @@ public class Trajectory {
         this.alive = alive;
     }
 
-    public static double calculateAngle(Vec3 start, Vec3 end, Vec3 gravity, double canon_vel) {
+    public static Vec3 calFireVec(Vec3 a, Vec3 b, Vec3 g, double v) {
+        double theta0, theta1;
+        double h = b.y - a.y;
+        double d = new Vec3(b.x - a.x, 0, b.z - a.z).length();
 
-        double d, h, g, v;
-        d = Math.sqrt(Math.pow(start.x - end.x, 2) + Math.pow(start.z - end.z, 2));
-        h = end.y - start.y;
-        g = gravity.y;
-        v = canon_vel;
+        double A = g.y*d*d/2/v/v;
+        double B = d;
 
-        double A, B, C;
-        A = d*d*d*d*g*g/v/v/v/v;
-        B = - (4*d*d + 4*g*h*d*d/v/v);
-        C = 4*h*h + 4*d*d;
+        double v0 = (-B + Math.sqrt(B*B - 4*A*(A-h))) /2/A;
+        double v1 = (-B - Math.sqrt(B*B - 4*A*(A-h))) /2/A;
 
-//        System.out.println(A);
-//        System.out.println(B);
-//        System.out.println(C);
+        theta0 = Math.atan(v0);
+        theta1 = Math.atan(v1);
 
-        double x0 = (-B + Math.sqrt(B * B - 4 * A * C)) / 2 / A;
-        double x1 = (-B - Math.sqrt(B * B - 4 * A * C)) / 2 / A;
-
-//        System.out.println(x0);
-//        System.out.println(x1);
-
-        double theta0 = Math.acos(1/Math.sqrt(x0));
-        double theta1 = Math.acos(1/Math.sqrt(x1));
-
-//        System.out.println();
-//        System.out.println(theta0);
-//        System.out.println(theta1);
-
-        if (Double.isNaN(theta0) && Double.isNaN(theta1)) {
-            return Double.NaN;
+        double theta;
+        if (theta0 < theta1) {
+            theta = theta0;
         }
         else {
-            if (Double.isNaN(theta0)) {
-                return theta1;
-            }
-            else if (Double.isNaN(theta1)) {
-                return theta0;
-            }
-            else {
-                if (theta0 < theta1) {
-                    return theta0;
-                }
-                else {
-                    return theta1;
-                }
-            }
+            theta = theta1;
         }
+
+//        System.out.println("Theta: " + theta * 180 / Math.PI);
+//
+//        System.out.println("Theta0: " + theta0 * 180 / Math.PI);
+//
+//        System.out.println("Theta1: " + theta1 * 180 / Math.PI);
+        if (Double.isNaN(theta)) {
+            return null;
+        }
+
+
+        Vec3 atob = b.subtract(a);
+        Vec3 normal = new Vec3(0, 1, 0);
+        Vec3 project = atob.subtract(normal.scale(atob.dot(normal)/normal.length()/normal.length()));
+
+        Vec3 np = normal.scale(Math.tan(theta));
+        Vec3 desire = project.normalize().add(np).normalize().scale(v);
+
+        return desire;
     }
 
-    public static Vec3 calculateFireDir(Vec3 start, Vec3 end, double angle, double canon_vel) {
-        Vec3 r = Vec3.ZERO.add(end.x, 0, end.z).subtract(start.x, 0, start.z);
-        Vec3 r1 = r.add(0, r.length() * Math.sin(angle), 0);
-        return r1.normalize().scale(canon_vel);
-    }
 }
