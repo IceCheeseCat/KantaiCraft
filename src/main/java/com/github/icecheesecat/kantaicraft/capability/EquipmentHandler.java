@@ -66,7 +66,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
         this.slotSize = nbt.getInt("equipmenthandler.size");
         for (int i = 0; i < this.slotSize; i++) {
             String str = "equipmenthandler.equipment." + i;
-            Equipment equipment = Equipment.EMPTY;
+            Equipment equipment = Equipment.EMPTY.asCopy();
 
             this.equipments.set(i, equipment.load((CompoundTag) nbt.get(str)));
         }

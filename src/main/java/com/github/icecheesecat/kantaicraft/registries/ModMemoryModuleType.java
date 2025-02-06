@@ -29,7 +29,6 @@ public class ModMemoryModuleType {
     public static final RegistryObject<MemoryModuleType<List<LivingEntity>>> NEARBY_DIFFERENT_FACTION_SHIPS = MEMORY_MODULE_TYPES.register("nearby_different_faction_ships", () -> new MemoryModuleType<>(Optional.empty()));
     public static final RegistryObject<MemoryModuleType<List<LivingEntity>>> NEARBY_MONSTERS = MEMORY_MODULE_TYPES.register("nearby_monsters", () -> new MemoryModuleType<>(Optional.empty()));
     public static final RegistryObject<MemoryModuleType<EquipmentActionHandler>> ACTION_HANDLER = MEMORY_MODULE_TYPES.register("action_handler", () -> new MemoryModuleType<>(Optional.empty()));
-    public static final RegistryObject<MemoryModuleType<Unit>> ROUND_ROBIN_COOLDOWN = MEMORY_MODULE_TYPES.register("round_robin_cooldown", () -> new MemoryModuleType<>(Optional.empty()));
     public static final RegistryObject<MemoryModuleType<List<ItemEntity>>> KILLED_ENTITY_DROPS = MEMORY_MODULE_TYPES.register("killed_entity_drops", () -> new MemoryModuleType<>(Optional.empty()));
     public static final RegistryObject<MemoryModuleType<Unit>> IS_FOLLOWING = MEMORY_MODULE_TYPES.register("is_following", () -> new MemoryModuleType<>(Optional.of(Codec.unit(Unit.INSTANCE))));
     public static final RegistryObject<MemoryModuleType<LivingEntity>> VISIBLE_ENMEY = MEMORY_MODULE_TYPES.register("visible_enemy", () -> new MemoryModuleType<>(Optional.empty()));

@@ -45,21 +45,18 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
     }
 
     public List<ShipTickableAction> getActionsByWeaponType(EquipmentType type) {
-        if (this.contains(type)) {
-            List<ShipTickableAction> ret = new ArrayList<>();
-            for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
-                if (equipmentHandler.getEquipments().get(i).getType() == type) {
-                    ShipTickableAction a = this.get(i);
-                    ret.add(a);
-                }
-            }
-            return ret;
-        }
 
-        return new ArrayList<>();
+        List<ShipTickableAction> ret = new ArrayList<>();
+        for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
+            if (equipmentHandler.getEquipments().get(i).getType() == type) {
+                ShipTickableAction a = this.get(i);
+                ret.add(a);
+            }
+        }
+        return ret;
     }
 
-    public ShipTickableAction getActionsByWeaponTypeAndNotInCooldown(EquipmentType type) {
+    public ShipTickableAction getActionByWeaponTypeAndNotInCooldown(EquipmentType type) {
 
         for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
             if (equipmentHandler.getEquipments().get(i).getType() == type) {

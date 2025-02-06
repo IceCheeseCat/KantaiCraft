@@ -26,7 +26,9 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -83,7 +85,10 @@ public class CannonShipBrain {
                 ImmutableList.of(
                     new BurnFuel(),
                     new TickAndUpdateEquipmentActionHandler(),
-                    new LookAtTargetSink(45, 90),
+                    new GateBehavior<>(Map.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), Set.of(), GateBehavior.OrderPolicy.ORDERED, GateBehavior.RunningPolicy.RUN_ONE,
+                            ImmutableList.of(Pair.of(new LookAtTargetSink(45,90), 90))),
+                    new GateBehavior<>(Map.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Set.of(), GateBehavior.OrderPolicy.ORDERED, GateBehavior.RunningPolicy.RUN_ONE,
+                            ImmutableList.of(Pair.of(new LookAtTargetSink(60,60), 60))),
                     new MoveToTargetSink(),
                     new StayCloseToOwner(5269, 1.0d),
                     new PickUpKilledMobDrops()
@@ -117,23 +122,24 @@ public class CannonShipBrain {
                         Pair.of(1, new CannonAttack()),
                         Pair.of(2, BehaviorBuilder.triggerIf(CannonShipBrain::attackTargetIsTooClose, MeleeAttack.create(15))),
                         Pair.of(2, SetWalkTargetFromAttackTargetIfTargetOutOfReachAndShipCanMelee.create(ship -> 1.0f, basicCannonShip)),
-                        Pair.of(5, StopAttackingIfTargetInvalid.create()),
-                        Pair.of(10,
-                            new RunOne<>(ImmutableList.of(
-                                Pair.of(RandomStroll.stroll(0.4F), 2),
-                                Pair.of(SetWalkTargetFromLookTarget.create(0.4F, 3), 2),
-                                Pair.of(new DoNothing(30, 60), 1)))),
-                        Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60)))
+                        Pair.of(5, StopAttackingIfTargetInvalid.create())
+//                        Pair.of(10,
+//                            new RunOne<>(ImmutableList.of(
+//                                Pair.of(RandomStroll.stroll(0.4F), 2),
+//                                Pair.of(SetWalkTargetFromLookTarget.create(0.4F, 3), 2),
+//                                Pair.of(new DoNothing(30, 60), 1)))),
+//                        Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60)))
                 ),
                 ImmutableSet.of(Pair.of(ModMemoryModuleType.IS_GUARDING.get(), MemoryStatus.VALUE_PRESENT))
         );
     }
 
     private static Optional<? extends LivingEntity> findNearestValidAttackTarget(BasicCannonShip cannonShip) {
-        Optional<List<LivingEntity>> l = cannonShip.getBrain().getMemory(ModMemoryModuleType.NEARBY_MONSTERS.get());
-        if (l.isPresent()) {
-            for (var le: l.get()) {
+        Optional<List<LivingEntity>> monsters = cannonShip.getBrain().getMemory(ModMemoryModuleType.NEARBY_MONSTERS.get());
+        if (monsters.isPresent()) {
+            for (var le: monsters.get()) {
                 if (cannonShip.hasLineOfSight(le)) {
+                    cannonShip.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(le, true));
                     return Optional.of(le);
                 }
             }
@@ -143,6 +149,7 @@ public class CannonShipBrain {
         if (ships.isPresent()) {
             for (var le: ships.get()) {
                 if (cannonShip.hasLineOfSight(le)) {
+                    cannonShip.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(le, true));
                     return Optional.of(le);
                 }
             }

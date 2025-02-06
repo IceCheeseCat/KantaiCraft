@@ -3,6 +3,7 @@ package com.github.icecheesecat.kantaicraft.brain.ship;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
@@ -16,10 +17,10 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+
+// TO-DO bug fixing: sometimes can't correctly calculate path to the itemEntity
 public class PickUpKilledMobDrops extends Behavior<BasicEntityShip> {
 
-//    private int tickReCalcPath;
-//    private static final int TICKRECALCPATH = 10;
     private ItemEntity itemEntity;
     private static final int TIMEOUT = 200;
     private boolean stopped;
@@ -28,8 +29,8 @@ public class PickUpKilledMobDrops extends Behavior<BasicEntityShip> {
         super(
                 ImmutableMap.of(ModMemoryModuleType.KILLED_ENTITY_DROPS.get(), MemoryStatus.VALUE_PRESENT,
                         MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryStatus.REGISTERED,
-                        MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
-                        MemoryModuleType.PATH, MemoryStatus.VALUE_ABSENT,
+                        MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED,
+                        MemoryModuleType.PATH, MemoryStatus.REGISTERED,
                         MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT),
                 TIMEOUT);
     }
@@ -47,11 +48,6 @@ public class PickUpKilledMobDrops extends Behavior<BasicEntityShip> {
             this.stopped = true;
             return;
         }
-//
-//        if (--tickReCalcPath <= 0) {
-////            pOwner.getNavigation().moveTo(this.itemEntity, 1.0d);
-//            this.tickReCalcPath = TICKRECALCPATH;
-//        }
 
         if (pOwner.distanceTo(itemEntity) < 1.4d) {
             // memory remove same itemEntity
@@ -88,11 +84,12 @@ public class PickUpKilledMobDrops extends Behavior<BasicEntityShip> {
         var optional = pOwner.getBrain().getMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get());
         if (optional.isPresent()) {
             var list = optional.get();
+
             if (list.isEmpty()) return false;
             this.eraseRemovedItem(list); // handle removed itemEntity
 
             for (var ele: list) {
-                if (canInsetToInventory(ele, pOwner)) {
+                if (canInsetToInventory(ele, pOwner) && ele.onGround()) {
                     this.itemEntity = ele;
                     return true;
                 }

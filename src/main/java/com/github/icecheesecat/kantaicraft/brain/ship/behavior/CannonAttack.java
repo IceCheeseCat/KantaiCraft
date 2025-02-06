@@ -2,23 +2,23 @@ package com.github.icecheesecat.kantaicraft.brain.ship.behavior;
 
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
-import com.github.icecheesecat.kantaicraft.entity.ship.CannonFireMode;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.util.tickable.EquipmentActionHandler;
 import com.github.icecheesecat.kantaicraft.util.tickable.attack.ShipCannonAttack;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Unit;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
+import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 
-import java.util.Optional;
-
 public class CannonAttack extends Behavior<BasicCannonShip> {
 
-    ShipCannonAttack attack;
+    EquipmentActionHandler actionHandler;
+    LivingEntity target;
+    int roundRobinCooㄌldown;
+    final static int MAX_ROUND_ROBIN_COOLDOWN = 20;
 
     public CannonAttack() {
         super(ImmutableMap.of(
@@ -28,47 +28,43 @@ public class CannonAttack extends Behavior<BasicCannonShip> {
 
     @Override
     protected void start(ServerLevel pLevel, BasicCannonShip pEntity, long pGameTime) {
-
-        Optional<LivingEntity> target = pEntity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET);
-        if (target.isPresent()) {
-            this.attack.checkAndPerformCannon(target.get());
-
-            pEntity.getBrain().setMemoryWithExpiry(ModMemoryModuleType.ROUND_ROBIN_COOLDOWN.get(), Unit.INSTANCE, 10L);
-            pEntity.useAmmo(); // consume ammo
-        }
-        else {
-            System.err.println(pEntity.toString() + " error: target is not present!");
-        }
+        pEntity.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
     }
 
     @Override
     protected void tick(ServerLevel pLevel, BasicCannonShip pOwner, long pGameTime) {
+        var action = (ShipCannonAttack) actionHandler.getActionByWeaponTypeAndNotInCooldown(EquipmentType.CANNON);
+        if (action != null) {
+            action.checkAndPerformCannon(target);
+        }
     }
 
     @Override
     protected void stop(ServerLevel pLevel, BasicCannonShip pEntity, long pGameTime) {
-        this.attack = null;
+        pEntity.getBrain().eraseMemory(MemoryModuleType.LOOK_TARGET);
+        this.actionHandler = null;
+    }
+
+    @Override
+    protected boolean canStillUse(ServerLevel pLevel, BasicCannonShip pEntity, long pGameTime) {
+        return pEntity.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET) && pEntity.hasEnoughAmmo() && !actionHandler.getActionsByWeaponType(EquipmentType.CANNON).isEmpty();
     }
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel pLevel, BasicCannonShip basicCannonShip) {
-        // has enough ammo, if has enough, consume ammo
+        var target = basicCannonShip.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET);
+        if (target.isEmpty()) return false;
+        else this.target = target.get();
+
         if (!basicCannonShip.hasEnoughAmmo()) {
             return false;
         }
 
-        if (basicCannonShip.getCannonFireMode() == CannonFireMode.ROUND_ROBIN) {
-            if (basicCannonShip.getBrain().hasMemoryValue(ModMemoryModuleType.ROUND_ROBIN_COOLDOWN.get())) {
-                return false;
-            }
-        }
-
-        var opHandler = basicCannonShip.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get());
-        if (opHandler.isPresent()) {
-            EquipmentActionHandler handler = opHandler.get();
-            this.attack = (ShipCannonAttack) handler.getActionsByWeaponTypeAndNotInCooldown(EquipmentType.CANNON);
-
-            return this.attack != null;
+        // has action handler and cannon action
+        var actionHandler = basicCannonShip.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get());
+        if (actionHandler.isPresent() && !actionHandler.get().getActionsByWeaponType(EquipmentType.CANNON).isEmpty()) {
+            this.actionHandler = actionHandler.get();
+            return true;
         }
 
         return false;
