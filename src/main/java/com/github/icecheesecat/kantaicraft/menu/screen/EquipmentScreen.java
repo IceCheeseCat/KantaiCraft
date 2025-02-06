@@ -20,15 +20,17 @@ public class EquipmentScreen extends Screen {
 
     public List<EquipmentWidget> equipmentWidgets = new ArrayList<>();
 
-    protected EquipmentScreen(Component pTitle, BasicEntityShip ship) {
+    protected EquipmentScreen(Component pTitle, BasicEntityShip ship, Screen preScreen) {
         super(pTitle);
+        this.width = preScreen.width;
+        this.height = preScreen.height;
         this.left = this.width / 90;
         this.top = this.height / 90;
         this.ship = ship;
 
         ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
                 handler -> {
-                    for (int i = 0; i < handler.getSlotSize(); i++) {
+                    for (int i = 0; i < handler.getSlotSize(); i++)     {
                         this.equipmentWidgets.add(new EquipmentWidget(this.left, this.top + (EquipmentWidget.sizeY + widgetGap) * i, ship, handler.getEquipment(i), i));
                     }
                 }
@@ -37,6 +39,7 @@ public class EquipmentScreen extends Screen {
         for (var b : this.equipmentWidgets) {
             this.addRenderableWidget(b);
         }
+
     }
 
     @Override

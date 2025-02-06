@@ -11,6 +11,8 @@ import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -28,10 +30,13 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     private static final ResourceLocation TORPEDO_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/torpedo_icon.png");
     private static final ResourceLocation ANTIAIR_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/antiair_icon.png");
     private static final ResourceLocation ASW_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/asw_icon.png");
+    private static final ResourceLocation TEST_256x256_0 = new ResourceLocation(KantaiCraft.MODID, "textures/gui/test_256x256_0.png");
+    private static final ResourceLocation TEST_256x256_1 = new ResourceLocation(KantaiCraft.MODID, "textures/gui/test_256x256_1.png");
+
 
     private final BasicEntityShip ship;
 
-    Button toggleGuarding;
+//    Button toggleGuarding;
     Button toggleMelee;
     Button toggleCannonFireMode;
     Button equipmentSection;
@@ -43,12 +48,20 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
         this.imageWidth = 320;
         this.imageHeight = 180;
-
         this.ship = this.getMenu().getEntityShip();
+        this.ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
+            handler -> {
+                this.equipmentHandler = handler;
+            }
+        );
+    }
 
-        toggleGuarding = Button.builder(Component.translatable("shipscreen.toggleguarding"), button -> {
-            ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.GUARD, this.ship.getId(), !this.ship.isGuarding()));
-        }).pos(100, 100).build();
+    @Override
+    protected void init() {
+        super.init();
+//        toggleGuarding = Button.builder(Component.translatable("shipscreen.toggleguarding"), button -> {
+//            ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.GUARD, this.ship.getId(), !this.ship.isGuarding()));
+//        }).pos(100, 100).build();
 
         toggleMelee = Button.builder(Component.translatable("shipscreen.togglemelee"), button -> {
             ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.MELEE, this.ship.getId(), !this.ship.canMelee()));
@@ -61,22 +74,17 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         }).pos(100, 150).build();
 
         equipmentSection = Button.builder(Component.translatable("shipscreen.equipmentsection"), pButton -> {
-            this.minecraft.setScreen(new EquipmentScreen(Component.literal("equipment_screen"), this.ship));
+            this.minecraft.setScreen(new EquipmentScreen(Component.literal("equipment_screen"), this.ship, this));
         }).pos(100, 175).build();
 
-        this.addRenderableWidget(toggleGuarding);
+//        this.addRenderableWidget(toggleGuarding);
         this.addRenderableWidget(toggleMelee);
         this.addRenderableWidget(toggleCannonFireMode);
         this.addRenderableWidget(equipmentSection);
 
-        this.ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
-            handler -> {
-                this.equipmentHandler = handler;
-            }
-        );
+        this.addRenderableWidget(new SyncedWidget<>(50, 100, 256, 256, this.ship, BasicEntityShip.DATA_IS_GUARDING,
+                ImmutableMap.of(false, TEST_256x256_0, true, TEST_256x256_1), (b) -> !b));
     }
-
-
 
     /*
         blit(
@@ -93,7 +101,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 //        super.render(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.blit(BACKGROUND_1, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
 
-        toggleGuarding.setMessage(Component.literal("Toggle guarding: " + this.ship.isGuarding()));
+//        toggleGuarding.setMessage(Component.literal("Toggle guarding: " + this.ship.isGuarding()));
         toggleMelee.setMessage(Component.literal("Toggle melee: " + this.ship.canMelee()));
         if (ship instanceof BasicCannonShip cannonShip) {
             toggleCannonFireMode.setMessage(Component.literal("Toggle cannon fire mode: " + cannonShip.getCannonFireMode()));

@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.brain.ship;
 
-import com.github.icecheesecat.kantaicraft.brain.SetWalkTargetFromAttackTargetIfTargetOutOfReachAndShipCanMelee;
+import com.github.icecheesecat.kantaicraft.brain.ship.behavior.SetWalkTargetFromAttackTargetIfTargetOutOfReachAndShipCanMelee;
 import com.github.icecheesecat.kantaicraft.brain.ship.behavior.*;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
@@ -10,7 +10,6 @@ import com.github.icecheesecat.kantaicraft.registries.ModSensor;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.datafixers.kinds.App;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -18,7 +17,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.*;
 import net.minecraft.world.entity.ai.behavior.declarative.BehaviorBuilder;
-import net.minecraft.world.entity.ai.behavior.declarative.Trigger;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.sensing.Sensor;
@@ -29,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class CannonShipBrain {
 

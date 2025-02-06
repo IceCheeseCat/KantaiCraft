@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.brain;
+package com.github.icecheesecat.kantaicraft.brain.ship.behavior;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
