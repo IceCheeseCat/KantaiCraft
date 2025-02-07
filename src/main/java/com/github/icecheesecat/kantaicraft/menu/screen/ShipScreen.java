@@ -5,17 +5,16 @@ import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.equipment.*;
-import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
+import com.github.icecheesecat.kantaicraft.entity.ship.CannonFireMode;
+import com.github.icecheesecat.kantaicraft.equipment.Equipments;
+import com.github.icecheesecat.kantaicraft.network.Cache;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
-import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,24 +23,41 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
-    private static final ResourceLocation BACKGROUND_1 = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_menu_background_1.png");
+
+//    private static final ResourceLocation BACKGROUND_1 = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_menu_background_1.png");
     private static final ResourceLocation FIREPOWER_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/firepower_icon.png");
     private static final ResourceLocation TORPEDO_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/torpedo_icon.png");
     private static final ResourceLocation ANTIAIR_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/antiair_icon.png");
     private static final ResourceLocation ASW_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/asw_icon.png");
     private static final ResourceLocation TEST_256x256_0 = new ResourceLocation(KantaiCraft.MODID, "textures/gui/test_256x256_0.png");
     private static final ResourceLocation TEST_256x256_1 = new ResourceLocation(KantaiCraft.MODID, "textures/gui/test_256x256_1.png");
+    private static final ResourceLocation CAN_MELEE_FALSE = new ResourceLocation(KantaiCraft.MODID, "textures/gui/can_melee_false.png");
+    private static final ResourceLocation CAN_MELEE_TRUE = new ResourceLocation(KantaiCraft.MODID, "textures/gui/can_melee_true.png");
+    private static final ResourceLocation ROUND_ROBIN = new ResourceLocation(KantaiCraft.MODID, "textures/gui/round_robin.png");
+    private static final ResourceLocation VOLLEY = new ResourceLocation(KantaiCraft.MODID, "textures/gui/volley.png");
 
+    private int SECTION_X;
+    private int SECTION_Y;
+    private int SECTION_WIDTH;
+    private int SECTION_HEIGHT;
+
+    private static final int BACKGROUND = FastColor.ARGB32.color(102, 0, 0, 0);
 
     private final BasicEntityShip ship;
 
-//    Button toggleGuarding;
-    Button toggleMelee;
-    Button toggleCannonFireMode;
-    Button equipmentSection;
+    private ScreenSection TOGGLE_FEATURE_SECTION;
+    private ScreenSection TOGGLE_EQUIPMENT_SECTION;
+
+    private SectionSelector featureSS;
+    private SectionSelector equipmentSS;
 
     EquipmentHandler equipmentHandler;
+    private List<SelectionWidget> tempSelectionWidgets = new ArrayList<>();
+    boolean isSelectDirty = false;
 
     public ShipScreen(ShipMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -59,76 +75,109 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     @Override
     protected void init() {
         super.init();
-//        toggleGuarding = Button.builder(Component.translatable("shipscreen.toggleguarding"), button -> {
-//            ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.GUARD, this.ship.getId(), !this.ship.isGuarding()));
-//        }).pos(100, 100).build();
+        initVar();
 
-        toggleMelee = Button.builder(Component.translatable("shipscreen.togglemelee"), button -> {
-            ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.MELEE, this.ship.getId(), !this.ship.canMelee()));
-        }).pos(100, 125).build();
-
-        toggleCannonFireMode = Button.builder(Component.translatable("shipscreen.togglecannonfiremode"), button -> {
+        TOGGLE_FEATURE_SECTION = new ScreenSection(Component.translatable("toggle_feature_section_screen_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
+            TOGGLE_FEATURE_SECTION.addWidget(new SyncedWidget<>(50, 100, 32, 32, this.ship, BasicEntityShip.DATA_IS_GUARDING,
+                    ImmutableMap.of(false, TEST_256x256_0, true, TEST_256x256_1), SyncType.GUARD, (b) -> !b));
+            TOGGLE_FEATURE_SECTION.addWidget(new SyncedWidget<>(82, 100, 32, 32, this.ship, BasicEntityShip.DATA_CAN_MELEE,
+                    ImmutableMap.of(false, CAN_MELEE_FALSE, true, CAN_MELEE_TRUE), SyncType.MELEE, (b) -> !b));
             if (this.ship instanceof BasicCannonShip cannonShip) {
-                ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.CANNON_FIRE_MODE, cannonShip.getId(), cannonShip.getCannonFireMode().getNext()));
+                TOGGLE_FEATURE_SECTION.addWidget(new SyncedWidget<>(114, 100, 32, 32, this.ship, BasicCannonShip.CANNON_FIRE_MODE,
+                        ImmutableMap.of(CannonFireMode.ROUND_ROBIN, ROUND_ROBIN, CannonFireMode.VOLLEY, VOLLEY), SyncType.CANNON_FIRE_MODE, CannonFireMode::getNext));
             }
-        }).pos(100, 150).build();
+            TOGGLE_FEATURE_SECTION.widgets.forEach(widget -> this.addRenderableWidget(widget));
 
-        equipmentSection = Button.builder(Component.translatable("shipscreen.equipmentsection"), pButton -> {
-            this.minecraft.setScreen(new EquipmentScreen(Component.literal("equipment_screen"), this.ship, this));
-        }).pos(100, 175).build();
+        TOGGLE_EQUIPMENT_SECTION = new ScreenSection(Component.translatable("toggle_feature_section_screen_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
+            TOGGLE_EQUIPMENT_SECTION.addWidget(new EquipmentWidget(SECTION_X + 10, SECTION_Y + 10, this.ship, 0));
+            TOGGLE_EQUIPMENT_SECTION.addWidget(new EquipmentWidget(SECTION_X + 10, SECTION_Y + 10 + 42 , this.ship, 1));
+            TOGGLE_EQUIPMENT_SECTION.addWidget(new EquipmentWidget(SECTION_X + 10, SECTION_Y + 10 + 42 + 42, this.ship, 2));
+            TOGGLE_EQUIPMENT_SECTION.addWidget(new EquipmentWidget(SECTION_X + 10, SECTION_Y + 10 + 42 + 42 + 42 , this.ship, 3));
+            TOGGLE_EQUIPMENT_SECTION.widgets.forEach(this::addRenderableWidget);
 
-//        this.addRenderableWidget(toggleGuarding);
-        this.addRenderableWidget(toggleMelee);
-        this.addRenderableWidget(toggleCannonFireMode);
-        this.addRenderableWidget(equipmentSection);
+        featureSS = new SectionSelector(0, 0, 20, 10, Component.translatable("featuress"), TOGGLE_FEATURE_SECTION);
+        equipmentSS = new SectionSelector(0, 0, 20, 10, Component.translatable("equipmentss"), TOGGLE_EQUIPMENT_SECTION);
 
-        this.addRenderableWidget(new SyncedWidget<>(50, 100, 256, 256, this.ship, BasicEntityShip.DATA_IS_GUARDING,
-                ImmutableMap.of(false, TEST_256x256_0, true, TEST_256x256_1), (b) -> !b));
+        GridLayout gridLayout = new GridLayout(SECTION_X, SECTION_Y - 10);
+        gridLayout.defaultCellSetting().padding(4);
+        GridLayout.RowHelper rowHelper = gridLayout.createRowHelper(2);
+        rowHelper.addChild(featureSS);
+        rowHelper.addChild(equipmentSS);
+        gridLayout.arrangeElements();
+        gridLayout.visitWidgets(this::addRenderableWidget);
+
+        featureSS.setSelected(true);
+        equipmentSS.setSelected(false);
     }
 
-    /*
-        blit(
-         ResourceLocation,
-         leftCornerX, leftCornerY,
-         imageStartX, imageStartY,
-         bottomRightX, bottomRightY,
-         sizeX, sizeY
-        )
-     */
+    private void initVar() {
+        SECTION_X = 10;
+        SECTION_Y = this.height - (int) (this.height * 0.85) - 10;
+        SECTION_WIDTH = (int) (this.width * 0.6d);
+        SECTION_HEIGHT = (int) (this.height * 0.85);
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if (featureSS.mouseClicked(pMouseX, pMouseY, pButton)) {
+            this.equipmentSS.setSelected(false);
+        }
+        else if (equipmentSS.mouseClicked(pMouseX, pMouseY, pButton)) {
+            this.featureSS.setSelected(false);
+        }
+
+        tempSelectionWidgets.forEach((w) -> w.mouseClicked(pMouseX, pMouseY, pButton));
+        tempSelectionWidgets.forEach(this::removeWidget);
+        tempSelectionWidgets.clear();
+
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 //        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.blit(BACKGROUND_1, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
+        guiGraphics.fill(0, 0, this.width, this.height, BACKGROUND);
 
-//        toggleGuarding.setMessage(Component.literal("Toggle guarding: " + this.ship.isGuarding()));
-        toggleMelee.setMessage(Component.literal("Toggle melee: " + this.ship.canMelee()));
-        if (ship instanceof BasicCannonShip cannonShip) {
-            toggleCannonFireMode.setMessage(Component.literal("Toggle cannon fire mode: " + cannonShip.getCannonFireMode()));
-        }
+        TOGGLE_FEATURE_SECTION.render(guiGraphics, mouseX, mouseY, partialTick);
+        TOGGLE_EQUIPMENT_SECTION.render(guiGraphics, mouseX, mouseY, partialTick);
 
         //show status
-        if (menu.getEntityShip() != null) {
-            renderShipAttrs(guiGraphics, menu.getEntityShip(), 24, 5, FastColor.ABGR32.color(255, 255, 255 , 255));
-        }
+//        if (menu.getEntityShip() != null) {
+//            renderShipAttrs(guiGraphics, menu.getEntityShip(), 24, 5, FastColor.ABGR32.color(255, 255, 255 , 255));
+//        }
 
         for (var r: renderables) {
             r.render(guiGraphics, mouseX, mouseY, partialTick);
         }
 
-        for (int i = 0; i < this.equipmentHandler.getSlotSize(); i++) {
-            Equipment equipment = this.equipmentHandler.getEquipments().get(i);
-            EquipmentType type = this.equipmentHandler.getEquipments().get(i).getType();
+        updateWidget();
+    }
 
-            // show equipments
-//            if (equipment == this.ship.getShipClass().getDefaultEquipment()) {
-//                //draw sth
-//            }
-//            else {
-//
-//            }
+    private void updateWidget() {
+        if (isSelectDirty) {
+            if (Cache.selectionEntityId == this.ship.getId()) {
+                this.createSelectionWidget();
+            }
+
+            isSelectDirty = false;
         }
-        //        guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+    }
+
+    private void createSelectionWidget() {
+        EquipmentWidget widget = (EquipmentWidget) TOGGLE_EQUIPMENT_SECTION.widgets.get(Cache.selectionIndexCache);
+        List<SelectionWidget> widgets = new ArrayList<>();
+        for (int i = 0; i < Cache.selectionCache.size(); i++) {
+            widgets.add(new SelectionWidget(widget.getX() + 220, widget.getY() + 32 * i, Equipments.getEquipmentInstanceById(Cache.selectionCache.get(i), 0), this.ship, Cache.selectionIndexCache));
+        }
+
+        for (var w: widgets) {
+            this.addRenderableWidget(w);
+        }
+        this.tempSelectionWidgets.addAll(widgets);
+    }
+
+    @Override
+    protected void renderBg(GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
 
     }
 
@@ -159,8 +208,19 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
     }
 
-    @Override
-    protected void renderBg(GuiGraphics guiGraphics, float v, int i, int i1) {
+    public boolean isSelectDirty() {
+        return isSelectDirty;
     }
 
+    public void setSelectDirty(boolean selectDirty) {
+        isSelectDirty = selectDirty;
+    }
+
+    public ScreenSection getEquipmentSection() {
+        return TOGGLE_EQUIPMENT_SECTION;
+    }
+
+    public ScreenSection getFeatureSection() {
+        return TOGGLE_FEATURE_SECTION;
+    }
 }

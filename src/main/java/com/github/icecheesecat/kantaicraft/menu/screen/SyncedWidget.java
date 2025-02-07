@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -21,13 +20,15 @@ public class SyncedWidget<T> extends AbstractWidget {
     BasicEntityShip ship;
     EntityDataAccessor<T> accessor;
     Function<T, T> operation;
+    SyncType syncType;
 
-    public SyncedWidget(int pX, int pY, int pWidth, int pHeight, BasicEntityShip ship, EntityDataAccessor<T> accessor, Map<T, ResourceLocation> resources, Function<T, T> operation) {
+    public SyncedWidget(int pX, int pY, int pWidth, int pHeight, BasicEntityShip ship, EntityDataAccessor<T> accessor, Map<T, ResourceLocation> resources, SyncType syncType, Function<T, T> operation) {
         super(pX, pY, pWidth, pHeight, Component.empty());
         this.ship = ship;
         this.accessor = accessor;
         this.resources = resources;
         this.operation = operation;
+        this.syncType = syncType;
     }
 
     @Override
@@ -46,6 +47,6 @@ public class SyncedWidget<T> extends AbstractWidget {
     public void onClick(double pMouseX, double pMouseY) {
         T t = ship.getEntityData().get(accessor);
 
-        ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.GUARD, ship.getId(), operation.apply(t)));
+        ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(syncType, ship.getId(), operation.apply(t)));
     }
 }

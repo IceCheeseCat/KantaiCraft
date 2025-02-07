@@ -1,9 +1,7 @@
 package com.github.icecheesecat.kantaicraft.network;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.network.packet.ClientRemoveTrajectoryPacket;
-import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
-import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -42,6 +40,22 @@ public class ModPacketHandler {
                 ClientRemoveTrajectoryPacket::encode,
                 ClientRemoveTrajectoryPacket::decode,
                 ClientRemoveTrajectoryPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                S2CEquipmentOptionsPacket.class,
+                S2CEquipmentOptionsPacket::encode,
+                S2CEquipmentOptionsPacket::decode,
+                S2CEquipmentOptionsPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                C2SEquipmentOptionsPacket.class,
+                C2SEquipmentOptionsPacket::encode,
+                C2SEquipmentOptionsPacket::decode,
+                C2SEquipmentOptionsPacket::handle
         );
     }
 

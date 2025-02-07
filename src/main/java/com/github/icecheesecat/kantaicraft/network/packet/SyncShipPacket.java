@@ -6,6 +6,8 @@ import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
 import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
+import com.github.icecheesecat.kantaicraft.menu.screen.EquipmentWidget;
+import com.github.icecheesecat.kantaicraft.menu.screen.ShipScreen;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -96,8 +98,15 @@ public class SyncShipPacket {
                         switch (packet.syncType) {
                             case EQUIPMENT -> {
                                 ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(equipmentHandler -> {
-                                    equipmentHandler.setOnClient(packet.index, (Equipment) packet.value);;
+                                    equipmentHandler.setOnClient(packet.index, (Equipment) packet.value);
                                 });
+                                if (Minecraft.getInstance().screen instanceof ShipScreen screen) {
+                                    screen.getEquipmentSection().widgets.forEach(w -> {
+                                        if (w instanceof EquipmentWidget equipmentWidget) {
+                                            equipmentWidget.evaluateState();
+                                        }
+                                    });
+                                }
                             }
                         }
                     }

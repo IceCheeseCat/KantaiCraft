@@ -57,7 +57,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     private static final EntityDataAccessor<Float> DATA_AMMO = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> DATA_FACTION = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Boolean> DATA_IS_GUARDING = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> DATA_CAN_MELEE = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> DATA_CAN_MELEE = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.BOOLEAN);
 
     private boolean canPickUpItem = false;
     private UUID owner;
@@ -213,8 +213,8 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         super.tick();
         if (level().isClientSide) return;
         if (level().getGameTime() % 20 != 0) return;
-        this.getBrain().getRunningBehaviors().forEach(System.out::println);
-        System.out.println(this.entityData.get(DATA_IS_GUARDING));
+//        this.getBrain().getRunningBehaviors().forEach(System.out::println);
+//        System.out.println(this.entityData.get(DATA_IS_GUARDING));
     }
 
     @Override
@@ -292,13 +292,13 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.updateActivity();
 
         if (this.level().getGameTime() % 100 != 0) return;
-        this.getBrain().getMemories().forEach((m, ev) -> {
-            System.out.println(m.toString() + ev.toString());
-        });
-        System.out.println();
-        this.getBrain().getActiveActivities().forEach(System.out::println);
-        System.out.println();
-        System.out.println();
+//        this.getBrain().getMemories().forEach((m, ev) -> {
+//            System.out.println(m.toString() + ev.toString());
+//        });
+//        System.out.println();
+//        this.getBrain().getActiveActivities().forEach(System.out::println);
+//        System.out.println();
+//        System.out.println();
     }
 
     @Override

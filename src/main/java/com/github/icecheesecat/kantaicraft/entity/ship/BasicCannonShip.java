@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 public abstract class BasicCannonShip extends BasicEntityShip {
 
     private static final EntityDataSerializer<CannonFireMode> CANNON_FIRE_MODE_ENTITY_DATA_SERIALIZER = EntityDataSerializer.simpleEnum(CannonFireMode.class);
-    private static final EntityDataAccessor<CannonFireMode> CANNON_FIRE_MODE = SynchedEntityData.defineId(BasicCannonShip.class, CANNON_FIRE_MODE_ENTITY_DATA_SERIALIZER);
+    public static final EntityDataAccessor<CannonFireMode> CANNON_FIRE_MODE = SynchedEntityData.defineId(BasicCannonShip.class, CANNON_FIRE_MODE_ENTITY_DATA_SERIALIZER);
 
     protected BasicCannonShip(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);

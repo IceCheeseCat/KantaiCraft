@@ -25,7 +25,6 @@ public class SelectionWidget extends AbstractWidget {
     private static final int WHITE = FastColor.ARGB32.color(255, 0, 0, 0);
     private static final int BACKGROUND_COLOR = FastColor.ARGB32.color(255, 0, 166, 199);
 
-    AbstractWidget parent;
     Equipment equipment;
     BasicEntityShip ship;
     int index;
@@ -39,10 +38,6 @@ public class SelectionWidget extends AbstractWidget {
         this.equipment = equipment;
         this.ship = ship;
         this.index = index;
-    }
-
-    public void setParent(AbstractWidget parent) {
-        this.parent = parent;
     }
 
     @Override

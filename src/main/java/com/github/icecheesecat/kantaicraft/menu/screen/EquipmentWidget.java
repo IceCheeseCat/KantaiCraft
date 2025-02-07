@@ -1,11 +1,14 @@
 package com.github.icecheesecat.kantaicraft.menu.screen;
 
+import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentData;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentResourceLocation;
 import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
+import com.github.icecheesecat.kantaicraft.network.packet.C2SEquipmentOptionsPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -22,10 +25,10 @@ import java.util.List;
 
 public class EquipmentWidget extends AbstractWidget {
     private BasicEntityShip ship;
-    private Equipment equipment;
+    private EquipmentHandler equipmentHandler;
     private int index;
     private static final int WHITE = FastColor.ARGB32.color(255, 0, 0, 0);
-    private static final int BACKGROUND_COLOR = FastColor.ARGB32.color(255, 0, 166, 199);
+    private static final int BACKGROUND_COLOR = FastColor.ARGB32.color(200, 175, 154, 39);
     public static final int sizeX = 32;
     public static final int sizeY = 32;
     private static final int width = 200;
@@ -38,9 +41,8 @@ public class EquipmentWidget extends AbstractWidget {
     private static final int CHILD_OFFSET_X = 120;
     private static final int CHILD_OFFSET_Y = height;
     public WidgetState state;
-    private List<SelectionWidget> childrenWidget = new ArrayList<>();
 
-    public EquipmentWidget(int pX, int pY, BasicEntityShip ship, Equipment equipment, int index) {
+    public EquipmentWidget(int pX, int pY, BasicEntityShip ship, int index) {
         super(pX, pY, width, height, Component.empty());
         this.imageStartX = this.getX() + 30;
         this.imageStartY = this.getY();
@@ -48,13 +50,12 @@ public class EquipmentWidget extends AbstractWidget {
         this.levelTextStartX = this.getX() + 10;
         this.textCenterY = this.getY() + height / 2;
         this.ship = ship;
-        this.equipment = equipment;
         this.index = index;
-        this.evaluateState();
-    }
+        ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
+                handler -> this.equipmentHandler = handler
+        );
 
-    public List<SelectionWidget> getChildrenWidget() {
-        return childrenWidget;
+        this.evaluateState();
     }
 
     @Override
@@ -63,7 +64,6 @@ public class EquipmentWidget extends AbstractWidget {
         this.renderEquipmentLevel(pGuiGraphics);
         this.renderEquipmentIcon(pGuiGraphics);
         this.renderEquipmentName(pGuiGraphics);
-        this.childrenWidget.forEach(widget -> widget.renderWidget(pGuiGraphics, pMouseX, pMouseY, pPartialTick));
     }
 
     @Override
@@ -71,79 +71,30 @@ public class EquipmentWidget extends AbstractWidget {
 
     }
 
-
-
     @Override
     public void onClick(double pMouseX, double pMouseY) {
         switch (this.state) {
-            case EMPTY_EQUIPMENT -> {
-                this.emptyEquipmentCase();
-            }
-            case SELECTING -> {
-                // handled in mouseClicked method
+            case EMPTY_EQUIPMENT, UPGRADE_EQUIPMENT -> {
+                ModPacketHandler.INSTANCE.sendToServer(new C2SEquipmentOptionsPacket(this.ship.getId(), this.index, this.equipmentHandler.getEquipment(index).getId()));
             }
             case LEVEL_UP_EQUIPMENT -> {
                 ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.LEVEL_UP_EQUIPMENT, this.ship.getId(), 1, (byte) this.index));
             }
-            case UPGRADE_EQUIPMENT -> {
-                this.upgradeEquipmentCase();
-            }
         }
-    }
-
-    @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (pButton == InputConstants.MOUSE_BUTTON_LEFT && this.state == WidgetState.SELECTING) {
-            boolean flag = false;
-            for (var widget: childrenWidget) {
-                if (widget.mouseClicked(pMouseX, pMouseY, pButton)) {
-                    flag = true;
-                }
-            }
-
-            this.childrenWidget.clear();
-        }
-
-        this.evaluateState();
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
-    }
-
-    private void emptyEquipmentCase() {
-        var list = ConfigEquipmentData.getEquipmentById(this.equipment.getId());
-        List<Equipment> el = list.stream().map((id) -> Equipments.getEquipmentInstanceById(id, 0)).toList();
-        el = this.ship.evaluateEquipments(el);
-        for (int i = 0; i < el.size(); i++) {
-            var widget = new SelectionWidget(this.getX() + CHILD_OFFSET_X, this.getY() + CHILD_OFFSET_Y, el.get(i), this.ship, this.index);
-            widget.setParent(this);
-            this.childrenWidget.add(widget);
-        }
-
-        this.state = WidgetState.SELECTING;
-    }
-
-    private void upgradeEquipmentCase() {
-        var list = ConfigEquipmentData.getEquipmentById(this.equipment.getId());
-        List<Equipment> el = list.stream().map(id -> Equipments.getEquipmentInstanceById(id, 0)).toList();
-        el = this.ship.evaluateEquipments(el);
-        for (int i = 0; i < el.size(); i++) {
-            this.childrenWidget.add(new SelectionWidget(this.getX() + CHILD_OFFSET_X, this.getY() + CHILD_OFFSET_Y, el.get(i), this.ship, this.index));
-        }
-
-        this.state = WidgetState.SELECTING;
     }
 
 
     protected void renderEquipmentLevel(GuiGraphics guiGraphics) {
-        if (this.equipment.getId() < 0) {
+        if (this.equipmentHandler.getEquipment(index).getId() < 0) {
             return;
         }
-        int equipmentLevel = this.equipment.getLevel();
+        int equipmentLevel = this.equipmentHandler.getEquipment(index).getLevel();
 
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(equipmentLevel), levelTextStartX, textCenterY, WHITE);
     }
 
     protected void renderEquipmentIcon(GuiGraphics guiGraphics) {
-        ResourceLocation rl = EquipmentResourceLocation.getResourceById(this.equipment.getId());
+        ResourceLocation rl = EquipmentResourceLocation.getResourceById(this.equipmentHandler.getEquipment(index).getId());
         if (rl == null) return;
 
         guiGraphics.blit(rl,
@@ -155,27 +106,23 @@ public class EquipmentWidget extends AbstractWidget {
     }
 
     protected void renderEquipmentName(GuiGraphics guiGraphics) {
-        guiGraphics.drawString(Minecraft.getInstance().font, this.equipment.getName(), this.getX() + nameStartX, textCenterY, WHITE);
+        guiGraphics.drawString(Minecraft.getInstance().font, this.equipmentHandler.getEquipment(index).getName(), this.getX() + nameStartX, textCenterY, WHITE);
     }
 
     protected void renderBackground(GuiGraphics guiGraphics) {
         guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), BACKGROUND_COLOR);
     }
 
-    private void evaluateState() {
-        if (this.equipment.getId() == -1) {
+    public void evaluateState() {
+        if (this.equipmentHandler.getEquipment(index).getId() == -1) {
             this.state = WidgetState.EMPTY_EQUIPMENT;
         }
-        else if (this.equipment.getLevel() == Equipment.MAX_LEVEL) {
+        else if (this.equipmentHandler.getEquipment(index).getLevel() == Equipment.MAX_LEVEL) {
             this.state = WidgetState.UPGRADE_EQUIPMENT;
         }
         else {
             this.state = WidgetState.LEVEL_UP_EQUIPMENT;
         }
-    }
-
-    public void setEquipment(Equipment equipment) {
-        this.equipment = equipment;
     }
 
 }

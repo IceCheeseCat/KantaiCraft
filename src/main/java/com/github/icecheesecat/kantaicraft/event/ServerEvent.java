@@ -27,15 +27,15 @@ public class ServerEvent {
     @SubscribeEvent
     public static void livingEntityTick(LivingEvent.LivingTickEvent event) {
         if (event.getEntity().level().isClientSide) return;
-        Entity entity = event.getEntity();
-        if (entity instanceof BasicEntityShip ship && ship.level().getGameTime() % 200 == 0) {
-            ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent((handler) -> {
-                for (int i = 0; i < handler.getSlotSize(); i++) {
-                    Equipment equipment = handler.getEquipment(i);
-                    ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new SyncShipPacket(SyncType.EQUIPMENT, ship.getId(), equipment, (byte) i));
-                }
-            });
-        }
+//        Entity entity = event.getEntity();
+//        if (entity instanceof BasicEntityShip ship && ship.level().getGameTime() % 200 == 0) {
+//            ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent((handler) -> {
+//                for (int i = 0; i < handler.getSlotSize(); i++) {
+//                    Equipment equipment = handler.getEquipment(i);
+//                    ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new SyncShipPacket(SyncType.EQUIPMENT, ship.getId(), equipment, (byte) i));
+//                }
+//            });
+//        }
 
     }
 
