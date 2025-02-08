@@ -1,5 +1,6 @@
 package com.github.icecheesecat.kantaicraft.menu.screen;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
@@ -15,6 +16,7 @@ public class ScreenSection {
     private boolean isShow;
     private final Component title;
     private int x, y, width, height;
+    private TextGridLayout textGridLayout;
 
     public ScreenSection(Component title, int x, int y, int width, int height) {
         this.title = title;
@@ -42,6 +44,19 @@ public class ScreenSection {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (!isShow) return;
         guiGraphics.fill(x, y, x+width, y+height, BACKGROUND);
+        if (textGridLayout != null) {
+            for (var cell: textGridLayout.getGrid()) {
+                var pos = cell.getPos();
+                guiGraphics.drawString(Minecraft.getInstance().font, cell.getText(), pos.minX, pos.minY, textGridLayout.getColor());
+            }
+        }
     }
 
+    public TextGridLayout getTextGridLayout() {
+        return textGridLayout;
+    }
+
+    public void setTextGridLayout(TextGridLayout textGridLayout) {
+        this.textGridLayout = textGridLayout;
+    }
 }
