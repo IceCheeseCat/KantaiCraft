@@ -2,16 +2,13 @@ package com.github.icecheesecat.kantaicraft.menu.screen;
 
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
-import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentData;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentResourceLocation;
-import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.C2SEquipmentOptionsPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -19,9 +16,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class EquipmentWidget extends AbstractWidget {
     private BasicEntityShip ship;
@@ -125,4 +119,10 @@ public class EquipmentWidget extends AbstractWidget {
         }
     }
 
+    public enum WidgetState {
+        EMPTY_EQUIPMENT,
+        LEVEL_UP_EQUIPMENT,
+        UPGRADE_EQUIPMENT,
+        DO_NOTHING
+    }
 }
