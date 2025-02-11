@@ -58,7 +58,11 @@ public class SetWalkTargetFromAttackTargetIfTargetOutOfReachAndShipCanMelee {
                     Optional<NearestVisibleLivingEntities> optional = instance.tryGet(nearestVisibleLivingEntities);
 
                     // check whether can melee
-                    if (!apporachMeleeIfHaveThreatAndIfNotEnoughAmmo(ship)) {
+                    if (!ship.canMelee()) {
+                        return false;
+                    }
+
+                    if (ship.canMelee() && ship.hasAmmo() && ship.hasAttackableEquipment()) {
                         return false;
                     }
 
@@ -75,12 +79,12 @@ public class SetWalkTargetFromAttackTargetIfTargetOutOfReachAndShipCanMelee {
         });
     }
 
-    private static boolean apporachMeleeIfHaveThreatAndIfNotEnoughAmmo(BasicEntityShip ship) {
-
-        double size = ship.getAttributeValue(ModAttribute.SHIPSONAL_SPACE.get());
-        List<Mob> threats = ship.level().getNearbyEntities(Mob.class, TargetingConditions.DEFAULT, ship, AABB.ofSize(ship.position(), size, size, size)).stream().filter(Mob::isAggressive).toList();
-        if (threats.size() != 0) return true;
-
-        return ship.canMelee() && !ship.hasAmmo();
-    }
+//    private static boolean apporachMeleeIfHaveThreatAndIfNotEnoughAmmo(BasicEntityShip ship) {
+//
+//        double size = ship.getAttributeValue(ModAttribute.SHIPSONAL_SPACE.get());
+//        List<Mob> threats = ship.level().getNearbyEntities(Mob.class, TargetingConditions.DEFAULT, ship, AABB.ofSize(ship.position(), size, size, size)).stream().filter(Mob::isAggressive).toList();
+//        if (threats.size() != 0) return true;
+//
+//        return ship.canMelee() && !ship.hasAmmo();
+//    }
 }

@@ -1,6 +1,8 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
 import com.github.icecheesecat.kantaicraft.brain.ship.CannonShipBrain;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
+import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
@@ -11,13 +13,16 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
+
 public abstract class BasicCannonShip extends BasicEntityShip {
 
     private static final EntityDataSerializer<CannonFireMode> CANNON_FIRE_MODE_ENTITY_DATA_SERIALIZER = EntityDataSerializer.simpleEnum(CannonFireMode.class);
     public static final EntityDataAccessor<CannonFireMode> CANNON_FIRE_MODE = SynchedEntityData.defineId(BasicCannonShip.class, CANNON_FIRE_MODE_ENTITY_DATA_SERIALIZER);
+    public static final List<EquipmentType> ATTACKABLE_TYPES = ImmutableList.of(EquipmentType.CANNON);
 
     protected BasicCannonShip(EntityType<? extends PathfinderMob> entityType, Level level) {
-        super(entityType, level);
+        super(entityType, level, ATTACKABLE_TYPES);
     }
 
     @Override

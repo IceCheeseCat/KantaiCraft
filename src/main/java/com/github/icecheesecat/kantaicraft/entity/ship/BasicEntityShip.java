@@ -1,7 +1,9 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
+import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
 import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
@@ -50,7 +52,9 @@ import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BasicEntityShip extends PathfinderMob implements MenuProvider, IStatsGrowth, IFaction<BasicEntityShip>, IPhysicalEntity, ISlotCheckerEntity, IShipField, IEquipmentSelector {
 
@@ -63,17 +67,18 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     private static final EntityDataAccessor<Integer> DATA_FACTION = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Boolean> DATA_IS_GUARDING = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> DATA_CAN_MELEE = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.BOOLEAN);
-
     private boolean canPickUpItem = false;
     private UUID owner;
     protected boolean debugMode = false;
+    protected final List<EquipmentType> attackbleEquipmentTypes;
 
-    protected BasicEntityShip(EntityType<? extends PathfinderMob> entityType, Level level) {
+    protected BasicEntityShip(EntityType<? extends PathfinderMob> entityType, Level level, List<EquipmentType> attackbleEquipmentTypes) {
         super(entityType, level);
 
         this.setAircraft((int) this.getAttributeValue(ModAttribute.AIRCRAFT.get()));
         this.setFuel((float) this.getAttributeValue(ModAttribute.FUEL.get()));
         this.setAmmo((float) this.getAttributeValue(ModAttribute.AMMO.get()));
+        this.attackbleEquipmentTypes = ImmutableList.copyOf(attackbleEquipmentTypes);
     }
 
     @Override
@@ -406,6 +411,17 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         }
     }
 
+    private EquipmentHandler tempHandler;
+    public boolean hasAttackableEquipment() {
+        AtomicBoolean r = new AtomicBoolean(false);
+        this.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
+                handler -> {
+                    r.set(handler.getEquipments().stream().anyMatch(e -> this.attackbleEquipmentTypes.contains(e.getType())));
+                }
+        );
 
+        return r.get();
+
+    }
 
 }
