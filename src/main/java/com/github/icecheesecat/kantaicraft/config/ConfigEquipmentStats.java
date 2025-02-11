@@ -17,6 +17,8 @@ public class ConfigEquipmentStats {
 
     static {
 
+        ALL_EQUIPMENT_STATS.put(EquipmentProperties.EMPTY.getId(),
+                new EquipmentStats());
         ALL_EQUIPMENT_STATS.put(EquipmentProperties.__12cm_single_gun_mount__.getId(),
                 new CannonStats(BUILDER, EquipmentProperties.__12cm_single_gun_mount__.getName(), 0, 45.0d, 5.0d, 20.0d, 5.0d));
         ALL_EQUIPMENT_STATS.put(EquipmentProperties.__12cm_twin_gun_mount__.getId(),
@@ -35,11 +37,17 @@ public class ConfigEquipmentStats {
 
     public static Map<EquipmentStatType, Double> createMap(int id) {
         var stats = ALL_EQUIPMENT_STATS.get(id);
-        return stats.configStats.entrySet().stream().collect(
-                Collectors.toMap((entry) -> entry.getKey(),
-                        (entry) -> entry.getValue().get(),
-                        null,
-                        HashMap::new));
+//        return stats.configStats.entrySet().stream().collect(
+//                Collectors.toMap(entry -> entry.getKey(),
+//                        (entry) -> entry.getValue().get(),
+//                        null,
+//                        HashMap::new));
+        Map<EquipmentStatType, Double> nMap = new HashMap<>();
+        for (var ele: stats.configStats.entrySet()) {
+            nMap.put(ele.getKey(), ele.getValue().get()) ;
+        }
+
+        return nMap;
     }
 
 

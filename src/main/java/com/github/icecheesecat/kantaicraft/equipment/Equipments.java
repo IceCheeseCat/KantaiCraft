@@ -43,6 +43,9 @@ public class Equipments {
 
     public static Equipment getEquipmentInstanceById(int uid, int level) {
         Equipment equipment = ALL_EQUIPMENTS.getOrDefault(uid, EMPTY);
+        if (equipment.equals(Equipments.EMPTY)) {
+            return EMPTY;
+        }
 
         Equipment e = equipment.asCopy();
         e.setLevel(level);

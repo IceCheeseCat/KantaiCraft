@@ -8,9 +8,9 @@ import java.util.Map;
 public class EquipmentProperties {
 
     public static final EquipmentProperties EMPTY = new EquipmentProperties(-1, Component.translatable("equipment.empty"));
-    public static final EquipmentProperties __12cm_single_gun_mount__ = new EquipmentProperties(101, Component.translatable("equipment.12cm_single_gun_mount"));
-    public static final EquipmentProperties __12cm_twin_gun_mount__ = new EquipmentProperties(101, Component.translatable("equipment.12cm_twin_gun_mount"));
-    public static final EquipmentProperties __12cm_twin_gun_mount_model_b_kai_2__ = new EquipmentProperties(101, Component.translatable("equipment.12cm_twin_gun_mount_model_b_kai_2"));
+    public static final EquipmentProperties __12cm_single_gun_mount__ = new EquipmentProperties(101, Component.translatable("cannon.12cm_single_gun_mount"));
+    public static final EquipmentProperties __12cm_twin_gun_mount__ = new EquipmentProperties(102, Component.translatable("cannon.12cm_twin_gun_mount"));
+    public static final EquipmentProperties __12cm_twin_gun_mount_model_b_kai_2__ = new EquipmentProperties(103, Component.translatable("cannon.12cm_twin_gun_mount_model_b_kai_2"));
 
     public static Map<Integer, EquipmentProperties> ALL_PROPERTIES = ImmutableMap.of(
             -1, EMPTY,
