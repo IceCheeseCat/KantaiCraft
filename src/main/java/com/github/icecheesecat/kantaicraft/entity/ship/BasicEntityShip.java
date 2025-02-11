@@ -1,6 +1,10 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
+import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
 import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
+import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
+import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
@@ -42,6 +46,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -213,8 +218,18 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         super.tick();
         if (level().isClientSide) return;
         if (level().getGameTime() % 20 != 0) return;
-//        this.getBrain().getRunningBehaviors().forEach(System.out::println);
-//        System.out.println(this.entityData.get(DATA_IS_GUARDING));
+
+        broadcastEquipmentHandler();
+    }
+
+    public void broadcastEquipmentHandler() {
+        this.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
+                handler -> {
+                    for (int i = 0; i < handler.getSlotSize(); i++) {
+                        ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new SyncShipPacket(SyncType.EQUIPMENT, this.getId(), handler.getEquipment(i), (byte) i));
+                    }
+                }
+        );
     }
 
     @Override
