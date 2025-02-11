@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.config;
 
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentProperties;
 import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import com.google.common.collect.ImmutableList;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -9,32 +9,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ConfigEquipmentData {
+public class ConfigEquipmentTree {
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
 
     private static final Map<Integer, ForgeConfigSpec.ConfigValue<List<? extends Integer>>> EQUIPMENT_TREE_CONFIG = new HashMap<>();
-//    public static final ForgeConfigSpec.ConfigValue<List<? extends Integer>> EMPTY_DESTROYER;
 
     static {
-//        EMPTY_DESTROYER = BUILDER.comment("Default destroyer equipment options test")
-//                        .defineList("default_destroyer_equipment_options_test",
-//                                ImmutableList.of(Equipments.__12cm_single_gun_mount__.getUid()),
-//                                Equipments.ALL_EQUIPMENTS_MAP::containsKey);
 
-        EQUIPMENT_TREE_CONFIG.put(Equipment.EMPTY.getId(),
+        EQUIPMENT_TREE_CONFIG.put(Equipments.EMPTY.getId(),
                 BUILDER.comment("Default destroyer equipment options")
                         .defineList("default_destroyer_equipment_options",
-                                ImmutableList.of(Equipments.__12cm_single_gun_mount__.getId()),
-                                Equipments.ALL_EQUIPMENTS_MAP::containsKey));
-        EQUIPMENT_TREE_CONFIG.put(Equipments.__12cm_single_gun_mount__.getId(),
+                                ImmutableList.of(101),
+                                EquipmentProperties.ALL_PROPERTIES::containsKey));
+        EQUIPMENT_TREE_CONFIG.put(101,
                 BUILDER.comment("12 cm single gun mount")
                         .defineList("12cm_single_gun_mount",
                                 ImmutableList.of(
-                                        Equipments.__12cm_twin_gun_mount__.getId(),
-                                        Equipments.__12cm_twin_gun_mount_model_B_kai_2__.getId()),
-                                Equipments.ALL_EQUIPMENTS_MAP::containsKey));
+                                        102, 103),
+                                EquipmentProperties.ALL_PROPERTIES::containsKey));
 
         SPEC = BUILDER.build();
     }

@@ -1,8 +1,5 @@
 package com.github.icecheesecat.kantaicraft.util;
 
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.Equipments;
-
 public class ShipFields {
     public enum ShipClass {
         DESTROYER,

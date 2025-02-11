@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft;
 
-import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentData;
+import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentStats;
+import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentTree;
 import com.github.icecheesecat.kantaicraft.registries.*;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,11 +32,12 @@ public class KantaiCraft
         ModSensor.SENSOR_TYPES.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         ModPacketHandler.registerMessages();
-        ModEquipment.EQUIPMENTS.register(modEventBus);
         ModBlock.BLOCKS.register(modEventBus);
         ModBlock.BLOCK_ENTITIES.register(modEventBus);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentData.SPEC, KantaiCraft.MODID + "_equipment.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentTree.SPEC, KantaiCraft.MODID + "_equipment_tree.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentStats.SPEC, KantaiCraft.MODID + "_equipment_stats.toml");
+
     }
 
 }

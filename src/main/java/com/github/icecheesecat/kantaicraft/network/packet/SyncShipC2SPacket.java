@@ -6,7 +6,7 @@
 //import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 //import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
 //import com.github.icecheesecat.kantaicraft.equipment.Equipments;
-//import com.github.icecheesecat.kantaicraft.registries.ModEquipment;
+//import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 //import net.minecraft.network.FriendlyByteBuf;
 //import net.minecraft.world.entity.Entity;
 //import net.minecraftforge.network.NetworkEvent;

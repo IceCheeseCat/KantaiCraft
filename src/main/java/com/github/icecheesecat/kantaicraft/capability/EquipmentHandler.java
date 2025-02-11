@@ -2,6 +2,7 @@ package com.github.icecheesecat.kantaicraft.capability;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.ISlotCheckerEntity;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
+import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -16,7 +17,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
 
     public EquipmentHandler(int size) {
         this.slotSize = size;
-        this.equipments = NonNullList.withSize(size, Equipment.EMPTY);
+        this.equipments = NonNullList.withSize(size, Equipments.EMPTY);
         this.dirty = NonNullList.withSize(size, false);
     }
 
@@ -56,7 +57,8 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
             String str = "equipmenthandler.equipment." + i;
             Equipment equipment = equipments.get(i);
 
-            nbt.put(str, equipment.save());
+            nbt.putInt(str + ".id", equipment.getId());
+            nbt.putInt(str + ".level", equipment.getLevel());
         }
         return nbt;
     }
@@ -66,9 +68,11 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
         this.slotSize = nbt.getInt("equipmenthandler.size");
         for (int i = 0; i < this.slotSize; i++) {
             String str = "equipmenthandler.equipment." + i;
-            Equipment equipment = Equipment.EMPTY.asCopy();
+            int id = nbt.getInt(str + ".id");
+            int level = nbt.getInt(str + ".level");
 
-            this.equipments.set(i, equipment.load((CompoundTag) nbt.get(str)));
+            Equipment equipment = Equipments.getEquipmentInstanceById(id, level);
+            this.equipments.set(i, equipment);
         }
     }
 

@@ -1,46 +1,47 @@
 package com.github.icecheesecat.kantaicraft.equipment;
 
-import com.github.icecheesecat.kantaicraft.util.ShipFields;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Equipment {
+public abstract class Equipment {
 
     protected Map<EquipmentStatType, Double> stats = new HashMap<>();
     private int id;
-    private String name;
+    private Component name;
     private int level;
+    private EquipmentType type;
+
     public static final int MAX_LEVEL = 10;
+    protected List<EquipmentStatType> requiredStats = new ArrayList<>();
 
-    public static final Equipment EMPTY = new Equipment(-1, "NONE");
-
-    protected Equipment(Equipment equipment) {
-        this(equipment.id, equipment.name);
-        this.stats.putAll(equipment.stats);
+    public Equipment(Equipment equipment) {
+        this(equipment.id, equipment.name, equipment.type, equipment.stats);
+        this.requiredStats = List.copyOf(equipment.requiredStats);
     }
 
-    public Equipment(int id, String name) {
+    public Equipment(int id, Component name, EquipmentType type, Map<EquipmentStatType, Double> stats) {
         this.id = id;
         this.name = name;
         this.level = 0;
-    }
-
-    public Equipment addStat(EquipmentStatType type, Double v) {
-        this.stats.put(type, v);
-        return this;
+        this.type = type;
+        this.stats.putAll(stats);
+        if (EquipmentType.calculateType(id) != this.getType()) {
+            throw new IllegalStateException("Not valid id ("+ id + ") for " + this.getClass().getName() + " related to " + this.getType().name() + "\n.");
+        }
+        if (!this.checkStats()) {
+            throw new IllegalStateException("Missing stats in " + this.getClass() + " (" + this.getName() + ").\n");
+        }
     }
 
     public double getStat(EquipmentStatType type) {
         return stats.get(type);
     }
 
-    private void setStats(Map<EquipmentStatType, Double> s) {
+    public void setStats(Map<EquipmentStatType, Double> s) {
         this.stats = s;
     }
 
@@ -52,8 +53,8 @@ public class Equipment {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public Component getName() {
+        return this.name;
     }
 
     public int getLevel() {
@@ -69,35 +70,30 @@ public class Equipment {
     }
 
     public EquipmentType getType() {
-        return EquipmentType.calculateType(this.id);
+        return this.type;
     }
 
-    public Equipment asCopy() {
-        return new Equipment(this) {};
+    public abstract Equipment asCopy();
+
+//    public CompoundTag save() {
+//        CompoundTag nbt = new CompoundTag();
+//        nbt.putInt("equipment.id", this.id);
+//        nbt.putInt("equipment.level", this.level);
+//
+//        return nbt;
+//    }
+//
+//    public Equipment load(CompoundTag nbt) {
+//        this.id = nbt.getInt("equipment.id");
+//        this.level = nbt.getInt("equipment.level");
+//
+//        return Equipments.getEquipmentInstanceById(id, level);
+//    }
+
+    public boolean checkStats() {
+        return this.requiredStats.stream().allMatch(this.stats::containsKey);
     }
 
-    public CompoundTag save() {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putInt("equipment.id", this.id);
+    protected abstract void setRequiredStats();
 
-//        List<Integer> statTypes = new ArrayList<>();
-//        this.stats.forEach((tpye, value) -> statTypes.add(tpye.ordinal()));
-//        nbt.putIntArray("equipment.stattypes", statTypes.stream().mapToInt(Integer::intValue).toArray());
-//        this.stats.forEach((type, value) -> nbt.putDouble("equipment." + type.name().toLowerCase(), value));
-
-        nbt.putInt("equipment.level", this.level);
-
-        return nbt;
-    }
-
-    public Equipment load(CompoundTag nbt) {
-//        int[] statTypes = nbt.getIntArray("equipment.stattypes");
-//        for (int i: statTypes) {
-//            EquipmentStatType type = EquipmentStatType.get(i);
-//            this.stats.put(type, nbt.getDouble("equipment." + type.name().toLowerCase()));
-//        }
-        this.id = nbt.getInt("equipment.id");
-        this.level = nbt.getInt("equipment.level");
-        return Equipments.getEquipmentInstanceById(this.id, this.level);
-    }
 }
