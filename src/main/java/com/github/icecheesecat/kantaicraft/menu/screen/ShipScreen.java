@@ -16,10 +16,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,10 +40,18 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     private static final ResourceLocation ROUND_ROBIN = new ResourceLocation(KantaiCraft.MODID, "textures/gui/round_robin.png");
     private static final ResourceLocation VOLLEY = new ResourceLocation(KantaiCraft.MODID, "textures/gui/volley.png");
 
+    private static final int ENTITY_MODEL_BACKGROUND = FastColor.ARGB32.color(200, 255, 255, 255);
+
     private int SECTION_X;
     private int SECTION_Y;
     private int SECTION_WIDTH;
     private int SECTION_HEIGHT;
+    private int ENTITY_MODEL_X;
+    private int ENTITY_MODEL_Y;
+    private int ENTITY_MODEL_CENTER_X;
+    private int ENTITY_MODEL_CENTER_Y;
+    private int ENTITY_MODEL_WIDTH;
+    private int ENTITY_MODEL_HEIGHT;
 
     private static final int BACKGROUND = FastColor.ARGB32.color(102, 0, 0, 0);
 
@@ -51,9 +59,13 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
     private ScreenSection TOGGLE_FEATURE_SECTION;
     private ScreenSection TOGGLE_EQUIPMENT_SECTION;
+    private ScreenSection TOGGLE_STATS_SECTION;
 
+    int indexSS = 0;
     private SectionSelector featureSS;
     private SectionSelector equipmentSS;
+    private SectionSelector statsSS;
+    private final SectionManager sectionManager = new SectionManager();
 
     EquipmentHandler equipmentHandler;
     private List<SelectionWidget> tempSelectionWidgets = new ArrayList<>();
@@ -95,19 +107,17 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
             TOGGLE_EQUIPMENT_SECTION.addWidget(new EquipmentWidget(SECTION_X + 10, SECTION_Y + 10 + 42 + 42 + 42 , this.ship, 3));
             TOGGLE_EQUIPMENT_SECTION.widgets.forEach(this::addRenderableWidget);
 
+        TOGGLE_STATS_SECTION = new ScreenSection(Component.translatable("toggle_stats_section_screen_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
+            TextGridLayout statsTextGridLayout = createStatsTextGrid();
+                statsTextGridLayout.arrangeElements();
+            TOGGLE_STATS_SECTION.setTextGridLayout(statsTextGridLayout);
+
         featureSS = new SectionSelector(0, 0, 20, 10, Component.translatable("featuress"), TOGGLE_FEATURE_SECTION);
         equipmentSS = new SectionSelector(0, 0, 20, 10, Component.translatable("equipmentss"), TOGGLE_EQUIPMENT_SECTION);
+        statsSS = new SectionSelector(0, 0, 20, 10, Component.translatable("statsSS"), TOGGLE_STATS_SECTION);
 
-        GridLayout gridLayout = new GridLayout(SECTION_X, SECTION_Y - 10);
-        gridLayout.defaultCellSetting().padding(4);
-        GridLayout.RowHelper rowHelper = gridLayout.createRowHelper(2);
-        rowHelper.addChild(featureSS);
-        rowHelper.addChild(equipmentSS);
-        gridLayout.arrangeElements();
-        gridLayout.visitWidgets(this::addRenderableWidget);
+        setupSectionSelector();
 
-        featureSS.setSelected(true);
-        equipmentSS.setSelected(false);
     }
 
     private void initVar() {
@@ -115,16 +125,45 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         SECTION_Y = this.height - (int) (this.height * 0.85) - 10;
         SECTION_WIDTH = (int) (this.width * 0.6d);
         SECTION_HEIGHT = (int) (this.height * 0.85);
+        ENTITY_MODEL_X = SECTION_X + SECTION_WIDTH;
+        ENTITY_MODEL_Y = SECTION_Y;
+        ENTITY_MODEL_WIDTH = (int) (this.width * 0.3d);
+        ENTITY_MODEL_HEIGHT = (int) (this.height * 0.85);
+        ENTITY_MODEL_CENTER_X = ENTITY_MODEL_X + ENTITY_MODEL_WIDTH / 2;
+        ENTITY_MODEL_CENTER_Y = ENTITY_MODEL_Y + ENTITY_MODEL_HEIGHT / 2;
+    }
+
+    private void addSectionSelector(GridLayout gridLayout, SectionSelector ss, boolean selected) {
+        gridLayout.addChild(ss, 0, indexSS++);
+        ss.setSelected(selected);
+    }
+
+    private void setupSectionSelector() {
+        GridLayout gridLayout = new GridLayout(SECTION_X, SECTION_Y - 10);
+        gridLayout.defaultCellSetting().padding(4);
+        this.addSectionSelector(gridLayout, featureSS, true);
+        this.addSectionSelector(gridLayout, equipmentSS, false);
+        this.addSectionSelector(gridLayout, statsSS, false);
+        gridLayout.arrangeElements();
+        gridLayout.visitWidgets(this::addRenderableWidget);
+
+        this.sectionManager.addSection(featureSS, TOGGLE_FEATURE_SECTION);
+        this.sectionManager.addSection(equipmentSS, TOGGLE_EQUIPMENT_SECTION);
+        this.sectionManager.addSection(statsSS, TOGGLE_STATS_SECTION);
+    }
+
+    private @NotNull TextGridLayout createStatsTextGrid() {
+        TextGridLayout textGridLayout = new TextGridLayout(SECTION_X, SECTION_Y, 10, 40);
+        textGridLayout.addChild(() -> String.valueOf(this.ship.getAttributeValue(ModAttribute.FIREPOWER.get())), 0, 0);
+        textGridLayout.addChild(() -> String.valueOf(this.ship.getAttributeValue(ModAttribute.TORPEDO.get())), 0, 1);
+        textGridLayout.addChild(() -> String.valueOf(this.ship.getAttributeValue(ModAttribute.ANTIAIR.get())), 0, 2);
+        textGridLayout.addChild(() -> String.valueOf(this.ship.getAttributeValue(ModAttribute.ASW.get())), 0, 3);
+        return textGridLayout;
     }
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (featureSS.mouseClicked(pMouseX, pMouseY, pButton)) {
-            this.equipmentSS.setSelected(false);
-        }
-        else if (equipmentSS.mouseClicked(pMouseX, pMouseY, pButton)) {
-            this.featureSS.setSelected(false);
-        }
+        sectionManager.controlSections(pMouseX, pMouseY, pButton);
 
         tempSelectionWidgets.forEach((w) -> w.mouseClicked(pMouseX, pMouseY, pButton));
         tempSelectionWidgets.forEach(this::removeWidget);
@@ -136,21 +175,24 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 //        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.fill(0, 0, this.width, this.height, BACKGROUND);
+        guiGraphics.fill(0, 0, this.width, this.height, -1000, BACKGROUND);
+        this.renderEntityWithBg(guiGraphics, mouseX, mouseY);
 
         TOGGLE_FEATURE_SECTION.render(guiGraphics, mouseX, mouseY, partialTick);
         TOGGLE_EQUIPMENT_SECTION.render(guiGraphics, mouseX, mouseY, partialTick);
+        TOGGLE_STATS_SECTION.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        //show status
-//        if (menu.getEntityShip() != null) {
-//            renderShipAttrs(guiGraphics, menu.getEntityShip(), 24, 5, FastColor.ABGR32.color(255, 255, 255 , 255));
-//        }
 
         for (var r: renderables) {
             r.render(guiGraphics, mouseX, mouseY, partialTick);
         }
 
         updateWidget();
+    }
+
+    private void renderEntityWithBg(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, ENTITY_MODEL_CENTER_X, ENTITY_MODEL_CENTER_Y + 30, 40, ENTITY_MODEL_CENTER_X - mouseX, ENTITY_MODEL_CENTER_Y - mouseY, this.ship);
+        guiGraphics.fill(ENTITY_MODEL_X, ENTITY_MODEL_Y, ENTITY_MODEL_X + ENTITY_MODEL_WIDTH, ENTITY_MODEL_Y + ENTITY_MODEL_HEIGHT, -999, ENTITY_MODEL_BACKGROUND);
     }
 
     private void updateWidget() {
@@ -178,33 +220,6 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
     @Override
     protected void renderBg(GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
-
-    }
-
-    private void renderShipAttrs(GuiGraphics guiGraphics, BasicEntityShip entity, int x, int y, int color) {
-
-        int offset = 8;
-        int xOffset = 12;
-
-//        var attributes = entity.getAttributes();
-        guiGraphics.blit(FIREPOWER_ICON, x, y, 0, 0, 64, 64, 64, 64);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.FIREPOWER.get())) , x, y, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.TORPEDO.get())) , x, y + offset * 1, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.ANTIAIR.get())) , x, y + offset * 2, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.ASW.get())) , x, y + offset * 3, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.LOS.get())) , x, y + offset * 4, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.LUCK.get())) , x, y + offset * 5, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(Attributes.MAX_HEALTH)) , x + xOffset, y + offset * 6, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getHealth()) , x - xOffset, y + offset * 6, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.ARMOR.get())) , x, y + offset * 7, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.EVASION.get())) , x, y + offset * 8, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(Attributes.MOVEMENT_SPEED)) , x, y +  offset * 9, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.AIRCRAFT.get())) , x + xOffset, y +  offset * 10, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAircraft()) , x - xOffset, y +  offset * 10, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.FUEL.get())) , x + xOffset, y +  offset * 11, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getFuel()) , x - xOffset, y +  offset * 11, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAttributeValue(ModAttribute.AMMO.get())) , x + xOffset, y +  offset * 12, color);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(entity.getAmmo()) , x - xOffset, y +  offset * 12, color);
 
     }
 
