@@ -9,9 +9,12 @@ import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,10 +39,8 @@ public class ServerEvent {
 //                }
 //            });
 //        }
-
     }
 
-    static long FIVE_MINUTE = 20 * 60 * 5;
     @SubscribeEvent
     public static void onLivingDeathDrops(LivingDropsEvent event) {
 
