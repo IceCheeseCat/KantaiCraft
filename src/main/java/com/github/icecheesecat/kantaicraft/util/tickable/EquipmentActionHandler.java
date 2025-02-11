@@ -2,6 +2,7 @@ package com.github.icecheesecat.kantaicraft.util.tickable;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 import com.github.icecheesecat.kantaicraft.util.tickable.attack.ShipCannonAttack;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
@@ -33,7 +34,7 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
     public void updateAction(int i) {
         Equipment equipment = equipmentHandler.getEquipments().get(i);
          switch (equipment.getType()) {
-             case CANNON -> this.set(i, new ShipCannonAttack(entityShip, equipment));
+             case CANNON -> this.set(i, new ShipCannonAttack(entityShip, equipment, (int) equipment.getStat(EquipmentStatType.CANNON_COOLDOWN)));
              case NONE -> this.set(i, ShipTickableAction.NULL);
              default -> throw new RuntimeException("Unknown equipment type at " + entityShip);
          }

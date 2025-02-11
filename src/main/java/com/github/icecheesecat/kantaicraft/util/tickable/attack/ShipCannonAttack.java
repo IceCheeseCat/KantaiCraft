@@ -25,8 +25,8 @@ public class ShipCannonAttack extends ShipRangeAttack {
     Equipment cannon;
     List<Trajectory> trajectories = new ArrayList<>();
 
-    public ShipCannonAttack(BasicEntityShip ship, Equipment cannon) {
-        super(ship);
+    public ShipCannonAttack(BasicEntityShip ship, Equipment cannon, int cooldown) {
+        super(ship, cooldown);
         this.cannon = cannon;
     }
 

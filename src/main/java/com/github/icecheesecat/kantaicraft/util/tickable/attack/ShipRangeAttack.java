@@ -13,8 +13,8 @@ public abstract class ShipRangeAttack extends ShipTickableAction {
     private BasicEntityShip ship;
     private LivingEntity target;
 
-    public ShipRangeAttack(BasicEntityShip ship) {
-        super(4 * 20); // TODO configurable range cooldown
+    public ShipRangeAttack(BasicEntityShip ship, int cooldown) {
+        super(cooldown);
         this.ship = ship;
     }
 
