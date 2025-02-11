@@ -14,7 +14,7 @@ public class CannonStats extends EquipmentStats {
     ForgeConfigSpec.DoubleValue ANTI_AIR;
 
     public CannonStats(ForgeConfigSpec.Builder BUILDER, String path, double size, double range, double cooldown, double missileVelocity, double firePower) {
-        SIZE = BUILDER.comment("size").defineInRange(path + ".size", () -> size, 0.0d, 0.5d);
+        SIZE = BUILDER.comment("size").defineInRange(path + ".size", () -> size, 0.0d, 5.0d);
         RANGE = BUILDER.comment("range").defineInRange(path + ".range", () -> range, 0.0d, Double.MAX_VALUE);
         COOLDOWN = BUILDER.comment("cooldown").defineInRange(path + ".cooldown", () -> cooldown, 0.0d, Double.MAX_VALUE);
         MISSILE_VELOCITY = BUILDER.comment("missile velocity").defineInRange(path + ".missile_velocity", () -> missileVelocity, 0.0d, Double.MAX_VALUE);
