@@ -5,7 +5,6 @@ import com.github.icecheesecat.kantaicraft.registries.ModMenus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -16,14 +15,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class ShipMenu extends AbstractContainerMenu implements IContainerFactory<ShipMenu> {
 
-    final Inventory inventory;
+    final Inventory playerInventory;
     @NotNull BasicEntityShip entityShip;
 
     // server
     public ShipMenu(int containerId, Inventory inv, @Nullable BasicEntityShip entityShip) {
         super(ModMenus.SHIP_MENU.get(), containerId);
 
-        this.inventory = inv;
+        this.playerInventory = inv;
         this.entityShip = entityShip;
     }
 
@@ -31,7 +30,7 @@ public class ShipMenu extends AbstractContainerMenu implements IContainerFactory
     public ShipMenu(int containerId, Inventory inv, FriendlyByteBuf buf) {
         super(ModMenus.SHIP_MENU.get(), containerId);
         int id = buf.readInt();
-        this.inventory = inv;
+        this.playerInventory = inv;
 
         ClientLevel c_level = Minecraft.getInstance().level;
         if (c_level == null) {
@@ -68,8 +67,8 @@ public class ShipMenu extends AbstractContainerMenu implements IContainerFactory
         return IContainerFactory.super.create(p_create_1_, p_create_2_);
     }
 
-    public Inventory getInventory() {
-        return inventory;
+    public Inventory getPlayerInventory() {
+        return playerInventory;
     }
 
     public @Nullable BasicEntityShip getEntityShip() {
