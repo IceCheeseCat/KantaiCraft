@@ -4,6 +4,7 @@ import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
 import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
+import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
@@ -33,6 +34,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.*;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Inventory;
@@ -90,6 +92,11 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.entityData.define(DATA_FACTION, CommonEntityData.noFaction);
         this.entityData.define(DATA_IS_GUARDING, false);
         this.entityData.define(DATA_CAN_MELEE, false);
+    }
+
+    @Override
+    protected PathNavigation createNavigation(Level pLevel) {
+        return new ShipPathNavigation(this, pLevel);
     }
 
     public void addShipAttributes(AttributeSupplier sup) {
