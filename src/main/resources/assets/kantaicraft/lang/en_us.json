@@ -1,9 +1,9 @@
 {
   "entity.kantaicraft.destroyer_ro": "Destroyer Ro-Class",
   "item.kantaicraft.debug_faction_changer": "Faction Changer",
-  "cannon.12cm_single_gun_mount": "12 cm Single Gun Mount",
-  "cannon.12cm_twin_gun_mount": "12 cm Twin Gun Mount",
-  "cannon.12cm_twin_gun_mount_model_b_kai_2": "12 cm Twin Gun Mount Model B Kai II",
+  "cannon_equipment.12cm_single_gun_mount": "12 cm Single Gun Mount",
+  "cannon_equipment.12cm_twin_gun_mount": "12 cm Twin Gun Mount",
+  "cannon_equipment.12cm_twin_gun_mount_model_b_kai_2": "12 cm Twin Gun Mount Model B Kai II",
   "equipment.empty": "",
 
   "creativetab.tab_0": "kantaicraft"
