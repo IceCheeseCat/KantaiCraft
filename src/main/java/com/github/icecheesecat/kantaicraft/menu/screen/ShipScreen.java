@@ -12,7 +12,6 @@ import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -60,12 +59,14 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     private ScreenSection TOGGLE_FEATURE_SECTION;
     private ScreenSection TOGGLE_EQUIPMENT_SECTION;
     private ScreenSection TOGGLE_STATS_SECTION;
+    private ScreenSection TOGGLE_FACTION_SECTION;
 
-    int indexSS = 0;
     private SectionSelector featureSS;
     private SectionSelector equipmentSS;
     private SectionSelector statsSS;
+    private SectionSelector factionSS;
     private final SectionManager sectionManager = new SectionManager();
+    GridLayout gridLayout;
 
     EquipmentHandler equipmentHandler;
     private List<SelectionWidget> tempSelectionWidgets = new ArrayList<>();
@@ -88,6 +89,9 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     protected void init() {
         super.init();
         initVar();
+
+        gridLayout = new GridLayout(SECTION_X, SECTION_Y - 10);
+        gridLayout.defaultCellSetting().padding(4);
 
         TOGGLE_FEATURE_SECTION = new ScreenSection(Component.translatable("toggle_feature_section_screen_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
             TOGGLE_FEATURE_SECTION.addWidget(new SyncedWidget<>(50, 100, 32, 32, this.ship, BasicEntityShip.DATA_IS_GUARDING,
@@ -112,11 +116,21 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
                 statsTextGridLayout.arrangeElements();
             TOGGLE_STATS_SECTION.setTextGridLayout(statsTextGridLayout);
 
+        TOGGLE_FACTION_SECTION = new FactionSection(Component.translatable("toggle_faction_section_screen_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT, this.ship, FactionResourcesHelper.create(this.ship.getFactionId()));
+
+
         featureSS = new SectionSelector(0, 0, 20, 10, Component.translatable("featuress"), TOGGLE_FEATURE_SECTION);
         equipmentSS = new SectionSelector(0, 0, 20, 10, Component.translatable("equipmentss"), TOGGLE_EQUIPMENT_SECTION);
         statsSS = new SectionSelector(0, 0, 20, 10, Component.translatable("statsSS"), TOGGLE_STATS_SECTION);
+        factionSS = new SectionSelector(0, 0, 20, 10, Component.translatable("factionSS"), TOGGLE_FACTION_SECTION);
 
-        setupSectionSelector();
+
+        setupSectionSelector(0, featureSS, TOGGLE_FEATURE_SECTION, false);
+        setupSectionSelector(1, equipmentSS, TOGGLE_EQUIPMENT_SECTION, false);
+        setupSectionSelector(2, statsSS, TOGGLE_STATS_SECTION, true);
+        setupSectionSelector(3, factionSS, TOGGLE_FACTION_SECTION, false);
+        gridLayout.arrangeElements();
+        gridLayout.visitWidgets(this::addRenderableWidget);
 
     }
 
@@ -133,23 +147,14 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         ENTITY_MODEL_CENTER_Y = ENTITY_MODEL_Y + ENTITY_MODEL_HEIGHT / 2;
     }
 
-    private void addSectionSelector(GridLayout gridLayout, SectionSelector ss, boolean selected) {
-        gridLayout.addChild(ss, 0, indexSS++);
-        ss.setSelected(selected);
-    }
-
-    private void setupSectionSelector() {
-        GridLayout gridLayout = new GridLayout(SECTION_X, SECTION_Y - 10);
-        gridLayout.defaultCellSetting().padding(4);
-        this.addSectionSelector(gridLayout, featureSS, true);
-        this.addSectionSelector(gridLayout, equipmentSS, false);
-        this.addSectionSelector(gridLayout, statsSS, false);
-        gridLayout.arrangeElements();
-        gridLayout.visitWidgets(this::addRenderableWidget);
-
-        this.sectionManager.addSection(featureSS, TOGGLE_FEATURE_SECTION);
-        this.sectionManager.addSection(equipmentSS, TOGGLE_EQUIPMENT_SECTION);
-        this.sectionManager.addSection(statsSS, TOGGLE_STATS_SECTION);
+    private void setupSectionSelector(int num, SectionSelector ss, ScreenSection screenSection, boolean isSelected) {
+        gridLayout.addChild(ss, 0, num);
+        if (isSelected) {
+            this.sectionManager.addSectionAndSetSelected(ss, screenSection);
+        }
+        else {
+            this.sectionManager.addSection(ss, screenSection);
+        }
     }
 
     private @NotNull TextGridLayout createStatsTextGrid() {
@@ -177,11 +182,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 //        super.render(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.fill(0, 0, this.width, this.height, -1000, BACKGROUND);
         this.renderEntityWithBg(guiGraphics, mouseX, mouseY);
-
-        TOGGLE_FEATURE_SECTION.render(guiGraphics, mouseX, mouseY, partialTick);
-        TOGGLE_EQUIPMENT_SECTION.render(guiGraphics, mouseX, mouseY, partialTick);
-        TOGGLE_STATS_SECTION.render(guiGraphics, mouseX, mouseY, partialTick);
-
+        this.sectionManager.renderAll(guiGraphics, mouseX, mouseY, partialTick);
 
         for (var r: renderables) {
             r.render(guiGraphics, mouseX, mouseY, partialTick);

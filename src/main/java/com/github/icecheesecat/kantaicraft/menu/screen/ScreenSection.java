@@ -15,7 +15,7 @@ public class ScreenSection {
     private static final int BACKGROUND = FastColor.ARGB32.color(102, 0, 0, 0);
     private boolean isShow;
     private final Component title;
-    private int x, y, width, height;
+    protected int x, y, width, height;
     private TextGridLayout textGridLayout;
 
     public ScreenSection(Component title, int x, int y, int width, int height) {
