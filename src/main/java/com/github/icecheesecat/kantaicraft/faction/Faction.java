@@ -29,27 +29,17 @@ public class Faction implements INBTSerializable<CompoundTag> {
 
     public boolean createFaction(LivingEntity creator, FactionTag factionTag) {
         if (this.sameIdOrNameFactionExist(factionTag)) return false;
-        this.factions.put(factionTag, new FactionInstance(creator.getUUID(), new ArrayList<>()));
+        this.factions.put(factionTag, FactionInstance.create(creator.getUUID()));
         return true;
     }
 
-    public boolean moveEntityToFaction(FactionTag factionTag, LivingEntity livingEntity) {
-        // faction does not exist
-        if (!factionExist(factionTag)) {
+    public boolean joinFaction(FactionTag factionTag, LivingEntity target) {
+        if (!this.factions.containsKey(factionTag)) {
             return false;
         }
 
-        this.factions.get(factionTag).members().add(livingEntity.getUUID());
+        this.factions.get(factionTag).addMember(target.getUUID());
         return true;
-    }
-
-    public FactionInstance leaderGetFaction(LivingEntity leader, FactionTag tag) {
-        var inst = this.getFaction(tag);
-        if (inst.leader().compareTo(leader.getUUID()) == 0) {
-            return inst;
-        }
-
-        return null;
     }
 
     public FactionInstance getFaction(FactionTag tag) {
@@ -59,23 +49,16 @@ public class Faction implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
-        int count = 0;
-        for (var entry: this.factions.entrySet()) {
-            FactionTag factionTag = entry.getKey();
-            FactionInstance instance = entry.getValue();
-            nbt.put( "faction_tag" + count, factionTag.serializeNBT());
-            nbt.putUUID("leader" + count, instance.leader());
-            nbt.putInt("member_count" + count, instance.members().size());
-            var members = instance.members();
-            for (int i = 0; i < members.size(); i++) {
-                String memStr = "member" + i + ".";
-                nbt.putUUID( memStr + count, members.get(i));
-            }
+        var factions = this.factions.entrySet().stream().toList();
 
-            count++;
+        nbt.putInt("faction.count", factions.size());
+        for (int count = 0; count < factions.size(); count++) {
+            FactionTag factionTag = factions.get(count).getKey();
+            FactionInstance instance = factions.get(count).getValue();
+            nbt.put( "faction_tag" + count, factionTag.serializeNBT());
+            nbt.put("faction_instance" + count, instance.save());
         }
 
-        nbt.putInt("faction.count", count);
         return nbt;
     }
 
@@ -86,15 +69,8 @@ public class Faction implements INBTSerializable<CompoundTag> {
             FactionTag factionTag = new FactionTag(-1, "", FactionType.NEUTRAL);
                 factionTag.deserializeNBT((CompoundTag) nbt.get("faction_tag" + count));
 
-            UUID leader = nbt.getUUID("leader" + count);
-            int member_count = nbt.getInt("member_count" + count);
-            List<UUID> members = new ArrayList<>();
-            for (int i = 0; i < member_count; i++) {
-                String memStr = "member" + i + ".";
-                members.add(i, (nbt.getUUID( memStr + count)));
-            }
-
-            FactionInstance nInst = new FactionInstance(leader, members);
+            FactionInstance nInst = new FactionInstance();
+            nInst.load((CompoundTag) nbt.get("faction_instance"));
             this.factions.put(factionTag, nInst);
         }
     }

@@ -33,10 +33,10 @@ public class FactionTag implements INBTSerializable<CompoundTag> {
         return factionType;
     }
 
-    public void set(int id, String name, FactionType factionType) {
-        this.id = id;
-        this.name = name;
-        this.factionType = factionType;
+    public void copy(FactionTag tag) {
+        this.id = tag.id;
+        this.name = tag.name;
+        this.factionType = tag.factionType;
     }
 
     public boolean isSame(FactionTag factionTag) {
@@ -65,5 +65,10 @@ public class FactionTag implements INBTSerializable<CompoundTag> {
         this.id = nbt.getInt("faction_id");
         this.name = nbt.getString("faction_name");
         this.factionType =  FactionType.get(nbt.getInt("faction_type"));
+    }
+
+    @Override
+    public String toString() {
+        return "<Faction id: " + this.id + ", Faction name: " + this.name;
     }
 }

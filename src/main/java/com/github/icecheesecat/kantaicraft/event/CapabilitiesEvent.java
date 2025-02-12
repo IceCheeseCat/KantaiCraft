@@ -3,14 +3,17 @@ package com.github.icecheesecat.kantaicraft.event;
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.faction.FactionHelper;
 import com.github.icecheesecat.kantaicraft.faction.FactionTag;
 import com.github.icecheesecat.kantaicraft.faction.FactionTagCapability;
 import com.github.icecheesecat.kantaicraft.faction.LevelFactionCapability;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -39,7 +42,6 @@ public class CapabilitiesEvent {
         if (!level.getCapability(LevelFactionCapability.FACTION).isPresent()) {
             event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.faction"), new LevelFactionCapability());
         }
-
     }
 
 }

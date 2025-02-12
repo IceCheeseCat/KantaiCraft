@@ -5,20 +5,12 @@ import net.minecraft.world.level.Level;
 
 public class FactionTagHelper {
 
-    public static void joinFaction(Level level, LivingEntity creator, LivingEntity livingEntity, FactionTag tag) {
-        livingEntity.getCapability(FactionTagCapability.FACTION_TAG).ifPresent(
+    public static void setFaction(FactionTag tag, LivingEntity le) {
+        le.getCapability(FactionTagCapability.FACTION_TAG).ifPresent(
                 factionTag -> {
-                    factionTag.set(tag.getId(), tag.getName(), tag.getFactionType());
+                    factionTag.copy(tag);
                 }
         );
-
-        level.getCapability(LevelFactionCapability.FACTION).ifPresent(faction -> {
-            if (!faction.factionExist(tag)) {
-                faction.createFaction(creator, tag);
-            }
-        });
     }
-
-
 
 }
