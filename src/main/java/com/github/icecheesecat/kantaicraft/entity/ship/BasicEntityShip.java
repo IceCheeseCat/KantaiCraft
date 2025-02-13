@@ -13,7 +13,7 @@ import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entity.IFaction;
 import com.github.icecheesecat.kantaicraft.entity.IPhysicalEntity;
-import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
+import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
 import com.github.icecheesecat.kantaicraft.stats.shipAttributes.IStatsGrowth;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.Direction;
@@ -74,7 +74,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     protected boolean debugMode = false;
     protected final List<EquipmentType> attackbleEquipmentTypes;
 
-    protected BasicEntityShip(EntityType<? extends PathfinderMob> entityType, Level level, List<EquipmentType> attackbleEquipmentTypes) {
+    public BasicEntityShip(EntityType<? extends PathfinderMob> entityType, Level level, List<EquipmentType> attackbleEquipmentTypes) {
         super(entityType, level);
 
         this.setAircraft((int) this.getAttributeValue(ModAttribute.AIRCRAFT.get()));

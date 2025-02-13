@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.menu.screen;
+package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import net.minecraft.util.FastColor;
 import org.apache.commons.lang3.tuple.Pair;

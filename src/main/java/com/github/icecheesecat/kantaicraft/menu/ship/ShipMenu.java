@@ -1,7 +1,7 @@
-package com.github.icecheesecat.kantaicraft.menu;
+package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.registries.ModMenus;
+import com.github.icecheesecat.kantaicraft.registries.ModMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
@@ -20,7 +20,7 @@ public class ShipMenu extends AbstractContainerMenu implements IContainerFactory
 
     // server
     public ShipMenu(int containerId, Inventory inv, @Nullable BasicEntityShip entityShip) {
-        super(ModMenus.SHIP_MENU.get(), containerId);
+        super(ModMenu.SHIP_MENU.get(), containerId);
 
         this.playerInventory = inv;
         this.entityShip = entityShip;
@@ -28,7 +28,7 @@ public class ShipMenu extends AbstractContainerMenu implements IContainerFactory
 
     // client
     public ShipMenu(int containerId, Inventory inv, FriendlyByteBuf buf) {
-        super(ModMenus.SHIP_MENU.get(), containerId);
+        super(ModMenu.SHIP_MENU.get(), containerId);
         int id = buf.readInt();
         this.playerInventory = inv;
 

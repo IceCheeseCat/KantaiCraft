@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.menu.screen;
+package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import net.minecraft.client.Minecraft;

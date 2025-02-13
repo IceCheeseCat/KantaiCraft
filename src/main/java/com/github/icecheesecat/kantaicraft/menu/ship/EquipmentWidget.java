@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.menu.screen;
+package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;

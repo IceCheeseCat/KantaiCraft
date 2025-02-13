@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.menu.screen;
+package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
@@ -8,7 +8,6 @@ import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.CannonFireMode;
 import com.github.icecheesecat.kantaicraft.network.Cache;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
-import com.github.icecheesecat.kantaicraft.menu.ShipMenu;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import com.google.common.collect.ImmutableMap;

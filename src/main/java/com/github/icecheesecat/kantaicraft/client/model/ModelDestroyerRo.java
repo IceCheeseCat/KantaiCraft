@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.client.model;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityDestroyerRo;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityDestroyerRoClass;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
-public class ModelDestroyerRo<T extends EntityDestroyerRo> extends EntityModel<T> {
+public class ModelDestroyerRo<T extends EntityDestroyerRoClass> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(KantaiCraft.MODID, "destroyer_ro"), "main");
     private final ModelPart Body;
@@ -70,7 +70,7 @@ public class ModelDestroyerRo<T extends EntityDestroyerRo> extends EntityModel<T
     }
 
     @Override
-    public void setupAnim(EntityDestroyerRo entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(EntityDestroyerRoClass entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
     }
 

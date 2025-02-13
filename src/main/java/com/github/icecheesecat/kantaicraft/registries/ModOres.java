@@ -12,10 +12,10 @@
 //	//登錄item到遊戲中 (在pre init階段登錄)
 //	public static void oreDictRegister()
 //	{
-//		ItemStack ingotAbyssium = new ItemStack(ModItems.AbyssMetal, 1, 0);
-//		ItemStack ingotPolymetal = new ItemStack(ModItems.AbyssMetal, 1, 1);
-//		ItemStack nuggetAbyssium = new ItemStack(ModItems.AbyssNugget, 1, 0);
-//		ItemStack nuggetPolymetal = new ItemStack(ModItems.AbyssNugget, 1, 1);
+//		ItemStack ingotAbyssium = new ItemStack(ModItem.AbyssMetal, 1, 0);
+//		ItemStack ingotPolymetal = new ItemStack(ModItem.AbyssMetal, 1, 1);
+//		ItemStack nuggetAbyssium = new ItemStack(ModItem.AbyssNugget, 1, 0);
+//		ItemStack nuggetPolymetal = new ItemStack(ModItem.AbyssNugget, 1, 1);
 //
 //		//abyssium
 //		OreDictionary.registerOre("ingotAbyssium", ingotAbyssium);
@@ -39,12 +39,12 @@
 //		}
 //
 //		//grudge
-//		OreDictionary.registerOre("grudge", ModItems.Grudge);
+//		OreDictionary.registerOre("grudge", ModItem.Grudge);
 //		OreDictionary.registerOre("blockGrudge", ModBlocks.BlockGrudge);
 //		OreDictionary.registerOre("blockHeavyGrudge", ModBlocks.BlockGrudgeHeavy);
 //
 //		//food
-//		OreDictionary.registerOre("foodCombatRation", ModItems.CombatRation);
+//		OreDictionary.registerOre("foodCombatRation", ModItem.CombatRation);
 //
 //	}
 //

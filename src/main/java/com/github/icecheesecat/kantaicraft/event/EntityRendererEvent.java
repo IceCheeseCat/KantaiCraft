@@ -19,7 +19,7 @@ public class EntityRendererEvent {
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(ModEntity.DestroyerRo.get(), RendererDestroyerRo::new);
+        event.registerEntityRenderer(ModEntity.DestroyerRoClass.get(), RendererDestroyerRo::new);
     }
 
 }

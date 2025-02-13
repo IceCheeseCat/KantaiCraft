@@ -2,13 +2,12 @@ package com.github.icecheesecat.kantaicraft.event;
 
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.registries.ModMenus;
-import com.github.icecheesecat.kantaicraft.menu.screen.ShipScreen;
+import com.github.icecheesecat.kantaicraft.registries.ModMenu;
+import com.github.icecheesecat.kantaicraft.menu.ship.ShipScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,7 +20,7 @@ public class ClientEvent {
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
             event.enqueueWork(
-                    () -> MenuScreens.register(ModMenus.SHIP_MENU.get(), ShipScreen::new)
+                    () -> MenuScreens.register(ModMenu.SHIP_MENU.get(), ShipScreen::new)
             );
         }
     }

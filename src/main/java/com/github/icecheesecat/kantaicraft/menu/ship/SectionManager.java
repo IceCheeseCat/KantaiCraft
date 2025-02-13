@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.menu.screen;
+package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import net.minecraft.client.gui.GuiGraphics;
 

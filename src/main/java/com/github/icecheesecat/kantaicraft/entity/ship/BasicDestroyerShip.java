@@ -3,8 +3,10 @@ package com.github.icecheesecat.kantaicraft.entity.ship;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
+import com.github.icecheesecat.kantaicraft.equipment.SlotChecker;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.util.ShipFields;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -15,6 +17,7 @@ import java.util.List;
 
 public abstract class BasicDestroyerShip extends BasicCannonShip {
 
+    private static final SlotChecker GENERAL_DESTROYER_SLOT_CHECKER = SlotChecker.create(ImmutableSet.of(EquipmentType.CANNON, EquipmentType.RADAR));
     private static final AttributeSupplier DESTROYER_GROWTH = new AttributeSupplier.Builder()
             .add(ModAttribute.FIREPOWER.get(), 0.5d)
             .add(ModAttribute.TORPEDO.get(), 1.0d)
@@ -24,7 +27,7 @@ public abstract class BasicDestroyerShip extends BasicCannonShip {
             .add(Attributes.MAX_HEALTH, 0.2d)
             .add(ModAttribute.ARMOR.get(), 0.1d).build();
 
-    protected BasicDestroyerShip(EntityType<? extends PathfinderMob> entityType, Level level) {
+    public BasicDestroyerShip(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
     }
 
@@ -50,4 +53,8 @@ public abstract class BasicDestroyerShip extends BasicCannonShip {
         ).toList();
     }
 
+    @Override
+    public SlotChecker get(int index) {
+        return GENERAL_DESTROYER_SLOT_CHECKER;
+    }
 }

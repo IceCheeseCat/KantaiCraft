@@ -26,7 +26,7 @@
 java.lang.NullPointerException: Registry Object not present: kantaicraft:destroyer_ro
 	at java.base/java.util.Objects.requireNonNull(Objects.java:334)
 	at TRANSFORMER/forge@47.3.0/net.minecraftforge.registries.RegistryObject.get(RegistryObject.java:204)
-	at TRANSFORMER/kantaicraft@0.0.1/com.github.icecheesecat.kantaicraft.registries.ModItems.lambda$static$1(ModItems.java:17)
+	at TRANSFORMER/kantaicraft@0.0.1/com.github.icecheesecat.kantaicraft.registries.ModItem.lambda$static$1(ModItems.java:17)
 	at TRANSFORMER/forge@47.3.0/net.minecraftforge.registries.DeferredRegister.lambda$addEntries$1(DeferredRegister.java:386)
 	at TRANSFORMER/forge@47.3.0/net.minecraftforge.registries.RegisterEvent.register(RegisterEvent.java:59)
 	at TRANSFORMER/forge@47.3.0/net.minecraftforge.registries.DeferredRegister.addEntries(DeferredRegister.java:386)
@@ -73,7 +73,7 @@ java.lang.NullPointerException: Registry Object not present: kantaicraft:destroy
 java.lang.NullPointerException: Registry Object not present: kantaicraft:destroyer_ro
 	at java.util.Objects.requireNonNull(Objects.java:334) ~[?:?]
 	at net.minecraftforge.registries.RegistryObject.get(RegistryObject.java:204) ~[forge-1.20.1-47.3.0_mapped_parchment_2023.09.03-1.20.1.jar%23190%23197!/:?]
-	at com.github.icecheesecat.kantaicraft.registries.ModItems.lambda$static$1(ModItems.java:17) ~[%23196!/:?]
+	at com.github.icecheesecat.kantaicraft.registries.ModItem.lambda$static$1(ModItems.java:17) ~[%23196!/:?]
 	at net.minecraftforge.registries.DeferredRegister.lambda$addEntries$1(DeferredRegister.java:386) ~[forge-1.20.1-47.3.0_mapped_parchment_2023.09.03-1.20.1.jar%23190%23197!/:?]
 	at net.minecraftforge.registries.RegisterEvent.register(RegisterEvent.java:59) ~[forge-1.20.1-47.3.0_mapped_parchment_2023.09.03-1.20.1.jar%23190%23197!/:?]
 	at net.minecraftforge.registries.DeferredRegister.addEntries(DeferredRegister.java:386) ~[forge-1.20.1-47.3.0_mapped_parchment_2023.09.03-1.20.1.jar%23190%23197!/:?]
@@ -181,7 +181,7 @@ java.lang.RuntimeException: null
 	Caused by: java.lang.NullPointerException: Registry Object not present: kantaicraft:destroyer_ro
 		at java.util.Objects.requireNonNull(Objects.java:334) ~[?:?]
 		at net.minecraftforge.registries.RegistryObject.get(RegistryObject.java:204) ~[forge-1.20.1-47.3.0_mapped_parchment_2023.09.03-1.20.1.jar%23190%23197!/:?]
-		at com.github.icecheesecat.kantaicraft.registries.ModItems.lambda$static$1(ModItems.java:17) ~[%23196!/:?]
+		at com.github.icecheesecat.kantaicraft.registries.ModItem.lambda$static$1(ModItems.java:17) ~[%23196!/:?]
 		at net.minecraftforge.registries.DeferredRegister.lambda$addEntries$1(DeferredRegister.java:386) ~[forge-1.20.1-47.3.0_mapped_parchment_2023.09.03-1.20.1.jar%23190%23197!/:?]
 		at net.minecraftforge.registries.RegisterEvent.register(RegisterEvent.java:59) ~[forge-1.20.1-47.3.0_mapped_parchment_2023.09.03-1.20.1.jar%23190%23197!/:?]
 		at net.minecraftforge.registries.DeferredRegister.addEntries(DeferredRegister.java:386) ~[forge-1.20.1-47.3.0_mapped_parchment_2023.09.03-1.20.1.jar%23190%23197!/:?]

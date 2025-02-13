@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.item.BlueprintItem;
 import com.github.icecheesecat.kantaicraft.item.DebugFactionChanger;
 import com.github.icecheesecat.kantaicraft.item.ShipSpawnEgg;
 import net.minecraft.util.FastColor;
@@ -9,14 +10,16 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class ModItems
+public class ModItem
 {
 
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, KantaiCraft.MODID);
 
 	public static final RegistryObject<Item> DEBUG_FACTION_CHANGER = ITEMS.register("debug_faction_changer", () -> new DebugFactionChanger(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<Item> DEBUG_DESTROYER_RO = ITEMS.register("destroyer_ro", () -> new ShipSpawnEgg(ModEntity.DestroyerRo, FastColor.ABGR32.red(128), FastColor.ABGR32.green(128), true, (s) -> {}, new Item.Properties()));
-//	//spawn egg
+	public static final RegistryObject<Item> DEBUG_DESTROYER_RO = ITEMS.register("destroyer_ro", () -> new ShipSpawnEgg(ModEntity.DestroyerRoClass, FastColor.ABGR32.red(128), FastColor.ABGR32.green(128), true, (s) -> {}, new Item.Properties()));
+	public static final RegistryObject<Item> SHIP_BLUEPRINT = ITEMS.register("ship_blueprint", () -> new BlueprintItem(new Item.Properties().stacksTo(1)));
+
+	//	//spawn egg
 //	public static BasicItem ShipSpawnEgg;
 //	//materials
 

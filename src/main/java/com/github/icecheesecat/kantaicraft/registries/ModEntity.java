@@ -2,7 +2,8 @@ package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.entity.plane.fighter.EntityA6MZeroFighter;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityDestroyerRo;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityDestroyerIClass;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityDestroyerRoClass;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -15,8 +16,11 @@ public class ModEntity {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES,
             KantaiCraft.MODID);
 
-    public static final RegistryObject<EntityType<EntityDestroyerRo>> DestroyerRo = ENTITIES.register("destroyer_ro", () ->
-            EntityType.Builder.of(EntityDestroyerRo::new, MobCategory.MISC).sized(1.0f, 1.0f).build(new ResourceLocation(KantaiCraft.MODID, "destroyer_ro").toString()));
+    public static final RegistryObject<EntityType<EntityDestroyerRoClass>> DestroyerRoClass = ENTITIES.register("destroyer_ro_class", () ->
+            EntityType.Builder.of(EntityDestroyerRoClass::new, MobCategory.MISC).sized(0.8f, 0.8f).build(new ResourceLocation(KantaiCraft.MODID, "destroyer_ro_class").toString()));
+
+    public static final RegistryObject<EntityType<EntityDestroyerIClass>> DestroyerIClass = ENTITIES.register("destroyer_i_class", () ->
+            EntityType.Builder.of(EntityDestroyerIClass::new, MobCategory.MISC).sized(0.8f, 0.8f).build(new ResourceLocation(KantaiCraft.MODID, "destroyer_i_class").toString()));
 
     public static final RegistryObject<EntityType<EntityA6MZeroFighter>> A6M_Zero_Fighter = ENTITIES.register("a6m_zero_fighter", () ->
             EntityType.Builder.of(EntityA6MZeroFighter::new, MobCategory.MISC).sized(1.0f, 1.0f).build(new ResourceLocation(KantaiCraft.MODID, "a6m_zero_fighter").toString()));
@@ -65,7 +69,7 @@ public class ModEntity {
 //import com.lulan.shincolle.entity.destroyer.EntityDestroyerInazuma;
 //import com.lulan.shincolle.entity.destroyer.EntityDestroyerInazumaMob;
 //import com.lulan.shincolle.entity.destroyer.EntityDestroyerNi;
-//import com.lulan.shincolle.entity.destroyer.EntityDestroyerRo;
+//import com.lulan.shincolle.entity.destroyer.EntityDestroyerRoClass;
 //import com.lulan.shincolle.entity.destroyer.EntityDestroyerShimakaze;
 //import com.lulan.shincolle.entity.destroyer.EntityDestroyerShimakazeMob;
 //import com.lulan.shincolle.entity.hime.EntityAirfieldHime;
@@ -177,7 +181,7 @@ public class ModEntity {
 //		createEntity(EntityCLTatsuta.class, "EntityCruiserTatsuta", modEntityID++);
 //		createEntity(EntityCLTatsutaMob.class, "EntityCruiserTatsutaMob", modEntityID++);
 //		createEntity(EntityDestroyerI.class, "EntityDestroyerI", modEntityID++);
-//		createEntity(EntityDestroyerRo.class, "EntityDestroyerRo", modEntityID++);
+//		createEntity(EntityDestroyerRoClass.class, "EntityDestroyerRoClass", modEntityID++);
 //		createEntity(EntityDestroyerHa.class, "EntityDestroyerHa", modEntityID++);
 //		createEntity(EntityDestroyerNi.class, "EntityDestroyerNi", modEntityID++);
 //		createEntity(EntityDestroyerHime.class, "EntityDestroyerHime", modEntityID++);

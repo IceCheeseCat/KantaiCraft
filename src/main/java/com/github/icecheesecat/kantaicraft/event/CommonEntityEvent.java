@@ -13,7 +13,7 @@ public class CommonEntityEvent {
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
 
-        event.put(ModEntity.DestroyerRo.get(), ShipAttributes.DESTROYER_CLASS);
+        event.put(ModEntity.DestroyerRoClass.get(), ShipAttributes.DESTROYER_CLASS);
 
     }
 
