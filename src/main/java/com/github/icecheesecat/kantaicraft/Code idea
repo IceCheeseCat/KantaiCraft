@@ -1,4 +1,8 @@
 TODO 1. ship screen faction display
     - nice icon (read from file or default)
 
-TODO 2.
+TODO 2. Shipyard
+    - build a new ship from blueprint
+
+TODO 3. Blueprint
+    - record data from a ship
