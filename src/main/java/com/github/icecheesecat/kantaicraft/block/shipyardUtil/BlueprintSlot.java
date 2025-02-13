@@ -1,19 +1,17 @@
-package com.github.icecheesecat.kantaicraft.block;
+package com.github.icecheesecat.kantaicraft.block.shipyardUtil;
 
 import com.github.icecheesecat.kantaicraft.item.BlueprintItem;
-import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class BuildSlot implements INBTSerializable<CompoundTag> {
+public class BlueprintSlot implements INBTSerializable<CompoundTag> {
 
     private int progress;
     private int maxProgress;
     private ItemStack blueprint;
 
-    public BuildSlot() {
+    public BlueprintSlot() {
         blueprint = ItemStack.EMPTY;
     }
 
@@ -39,12 +37,13 @@ public class BuildSlot implements INBTSerializable<CompoundTag> {
         this.maxProgress = ((BlueprintItem) stack.getItem()).getMaxProgress(stack);
     }
 
-    public ItemStack removeBlueprint() {
+    public ItemStack removeBlueprint(boolean consume) {
         ItemStack ret = this.blueprint;
         this.blueprint = ItemStack.EMPTY;
         this.progress = 0;
         this.maxProgress = 0;
-        return ret;
+
+        return consume ? ItemStack.EMPTY : ret;
     }
 
     public boolean canInsertBluePrint(ItemStack stack) {

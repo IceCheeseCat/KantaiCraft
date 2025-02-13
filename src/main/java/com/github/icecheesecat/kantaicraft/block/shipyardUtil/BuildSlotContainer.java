@@ -1,33 +1,31 @@
-package com.github.icecheesecat.kantaicraft.block;
+package com.github.icecheesecat.kantaicraft.block.shipyardUtil;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 
 public class BuildSlotContainer implements Container {
 
-    NonNullList<BuildSlot> buildSlots;
+    NonNullList<BlueprintSlot> blueprintSlots;
 
-    public BuildSlotContainer(NonNullList<BuildSlot> buildSlots) {
-        this.buildSlots = buildSlots;
+    public BuildSlotContainer(NonNullList<BlueprintSlot> blueprintSlots) {
+        this.blueprintSlots = blueprintSlots;
     }
 
     @Override
     public int getContainerSize() {
-        return buildSlots.size();
+        return blueprintSlots.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return this.buildSlots.stream().allMatch(BuildSlot::isEmpty);
+        return this.blueprintSlots.stream().allMatch(BlueprintSlot::isEmpty);
     }
 
     public int hasEmptySlotAt() {
         for (int i = 0; i < this.getContainerSize(); i++) {
-            if (this.buildSlots.get(i).isEmpty()) {
+            if (this.blueprintSlots.get(i).isEmpty()) {
                 return i;
             }
         }
@@ -36,17 +34,17 @@ public class BuildSlotContainer implements Container {
     }
 
     public boolean canInsertAt(int i, ItemStack stack) {
-        return this.buildSlots.get(i).canInsertBluePrint(stack);
+        return this.blueprintSlots.get(i).canInsertBluePrint(stack);
     }
 
     @Override
     public ItemStack getItem(int pSlot) {
-        return this.buildSlots.get(pSlot).getBlueprint();
+        return this.blueprintSlots.get(pSlot).getBlueprint();
     }
 
     @Override
     public ItemStack removeItem(int pSlot, int pAmount) {
-        ItemStack ret = this.buildSlots.get(pSlot).removeBlueprint();
+        ItemStack ret = this.blueprintSlots.get(pSlot).removeBlueprint(false);
         if (!ret.isEmpty()) {
             this.setChanged();
         }
@@ -56,12 +54,12 @@ public class BuildSlotContainer implements Container {
 
     @Override
     public ItemStack removeItemNoUpdate(int pSlot) {
-        return this.buildSlots.get(pSlot).removeBlueprint();
+        return this.blueprintSlots.get(pSlot).removeBlueprint(false);
     }
 
     @Override
     public void setItem(int pSlot, ItemStack pStack) {
-        this.buildSlots.get(pSlot).setBlueprint(pStack);
+        this.blueprintSlots.get(pSlot).setBlueprint(pStack);
         this.setChanged();
     }
 
@@ -77,7 +75,7 @@ public class BuildSlotContainer implements Container {
 
     @Override
     public void clearContent() {
-        this.buildSlots.clear();
+        this.blueprintSlots.clear();
         this.setChanged();
     }
 }

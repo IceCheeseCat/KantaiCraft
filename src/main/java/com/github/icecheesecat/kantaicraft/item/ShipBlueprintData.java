@@ -8,13 +8,22 @@ import net.minecraft.world.entity.EntityType;
 
 public record ShipBlueprintData(EntityType<? extends BasicEntityShip> entityType, Component name, ShipFields.ShipClass shipClass, ShipFields.ShipName shipName) {
 
+    public static ShipBlueprintData create(BasicEntityShip ship) {
+        return new ShipBlueprintData((EntityType<? extends BasicEntityShip>) ship.getType(), ship.getType().getDescription(), ship.getShipClass(), ship.getShipName());
+    }
+
     public static ShipBlueprintData read(CompoundTag nbt) {
         int e = nbt.getInt("ship_name");
         int c = nbt.getInt("ship_class");
-        var entityType = ShipFields.ShipName.getEnum(e).getEntityType();
+
+        return instance(e, c);
+    }
+
+    public static ShipBlueprintData instance(int iShipName, int iShipClass) {
+        var entityType = ShipFields.ShipName.getEnum(iShipName).getEntityType();
         var name = entityType.getDescription();
-        var shipClass = ShipFields.ShipClass.getEnum(c);
-        var shipName = ShipFields.ShipName.getEnum(e);
+        var shipClass = ShipFields.ShipClass.getEnum(iShipClass);
+        var shipName = ShipFields.ShipName.getEnum(iShipName);
 
         return new ShipBlueprintData(entityType, name, shipClass, shipName);
     }
@@ -25,6 +34,10 @@ public record ShipBlueprintData(EntityType<? extends BasicEntityShip> entityType
         nbt.putInt("ship_class", this.shipClass.ordinal());
 
         return nbt;
+    }
+
+    public static ShipBlueprintData empty() {
+        return new ShipBlueprintData(null, null, null, null);
     }
 
 }

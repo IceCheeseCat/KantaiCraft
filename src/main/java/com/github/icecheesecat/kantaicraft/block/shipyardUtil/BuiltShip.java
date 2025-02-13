@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.block;
+package com.github.icecheesecat.kantaicraft.block.shipyardUtil;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.item.ShipBlueprintData;
@@ -21,6 +21,10 @@ public class BuiltShip implements INBTSerializable<CompoundTag> {
 
     public ResourceLocation getResource() {
         return new ResourceLocation(KantaiCraft.MODID, "textures/ship_icon/" + upperToUnderLine(data.shipName().toString()) + ".png");
+    }
+
+    public ShipBlueprintData getData() {
+        return data;
     }
 
     private String upperToUnderLine(String str) {

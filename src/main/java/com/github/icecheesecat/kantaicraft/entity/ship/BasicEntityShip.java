@@ -4,12 +4,14 @@ import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
 import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
+import com.github.icecheesecat.kantaicraft.item.ShipBlueprintData;
 import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
+import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entity.IFaction;
 import com.github.icecheesecat.kantaicraft.entity.IPhysicalEntity;
@@ -416,9 +418,12 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
             ItemEntity itemEntity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), stack);
             level().addFreshEntity(itemEntity);
         }
+
+        // drop a blueprint of this ship
+        ItemEntity blueprintEntity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), this.makeBlueprint());
+        level().addFreshEntity(blueprintEntity);
     }
 
-    private EquipmentHandler tempHandler;
     public boolean hasAttackableEquipment() {
         AtomicBoolean r = new AtomicBoolean(false);
         this.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
@@ -431,4 +436,10 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
 
     }
 
+    public ItemStack makeBlueprint() {
+        ItemStack blueprint = new ItemStack(ModItem.SHIP_BLUEPRINT.get());
+        var data = ShipBlueprintData.create(this);
+        blueprint.setTag(data.write());
+        return blueprint;
+    }
 }
