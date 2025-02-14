@@ -2,17 +2,24 @@ package com.github.icecheesecat.kantaicraft.block.shipyardUtil;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.item.ShipBlueprintData;
-import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class BuiltShip implements INBTSerializable<CompoundTag> {
+import java.util.UUID;
+
+public class BuiltShipCell implements INBTSerializable<CompoundTag> {
 
     private ShipBlueprintData data;
+    private UUID builder;
 
-    public BuiltShip(ShipBlueprintData data) {
+    public BuiltShipCell(ShipBlueprintData data, UUID builder) {
         this.data = data;
+        this.builder = builder;
+    }
+
+    public BuiltShipCell(CompoundTag nbt) {
+        this.deserializeNBT(nbt);
     }
 
     public ResourceLocation getClassResource() {
@@ -45,6 +52,7 @@ public class BuiltShip implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
         nbt.put("ship_blueprint_data", data.write());
+        nbt.putUUID("builder", builder);
 
         return nbt;
     }
@@ -52,5 +60,6 @@ public class BuiltShip implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.data = ShipBlueprintData.read(nbt.getCompound("ship_blueprint_data"));
+        this.builder = nbt.getUUID("builder");
     }
 }

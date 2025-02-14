@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
 public class BlueprintItem extends Item {
+
     public BlueprintItem(Properties pProperties) {
         super(pProperties);
     }
@@ -32,14 +33,6 @@ public class BlueprintItem extends Item {
         }
 
         return Rarity.COMMON;
-    }
-
-    public boolean isValidStack(ItemStack stack) {
-        return stack.getItem() == ModItem.SHIP_BLUEPRINT.get() && stack.hasTag() && stack.getTag().contains("progress");
-    }
-
-    public int getMaxProgress(ItemStack stack) {
-        return stack.getTag().getInt("progress");
     }
 
 }

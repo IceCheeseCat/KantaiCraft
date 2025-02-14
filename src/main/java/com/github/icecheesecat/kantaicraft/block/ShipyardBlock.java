@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -35,22 +36,25 @@ public class ShipyardBlock extends BaseEntityBlock {
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (pLevel.isClientSide) return InteractionResult.PASS;
+        if (pHand != InteractionHand.MAIN_HAND) {
+            return InteractionResult.PASS;
+        }
         if (pLevel.getBlockEntity(pPos) instanceof ShipyardBlockEntity shipyardBlockEntity) {
             NetworkHooks.openScreen((ServerPlayer) pPlayer, shipyardBlockEntity, (extraData) -> {
                 // blueprint slots
-                extraData.writeNbt(shipyardBlockEntity.blueprintSlots.get(0).serializeNBT());
-                extraData.writeNbt(shipyardBlockEntity.blueprintSlots.get(1).serializeNBT());
-                extraData.writeNbt(shipyardBlockEntity.blueprintSlots.get(2).serializeNBT());
-                extraData.writeNbt(shipyardBlockEntity.blueprintSlots.get(3).serializeNBT());
+                extraData.writeNbt(shipyardBlockEntity.blueprintCells.get(0).serializeNBT());
+                extraData.writeNbt(shipyardBlockEntity.blueprintCells.get(1).serializeNBT());
+                extraData.writeNbt(shipyardBlockEntity.blueprintCells.get(2).serializeNBT());
+                extraData.writeNbt(shipyardBlockEntity.blueprintCells.get(3).serializeNBT());
 
                 // built slots
-                extraData.writeByte(shipyardBlockEntity.builtShips.size());
-                for (int i = 0; i < shipyardBlockEntity.builtShips.size(); i++) {
-                    extraData.writeNbt(shipyardBlockEntity.builtShips.get(i).serializeNBT());
+                extraData.writeByte(shipyardBlockEntity.builtShipCells.size());
+                for (int i = 0; i < shipyardBlockEntity.builtShipCells.size(); i++) {
+                    extraData.writeNbt(shipyardBlockEntity.builtShipCells.get(i).serializeNBT());
                 }
             });
         }
 
-        return InteractionResult.CONSUME;
+        return InteractionResult.FAIL;
     }
 }

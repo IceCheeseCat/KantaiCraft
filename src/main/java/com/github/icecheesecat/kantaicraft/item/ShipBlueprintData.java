@@ -21,7 +21,14 @@ public record ShipBlueprintData(EntityType<? extends BasicEntityShip> entityType
 
     public static ShipBlueprintData instance(int iShipName, int iShipClass) {
         var entityType = ShipFields.ShipName.getEnum(iShipName).getEntityType();
-        var name = entityType.getDescription();
+        Component name;
+        if (entityType == null) {
+            name = null;
+        }
+        else {
+            name = entityType.getDescription();
+        }
+
         var shipClass = ShipFields.ShipClass.getEnum(iShipClass);
         var shipName = ShipFields.ShipName.getEnum(iShipName);
 
@@ -37,7 +44,10 @@ public record ShipBlueprintData(EntityType<? extends BasicEntityShip> entityType
     }
 
     public static ShipBlueprintData empty() {
-        return new ShipBlueprintData(null, null, null, null);
+        return new ShipBlueprintData(null, null, ShipFields.ShipClass.EMPTY, ShipFields.ShipName.EMPTY);
     }
 
+    public int getProcessTime() {
+        return this.shipClass.getTick() + this.shipName.getTick();
+    }
 }
