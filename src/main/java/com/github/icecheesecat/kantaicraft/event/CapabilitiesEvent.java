@@ -1,19 +1,22 @@
 package com.github.icecheesecat.kantaicraft.event;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
+import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
+import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
+import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
+import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintStackHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.faction.FactionHelper;
-import com.github.icecheesecat.kantaicraft.faction.FactionTag;
 import com.github.icecheesecat.kantaicraft.faction.FactionTagCapability;
 import com.github.icecheesecat.kantaicraft.faction.LevelFactionCapability;
+import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -23,8 +26,8 @@ public class CapabilitiesEvent {
     @SubscribeEvent
     public static void onEntityAttachingCapability(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof BasicEntityShip ship) {
-            if (!ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).isPresent()) {
-                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.equipment_handler"), new EquipmentProvider(4));
+            if (!ship.getCapability(EquipmentHandlerCapability.TOKEN).isPresent()) {
+                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.equipment_handler"), new EquipmentHandlerCapability(4));
             }
         }
 
@@ -41,6 +44,22 @@ public class CapabilitiesEvent {
         Level level = event.getObject();
         if (!level.getCapability(LevelFactionCapability.FACTION).isPresent()) {
             event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.faction"), new LevelFactionCapability());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onBlockEntityAttach(AttachCapabilitiesEvent<BlockEntity> event) {
+        if (event.getObject() instanceof ShipyardBlockEntity shipyardBlockEntity) {
+            if (!shipyardBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).isPresent()) {
+                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.ship_blueprint_stack_handler"), new ShipBlueprintStackHandlerCapability(shipyardBlockEntity.processShipSize));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onItemStackAttach(AttachCapabilitiesEvent<ItemStack> event) {
+        if (event.getObject().is(ModItem.SHIP_BLUEPRINT.get())) {
+            event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.ship_blueprint_data"), new ShipBlueprintCapability());
         }
     }
 

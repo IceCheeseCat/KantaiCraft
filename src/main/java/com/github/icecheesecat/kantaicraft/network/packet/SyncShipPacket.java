@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.network.packet;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.CannonFireMode;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
+import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.menu.ship.EquipmentWidget;
@@ -97,7 +97,7 @@ public class SyncShipPacket {
                     if (entity instanceof BasicEntityShip ship) {
                         switch (packet.syncType) {
                             case EQUIPMENT -> {
-                                ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(equipmentHandler -> {
+                                ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(equipmentHandler -> {
                                     equipmentHandler.setOnClient(packet.index, (Equipment) packet.value);
                                 });
                                 if (Minecraft.getInstance().screen instanceof ShipScreen screen) {
@@ -126,7 +126,7 @@ public class SyncShipPacket {
                             }
                         }
                         case EQUIPMENT -> {
-                            ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
+                            ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
                                     equipmentHandler -> {
                                         if (equipmentHandler.canApplyAtSlot(packet.index, (Equipment) packet.value, ship)) {
                                             equipmentHandler.setEquipment(packet.index, (Equipment) packet.value, ship);
@@ -139,7 +139,7 @@ public class SyncShipPacket {
                             );
                         }
                         case LEVEL_UP_EQUIPMENT -> {
-                            ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
+                            ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
                                     equipmentHandler -> {
                                         equipmentHandler.getEquipment(packet.index).doLevelUp();
                                         ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> ctx.get().getSender()), new SyncShipPacket(SyncType.EQUIPMENT, ship.getId(), equipmentHandler.getEquipment(packet.index), packet.index));

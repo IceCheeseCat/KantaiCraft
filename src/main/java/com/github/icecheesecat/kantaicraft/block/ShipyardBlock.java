@@ -41,17 +41,7 @@ public class ShipyardBlock extends BaseEntityBlock {
         }
         if (pLevel.getBlockEntity(pPos) instanceof ShipyardBlockEntity shipyardBlockEntity) {
             NetworkHooks.openScreen((ServerPlayer) pPlayer, shipyardBlockEntity, (extraData) -> {
-                // blueprint slots
-                extraData.writeNbt(shipyardBlockEntity.blueprintCells.get(0).serializeNBT());
-                extraData.writeNbt(shipyardBlockEntity.blueprintCells.get(1).serializeNBT());
-                extraData.writeNbt(shipyardBlockEntity.blueprintCells.get(2).serializeNBT());
-                extraData.writeNbt(shipyardBlockEntity.blueprintCells.get(3).serializeNBT());
-
-                // built slots
-                extraData.writeByte(shipyardBlockEntity.builtShipCells.size());
-                for (int i = 0; i < shipyardBlockEntity.builtShipCells.size(); i++) {
-                    extraData.writeNbt(shipyardBlockEntity.builtShipCells.get(i).serializeNBT());
-                }
+                extraData.writeBlockPos(pPos);
             });
         }
 

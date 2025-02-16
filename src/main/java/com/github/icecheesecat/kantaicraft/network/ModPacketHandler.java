@@ -57,6 +57,22 @@ public class ModPacketHandler {
                 C2SEquipmentOptionsPacket::decode,
                 C2SEquipmentOptionsPacket::handle
         );
+
+        INSTANCE.registerMessage(
+                id++,
+                ShipyardPacket.class,
+                ShipyardPacket::encode,
+                ShipyardPacket::decode,
+                ShipyardPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                ShipyardBuiltDataPacket.class,
+                ShipyardBuiltDataPacket::encode,
+                ShipyardBuiltDataPacket::decode,
+                ShipyardBuiltDataPacket::handle
+        );
     }
 
 }

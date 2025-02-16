@@ -8,14 +8,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @AutoRegisterCapability
-public class EquipmentProvider implements ICapabilitySerializable<CompoundTag> {
+public class EquipmentHandlerCapability implements ICapabilitySerializable<CompoundTag> {
 
-    public static final Capability<EquipmentHandler> EQUIPMENT_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<EquipmentHandler> TOKEN = CapabilityManager.get(new CapabilityToken<>(){});
     private EquipmentHandler equipmentHandler = null;
     private final LazyOptional<EquipmentHandler> lazyEquipmentHandler = LazyOptional.of(this::getEquipmentHandler);
     private final int slotSize;
 
-    public EquipmentProvider(int slotSize) {
+    public EquipmentHandlerCapability(int slotSize) {
         this.slotSize = slotSize;
     }
 
@@ -29,7 +29,7 @@ public class EquipmentProvider implements ICapabilitySerializable<CompoundTag> {
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == EQUIPMENT_HANDLER_CAPABILITY) {
+        if (cap == EquipmentHandlerCapability.TOKEN) {
             return lazyEquipmentHandler.cast();
         }
 

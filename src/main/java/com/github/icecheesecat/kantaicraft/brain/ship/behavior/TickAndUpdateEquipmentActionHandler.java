@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.brain.ship.behavior;
 
-import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
+import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.util.tickable.EquipmentActionHandler;
@@ -19,7 +19,7 @@ public class TickAndUpdateEquipmentActionHandler extends Behavior<BasicEntityShi
 
     @Override
     protected void start(ServerLevel pLevel, BasicEntityShip pEntity, long pGameTime) {
-        pEntity.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(equipmentHandler ->
+        pEntity.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(equipmentHandler ->
             pEntity.getBrain().setMemory(ModMemoryModuleType.ACTION_HANDLER.get(), new EquipmentActionHandler(pEntity, equipmentHandler))
         );
     }
@@ -44,7 +44,7 @@ public class TickAndUpdateEquipmentActionHandler extends Behavior<BasicEntityShi
     }
 
     private void updateAttackAction(BasicEntityShip ship, EquipmentActionHandler actionHandler) {
-        ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(equipmentHandler -> {
+        ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(equipmentHandler -> {
             for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
                 if (equipmentHandler.isDirty(i)) {
                     actionHandler.updateAction(i);

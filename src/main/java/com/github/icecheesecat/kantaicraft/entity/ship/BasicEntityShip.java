@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
+import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
+import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
 import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.item.ShipBlueprintData;
@@ -237,7 +237,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     }
 
     public void broadcastEquipmentHandler() {
-        this.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
+        this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
                 handler -> {
                     for (int i = 0; i < handler.getSlotSize(); i++) {
                         ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new SyncShipPacket(SyncType.EQUIPMENT, this.getId(), handler.getEquipment(i), (byte) i));
@@ -420,13 +420,30 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         }
 
         // drop a blueprint of this ship
-        ItemEntity blueprintEntity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), this.makeBlueprint());
-        level().addFreshEntity(blueprintEntity);
+        UUID builder = getBuilder(pSource);
+        if (builder != null) {
+            ItemEntity blueprintEntity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), this.makeBlueprint(pSource.getEntity().getUUID()));
+            level().addFreshEntity(blueprintEntity);
+        }
+    }
+
+    private UUID getBuilder(DamageSource source) {
+        if (source.getEntity() instanceof BasicEntityShip ship) {
+            if (ship.owner != null) {
+                return ship.owner;
+            }
+        }
+
+        if (source.getEntity() instanceof Player player) {
+            return player.getUUID();
+        }
+
+        return null;
     }
 
     public boolean hasAttackableEquipment() {
         AtomicBoolean r = new AtomicBoolean(false);
-        this.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
+        this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
                 handler -> {
                     r.set(handler.getEquipments().stream().anyMatch(e -> this.attackbleEquipmentTypes.contains(e.getType())));
                 }
@@ -436,10 +453,14 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
 
     }
 
-    public ItemStack makeBlueprint() {
+    public ItemStack makeBlueprint(UUID builder) {
         ItemStack blueprint = new ItemStack(ModItem.SHIP_BLUEPRINT.get());
-        var data = ShipBlueprintData.create(this);
-        blueprint.setTag(data.write());
+        blueprint.getCapability(ShipBlueprintCapability.TOKEN).ifPresent(
+                data -> {
+                    data.set(ShipBlueprintData.create(this, builder));
+                }
+        );
+
         return blueprint;
     }
 }

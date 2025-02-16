@@ -1,10 +1,9 @@
 package com.github.icecheesecat.kantaicraft.menu.shipyard;
 
-import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BlueprintCell;
+import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.player.Inventory;
@@ -12,22 +11,12 @@ import net.minecraft.world.entity.player.Inventory;
 public class ShipyardScreen extends AbstractContainerScreen<ShipyardMenu> {
 
     private static final int BACKGROUND = FastColor.ARGB32.color(102, 0, 0, 0);
-    private final NonNullList<BlueprintCell> blueprintCells;
+
+    ShipyardBlockEntity shipyardBlockEntity;
 
     public ShipyardScreen(ShipyardMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
-        this.blueprintCells = pMenu.getBlueprintCells();
-    }
-
-    @Override
-    protected void containerTick() {
-        for (var cell: this.blueprintCells) {
-            if (cell.tick()) {
-                if (cell.done()) {
-                    cell.removeBlueprint(true);
-                }
-            }
-        }
+        this.shipyardBlockEntity = pMenu.shipyardBlockEntity;
     }
 
     @Override
@@ -39,10 +28,16 @@ public class ShipyardScreen extends AbstractContainerScreen<ShipyardMenu> {
     @Override
     public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
-        for (int i = 0; i < blueprintCells.size(); i++) {
-            BlueprintCell cell = blueprintCells.get(i);
-            if (cell.isEmpty()) continue;
-            pGuiGraphics.drawCenteredString(Minecraft.getInstance().font, "" + cell.remainTime(), 100, 20 * i, WHITE);
+
+        for (int i = 0; i < this.shipyardBlockEntity.getProcessShipSize(); i++) {
+            if (this.shipyardBlockEntity.hasProcess(i)) {
+                pGuiGraphics.drawCenteredString(Minecraft.getInstance().font, "" + this.shipyardBlockEntity.getRemainTime(i), 100, 20 * i, WHITE);
+            }
+        }
+
+        var builtData = this.shipyardBlockEntity.getBuiltData();
+        for (int i = 0; i < builtData.size(); i++) {
+            pGuiGraphics.drawCenteredString(Minecraft.getInstance().font, builtData.get(i).getName(), 300, 20 * i + 20, WHITE);
         }
     }
 }

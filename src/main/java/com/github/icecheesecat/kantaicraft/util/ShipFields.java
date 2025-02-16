@@ -17,7 +17,7 @@ public class ShipFields {
         @Override
         public ProcessValue getSecond() {
             return switch (this) {
-                case DESTROYER -> new ProcessValue(ProcessValue.Type.SECOND, 30);
+                case DESTROYER -> new ProcessValue(ProcessValue.Type.SECOND, 10);
                 case CARRIER -> new ProcessValue(ProcessValue.Type.SECOND, 0);
                 case EMPTY -> new ProcessValue(ProcessValue.Type.SECOND, 0);
             };
@@ -26,7 +26,7 @@ public class ShipFields {
         @Override
         public ProcessValue getMinute() {
             return switch (this) {
-                case DESTROYER -> new ProcessValue(ProcessValue.Type.MINUTE, 20);
+                case DESTROYER -> new ProcessValue(ProcessValue.Type.MINUTE, 0);
                 case CARRIER -> new ProcessValue(ProcessValue.Type.MINUTE, 30);
                 case EMPTY -> new ProcessValue(ProcessValue.Type.MINUTE, 0);
             };

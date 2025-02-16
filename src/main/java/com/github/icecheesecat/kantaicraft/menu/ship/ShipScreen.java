@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
+import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.CannonFireMode;
@@ -77,7 +77,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         this.imageWidth = 320;
         this.imageHeight = 180;
         this.ship = this.getMenu().getEntityShip();
-        this.ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
+        this.ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
             handler -> {
                 this.equipmentHandler = handler;
             }

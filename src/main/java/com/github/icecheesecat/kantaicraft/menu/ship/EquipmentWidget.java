@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentProvider;
+import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentResourceLocation;
@@ -45,7 +45,7 @@ public class EquipmentWidget extends AbstractWidget {
         this.textCenterY = this.getY() + height / 2;
         this.ship = ship;
         this.index = index;
-        ship.getCapability(EquipmentProvider.EQUIPMENT_HANDLER_CAPABILITY).ifPresent(
+        ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
                 handler -> this.equipmentHandler = handler
         );
 
