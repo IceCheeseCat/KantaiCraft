@@ -105,6 +105,8 @@ public class ShipyardBlockEntity extends BlockEntity implements MenuProvider {
                     this.removeProcessItem(i);
                     this.setChanged();
                 }
+
+                System.out.println(i + " " +processTime[i]);
             }
         }
     }

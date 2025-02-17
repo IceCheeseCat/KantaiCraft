@@ -58,7 +58,8 @@ public class ShipyardSpawnBuiltDataPacket {
                     BuiltData builtData = shipyardBlockEntity.getBuiltData().remove(index);
                     ShipBlueprintData data = builtData.getData();
                     EntityType<? extends BasicEntityShip> entityType = data.getEntityType();
-                    BasicEntityShip basicEntityShip = entityType.spawn((ServerLevel) serverPlayer.level(), shipyardBlockEntity.getBlockPos().above(), MobSpawnType.SPAWNER);
+                    BasicEntityShip basicEntityShip = entityType.spawn((ServerLevel) serverPlayer.level(), shipyardBlockEntity.getBlockPos().above(), MobSpawnType.EVENT);
+                    entityType.create(serverPlayer.level());
                         basicEntityShip.setOwner(data.getBuilder());
                         basicEntityShip.setAmmo(100.0f);
                     serverPlayer.level().addFreshEntity(basicEntityShip);

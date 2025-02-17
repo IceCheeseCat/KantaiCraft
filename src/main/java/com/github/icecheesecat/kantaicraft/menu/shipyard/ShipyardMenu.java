@@ -65,40 +65,34 @@ public class ShipyardMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player pPlayer, int pIndex) {
-        Slot clickedSlot = this.getSlot(pIndex);
-        if (!clickedSlot.hasItem()) return ItemStack.EMPTY;
 
-        ItemStack copy = clickedSlot.getItem().copy();
-        // hotbar and inventory
-        int startIndex;
-        int endIndex;
-        if (pIndex < 36) {
-            startIndex = 36;
-            endIndex = 40;
-        }
-        else {
-            startIndex = 0;
-            endIndex = 36;
-        }
-
-        boolean found = false;
-        for (int i = startIndex; i < endIndex; i++) {
-            Slot slot = this.getSlot(i);
-
-            ItemStack ret = slot.safeInsert(clickedSlot.getItem());
-            if (ret.isEmpty()) {
-                clickedSlot.setByPlayer(ret);
-                found = true;
-                break;
+        ItemStack itemstack = ItemStack.EMPTY;
+        Slot slot = this.slots.get(pIndex);
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
+            itemstack = itemstack1.copy();
+            if (pIndex < 36) {
+                if (!this.moveItemStackTo(itemstack1, 36, 40, false)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.moveItemStackTo(itemstack1, 0, 36, false)) {
+                return ItemStack.EMPTY;
             }
+
+            if (itemstack1.isEmpty()) {
+                slot.setByPlayer(ItemStack.EMPTY);
+            } else {
+                slot.setChanged();
+            }
+
+            if (itemstack1.getCount() == itemstack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onTake(pPlayer, itemstack1);
         }
 
-        if (found) {
-            return ItemStack.EMPTY;
-        }
-
-        return ItemStack.EMPTY;
-
+        return itemstack;
 
     }
 
