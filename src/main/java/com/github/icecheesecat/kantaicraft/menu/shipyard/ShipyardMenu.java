@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.menu.shipyard;
 
 import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.shipyardUtil.ShipBlueprintStackHandler;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import com.github.icecheesecat.kantaicraft.registries.ModMenu;
@@ -64,7 +65,41 @@ public class ShipyardMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player pPlayer, int pIndex) {
-        return null;
+        Slot clickedSlot = this.getSlot(pIndex);
+        if (!clickedSlot.hasItem()) return ItemStack.EMPTY;
+
+        ItemStack copy = clickedSlot.getItem().copy();
+        // hotbar and inventory
+        int startIndex;
+        int endIndex;
+        if (pIndex < 36) {
+            startIndex = 36;
+            endIndex = 40;
+        }
+        else {
+            startIndex = 0;
+            endIndex = 36;
+        }
+
+        boolean found = false;
+        for (int i = startIndex; i < endIndex; i++) {
+            Slot slot = this.getSlot(i);
+
+            ItemStack ret = slot.safeInsert(clickedSlot.getItem());
+            if (ret.isEmpty()) {
+                clickedSlot.setByPlayer(ret);
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            return ItemStack.EMPTY;
+        }
+
+        return ItemStack.EMPTY;
+
+
     }
 
     @Override
