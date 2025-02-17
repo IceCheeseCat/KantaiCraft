@@ -45,7 +45,6 @@ public class BuiltShipWidget extends AbstractWidget {
     public void onClick(double pMouseX, double pMouseY) {
         super.onClick(pMouseX, pMouseY);
         ModPacketHandler.INSTANCE.sendToServer(new ShipyardSpawnBuiltDataPacket(this.shipyardBlockEntity.getBlockPos(), this.builtData.getUuid()));
-        this.shipyardBlockEntity.getBuiltData().remove(this.builtData);
         this.removed = true;
     }
 
@@ -55,5 +54,9 @@ public class BuiltShipWidget extends AbstractWidget {
 
     public UUID getUUID() {
         return this.builtData.getUuid();
+    }
+
+    public BuiltData getBuiltData() {
+        return this.builtData;
     }
 }

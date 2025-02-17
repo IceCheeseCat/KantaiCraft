@@ -82,24 +82,31 @@ public class ShipyardScreen extends AbstractContainerScreen<ShipyardMenu> {
         }
 
         this.builtShipWidgets.removeAll(removeWidget);
+        for (var widget: removeWidget) {
+            this.shipyardBlockEntity.getBuiltData().remove(widget.getBuiltData());
+        }
+        if (!removeWidget.isEmpty()) {
+            rearrangeWidgetLayout();
+        }
     }
 
     private void checkBuiltData() {
         if (timeRender % 60 != 0) return;
         List<BuiltData> builtData = this.shipyardBlockEntity.getBuiltData();
         // builtData has new instance
-        boolean foundChanged = false;
-        for (var data: builtData) {
+        boolean foundChange = false;
+        for (BuiltData data : builtData) {
             boolean foundAnyWidget = this.builtShipWidgets.stream().anyMatch(widget -> widget.getUUID().compareTo(data.getUuid()) == 0);
             if (!foundAnyWidget) {
                 this.builtShipWidgets.add(new BuiltShipWidget(0, 0, this.shipyardBlockEntity, data));
-                foundChanged = true;
+                foundChange = true;
             }
         }
 
-        if (foundChanged) {
+        if (foundChange) {
             rearrangeWidgetLayout();
         }
+
     }
 
 }

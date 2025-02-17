@@ -44,4 +44,13 @@ public class BuiltData implements INBTSerializable<CompoundTag> {
         this.data = ShipBlueprintData.read(nbt.getCompound("data"));
         this.uuid = nbt.getUUID("uuid");
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof BuiltData builtData) {
+            return this.uuid.compareTo(builtData.getUuid()) == 0;
+        }
+
+        return false;
+    }
 }
