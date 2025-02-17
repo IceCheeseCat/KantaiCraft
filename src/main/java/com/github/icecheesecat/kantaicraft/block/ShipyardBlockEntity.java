@@ -1,8 +1,8 @@
 package com.github.icecheesecat.kantaicraft.block;
 
+import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BuiltData;
 import com.github.icecheesecat.kantaicraft.block.shipyardUtil.ShipBlueprintStackHandler;
 import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
-import com.github.icecheesecat.kantaicraft.item.ShipBlueprintData;
 import com.github.icecheesecat.kantaicraft.menu.shipyard.ShipyardMenu;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.ShipyardBuiltDataPacket;
@@ -15,7 +15,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -28,13 +27,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ShipyardBlockEntity extends BlockEntity implements MenuProvider {
 
     public final int processShipSize;
     int[] processTime;
     int[] totalProcessTime;
-    List<ShipBlueprintData> builtData = new ArrayList<>();
+    List<BuiltData> builtData = new ArrayList<>();
 
     public ShipyardBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlock.SHIPYARD_BETYPE.get(), pPos, pBlockState);
@@ -129,7 +129,7 @@ public class ShipyardBlockEntity extends BlockEntity implements MenuProvider {
                     if (itemHandler instanceof ShipBlueprintStackHandler stackHandler) {
                         ItemStack stack = stackHandler.getStackInSlot(i);
                         stack.getCapability(ShipBlueprintCapability.TOKEN).ifPresent(
-                                data -> this.builtData.add(data)
+                                data -> this.builtData.add(new BuiltData(data))
                         );
                     }
                 }
@@ -138,7 +138,17 @@ public class ShipyardBlockEntity extends BlockEntity implements MenuProvider {
         ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new ShipyardBuiltDataPacket(this.getBlockPos(), this.builtData));
     }
 
-    public List<ShipBlueprintData> getBuiltData() {
+    public int hasBuildDataAt(UUID uuid) {
+        for (int i = 0; i < this.builtData.size(); i++) {
+            if (this.getBuiltData().get(i).getUuid().compareTo(uuid) == 0) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public List<BuiltData> getBuiltData() {
         return builtData;
     }
 
@@ -162,7 +172,7 @@ public class ShipyardBlockEntity extends BlockEntity implements MenuProvider {
         return this.processShipSize;
     }
 
-    public void clientSetBuiltData(List<ShipBlueprintData> builtData) {
+    public void clientSetBuiltData(List<BuiltData> builtData) {
         this.builtData = builtData;
     }
 
@@ -190,7 +200,7 @@ public class ShipyardBlockEntity extends BlockEntity implements MenuProvider {
         nbt.putIntArray("total_process_time", this.totalProcessTime);
         nbt.putInt("built_data_size", this.builtData.size());
         for (int i = 0; i < builtData.size(); i++) {
-            nbt.put("built_data" + i, this.builtData.get(i).write());
+            nbt.put("built_data" + i, this.builtData.get(i).serializeNBT());
         }
     }
 
@@ -201,7 +211,7 @@ public class ShipyardBlockEntity extends BlockEntity implements MenuProvider {
         this.totalProcessTime = nbt.getIntArray("total_process_time");
         int size = nbt.getInt("built_data_size");
         for (int i = 0; i < size; i++) {
-            this.builtData.add(i, ShipBlueprintData.read(nbt.getCompound("built_data" + i)));
+            this.builtData.add(i, BuiltData.read(nbt.getCompound("built_data" + i)));
         }
     }
 }

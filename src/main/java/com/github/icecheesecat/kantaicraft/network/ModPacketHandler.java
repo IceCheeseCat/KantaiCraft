@@ -73,6 +73,14 @@ public class ModPacketHandler {
                 ShipyardBuiltDataPacket::decode,
                 ShipyardBuiltDataPacket::handle
         );
+
+        INSTANCE.registerMessage(
+                id++,
+                ShipyardSpawnBuiltDataPacket.class,
+                ShipyardSpawnBuiltDataPacket::encode,
+                ShipyardSpawnBuiltDataPacket::decode,
+                ShipyardSpawnBuiltDataPacket::handle
+        );
     }
 
 }

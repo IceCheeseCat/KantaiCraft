@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.network.packet;
 
 import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BuiltData;
 import com.github.icecheesecat.kantaicraft.item.ShipBlueprintData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -16,9 +17,9 @@ import java.util.function.Supplier;
 public class ShipyardBuiltDataPacket {
 
     BlockPos pos;
-    List<ShipBlueprintData> builtData;
+    List<BuiltData> builtData;
 
-    public ShipyardBuiltDataPacket(BlockPos pos, List<ShipBlueprintData> builtData) {
+    public ShipyardBuiltDataPacket(BlockPos pos, List<BuiltData> builtData) {
         this.pos = pos;
         this.builtData = builtData;
     }
@@ -27,16 +28,16 @@ public class ShipyardBuiltDataPacket {
         buf.writeBlockPos(packet.pos);
         buf.writeByte(packet.builtData.size());
         for (int i = 0; i < packet.builtData.size(); i++) {
-            buf.writeNbt(packet.builtData.get(i).write());
+            buf.writeNbt(packet.builtData.get(i).serializeNBT());
         }
     }
 
     public static ShipyardBuiltDataPacket decode(FriendlyByteBuf buf) {
         BlockPos pos = buf.readBlockPos();
         byte size = buf.readByte();
-        List<ShipBlueprintData> builtData = new ArrayList<>();
+        List<BuiltData> builtData = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            builtData.add(i, ShipBlueprintData.read(buf.readNbt()));
+            builtData.add(i, BuiltData.read(buf.readNbt()));
         }
 
         return new ShipyardBuiltDataPacket(pos, builtData);
