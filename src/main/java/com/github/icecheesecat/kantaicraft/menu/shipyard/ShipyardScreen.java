@@ -2,6 +2,8 @@ package com.github.icecheesecat.kantaicraft.menu.shipyard;
 
 import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BuiltData;
+import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
+import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -9,6 +11,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,13 +46,48 @@ public class ShipyardScreen extends AbstractContainerScreen<ShipyardMenu> {
 
         for (int i = 0; i < this.shipyardBlockEntity.getProcessShipSize(); i++) {
             if (this.shipyardBlockEntity.hasProcess(i)) {
-                pGuiGraphics.drawCenteredString(Minecraft.getInstance().font, "" + this.shipyardBlockEntity.getRemainTime(i), 100, 20 * i, WHITE);
+                pGuiGraphics.drawCenteredString(Minecraft.getInstance().font, processString(i), 100, 20 * i, WHITE);
             }
         }
 
         checkRemovedWidget();
         checkBuiltData();
         timeRender++;
+    }
+
+    String strTemp;
+    private Component processString(int i) {
+        String remainTimeStr = this.remainTime(this.shipyardBlockEntity.getRemainTime(i));
+
+        ItemStack itemStack = this.getMenu().getItems().get(i + 36);
+        strTemp = "undefined";
+        if (itemStack.is(ModItem.SHIP_BLUEPRINT.get())) {
+            itemStack.getCapability(ShipBlueprintCapability.TOKEN).ifPresent(
+                    shipBlueprintData -> {
+                        strTemp = shipBlueprintData.getName().getString() + " " + remainTimeStr;
+                    }
+            );
+        }
+
+        return Component.literal(strTemp);
+    }
+
+    private String remainTime(int tick) {
+
+        int hour = tick / 3600 / 20;
+        int minute = tick/ 60 / 20 - hour * 60;
+        int second = tick / 20 - hour * 3600 - minute * 60;
+
+        if (hour > 0) {
+            return hour + " hour " + minute + " minute " + second + " second";
+        }
+        else if (minute > 0) {
+            return minute + " minute " + second + " second";
+        }
+        else {
+            return second + " second";
+        }
+
     }
 
     @Override
