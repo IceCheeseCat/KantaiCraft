@@ -15,6 +15,7 @@ public class ModCreativeTabs {
             .icon(() -> ModItem.DEBUG_FACTION_CHANGER.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(ModItem.DEBUG_FACTION_CHANGER.get());
+                output.accept(ModBlock.FLOOR.get());
             }).build());
 
 }

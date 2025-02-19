@@ -25,7 +25,6 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {
-        System.out.println(item.getId().getPath());
         return withExistingParent(item.getId().getPath(),
                 new ResourceLocation("item/generated")).texture("layer0",
                     new ResourceLocation(KantaiCraft.MODID, "item/" + item.getId().getPath()));

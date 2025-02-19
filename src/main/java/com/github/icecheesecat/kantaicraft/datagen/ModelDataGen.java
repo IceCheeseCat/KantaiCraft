@@ -18,10 +18,8 @@ public class ModelDataGen {
         ExistingFileHelper efh = event.getExistingFileHelper();
 
         gen.addProvider(event.includeClient(), new ModItemModelProvider(output, KantaiCraft.MODID, efh));
-//        gen.addProvider(
-//                event.includeClient(),
-//                output -> new MyBlockStateProvider(output, MOD_ID, efh)
-//        );
+        gen.addProvider(event.includeClient(), new ModBlockStateProvider(output, KantaiCraft.MODID, efh));
+
     }
 
 }

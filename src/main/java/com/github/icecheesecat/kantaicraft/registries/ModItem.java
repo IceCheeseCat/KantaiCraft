@@ -16,7 +16,7 @@ public class ModItem
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, KantaiCraft.MODID);
 
 	public static final RegistryObject<Item> DEBUG_FACTION_CHANGER = ITEMS.register("debug_faction_changer", () -> new DebugFactionChanger(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<Item> DEBUG_DESTROYER_RO = ITEMS.register("destroyer_ro", () -> new ShipSpawnEgg(ModEntity.DestroyerRoClass, FastColor.ABGR32.red(128), FastColor.ABGR32.green(128), true, (s) -> {}, new Item.Properties()));
+	public static final RegistryObject<Item> DEBUG_DESTROYER_RO = ITEMS.register("debug_destroyer_ro", () -> new ShipSpawnEgg(ModEntity.DestroyerRoClass, FastColor.ABGR32.red(128), FastColor.ABGR32.green(128), true, (s) -> {}, new Item.Properties()));
 	public static final RegistryObject<Item> SHIP_BLUEPRINT = ITEMS.register("ship_blueprint", () -> new BlueprintItem(new Item.Properties().stacksTo(1)));
 
 	//	//spawn egg
