@@ -17,5 +17,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         this.simpleBlockWithItem(ModBlock.FLOOR.get(), cubeAll(ModBlock.FLOOR.get()));
+        this.simpleBlockWithItem(ModBlock.CRANE.get(), cubeAll(ModBlock.CRANE.get()));
     }
 }

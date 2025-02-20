@@ -28,6 +28,7 @@ public class ModBlock {
     public static final RegistryObject<Block> PORT = registerBlock("port", () -> new PortBlock(BlockBehaviour.Properties.copy(Blocks.STONE)));
     public static final RegistryObject<Block> SHIPYARD = registerBlock("shipyard", () -> new ShipyardBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
     public static final RegistryObject<Block> FLOOR = registerBlock("floor_block", () -> new FloorBlock(BlockBehaviour.Properties.copy(Blocks.STONE)));
+    public static final RegistryObject<Block> CRANE = registerBlock("crane_block", () -> new FloorBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
 
     public static final RegistryObject<BlockEntityType<PortBlockEntity>> PORT_BETYPE = BLOCK_ENTITIES.register("port_block_entity_type", () -> BlockEntityType.Builder.of(PortBlockEntity::new, PORT.get()).build(null));
     public static final RegistryObject<BlockEntityType<ShipyardBlockEntity>> SHIPYARD_BETYPE = BLOCK_ENTITIES.register("shipyard_block_entity_type", () -> BlockEntityType.Builder.of(ShipyardBlockEntity::new, SHIPYARD.get()).build(null));
