@@ -1,8 +1,6 @@
 package com.github.icecheesecat.kantaicraft.event;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.block.componentUtil.ComponentPattern;
-import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;

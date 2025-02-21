@@ -1,5 +1,7 @@
 package com.github.icecheesecat.kantaicraft.block;
 
+import com.github.icecheesecat.kantaicraft.block.basic.ComponentBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.basic.IComponentDrops;
 import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BuiltData;
 import com.github.icecheesecat.kantaicraft.block.shipyardUtil.ShipBlueprintStackHandler;
 import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
@@ -7,11 +9,11 @@ import com.github.icecheesecat.kantaicraft.menu.shipyard.ShipyardMenu;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.ShipyardBuiltDataPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.ShipyardPacket;
-import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -29,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ShipyardBlockEntity extends BlockEntity implements MenuProvider {
+public class ShipyardBlockEntity extends ComponentBlockEntity implements MenuProvider, IComponentDrops {
 
     public final int processShipSize;
     int[] processTime;
@@ -37,7 +39,7 @@ public class ShipyardBlockEntity extends BlockEntity implements MenuProvider {
     List<BuiltData> builtData = new ArrayList<>();
 
     public ShipyardBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(ModBlock.SHIPYARD_BETYPE.get(), pPos, pBlockState);
+        super(pPos, pBlockState);
         this.processShipSize = 4;
         this.processTime = new int[this.processShipSize];
         this.totalProcessTime = new int[this.processShipSize];
@@ -216,4 +218,33 @@ public class ShipyardBlockEntity extends BlockEntity implements MenuProvider {
             this.builtData.add(i, BuiltData.read(nbt.getCompound("built_data" + i)));
         }
     }
+
+    @Override
+    public void dropAllWhenPatternDestryed() {
+        double x = this.getBlockPos().getCenter().x;
+        double y = this.getBlockPos().getCenter().y;
+        double z = this.getBlockPos().getCenter().z;
+
+        // drop itemHandler
+        this.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(
+                itemHandler -> {
+
+                    for (int i = 0; i < itemHandler.getSlots(); i++) {
+                        ItemStack itemStack = itemHandler.getStackInSlot(i);
+                        if (itemStack.isEmpty()) continue;
+                        ItemEntity itemEntity = new ItemEntity(level, x, y, z, itemStack);
+                        level.addFreshEntity(itemEntity);
+                    }
+                }
+        );
+
+        // drop built data
+        List<BuiltData> builtData = this.getBuiltData();
+        for (var data: builtData) {
+            ItemStack itemStack = data.getData().createItemStack();
+            ItemEntity itemEntity = new ItemEntity(level, x, y, z, itemStack);
+            level.addFreshEntity(itemEntity);
+        }
+    }
+
 }

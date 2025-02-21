@@ -37,7 +37,7 @@ public class ShipyardBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return pBlockEntityType == ModBlock.SHIPYARD_BETYPE.get() ? ShipyardBlockEntity::tick : null;
+        return pBlockEntityType == ModBlock.COMPONENT_BETYPE.get() ? ShipyardBlockEntity::tick : null;
     }
 
     @Override
@@ -65,7 +65,6 @@ public class ShipyardBlock extends BaseEntityBlock {
             // drop itemHandler
             shipyardBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(
                     itemHandler -> {
-
                         for (int i = 0; i < itemHandler.getSlots(); i++) {
                             ItemStack itemStack = itemHandler.getStackInSlot(i);
                             if (itemStack.isEmpty()) continue;

@@ -1,12 +1,14 @@
 package com.github.icecheesecat.kantaicraft.block;
 
-import com.github.icecheesecat.kantaicraft.block.componentUtil.ComponentPattern;
-import com.github.icecheesecat.kantaicraft.block.componentUtil.PatternType;
+import com.github.icecheesecat.kantaicraft.block.basic.ComponentBlock;
+import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.ComponentPattern;
+import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.PatternType;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public class FloorBlock extends ComponentBlock {
 
@@ -27,4 +29,5 @@ public class FloorBlock extends ComponentBlock {
         }
 
     }
+
 }
