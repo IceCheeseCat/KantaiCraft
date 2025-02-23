@@ -1,23 +1,16 @@
 package com.github.icecheesecat.kantaicraft.menu.shipyard;
 
 import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
-import com.github.icecheesecat.kantaicraft.block.shipyardUtil.ShipBlueprintStackHandler;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
-import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import com.github.icecheesecat.kantaicraft.registries.ModMenu;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ShipyardMenu extends AbstractContainerMenu {
     private Inventory inventory;
@@ -98,7 +91,7 @@ public class ShipyardMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player pPlayer) {
-        return AbstractContainerMenu.stillValid(this.access, pPlayer, ModBlock.SHIPYARD.get());
+        return AbstractContainerMenu.stillValid(this.access, pPlayer, ModBlock.SHIPYARD_CORE.get());
     }
 
 }

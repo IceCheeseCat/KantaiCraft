@@ -1,18 +1,20 @@
 package com.github.icecheesecat.kantaicraft.block;
 
+import com.github.icecheesecat.kantaicraft.block.basic.CoreBlock;
+import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.ComponentPattern;
+import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.PatternType;
 import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BuiltData;
-import com.github.icecheesecat.kantaicraft.item.ShipBlueprintData;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -24,39 +26,38 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ShipyardBlock extends BaseEntityBlock {
+public class ShipyardCoreBlock extends CoreBlock {
 
-    public ShipyardBlock(Properties pProperties) {
-        super(pProperties);
+    public ShipyardCoreBlock(Properties pProperties) {
+        super(pProperties, PatternType.SHIPYARD);
     }
 
     @Override
-    public @Nullable BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new ShipyardBlockEntity(pPos, pState);
+    public RenderShape getRenderShape(BlockState pState) {
+        return RenderShape.MODEL;
     }
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return pBlockEntityType == ModBlock.COMPONENT_BETYPE.get() ? ShipyardBlockEntity::tick : null;
+        return pBlockEntityType == ModBlock.CORE_BETYPE.get() ? ShipyardBlockEntity::tick : null;
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        if (pLevel.isClientSide) return InteractionResult.PASS;
-        if (pHand != InteractionHand.MAIN_HAND) {
-            return InteractionResult.PASS;
+    protected void putIfAbsentPatterns() {
+        if (!this.allowPatterns.containsKey(PatternType.SHIPYARD)) {
+            this.allowPatterns.put(PatternType.SHIPYARD, ComponentPattern.Builder.start(2, 2, 2)
+                    .addBlock(0, 0, 0, ModBlock.FLOOR.get())
+                    .addBlock(0, 0, 1, ModBlock.FLOOR.get())
+                    .addBlock(1, 0, 0, Blocks.WATER)
+                    .addBlock(1,0,1, Blocks.WATER)
+                    .addBlock(0, 1, 1, ModBlock.CRANE.get())
+                    .addBlock(0,1,0, ModBlock.SHIPYARD_CORE.get())
+                    .build());
         }
-        if (pLevel.getBlockEntity(pPos) instanceof ShipyardBlockEntity shipyardBlockEntity) {
-            NetworkHooks.openScreen((ServerPlayer) pPlayer, shipyardBlockEntity, (extraData) -> {
-                extraData.writeBlockPos(pPos);
-            });
-        }
-
-        return InteractionResult.FAIL;
     }
 
     @Override
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
+    public void dropAllWhenPatternDestryed(Level pLevel, BlockPos pPos) {
         if (pLevel.getBlockEntity(pPos) instanceof ShipyardBlockEntity shipyardBlockEntity) {
             double x = pPos.getCenter().x;
             double y = pPos.getCenter().y;
@@ -82,7 +83,5 @@ public class ShipyardBlock extends BaseEntityBlock {
                 pLevel.addFreshEntity(itemEntity);
             }
         }
-
-        super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
     }
 }

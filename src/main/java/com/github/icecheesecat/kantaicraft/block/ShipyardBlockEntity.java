@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.block;
 
 import com.github.icecheesecat.kantaicraft.block.basic.ComponentBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.basic.CoreBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.basic.IComponentDrops;
 import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BuiltData;
 import com.github.icecheesecat.kantaicraft.block.shipyardUtil.ShipBlueprintStackHandler;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ShipyardBlockEntity extends ComponentBlockEntity implements MenuProvider, IComponentDrops {
+public class ShipyardBlockEntity extends CoreBlockEntity implements MenuProvider {
 
     public final int processShipSize;
     int[] processTime;
@@ -50,6 +51,7 @@ public class ShipyardBlockEntity extends ComponentBlockEntity implements MenuPro
 
     public static <T extends BlockEntity> void tick(Level level, BlockPos blockPos, BlockState state, T be) {
         if (level.isClientSide) return;
+        if (be == null) return;
         if (be instanceof  ShipyardBlockEntity shipyardBlockEntity) {
             shipyardBlockEntity.tickAllProcesses();
 
@@ -216,34 +218,6 @@ public class ShipyardBlockEntity extends ComponentBlockEntity implements MenuPro
         int size = nbt.getInt("built_data_size");
         for (int i = 0; i < size; i++) {
             this.builtData.add(i, BuiltData.read(nbt.getCompound("built_data" + i)));
-        }
-    }
-
-    @Override
-    public void dropAllWhenPatternDestryed() {
-        double x = this.getBlockPos().getCenter().x;
-        double y = this.getBlockPos().getCenter().y;
-        double z = this.getBlockPos().getCenter().z;
-
-        // drop itemHandler
-        this.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(
-                itemHandler -> {
-
-                    for (int i = 0; i < itemHandler.getSlots(); i++) {
-                        ItemStack itemStack = itemHandler.getStackInSlot(i);
-                        if (itemStack.isEmpty()) continue;
-                        ItemEntity itemEntity = new ItemEntity(level, x, y, z, itemStack);
-                        level.addFreshEntity(itemEntity);
-                    }
-                }
-        );
-
-        // drop built data
-        List<BuiltData> builtData = this.getBuiltData();
-        for (var data: builtData) {
-            ItemStack itemStack = data.getData().createItemStack();
-            ItemEntity itemEntity = new ItemEntity(level, x, y, z, itemStack);
-            level.addFreshEntity(itemEntity);
         }
     }
 

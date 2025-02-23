@@ -1,7 +1,10 @@
 package com.github.icecheesecat.kantaicraft.block.basic;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+
 public interface IComponentDrops {
 
-    void dropAllWhenPatternDestryed();
+    void dropAllWhenPatternDestryed(Level pLevel, BlockPos pPos);
 
 }
