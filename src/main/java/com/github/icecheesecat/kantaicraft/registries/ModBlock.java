@@ -29,7 +29,8 @@ public class ModBlock {
 
     public static final RegistryObject<BlockEntityType<PortBlockEntity>> PORT_BETYPE = BLOCK_ENTITIES.register("port_block_entity_type", () -> BlockEntityType.Builder.of(PortBlockEntity::new, PORT.get()).build(null));
     public static final RegistryObject<BlockEntityType<ComponentBlockEntity>> COMPONENT_BETYPE = BLOCK_ENTITIES.register("component_block_entity_type", () -> BlockEntityType.Builder.of(ComponentBlockEntity::new, FLOOR.get(), CRANE.get()).build(null));
-    public static final RegistryObject<BlockEntityType<CoreBlockEntity>> CORE_BETYPE = BLOCK_ENTITIES.register("core_block_entity_type", () -> BlockEntityType.Builder.of(CoreBlockEntity::new, SHIPYARD_CORE.get()).build(null));
+//    public static final RegistryObject<BlockEntityType<CoreBlockEntity>> CORE_BETYPE = BLOCK_ENTITIES.register("core_block_entity_type", () -> BlockEntityType.Builder.of(CoreBlockEntity::new, SHIPYARD_CORE.get()).build(null));
+    public static final RegistryObject<BlockEntityType<ShipyardBlockEntity>> SHIPYARD_BETPYE = BLOCK_ENTITIES.register("shipyard_block_entity", () -> BlockEntityType.Builder.of(ShipyardBlockEntity::new, SHIPYARD_CORE.get()).build(null));
 
     private static RegistryObject<Block> registerBlock(String name, Supplier<Block> supplier) {
         RegistryObject<Block> ret = BLOCKS.register(name, supplier);

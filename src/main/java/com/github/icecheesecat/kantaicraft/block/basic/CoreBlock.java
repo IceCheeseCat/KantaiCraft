@@ -1,10 +1,7 @@
 package com.github.icecheesecat.kantaicraft.block.basic;
 
-import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
-import com.github.icecheesecat.kantaicraft.block.ShipyardCoreBlock;
 import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.ComponentPattern;
 import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.PatternType;
-import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -13,17 +10,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.NetworkHooks;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,11 +28,24 @@ public abstract class CoreBlock extends BaseEntityBlock implements IComponentDro
     public CoreBlock(Properties pProperties, PatternType patternType) {
         super(pProperties);
         this.patternType = patternType;
+        this.registerDefaultState(
+            this.getStateDefinition().any()
+                .setValue(BlockStateProperties.PATTERN_TYPE, PatternType.NONE)
+        );
     }
 
     @Override
     public RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.MODEL;
+        if (pState.getValue(BlockStateProperties.PATTERN_TYPE) == PatternType.NONE) {
+            return RenderShape.MODEL;
+        }
+
+        return RenderShape.INVISIBLE;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        pBuilder.add(BlockStateProperties.PATTERN_TYPE);
     }
 
     /**
@@ -52,17 +56,40 @@ public abstract class CoreBlock extends BaseEntityBlock implements IComponentDro
     @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
         this.putIfAbsentPatterns();
-        for (var ap: allowPatterns.entrySet()) {
-            List<BlockPos> blockPoses = ap.getValue().findPattern(pLevel, pPos);
-            // blockPoses 0 as core
-            if (blockPoses != null) {
-                pLevel.setBlockEntity(this.createCoreBlockEntity(pPos, pState));
-
-                linkComponents(pLevel, pPos, blockPoses);
-            }
+        var blockPoses = this.checkPattern(pLevel, pPos);
+        if (blockPoses != null) {
+            this.setupPatternBlocks(pLevel, pPos, blockPoses);
+            pLevel.setBlockAndUpdate(pPos, pState.setValue(BlockStateProperties.PATTERN_TYPE, this.patternType));
         }
 
         super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
+    }
+
+    private List<BlockPos> checkPattern(Level pLevel, BlockPos pPos) {
+        for (var ap: allowPatterns.entrySet()) {
+            List<BlockPos> blockPoses = ap.getValue().findPattern(pLevel, pPos);
+
+            if (blockPoses != null) return blockPoses;
+        }
+
+        return null;
+    }
+
+    private void setupPatternBlocks(Level level, BlockPos corePos, List<BlockPos> blockPoses) {
+        CoreBlockEntity coreBlockEntity = (CoreBlockEntity) level.getBlockEntity(corePos);
+        for (var pos: blockPoses) {
+            if (level.getBlockState(pos).getBlock() instanceof ComponentBlock) {
+                if (level.getBlockEntity(pos) instanceof ComponentBlockEntity cbe) {
+                    System.out.println("Linked:" + level.getBlockState(pos).getBlock() + ", " + pos);
+                    cbe.setCorePos(corePos);
+                    coreBlockEntity.addLinked(pos);
+                }
+
+                level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(BlockStateProperties.PATTERN_TYPE, this.patternType));
+            }
+        }
+
+        coreBlockEntity.setCanUse(true);
     }
 
     @Override
@@ -70,70 +97,49 @@ public abstract class CoreBlock extends BaseEntityBlock implements IComponentDro
         super.neighborChanged(pState, pLevel, pPos, pNeighborBlock, pNeighborPos, pMovedByPiston);
     }
 
-    private void linkComponents(Level level, BlockPos corePos, List<BlockPos> poses) {
-        CoreBlockEntity coreBlockEntity = (CoreBlockEntity) level.getBlockEntity(corePos);
-        for (var pos: poses) {
-
-            if (level.getBlockEntity(pos) instanceof ComponentBlockEntity cbe) {
-                System.out.println("Linked:" + level.getBlockState(pos).getBlock() + ", " + pos);
-                cbe.setCorePos(corePos);
-                coreBlockEntity.addLinked(pos);
-            }
-        }
-
-    }
-
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
-        this.onRemoveLinked(pState, pLevel, pPos);
-        this.dropAllWhenPatternDestryed(pLevel, pPos);
-        pLevel.removeBlockEntity(pPos);
-
-        super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
-    }
-
-    public void onRemoveLinked(BlockState pState, Level pLevel, BlockPos pPos) {
-        var be = pLevel.getBlockEntity(pPos);
-        if (be instanceof CoreBlockEntity coreBlockEntity) {
-            coreBlockEntity.resetLinked();
+        if (pNewState.getBlock().equals(Blocks.AIR)) {
+            this.coreBlockRemoved(pLevel, pPos, pState, pNewState, pMovedByPiston);
         }
     }
 
-    private BlockEntity createCoreBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new
+    private void coreBlockRemoved(Level level, BlockPos blockPos, BlockState blockState, BlockState newState, boolean movedByPiston) {
+        this.removeLinks(level, blockPos);
+        this.dropAllWhenPatternDestryed(level, blockPos);
+
+        super.onRemove(blockState, level, blockPos, newState, movedByPiston);
+    }
+
+    /**
+     * Remove linking and blockStates
+     */
+    public void onPatternComponentRemoved(Level level, BlockPos blockPos) {
+        this.removeLinks(level, blockPos);
+        level.setBlockAndUpdate(blockPos, level.getBlockState(blockPos).setValue(BlockStateProperties.PATTERN_TYPE, PatternType.NONE));
+    }
+
+    public void removeLinks(Level pLevel, BlockPos pPos) {
+        var be = pLevel.getBlockEntity(pPos);
+        if (be instanceof CoreBlockEntity coreBlockEntity) {
+            coreBlockEntity.resetLinksAndBlockStates();
+        }
     }
 
     protected abstract void putIfAbsentPatterns();
 
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        if (pLevel.isClientSide) return InteractionResult.PASS;
+        if (pLevel.isClientSide) return InteractionResult.SUCCESS;
 
-        if (pLevel.getBlockEntity(pPos) instanceof CoreBlockEntity coreBlockEntity) {
-            if (coreBlockEntity instanceof ShipyardBlockEntity shipyardBlockEntity) {
-                NetworkHooks.openScreen((ServerPlayer) pPlayer, shipyardBlockEntity, (extraData) -> {
-                    extraData.writeBlockPos(shipyardBlockEntity.getBlockPos());
-                });
-                return InteractionResult.SUCCESS;
-            }
+        var be = pLevel.getBlockEntity(pPos);
+        if (be instanceof MenuCoreBlockEntity menuCoreBlockEntity) {
+            if (!menuCoreBlockEntity.canUse()) return InteractionResult.PASS;
+            menuCoreBlockEntity.openMenu((ServerPlayer) pPlayer);
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.FAIL;
     }
-
-    @Override
-    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return switch (patternType) {
-            case SHIPYARD -> ShipyardBlockEntity::tick;
-            default -> null;
-        };
-    }
-
-    @Override
-    public @Nullable BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return null;
-    }
-
-
 
 }

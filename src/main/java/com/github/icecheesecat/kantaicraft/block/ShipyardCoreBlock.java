@@ -33,13 +33,13 @@ public class ShipyardCoreBlock extends CoreBlock {
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.MODEL;
+    public @Nullable BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return new ShipyardBlockEntity(pPos, pState);
     }
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return pBlockEntityType == ModBlock.CORE_BETYPE.get() ? ShipyardBlockEntity::tick : null;
+        return createTickerHelper(pBlockEntityType, ModBlock.SHIPYARD_BETPYE.get(), ShipyardBlockEntity::tick);
     }
 
     @Override

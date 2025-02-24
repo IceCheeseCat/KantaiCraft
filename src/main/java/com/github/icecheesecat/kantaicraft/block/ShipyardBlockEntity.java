@@ -3,6 +3,7 @@ package com.github.icecheesecat.kantaicraft.block;
 import com.github.icecheesecat.kantaicraft.block.basic.ComponentBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.basic.CoreBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.basic.IComponentDrops;
+import com.github.icecheesecat.kantaicraft.block.basic.MenuCoreBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BuiltData;
 import com.github.icecheesecat.kantaicraft.block.shipyardUtil.ShipBlueprintStackHandler;
 import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
@@ -10,9 +11,13 @@ import com.github.icecheesecat.kantaicraft.menu.shipyard.ShipyardMenu;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.ShipyardBuiltDataPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.ShipyardPacket;
+import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,6 +30,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ShipyardBlockEntity extends CoreBlockEntity implements MenuProvider {
+public class ShipyardBlockEntity extends MenuCoreBlockEntity {
 
     public final int processShipSize;
     int[] processTime;
@@ -40,7 +46,7 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements MenuProvider
     List<BuiltData> builtData = new ArrayList<>();
 
     public ShipyardBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState);
+        super(ModBlock.SHIPYARD_BETPYE.get(), pPos, pBlockState);
         this.processShipSize = 4;
         this.processTime = new int[this.processShipSize];
         this.totalProcessTime = new int[this.processShipSize];
@@ -49,28 +55,32 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements MenuProvider
         }
     }
 
-    public static <T extends BlockEntity> void tick(Level level, BlockPos blockPos, BlockState state, T be) {
+    @Override
+    public void menuExtraData(FriendlyByteBuf buf) {
+        buf.writeBlockPos(this.getBlockPos());
+    }
+
+    public static <T extends BlockEntity> void tick(Level level, BlockPos blockPos, BlockState state, ShipyardBlockEntity shipyardBlockEntity) {
         if (level.isClientSide) return;
-        if (be == null) return;
-        if (be instanceof  ShipyardBlockEntity shipyardBlockEntity) {
-            shipyardBlockEntity.tickAllProcesses();
+        if (!shipyardBlockEntity.canUse()) return;
 
-            // changed in item stack handler
-            shipyardBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(
-                itemHandler -> {
-                    itemChangedInBlueprintStackHandler(itemHandler, shipyardBlockEntity);
-                }
-            );
+        shipyardBlockEntity.tickAllProcesses();
 
-            // sync processes
-            for (int i = 0; i < shipyardBlockEntity.processShipSize; i++) {
-                if (shipyardBlockEntity.totalProcessTime[i] == -1) continue;
-                ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new ShipyardPacket(shipyardBlockEntity.getBlockPos(), (byte)i, shipyardBlockEntity.processTime[i]));
+        // changed in item stack handler
+        shipyardBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(
+            itemHandler -> {
+                itemChangedInBlueprintStackHandler(itemHandler, shipyardBlockEntity);
             }
+        );
 
-            if (level.getGameTime() % 20 == 0) {
-                shipyardBlockEntity.setChanged();
-            }
+        // sync processes
+        for (int i = 0; i < shipyardBlockEntity.processShipSize; i++) {
+            if (shipyardBlockEntity.totalProcessTime[i] == -1) continue;
+            ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new ShipyardPacket(shipyardBlockEntity.getBlockPos(), (byte)i, shipyardBlockEntity.processTime[i]));
+        }
+
+        if (level.getGameTime() % 20 == 0) {
+            shipyardBlockEntity.setChanged();
         }
     }
 
@@ -113,10 +123,12 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements MenuProvider
                 System.out.println(i + " " +processTime[i]);
             }
         }
+        setChanged();
     }
 
     private void resetProcess(int i) {
         this.processTime[i] = this.totalProcessTime[i] = -1;
+        setChanged();
     }
 
     private void removeProcessItem(int i) {
@@ -127,6 +139,7 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements MenuProvider
                     }
                 }
         );
+        setChanged();
     }
 
     private void addBuiltData(int i) {
@@ -160,10 +173,12 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements MenuProvider
 
     public void setProcessTime(byte index, int processTime) {
         this.processTime[index] = processTime;
+        setChanged();
     }
 
     public void setTotalProcessTime(byte index, int totalProcessTime) {
         this.totalProcessTime[index] = totalProcessTime;
+        setChanged();
     }
 
     public int getRemainTime(int i) {
@@ -180,6 +195,7 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements MenuProvider
 
     public void clientSetBuiltData(List<BuiltData> builtData) {
         this.builtData = builtData;
+        setChanged();
     }
 
     @Override

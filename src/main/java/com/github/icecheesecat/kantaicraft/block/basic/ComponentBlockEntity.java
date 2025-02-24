@@ -24,10 +24,6 @@ public class ComponentBlockEntity extends BlockEntity {
     }
 
     public void setCorePos(BlockPos corePos) {
-//        if (this.corePos != null) {
-//            throw new IllegalStateException("core pos is not null");
-//        }
-
         this.corePos = corePos;
         setChanged();
     }
@@ -51,6 +47,7 @@ public class ComponentBlockEntity extends BlockEntity {
     }
 
     public CoreBlock getCoreBlock(Level level) {
+        if (getCorePos() == null) return null;
         if (level.getBlockState(corePos).getBlock() instanceof CoreBlock coreBlock) {
             return coreBlock;
         }

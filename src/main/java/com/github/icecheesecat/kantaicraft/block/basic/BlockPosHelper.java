@@ -11,8 +11,8 @@ public class BlockPosHelper {
     public static CompoundTag writeNbt(BlockPos blockPos) {
         CompoundTag nbt = new CompoundTag();
         nbt.putInt("pos_x", blockPos.getX());
-        nbt.putInt("pos_y", blockPos.getX());
-        nbt.putInt("pos_z", blockPos.getX());
+        nbt.putInt("pos_y", blockPos.getY());
+        nbt.putInt("pos_z", blockPos.getZ());
         return nbt;
     }
 
