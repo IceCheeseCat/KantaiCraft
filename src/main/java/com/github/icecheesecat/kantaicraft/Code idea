@@ -1,8 +1,19 @@
-TODO 1. ship screen faction display
+STOPPED 1. ship screen faction display (stopped)
     - nice icon (read from file or default)
 
 TODO 2. Shipyard
-    - build a new ship from blueprint
+    - build a new ship from blueprint (done)
+    - better looking screen
+    - shipyard model
 
-TODO 3. Blueprint
+
+DONE 3. Blueprint
     - record data from a ship
+
+TODO 4. Add more ships
+    - Destroyer I Class (Model)
+
+TODO 5. Add more equipments
+    - Small cannon
+    - Medium cannon
+    - Large cannon
