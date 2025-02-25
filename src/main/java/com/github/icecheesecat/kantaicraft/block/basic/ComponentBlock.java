@@ -74,7 +74,7 @@ public class ComponentBlock extends BaseEntityBlock {
 
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        if (pLevel.isClientSide) return InteractionResult.PASS;
+        if (pLevel.isClientSide) return InteractionResult.SUCCESS;
         if (pLevel.getBlockEntity(pPos) instanceof ComponentBlockEntity cbe) {
             if (cbe.getCoreBlockEntity(pLevel) instanceof  MenuCoreBlockEntity menuCoreBlockEntity) {
                 menuCoreBlockEntity.openMenu((ServerPlayer) pPlayer);

@@ -2,11 +2,18 @@ package com.github.icecheesecat.kantaicraft.event;
 
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.renderer.ShipyardRenderer;
+import com.github.icecheesecat.kantaicraft.client.model.ModelDestroyerRo;
+import com.github.icecheesecat.kantaicraft.client.renderer.RendererDestroyerRo;
 import com.github.icecheesecat.kantaicraft.menu.shipyard.ShipyardScreen;
+import com.github.icecheesecat.kantaicraft.registries.ModBlock;
+import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import com.github.icecheesecat.kantaicraft.registries.ModMenu;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -23,6 +30,21 @@ public class ClientSetupEvent {
             }
         );
     }
+
+    @SubscribeEvent
+    public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(ModelDestroyerRo.LAYER_LOCATION, ModelDestroyerRo::createBodyLayer);
+    }
+
+    @SubscribeEvent
+    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        // Entity
+        event.registerEntityRenderer(ModEntity.DestroyerRoClass.get(), RendererDestroyerRo::new);
+
+        // BlockEntity
+        event.registerBlockEntityRenderer(ModBlock.SHIPYARD_BETPYE.get(), ShipyardRenderer::new);
+    }
+
 
 
 }

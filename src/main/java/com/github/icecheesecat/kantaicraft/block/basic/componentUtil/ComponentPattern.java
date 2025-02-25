@@ -204,13 +204,13 @@ public class ComponentPattern {
             ComponentPattern componentPattern = new ComponentPattern(row, height, column);
             componentPattern.tempPattern = this.tempPattern;
             componentPattern.init();
-            for (var node: componentPattern.nodes) {
-                System.out.println(node.block + ", ");
-                for (var nei: node.neighbors.entrySet()) {
-                    System.out.println("---" + nei.getKey() + " " + nei.getValue().block);
-                }
-                System.out.println();
-            }
+//            for (var node: componentPattern.nodes) {
+//                System.out.println(node.block + ", ");
+//                for (var nei: node.neighbors.entrySet()) {
+//                    System.out.println("---" + nei.getKey() + " " + nei.getValue().block);
+//                }
+//                System.out.println();
+//            }
             return componentPattern;
         }
     }

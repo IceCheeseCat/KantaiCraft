@@ -12,14 +12,5 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = KantaiCraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class EntityRendererEvent {
 
-    @SubscribeEvent
-    public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(ModelDestroyerRo.LAYER_LOCATION, ModelDestroyerRo::createBodyLayer);
-    }
-
-    @SubscribeEvent
-    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(ModEntity.DestroyerRoClass.get(), RendererDestroyerRo::new);
-    }
 
 }

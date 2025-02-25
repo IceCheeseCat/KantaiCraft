@@ -237,4 +237,16 @@ public class ShipyardBlockEntity extends MenuCoreBlockEntity {
         }
     }
 
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag nbt = super.getUpdateTag();
+        nbt.putIntArray("process_time", this.processTime);
+        nbt.putIntArray("total_process_time", this.totalProcessTime);
+        nbt.putInt("built_data_size", this.builtData.size());
+        for (int i = 0; i < builtData.size(); i++) {
+            nbt.put("built_data" + i, this.builtData.get(i).serializeNBT());
+        }
+
+        return nbt;
+    }
 }

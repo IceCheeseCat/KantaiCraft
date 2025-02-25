@@ -1,15 +1,15 @@
 package com.github.icecheesecat.kantaicraft.block.basic;
 
-import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.PatternType;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 public class ComponentBlockEntity extends BlockEntity {
 
@@ -58,8 +58,7 @@ public class ComponentBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
         if (corePos != null) {
-            CompoundTag coreNbt = BlockPosHelper.writeNbt(this.corePos);
-            pTag.put("core_pos", coreNbt);
+            pTag.put("core_pos", BlockPosHelper.writeNbt(this.corePos));
         }
 
     }
@@ -71,6 +70,21 @@ public class ComponentBlockEntity extends BlockEntity {
             this.corePos = BlockPosHelper.readNbt(pTag.getCompound("core_pos"));
         }
 
+    }
+
+    @Override
+    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag nbt = super.getUpdateTag();
+        if (this.corePos != null) {
+            nbt.put("core_pos", BlockPosHelper.writeNbt(this.corePos));
+        }
+
+        return nbt;
     }
 
 }

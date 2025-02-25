@@ -58,6 +58,10 @@ public class CoreBlockEntity extends BlockEntity {
         level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 2);
     }
 
+    public List<BlockPos> getLinkedBlockPos() {
+        return linkedBlockPos;
+    }
+
     @Override
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
@@ -75,6 +79,7 @@ public class CoreBlockEntity extends BlockEntity {
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag nbt = super.getUpdateTag();
+        nbt.put("linked", BlockPosHelper.listWriteNbt(this.linkedBlockPos));
         nbt.putBoolean("can_use", this.canUse);
         return nbt;
     }
@@ -84,9 +89,4 @@ public class CoreBlockEntity extends BlockEntity {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        var nbt = pkt.getTag();
-        this.canUse = nbt.getBoolean("can_use");
-    }
 }
