@@ -83,6 +83,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.setFuel((float) this.getAttributeValue(ModAttribute.FUEL.get()));
         this.setAmmo((float) this.getAttributeValue(ModAttribute.AMMO.get()));
         this.attackbleEquipmentTypes = ImmutableList.copyOf(attackbleEquipmentTypes);
+        this.initEquipments();
     }
 
     @Override
@@ -95,6 +96,8 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.entityData.define(DATA_IS_GUARDING, false);
         this.entityData.define(DATA_CAN_MELEE, false);
     }
+
+    protected abstract void initEquipments();
 
     @Override
     protected PathNavigation createNavigation(Level pLevel) {
@@ -128,7 +131,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     }
 
     public abstract float getAmmoCost();
-
 
     public int getAircraft() {
         return this.entityData.get(DATA_AIRCRAFT);

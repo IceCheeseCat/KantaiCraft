@@ -1,6 +1,8 @@
 package com.github.icecheesecat.kantaicraft.entity.ship.destroyer;
 
+import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicDestroyerShip;
+import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import com.github.icecheesecat.kantaicraft.equipment.SlotChecker;
 import com.github.icecheesecat.kantaicraft.util.ShipFields;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
@@ -30,5 +32,14 @@ public class EntityDestroyerRoClass extends BasicDestroyerShip
 	@Override
 	public ShipFields.ShipName getShipName() {
 		return ShipFields.ShipName.DestroyerRoClass;
+	}
+
+	@Override
+	protected void initEquipments() {
+		this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
+				handler -> {
+					handler.setEquipment(0, Equipments.__12cm_single_gun_mount__, this);
+				}
+		);
 	}
 }

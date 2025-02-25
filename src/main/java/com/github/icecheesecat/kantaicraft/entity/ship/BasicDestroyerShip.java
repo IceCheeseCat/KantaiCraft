@@ -57,4 +57,5 @@ public abstract class BasicDestroyerShip extends BasicCannonShip {
     public SlotChecker get(int index) {
         return GENERAL_DESTROYER_SLOT_CHECKER;
     }
+
 }
