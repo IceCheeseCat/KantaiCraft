@@ -1,6 +1,8 @@
 package com.github.icecheesecat.kantaicraft.block.basic;
 
+import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.ComponentPattern;
 import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.PatternType;
+import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -18,13 +20,30 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class ComponentBlock extends BaseEntityBlock {
+import java.util.List;
+
+public class ComponentBlock extends PatternBlock {
+
     public ComponentBlock(Properties pProperties) {
         super(pProperties);
         this.registerDefaultState(
             this.getStateDefinition().any()
                 .setValue(BlockStateProperties.PATTERN_TYPE, PatternType.NONE)
         );
+    }
+
+    @Override
+    protected void putIfAbsentPatterns() {
+        if (!this.allowPatterns.containsKey(PatternType.SHIPYARD)) {
+            this.allowPatterns.put(PatternType.SHIPYARD, ComponentPattern.Builder.start(2, 2, 2)
+                    .addBlock(0, 0, 0, ModBlock.FLOOR.get())
+                    .addBlock(0, 0, 1, ModBlock.FLOOR.get())
+                    .addBlock(1, 0, 0, Blocks.WATER)
+                    .addBlock(1,0,1, Blocks.WATER)
+                    .addBlock(0, 1, 1, ModBlock.CRANE.get())
+                    .addBlock(0,1,0, ModBlock.SHIPYARD_CORE.get())
+                    .build());
+        }
     }
 
     @Override
@@ -44,6 +63,22 @@ public class ComponentBlock extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return new ComponentBlockEntity(pPos, pState);
+    }
+
+    @Override
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
+        this.putIfAbsentPatterns();
+        List<BlockPos> blockPoses = checkPattern(pLevel, pPos);
+        if (blockPoses != null) {
+            for (var pos: blockPoses) {
+                if (pLevel.getBlockState(pos).getBlock() instanceof CoreBlock coreBlock) {
+                    coreBlock.componentBlockPlaced(pLevel, pos, blockPoses);
+                    break;
+                }
+            }
+        }
+
+        super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
     }
 
     @Override

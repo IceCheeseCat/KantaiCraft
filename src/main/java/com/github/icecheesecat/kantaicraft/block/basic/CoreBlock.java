@@ -25,9 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public abstract class CoreBlock extends BaseEntityBlock implements IComponentDrops {
+public abstract class CoreBlock extends PatternBlock implements IComponentDrops {
 
-    protected Map<PatternType, ComponentPattern> allowPatterns = new HashMap<>();
     private final PatternType patternType;
 
     public CoreBlock(Properties pProperties, PatternType patternType) {
@@ -75,20 +74,15 @@ public abstract class CoreBlock extends BaseEntityBlock implements IComponentDro
         var blockPoses = this.checkPattern(pLevel, pPos);
         if (blockPoses != null) {
             this.setupPatternBlocks(pLevel, pPos, blockPoses);
-            pLevel.setBlockAndUpdate(pPos, pState.setValue(BlockStateProperties.PATTERN_TYPE, this.patternType));
+//            pLevel.setBlockAndUpdate(pPos, pState.setValue(BlockStateProperties.PATTERN_TYPE, this.patternType));
         }
 
         super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
     }
 
-    private List<BlockPos> checkPattern(Level pLevel, BlockPos pPos) {
-        for (var ap: allowPatterns.entrySet()) {
-            List<BlockPos> blockPoses = ap.getValue().findPattern(pLevel, pPos);
-
-            if (blockPoses != null) return blockPoses;
-        }
-
-        return null;
+    public void componentBlockPlaced(Level level, BlockPos corePos, List<BlockPos> poses) {
+        this.setupPatternBlocks(level, corePos, poses);
+//        level.setBlockAndUpdate(corePos, level.getBlockState(corePos).setValue(BlockStateProperties.PATTERN_TYPE, this.patternType));
     }
 
     private void setupPatternBlocks(Level level, BlockPos corePos, List<BlockPos> blockPoses) {
@@ -96,7 +90,7 @@ public abstract class CoreBlock extends BaseEntityBlock implements IComponentDro
         for (var pos: blockPoses) {
             if (level.getBlockState(pos).getBlock() instanceof ComponentBlock) {
                 if (level.getBlockEntity(pos) instanceof ComponentBlockEntity cbe) {
-                    System.out.println("Linked:" + level.getBlockState(pos).getBlock() + ", " + pos);
+//                    System.out.println("Linked:" + level.getBlockState(pos).getBlock() + ", " + pos);
                     cbe.setCorePos(corePos);
                     coreBlockEntity.addLinked(pos);
                 }
@@ -106,6 +100,7 @@ public abstract class CoreBlock extends BaseEntityBlock implements IComponentDro
         }
 
         coreBlockEntity.setCanUse(true);
+        level.setBlockAndUpdate(corePos, level.getBlockState(corePos).setValue(BlockStateProperties.PATTERN_TYPE, this.patternType));
     }
 
     @Override
@@ -144,8 +139,6 @@ public abstract class CoreBlock extends BaseEntityBlock implements IComponentDro
             coreBlockEntity.resetLinksAndBlockStates();
         }
     }
-
-    protected abstract void putIfAbsentPatterns();
 
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
