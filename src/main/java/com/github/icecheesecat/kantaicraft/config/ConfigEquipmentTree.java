@@ -18,17 +18,17 @@ public class ConfigEquipmentTree {
 
     static {
 
-        EQUIPMENT_TREE_CONFIG.put(Equipments.EMPTY.getId(),
-                BUILDER.comment("Default destroyer equipment options")
-                        .defineList("default_destroyer_equipment_options",
-                                ImmutableList.of(101),
-                                EquipmentProperties.ALL_PROPERTIES::containsKey));
-        EQUIPMENT_TREE_CONFIG.put(101,
-                BUILDER.comment("12 cm single gun mount")
-                        .defineList("12cm_single_gun_mount",
-                                ImmutableList.of(
-                                        102, 103),
-                                EquipmentProperties.ALL_PROPERTIES::containsKey));
+//        EQUIPMENT_TREE_CONFIG.put(Equipments.EMPTY.getId(),
+//                BUILDER.comment("Default destroyer equipment options")
+//                        .defineList("default_destroyer_equipment_options",
+//                                ImmutableList.of(101),
+//                                EquipmentProperties.ALL_PROPERTIES::containsKey));
+//        EQUIPMENT_TREE_CONFIG.put(101,
+//                BUILDER.comment("12 cm single gun mount")
+//                        .defineList("12cm_single_gun_mount",
+//                                ImmutableList.of(
+//                                        102, 103),
+//                                EquipmentProperties.ALL_PROPERTIES::containsKey));
 
         SPEC = BUILDER.build();
     }

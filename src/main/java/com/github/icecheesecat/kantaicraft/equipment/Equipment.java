@@ -1,13 +1,13 @@
 package com.github.icecheesecat.kantaicraft.equipment;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.common.util.INBTSerializable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public abstract class Equipment {
+public class Equipment implements INBTSerializable<CompoundTag> {
 
     protected Map<EquipmentStatType, Double> stats = new HashMap<>();
     private int id;
@@ -16,25 +16,19 @@ public abstract class Equipment {
     private EquipmentType type;
 
     public static final int MAX_LEVEL = 10;
-    protected List<EquipmentStatType> requiredStats = new ArrayList<>();
 
     public Equipment(Equipment equipment) {
-        this(equipment.id, equipment.name, equipment.type, equipment.stats);
-        this.requiredStats = List.copyOf(equipment.requiredStats);
+        this.id = equipment.id;
+        this.name = equipment.name;
+        this.type = equipment.type;
+        this.level= equipment.level;
     }
 
-    public Equipment(int id, Component name, EquipmentType type, Map<EquipmentStatType, Double> stats) {
-        this.id = id;
-        this.name = name;
+    public Equipment(EquipmentProperties equipmentProperties) {
+        this.id = equipmentProperties.getId();
+        this.name = equipmentProperties.getComponentName();
+        this.type = equipmentProperties.getEquipmentType();
         this.level = 0;
-        this.type = type;
-        this.stats.putAll(stats);
-        if (EquipmentType.calculateType(id) != this.getType()) {
-            throw new IllegalStateException("Not valid id ("+ id + ") for " + this.getClass().getName() + " related to " + this.getType().name() + "\n.");
-        }
-        if (!this.checkStats()) {
-            throw new IllegalStateException("Missing stats in " + this.getClass() + " (" + this.getName() + ").\n");
-        }
     }
 
     public double getStat(EquipmentStatType type) {
@@ -73,27 +67,43 @@ public abstract class Equipment {
         return this.type;
     }
 
-    public abstract Equipment asCopy();
-
-//    public CompoundTag save() {
-//        CompoundTag nbt = new CompoundTag();
-//        nbt.putInt("equipment.id", this.id);
-//        nbt.putInt("equipment.level", this.level);
-//
-//        return nbt;
-//    }
-//
-//    public Equipment load(CompoundTag nbt) {
-//        this.id = nbt.getInt("equipment.id");
-//        this.level = nbt.getInt("equipment.level");
-//
-//        return Equipments.getEquipmentInstanceById(id, level);
-//    }
-
-    public boolean checkStats() {
-        return this.requiredStats.stream().allMatch(this.stats::containsKey);
+    public Equipment asCopy() {
+        return new Equipment(this);
     }
 
-    protected abstract void setRequiredStats();
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
+        var entry_set = stats.entrySet().stream().toList();
+        nbt.putInt("stats_size", stats.size());
+        for (int i = 0; i < stats.size(); i++) {
+            nbt.putInt("equipment_stat_type_" + i, entry_set.get(i).getKey().ordinal());
+            nbt.putDouble("equipment_stat_value_" + i, entry_set.get(i).getValue());
+        }
 
+        nbt.putInt("id", this.id);
+        nbt.putInt("level", this.level);
+        nbt.putInt("equipment_type", this.type.ordinal());
+        nbt.putString("name", Component.Serializer.toJson(name));
+
+        return nbt;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        this.stats.clear();
+        int stats_size = nbt.getInt("stats_size");
+        for (int i = 0; i < stats_size; i++) {
+            this.stats.put(
+                    EquipmentStatType.get(nbt.getInt("equipment_stat_type_"+i)),
+                    nbt.getDouble("equipment_stat_value_"+i)
+            );
+        }
+
+        this.id = nbt.getInt("id");
+        this.level = nbt.getInt("level");
+        this.type = EquipmentType.get(nbt.getInt("equipment_type"));
+        this.name = Component.Serializer.fromJson(nbt.getString("name"));
+
+    }
 }

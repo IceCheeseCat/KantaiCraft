@@ -1,25 +1,24 @@
 package com.github.icecheesecat.kantaicraft.equipment;
 
+/**
+ *
+ */
 public enum EquipmentType {
 
     NONE,
-    CANNON,
+    SMALL_CANNON,
+    MEDIUM_CANNON,
+    LARGE_CANNON,
+    TORPEDO,
     RADAR,
-    PLANE;
+    SEAPLANE_RECON,
+    SEAPLANE_FIGHTER,
+    AIRCRAFT_DIVE_BOMBER,
+    AIRCRAFT_TORPEDO_BOMBER,
+    AIRCRAFT_FIGHTER,
+    ANTI_SUBMARINE,
+    OTHER;
 
     public static EquipmentType get(int ordinal) { return values()[ordinal]; }
-    public static EquipmentType calculateType(int id) {
-        switch (id/100) {
-            case 1 -> {
-                return EquipmentType.CANNON;
-            }
-            case 2 -> {
-                return EquipmentType.PLANE;
-            }
-            default -> {
-                return EquipmentType.NONE;
-            }
-        }
-    }
 
 }
