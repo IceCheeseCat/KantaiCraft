@@ -17,7 +17,7 @@ import java.util.List;
 
 public abstract class BasicDestroyerShip extends BasicCannonShip {
 
-    private static final SlotChecker GENERAL_DESTROYER_SLOT_CHECKER = SlotChecker.create(ImmutableSet.of(EquipmentType.CANNON, EquipmentType.RADAR));
+    private static final SlotChecker GENERAL_DESTROYER_SLOT_CHECKER = SlotChecker.create(ImmutableSet.of(EquipmentType.SMALL_CANNON, EquipmentType.RADAR));
     private static final AttributeSupplier DESTROYER_GROWTH = new AttributeSupplier.Builder()
             .add(ModAttribute.FIREPOWER.get(), 0.5d)
             .add(ModAttribute.TORPEDO.get(), 1.0d)
@@ -49,7 +49,7 @@ public abstract class BasicDestroyerShip extends BasicCannonShip {
     @Override
     public List<Equipment> evaluateEquipments(List<Equipment> equipments) {
         return equipments.stream().filter(equipment ->
-            equipment.getType() == EquipmentType.CANNON && equipment.getStat(EquipmentStatType.CANNON_SIZE) == 0
+            equipment.getType() == EquipmentType.SMALL_CANNON && equipment.getStat(EquipmentStatType.CANNON_SIZE) == 0
         ).toList();
     }
 

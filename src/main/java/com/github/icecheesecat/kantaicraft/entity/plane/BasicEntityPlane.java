@@ -4,7 +4,7 @@ import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entity.IFaction;
 import com.github.icecheesecat.kantaicraft.brain.plane.PlaneAi;
 import com.github.icecheesecat.kantaicraft.entity.plane.fighter.EntityFighterPlane;
-import com.github.icecheesecat.kantaicraft.stats.planeAttributes.PlaneAttributes;
+import com.github.icecheesecat.kantaicraft.entity.attribute.planeAttributes.PlaneAttributes;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;

@@ -1,10 +1,7 @@
-package com.github.icecheesecat.kantaicraft.event;
+package com.github.icecheesecat.kantaicraft.capability;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
-import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
-import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintStackHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.faction.FactionTagCapability;
 import com.github.icecheesecat.kantaicraft.faction.LevelFactionCapability;

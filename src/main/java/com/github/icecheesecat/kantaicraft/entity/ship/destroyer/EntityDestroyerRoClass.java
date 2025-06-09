@@ -38,7 +38,7 @@ public class EntityDestroyerRoClass extends BasicDestroyerShip
 	protected void initEquipments() {
 		this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
 				handler -> {
-					handler.setEquipment(0, Equipments.__12cm_single_gun_mount__, this);
+					handler.setEquipment(0, Equipments.getEquipmentInstanceById(101), this);
 				}
 		);
 	}

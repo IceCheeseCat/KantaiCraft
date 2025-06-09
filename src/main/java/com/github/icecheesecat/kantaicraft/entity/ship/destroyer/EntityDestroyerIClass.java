@@ -34,4 +34,8 @@ public class EntityDestroyerIClass extends BasicDestroyerShip {
         return ShipFields.ShipName.DestroyerIClass;
     }
 
+    @Override
+    protected void initEquipments() {
+
+    }
 }

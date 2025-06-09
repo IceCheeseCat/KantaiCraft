@@ -19,7 +19,7 @@ public abstract class BasicCannonShip extends BasicEntityShip {
 
     private static final EntityDataSerializer<CannonFireMode> CANNON_FIRE_MODE_ENTITY_DATA_SERIALIZER = EntityDataSerializer.simpleEnum(CannonFireMode.class);
     public static final EntityDataAccessor<CannonFireMode> CANNON_FIRE_MODE = SynchedEntityData.defineId(BasicCannonShip.class, CANNON_FIRE_MODE_ENTITY_DATA_SERIALIZER);
-    public static final List<EquipmentType> ATTACKABLE_TYPES = ImmutableList.of(EquipmentType.CANNON);
+    public static final List<EquipmentType> ATTACKABLE_TYPES = ImmutableList.of(EquipmentType.SMALL_CANNON);
 
     public BasicCannonShip(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level, ATTACKABLE_TYPES);

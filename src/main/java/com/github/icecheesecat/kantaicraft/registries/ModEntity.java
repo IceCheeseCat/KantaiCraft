@@ -4,6 +4,7 @@ import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.entity.plane.fighter.EntityA6MZeroFighter;
 import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityDestroyerIClass;
 import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityDestroyerRoClass;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityInazuma;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -21,6 +22,9 @@ public class ModEntity {
 
     public static final RegistryObject<EntityType<EntityDestroyerIClass>> DestroyerIClass = ENTITIES.register("destroyer_i_class", () ->
             EntityType.Builder.of(EntityDestroyerIClass::new, MobCategory.MISC).sized(0.8f, 0.8f).build(new ResourceLocation(KantaiCraft.MODID, "destroyer_i_class").toString()));
+
+    public static final RegistryObject<EntityType<EntityInazuma>> Inazuma = ENTITIES.register("inazuma", () ->
+            EntityType.Builder.of(EntityInazuma::new, MobCategory.MISC).sized(0.8f, 1.6f).build(new ResourceLocation(KantaiCraft.MODID, "inazuma").toString()));
 
     public static final RegistryObject<EntityType<EntityA6MZeroFighter>> A6M_Zero_Fighter = ENTITIES.register("a6m_zero_fighter", () ->
             EntityType.Builder.of(EntityA6MZeroFighter::new, MobCategory.MISC).sized(1.0f, 1.0f).build(new ResourceLocation(KantaiCraft.MODID, "a6m_zero_fighter").toString()));

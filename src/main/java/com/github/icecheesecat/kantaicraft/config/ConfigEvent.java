@@ -1,16 +1,10 @@
-package com.github.icecheesecat.kantaicraft.event;
+package com.github.icecheesecat.kantaicraft.config;
 
-import com.electronwill.nightconfig.core.CommentedConfig;
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentStats;
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentProperties;
 import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-
-import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = KantaiCraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ConfigEvent {

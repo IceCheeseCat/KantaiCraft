@@ -116,7 +116,7 @@ public class CannonShipBrain {
                 ImmutableList.of(
                         Pair.of(0, StartAttacking.create(CannonShipBrain::findNearestValidAttackTarget)),
                         Pair.of(1, new CannonAttack()),
-                        Pair.of(2, BehaviorBuilder.triggerIf(CannonShipBrain::attackTargetIsTooClose, MeleeAttack.create(15))),
+                        Pair.of(2, BehaviorBuilder.triggerIf(CannonShipBrain::attackTargetIsTooClose, ShipMeleeAttack.create(40))),
                         Pair.of(2, SetWalkTargetFromAttackTargetIfTargetOutOfReachAndShipCanMelee.create(ship -> 1.0f, basicCannonShip)),
                         Pair.of(5, StopAttackingIfTargetInvalid.create())
 //                        Pair.of(10,

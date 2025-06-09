@@ -2,6 +2,7 @@ package com.github.icecheesecat.kantaicraft.entity.ship;
 
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
+import com.github.icecheesecat.kantaicraft.client.animation.util.BlinkAnimationControl;
 import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.item.ShipBlueprintData;
@@ -9,14 +10,11 @@ import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
-import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
-import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
-import com.github.icecheesecat.kantaicraft.registries.ModItem;
-import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
+import com.github.icecheesecat.kantaicraft.registries.*;
 import com.github.icecheesecat.kantaicraft.entity.IFaction;
 import com.github.icecheesecat.kantaicraft.entity.IPhysicalEntity;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
-import com.github.icecheesecat.kantaicraft.stats.shipAttributes.IStatsGrowth;
+import com.github.icecheesecat.kantaicraft.entity.attribute.shipAttributes.IStatsGrowth;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -31,6 +29,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -71,10 +70,25 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     private static final EntityDataAccessor<Integer> DATA_FACTION = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Boolean> DATA_IS_GUARDING = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> DATA_CAN_MELEE = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<ShipAnimationState> DATA_ANIMATION_STATE = SynchedEntityData.defineId(BasicEntityShip.class, ModEntityDataSerializer.ANIMATION_STATE_SERIALIZER.get());
+    public static final EntityDataAccessor<EmotionState> DATA_EMOTION_STATE = SynchedEntityData.defineId(BasicEntityShip.class, ModEntityDataSerializer.EMOTION_STATE_SERIALIZER.get());
+    private ShipAnimationState prevAnimationShipAnimationState;
     private boolean canPickUpItem = false;
     private UUID owner;
     protected boolean debugMode = false;
     protected final List<EquipmentType> attackbleEquipmentTypes;
+    public final AnimationState breathAnimationState;
+    public final AnimationState idleAnimationState;
+    public final AnimationState walkAnimationState;
+    public final AnimationState sitAnimationState;
+    public final AnimationState attackAnimationState;
+    public final AnimationState emotionAnimationState;
+    public final AnimationState blinkAnimationState;
+    public final AnimationState runAnimationState;
+    public final AnimationState debugAnimationState;
+
+    private final BlinkAnimationControl blinkAnimationControl = new BlinkAnimationControl(60, 80, this.random);
+    private long lastEmotionChangedTick = -1;
 
     public BasicEntityShip(EntityType<? extends PathfinderMob> entityType, Level level, List<EquipmentType> attackbleEquipmentTypes) {
         super(entityType, level);
@@ -84,7 +98,21 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.setAmmo((float) this.getAttributeValue(ModAttribute.AMMO.get()));
         this.attackbleEquipmentTypes = ImmutableList.copyOf(attackbleEquipmentTypes);
         this.initEquipments();
+
+        // Animations_0
+        breathAnimationState = new AnimationState(); breathAnimationState.startIfStopped(this.tickCount);
+        idleAnimationState = new AnimationState();
+        walkAnimationState = new AnimationState();
+        sitAnimationState = new AnimationState();
+        attackAnimationState = new AnimationState();
+        emotionAnimationState = new AnimationState();
+        runAnimationState = new AnimationState();
+        blinkAnimationState = new AnimationState();
+        debugAnimationState = new AnimationState();
+        this.prevAnimationShipAnimationState = ShipAnimationState.IDLE;
     }
+
+
 
     @Override
     protected void defineSynchedData() {
@@ -95,6 +123,8 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.entityData.define(DATA_FACTION, CommonEntityData.noFaction);
         this.entityData.define(DATA_IS_GUARDING, false);
         this.entityData.define(DATA_CAN_MELEE, false);
+        this.entityData.define(DATA_ANIMATION_STATE, ShipAnimationState.IDLE);
+        this.entityData.define(DATA_EMOTION_STATE, EmotionState.NORMAL);
     }
 
     protected abstract void initEquipments();
@@ -208,6 +238,18 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         if (nbt.contains("basicentityship.inventory")) {
             this.inventory.deserializeNBT((CompoundTag) nbt.get("basicentityship.inventory"));
         }
+        if (nbt.contains("animation_state")) {
+            this.entityData.set(DATA_ANIMATION_STATE, ShipAnimationState.create(nbt.getInt("animation_state")));
+        }
+        if (nbt.contains("previous_animation_state")) {
+            this.prevAnimationShipAnimationState = ShipAnimationState.create(nbt.getInt("previous_animation_state"));
+        }
+        if (nbt.contains("emotion_state")) {
+            this.entityData.set(DATA_EMOTION_STATE, EmotionState.create(nbt.getInt("emotion_state")));
+        }
+        if (nbt.contains("last_emotion_changed_tick")) {
+            this.lastEmotionChangedTick = nbt.getLong("last_emotion_changed_tick");
+        }
 
     }
 
@@ -220,22 +262,107 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         nbt.putInt("basicentityship.data_aircraft", this.entityData.get(DATA_AIRCRAFT));
         nbt.putFloat("basicentityship.data_fuel", this.entityData.get(DATA_FUEL));
         nbt.putFloat("basicentityship.data_ammo", this.entityData.get(DATA_AMMO));
-        nbt.putUUID("basicentityship.owner", this.owner);
+        if (this.owner != null)
+            nbt.putUUID("basicentityship.owner", this.owner);
         nbt.putBoolean("basicentityship.isguarding", this.entityData.get(DATA_IS_GUARDING));
         nbt.putBoolean("basicentityship.canmelee", this.entityData.get(DATA_IS_GUARDING));
         nbt.put("basicentityship.inventory", this.inventory.serializeNBT());
-
+        nbt.putInt("animation_state", this.entityData.get(DATA_ANIMATION_STATE).ordinal());
+        nbt.putInt("previous_animation_state", this.prevAnimationShipAnimationState.ordinal());
+        nbt.putInt("emotion_state", this.entityData.get(DATA_EMOTION_STATE).ordinal());
+        nbt.putLong("last_emotion_changed_tick", this.lastEmotionChangedTick);
     }
-
-
 
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide) return;
-        if (level().getGameTime() % 20 != 0) return;
 
-        broadcastEquipmentHandler();
+        if (!level().isClientSide) {
+            //server side
+            if (level().getGameTime() % 20 != 0) return;
+            broadcastEquipmentHandler();
+
+            if (!continueAnimationState()) {
+                this.setAnimationState(prevAnimationShipAnimationState);
+            }
+
+            if (this.navigation.isInProgress()) {
+                if (this.walkAnimation.speed() > 0.4f) {
+                    this.setAnimationState(ShipAnimationState.RUN);
+                }
+                else {
+                    this.setAnimationState(ShipAnimationState.WALK);
+                }
+            }
+
+            tickEmotionState(this.tickCount);
+        }
+        else {
+            // client side
+            if (blinkAnimationControl.canAnimate(this.tickCount)) {
+                this.blinkAnimationState.start(this.tickCount);
+//                this.setEmotionState(EmotionState.create(this.random.nextInt(0, 5)), this.tickCount);
+            }
+            System.out.println(this.getAnimationState());
+        }
+    }
+
+    protected boolean continueAnimationState() {
+         return switch (this.getAnimationState()) {
+            case IDLE, GUARD -> true;
+            case WALK -> this.navigation.isInProgress();
+            case RUN -> this.navigation.isInProgress() && this.walkAnimation.speed() > 0.4f;
+            default -> {
+                System.out.println("Not implemented state, return to IDLE state.");
+                yield false;
+            }
+        };
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
+        if (pKey.equals(DATA_ANIMATION_STATE)) {
+            updateAnimationState();
+        }
+        if (pKey.equals(DATA_EMOTION_STATE)) {
+            emotionAnimationState.stop();
+            emotionAnimationState.startIfStopped(this.tickCount);
+        }
+
+        super.onSyncedDataUpdated(pKey);
+    }
+
+    protected void updateAnimationState() {
+        resetAnimation();
+        // always animated
+        breathAnimationState.startIfStopped(this.tickCount);
+        emotionAnimationState.startIfStopped(this.tickCount);
+        switch (this.getAnimationState()) {
+            case IDLE -> idleAnimationState.startIfStopped(this.tickCount);
+            case WALK -> walkAnimationState.startIfStopped(this.tickCount);
+            case RUN -> runAnimationState.startIfStopped(this.tickCount);
+            default -> {
+                System.out.println(this.getAnimationState().name() + " animation state does nothing yet.");
+            }
+        }
+    }
+
+    public void attackAnim() {
+        this.attackAnimationState.start(this.tickCount);
+    }
+
+    public void debugAnim() {
+        this.debugAnimationState.start(this.tickCount);
+    }
+
+    protected void resetAnimation() {
+        breathAnimationState.stop();
+        idleAnimationState.stop();
+        walkAnimationState.stop();
+        sitAnimationState.stop();
+        attackAnimationState.stop();
+        runAnimationState.stop();
+        debugAnimationState.stop();
     }
 
     public void broadcastEquipmentHandler() {
@@ -299,6 +426,12 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
             this.getBrain().eraseMemory(ModMemoryModuleType.IS_GUARDING.get());
         }
         this.entityData.set(DATA_IS_GUARDING, guarding);
+        if (guarding) {
+            this.setAnimationState(ShipAnimationState.GUARD);
+        }
+        else {
+            this.setAnimationState(ShipAnimationState.IDLE);
+        }
     }
 
     public double getAttributeValue(Attribute attribute) {
@@ -465,4 +598,40 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
 
         return blueprint;
     }
+
+    public ShipAnimationState getAnimationState() {
+        return this.entityData.get(DATA_ANIMATION_STATE);
+    }
+
+    public void setAnimationState(ShipAnimationState shipAnimationState) {
+        ShipAnimationState previousShipAnimationState = this.getAnimationState();
+        if (previousShipAnimationState.isMainState()) {
+            this.prevAnimationShipAnimationState = previousShipAnimationState;
+        }
+
+        this.entityData.set(DATA_ANIMATION_STATE, shipAnimationState);
+    }
+
+    public AnimationState getAttackAnimationState() {
+        return attackAnimationState;
+    }
+
+    public void setEmotionState(EmotionState emotionState, long lastEmotionChangedTick) {
+        if (!emotionState.isConsistent()) {
+            this.lastEmotionChangedTick = lastEmotionChangedTick;
+        }
+        this.entityData.set(DATA_EMOTION_STATE, emotionState);
+    }
+
+    public EmotionState getEmotionState() {
+        return this.entityData.get(DATA_EMOTION_STATE);
+    }
+
+    private void tickEmotionState(long currentTick) {
+        if (this.getEmotionState().isConsistent()) return;
+        if (currentTick >= this.lastEmotionChangedTick + this.getEmotionState().getDuration()) {
+            this.setEmotionState(EmotionState.NORMAL, -1);
+        }
+    }
+
 }

@@ -1,12 +1,11 @@
 package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.stats.shipAttributes.SyncableAttribute;
+import com.github.icecheesecat.kantaicraft.entity.attribute.shipAttributes.SyncableAttribute;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.spongepowered.asm.mixin.injection.At;
 
 public class ModAttribute {
 

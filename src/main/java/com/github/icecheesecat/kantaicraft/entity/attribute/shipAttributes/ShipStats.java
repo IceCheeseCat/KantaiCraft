@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.stats.shipAttributes;
+package com.github.icecheesecat.kantaicraft.entity.attribute.shipAttributes;
 
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import net.minecraft.world.entity.ai.attributes.Attribute;

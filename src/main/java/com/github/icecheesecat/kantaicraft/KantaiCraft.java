@@ -34,6 +34,7 @@ public class KantaiCraft
         ModPacketHandler.registerMessages();
         ModBlock.BLOCKS.register(modEventBus);
         ModBlock.BLOCK_ENTITIES.register(modEventBus);
+        ModEntityDataSerializer.ENTITY_DATA_SERIALIZERS.register(modEventBus);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentTree.SPEC, KantaiCraft.MODID + "_equipment_tree.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentStats.SPEC, KantaiCraft.MODID + "_equipment_stats.toml");

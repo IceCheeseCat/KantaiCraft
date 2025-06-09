@@ -18,7 +18,8 @@ public class ShipBlueprintStackHandler extends ItemStackHandler {
 
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        return stack.is(ModItem.SHIP_BLUEPRINT.get()) && stack.getCapability(ShipBlueprintCapability.TOKEN).isPresent();
+        return stack.is(ModItem.SHIP_BLUEPRINT.get())
+                && stack.getCapability(ShipBlueprintCapability.TOKEN).isPresent();
     }
 
     @Override

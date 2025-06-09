@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.client.renderer;
+package com.github.icecheesecat.kantaicraft.client.model.renderer;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.client.model.ModelDestroyerRo;

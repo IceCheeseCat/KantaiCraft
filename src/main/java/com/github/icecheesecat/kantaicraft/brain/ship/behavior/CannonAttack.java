@@ -33,7 +33,7 @@ public class CannonAttack extends Behavior<BasicCannonShip> {
 
     @Override
     protected void tick(ServerLevel pLevel, BasicCannonShip pOwner, long pGameTime) {
-        var action = (ShipCannonAttack) actionHandler.getActionByWeaponTypeAndNotInCooldown(EquipmentType.CANNON);
+        var action = (ShipCannonAttack) actionHandler.getActionByWeaponTypeAndNotInCooldown(EquipmentType.SMALL_CANNON);
         if (action != null) {
             action.checkAndPerformCannon(target);
         }
@@ -47,7 +47,7 @@ public class CannonAttack extends Behavior<BasicCannonShip> {
 
     @Override
     protected boolean canStillUse(ServerLevel pLevel, BasicCannonShip pEntity, long pGameTime) {
-        return pEntity.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET) && pEntity.hasEnoughAmmo() && !actionHandler.getActionsByWeaponType(EquipmentType.CANNON).isEmpty();
+        return pEntity.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET) && pEntity.hasEnoughAmmo() && !actionHandler.getActionsByWeaponType(EquipmentType.SMALL_CANNON).isEmpty();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class CannonAttack extends Behavior<BasicCannonShip> {
 
         // has action handler and cannon action
         var actionHandler = basicCannonShip.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get());
-        if (actionHandler.isPresent() && !actionHandler.get().getActionsByWeaponType(EquipmentType.CANNON).isEmpty()) {
+        if (actionHandler.isPresent() && !actionHandler.get().getActionsByWeaponType(EquipmentType.SMALL_CANNON).isEmpty()) {
             this.actionHandler = actionHandler.get();
             return true;
         }

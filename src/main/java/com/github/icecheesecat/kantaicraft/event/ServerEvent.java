@@ -20,10 +20,6 @@ public class ServerEvent {
     public static void livingEntityTick(LivingEvent.LivingTickEvent event) {
         if (event.getEntity().level().isClientSide) return;
         if (event.getEntity().level().getGameTime() % 100 != 0) return;
-        Entity entity = event.getEntity();
-        if (entity instanceof BasicEntityShip ship) {
-            System.out.println(ship.getUUID());
-        }
     }
 
     @SubscribeEvent

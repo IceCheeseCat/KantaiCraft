@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.stats.planeAttributes;
+package com.github.icecheesecat.kantaicraft.entity.attribute.planeAttributes;
 
 public class PlaneAttributes {
 

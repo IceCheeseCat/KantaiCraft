@@ -45,6 +45,7 @@ public class ShipFields {
     public enum ShipName implements IProcessValue {
         DestroyerRoClass,
         DestroyerIClass,
+        Inazuma,
         EMPTY;
 
         public static ShipName getEnum(int i) {
@@ -55,6 +56,7 @@ public class ShipFields {
             return switch (this) {
                 case DestroyerRoClass -> ModEntity.DestroyerRoClass.get();
                 case DestroyerIClass -> ModEntity.DestroyerIClass.get();
+                case Inazuma -> ModEntity.Inazuma.get();
                 case EMPTY -> null;
             };
         }
