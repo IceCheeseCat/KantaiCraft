@@ -1,7 +1,7 @@
 STOPPED 1. ship screen faction display (stopped)
     - nice icon (read from file or default)
 
-TODO 2. Shipyard
+DONE 2. Shipyard
     - build a new ship from blueprint (done)
     - better looking screen
     - shipyard model
@@ -10,10 +10,98 @@ TODO 2. Shipyard
 DONE 3. Blueprint
     - record data from a ship
 
-TODO 4. Add more ships
-    - Destroyer I Class (Model)
+TODO 4. Add more different classes ships and varies ships
+    - (check out doc for list)
 
-TODO 5. Add more equipments
-    - Small cannon
+TODO 5-1. Add more equipments
+    - Small cannon (12cmsgm, 12cmtgm, 12cmtgmbkai)
     - Medium cannon
+        - 14cm single gun mount
+        - 15.5cm triple gun mount
+        - 20.3cm twin gun mount
+        - 20.3cm (No.3) twin gun mount
+        - 20.3cm (No.4) twin gun mount
     - Large cannon
+        - 35.6cm twin gun mount
+        - Prototype 35.6cm twin gun mount
+        - 35.6cm twin gun mount kai 2
+        - 41cm twin gun mount
+        - Prototype 41cm twin gun mount
+        - 41cm twin gun mount kai 2
+    - torpedo
+        - 61cm Triple Torpedo Mount
+        - 61cm Triple (Oxygen) Torpedo Mount
+        - 61cm Quadruple Torpedo Mount
+        - 61cm Quadruple (Oxygen) Torpedo Mount
+        - 61cm Quintuple (Oxygen) Torpedo Mount
+    - Radar
+        - Type 13 Air Radar
+        - Type 13 Air Radar Kai
+        - Type 22 Surface Radar
+        - Type 22 Surface Radar Kai 4
+        - Type 33 Surface Radar
+        - Type 21 Air Radar
+        - Type 21 Air Radar Kai
+        - Type 32 Surface Radar
+        - Type 42 Air Radar
+    - Seaplane
+        - Recons
+            - Type 0 Reconnaissance Seaplane
+            - Type 0 Reconnaissance Seaplane Model 11B
+            - Type 0 Reconnaissance Seaplane Model 11B (Skilled)
+            - Type 0 Observation Seaplane
+            - Type 98 Reconnaissance Seaplane (Night Recon)
+            - Type 0 Reconnaissance Seaplane Model 11B Kai (Night Recon)
+        - Fighter
+            - Type 2 Seaplane Fighter Kai
+            - Kyoufuu Kai
+    - Aircraft Dive Bomber
+        - Type 99 Dive Bomber
+        - Type 99 Dive Bomber (Egusa Squadron)
+        - Suisei
+        - Suisei Model 12A
+        - Suisei Model 22 (634 Air Group)
+        - Suisei (601 Air Group)
+        - Suisei (Egusa Squadron)
+    - Aircraft Torpedo Bomber
+        - Type 97 Torpedo Bomber
+        - Type 97 Torpedo Bomber (Tomonaga Squadron)
+        - Type 97 Torpedo Bomber (Murata Squadron)
+        - Tenzan
+        - Tenzan (601 Air Group)
+        - Tenzan Model 12 (Tomonaga Squadron)
+        - Tenzan Model 12 (Murata Squadron)
+        - Ryuusei
+        - Ryuusei Kai
+        - Ryuusei Kai (CarDiv 1)
+    - Aircraft Fighters
+        - Type 96 Fighter
+        - Type 0 Fighter Model 21
+        - Type 0 Fighter Model 21 (Skilled)
+        - Type 0 Fighter Model 32
+        - Type 0 Fighter Model 52 (Skilled)
+        - Zero Fighter Model 52C (601 Air Group)
+        - Shiden Kai 2
+        - Prototype Reppuu Late Model
+        - Reppuu Model 11
+        - Reppuu Kai (Prototype Carrier-based Model)
+        - Reppuu Kai 2
+        - Shinden Kai
+    - Anti-Submarine warfare
+        - Type 93 Passive Sonar
+        - Type 3 Active Sonar
+        - Type 94 Depth Charge Projector
+        - Type 3 Depth Charge Projector
+        - Type 95 Depth Charge
+        - Type 2 Depth Charge
+
+TODO 5-2. Varies attack according to equipments
+    (finish 5-1)
+
+TODO 6. Akashi
+    (finish 5-1)
+
+TODO 7. Different Ship Class Animation
+    - General (wip)
+    - Destroyer
+    -
