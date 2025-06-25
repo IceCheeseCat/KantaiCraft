@@ -10,8 +10,6 @@ import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
 import com.github.icecheesecat.kantaicraft.util.Trajectory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -36,7 +34,7 @@ public class ShipCannonAttack extends ShipRangeAttack {
                 LivingEntity ship = getShip();
                 Vec3 initPos = new Vec3(ship.getX(), ship.getEyeY(), ship.getZ());
 
-                double canon_vel = cannon.getStat(EquipmentStatType.CANNON_MISSLE_VELOCITY);
+                double canon_vel = cannon.getStat(EquipmentStatType.CANNON_MISSILE_VELOCITY);
                 Vec3 gravity = new Vec3(0, -9.8f, 0);
                 Vec3 end_spot = target.position();
                 Vec3 fireVec = Trajectory.calFireVec(ship.position(), end_spot, gravity, canon_vel);

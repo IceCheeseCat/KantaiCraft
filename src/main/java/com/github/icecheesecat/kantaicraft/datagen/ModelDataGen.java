@@ -19,6 +19,7 @@ public class ModelDataGen {
 
         gen.addProvider(event.includeClient(), new ModItemModelProvider(output, KantaiCraft.MODID, efh));
         gen.addProvider(event.includeClient(), new ModBlockStateProvider(output, KantaiCraft.MODID, efh));
+//        gen.addProvider(event.includeServer(), new CannonDataProvider(output, KantaiCraft.MODID, EquipmentDataProvider.SMALL_CANNON_FOLDER,efh));
 
     }
 

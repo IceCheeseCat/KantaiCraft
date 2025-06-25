@@ -13,7 +13,7 @@ import java.util.List;
 
 public abstract class BasicCarrierShip extends BasicEntityShip {
 
-    public static final List<EquipmentType> ATTACKABLE_TYPES = ImmutableList.of(EquipmentType.PLANE);
+    public static final List<EquipmentType> ATTACKABLE_TYPES = ImmutableList.of(EquipmentType.AIRCRAFT_FIGHTER);
 
     protected BasicCarrierShip(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level, ATTACKABLE_TYPES);

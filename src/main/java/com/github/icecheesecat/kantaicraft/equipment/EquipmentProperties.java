@@ -1,10 +1,6 @@
 package com.github.icecheesecat.kantaicraft.equipment;
 
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.network.chat.Component;
-
-import java.util.List;
-import java.util.Map;
 
 public class EquipmentProperties {
 
@@ -13,16 +9,17 @@ public class EquipmentProperties {
     public static final EquipmentProperties __12cm_twin_gun_mount__ = new EquipmentProperties(102, Component.translatable("small_cannon.12cm_twin_gun_mount"), EquipmentType.SMALL_CANNON);
     public static final EquipmentProperties __12cm_twin_gun_mount_model_b_kai_2__ = new EquipmentProperties(103, Component.translatable("small_cannon.12cm_twin_gun_mount_model_b_kai_2"), EquipmentType.SMALL_CANNON);
     public static final EquipmentProperties __14cm_single_gun_mount__ = new EquipmentProperties(201, Component.translatable("medium_cannon.14cm_single_gun_mount"), EquipmentType.MEDIUM_CANNON);
-    public static final EquipmentProperties __155mm_single_gun_mount__ = new EquipmentProperties(202, Component.translatable("medium_cannon.155mm_triple_gun_mount"), EquipmentType.MEDIUM_CANNON);
+    public static final EquipmentProperties __155mm_triple_gun_mount__ = new EquipmentProperties(202, Component.translatable("medium_cannon.155mm_triple_gun_mount"), EquipmentType.MEDIUM_CANNON);
     public static final EquipmentProperties __203mm_twin_gun_mount__ = new EquipmentProperties(203, Component.translatable("medium_cannon.203mm_twin_gun_mount"), EquipmentType.MEDIUM_CANNON);
     public static final EquipmentProperties __203mm_no3_single_gun_mount__ = new EquipmentProperties(204, Component.translatable("medium_cannon.203mm_no3_twin_gun_mount"), EquipmentType.MEDIUM_CANNON);
-    public static final EquipmentProperties __203mm_no4_single_gun_mount__ = new EquipmentProperties(205, Component.translatable("medium_cannon.203mm_no4_twin_gun_mount"), EquipmentType.MEDIUM_CANNON);
+    public static final EquipmentProperties __prototype_203mm_no4_single_gun_mount__ = new EquipmentProperties(205, Component.translatable("medium_cannon.203mm_no4_twin_gun_mount"), EquipmentType.MEDIUM_CANNON);
     public static final EquipmentProperties __356mm_twin_gun_mount__ = new EquipmentProperties(301, Component.translatable("large_cannon.356mm_twin_gun_mount"), EquipmentType.LARGE_CANNON);
-    public static final EquipmentProperties __prototype_356mm_twin_gun_mount__ = new EquipmentProperties(302, Component.translatable("large_cannon.prototype_356mm_twin_gun_mount"), EquipmentType.LARGE_CANNON);
+    public static final EquipmentProperties __prototype_356mm_triple_gun_mount__ = new EquipmentProperties(302, Component.translatable("large_cannon.prototype_356mm_twin_gun_mount"), EquipmentType.LARGE_CANNON);
     public static final EquipmentProperties __356mm_twin_gun_mount_kai_2__ = new EquipmentProperties(303, Component.translatable("large_cannon.356mm_twin_gun_mount_kai_2"), EquipmentType.LARGE_CANNON);
     public static final EquipmentProperties __41cm_twin_gun_mount__ = new EquipmentProperties(304, Component.translatable("large_cannon.41cm_twin_gun_mount"), EquipmentType.LARGE_CANNON);
-    public static final EquipmentProperties __prototype_41cm_twin_gun_mount__ = new EquipmentProperties(305, Component.translatable("large_cannon.prototype_41cm_twin_gun_mount"), EquipmentType.LARGE_CANNON);
-    public static final EquipmentProperties __41cm_twin_gun_mount_kai_2__ = new EquipmentProperties(306, Component.translatable("large_cannon.41cm_twin_gun_mount_kai_2"), EquipmentType.LARGE_CANNON);
+    public static final EquipmentProperties __prototype_41cm_triple_gun_mount__ = new EquipmentProperties(305, Component.translatable("large_cannon.prototype_41cm_twin_gun_mount"), EquipmentType.LARGE_CANNON);
+    public static final EquipmentProperties __41cm_triple_gun_mount_kai__ = new EquipmentProperties(306, Component.translatable("large_cannon.41cm_triple_gun_mount_kai"), EquipmentType.LARGE_CANNON);
+    public static final EquipmentProperties __41cm_triple_gun_mount_kai_2__ = new EquipmentProperties(307, Component.translatable("large_cannon.41cm_triple_gun_mount_kai_2"), EquipmentType.LARGE_CANNON);
     public static final EquipmentProperties __61cm_triple_torpedo_mount__ = new EquipmentProperties(401, Component.translatable("torpedo.61cm_triple_torpedo_mount"), EquipmentType.TORPEDO);
     public static final EquipmentProperties __61cm_triple_oxygen_torpedo_mount__ = new EquipmentProperties(402, Component.translatable("torpedo.61cm_triple_oxygen_torpedo_mount"), EquipmentType.TORPEDO);
     public static final EquipmentProperties __61cm_quadruple_torpedo_mount__ = new EquipmentProperties(403, Component.translatable("torpedo.61cm_quadruple_torpedo_mount"), EquipmentType.TORPEDO);

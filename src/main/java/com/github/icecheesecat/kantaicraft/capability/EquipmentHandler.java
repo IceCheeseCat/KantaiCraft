@@ -17,7 +17,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
 
     public EquipmentHandler(int size) {
         this.slotSize = size;
-        this.equipments = NonNullList.withSize(size, Equipments.EMPTY);
+        this.equipments = NonNullList.withSize(size, Equipments.EMPTY.asCopy());
         this.dirty = NonNullList.withSize(size, false);
     }
 

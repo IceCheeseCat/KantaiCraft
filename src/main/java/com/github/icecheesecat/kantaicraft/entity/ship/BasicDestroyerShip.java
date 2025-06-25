@@ -49,7 +49,7 @@ public abstract class BasicDestroyerShip extends BasicCannonShip {
     @Override
     public List<Equipment> evaluateEquipments(List<Equipment> equipments) {
         return equipments.stream().filter(equipment ->
-            equipment.getType() == EquipmentType.SMALL_CANNON && equipment.getStat(EquipmentStatType.CANNON_SIZE) == 0
+            equipment.getType() == EquipmentType.SMALL_CANNON && (int) equipment.getStat(EquipmentStatType.CANNON_SIZE) == 0
         ).toList();
     }
 

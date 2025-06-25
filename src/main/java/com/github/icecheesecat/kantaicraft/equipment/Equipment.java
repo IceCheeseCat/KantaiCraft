@@ -14,6 +14,7 @@ public class Equipment implements INBTSerializable<CompoundTag> {
     private Component name;
     private int level;
     private EquipmentType type;
+    private final DefaultValue defaultValue;
 
     public static final int MAX_LEVEL = 10;
 
@@ -22,21 +23,25 @@ public class Equipment implements INBTSerializable<CompoundTag> {
         this.name = equipment.name;
         this.type = equipment.type;
         this.level= equipment.level;
+        this.stats = new HashMap<>(equipment.stats);
+        this.defaultValue = equipment.defaultValue;
     }
 
-    public Equipment(EquipmentProperties equipmentProperties) {
+    public Equipment(EquipmentProperties equipmentProperties, DefaultValue defaultValue) {
         this.id = equipmentProperties.getId();
         this.name = equipmentProperties.getComponentName();
         this.type = equipmentProperties.getEquipmentType();
         this.level = 0;
+        this.defaultValue = defaultValue;
     }
 
     public double getStat(EquipmentStatType type) {
         return stats.get(type);
     }
 
-    public void setStats(Map<EquipmentStatType, Double> s) {
+    public Equipment setStats(Map<EquipmentStatType, Double> s) {
         this.stats = s;
+        return this;
     }
 
     public Map<EquipmentStatType, Double> getStats() {
@@ -69,6 +74,10 @@ public class Equipment implements INBTSerializable<CompoundTag> {
 
     public Equipment asCopy() {
         return new Equipment(this);
+    }
+
+    public DefaultValue defaultValue() {
+        return this.defaultValue;
     }
 
     @Override

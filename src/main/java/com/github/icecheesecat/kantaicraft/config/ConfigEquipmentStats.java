@@ -1,12 +1,13 @@
 package com.github.icecheesecat.kantaicraft.config;
 
+import com.github.icecheesecat.kantaicraft.equipment.DefaultValue;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentProperties;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
+import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ConfigEquipmentStats {
 
@@ -17,14 +18,16 @@ public class ConfigEquipmentStats {
 
     static {
 
+        // TODO data generation from json file
         ALL_EQUIPMENT_STATS.put(EquipmentProperties.EMPTY.getId(),
-                new EquipmentStats());
-        ALL_EQUIPMENT_STATS.put(EquipmentProperties.__12cm_single_gun_mount__.getId(),
-                new CannonStats(BUILDER, EquipmentProperties.__12cm_single_gun_mount__.getName(), 0, 45.0d, 5.0d, 20.0d, 5.0d));
-        ALL_EQUIPMENT_STATS.put(EquipmentProperties.__12cm_twin_gun_mount__.getId(),
-                new CannonStats(BUILDER, EquipmentProperties.__12cm_twin_gun_mount__.getName(), 0, 45.0d, 5.0d, 20.0d, 6.0d));
-        ALL_EQUIPMENT_STATS.put(EquipmentProperties.__12cm_twin_gun_mount_model_b_kai_2__.getId(),
-                new CannonStats(BUILDER, EquipmentProperties.__12cm_twin_gun_mount_model_b_kai_2__.getName(), 0, 45.0d, 5.0d, 20.0d, 7.0d, 1.0d));
+                EquipmentStats.create(BUILDER, EquipmentProperties.EMPTY.getName()));
+        Equipments.ALL_EQUIPMENTS.forEach((id, equipment) -> {
+            var equipmentStats = EquipmentStats.create(BUILDER, equipment.getName().getString());
+            DefaultValue defaultValue = equipment.defaultValue();
+            defaultValue.getStats().forEach((equipmentStats::add));
+
+            ALL_EQUIPMENT_STATS.put(id, equipmentStats);
+        });
 
         SPEC = BUILDER.build();
     }
@@ -32,18 +35,13 @@ public class ConfigEquipmentStats {
     public static double getEquipmentStatsById(int id, EquipmentStatType type) {
         EquipmentStats stats = ALL_EQUIPMENT_STATS.get(id);
 
-        return stats.get(type);
+        return stats.getValue(type);
     }
 
     public static Map<EquipmentStatType, Double> createMap(int id) {
         var stats = ALL_EQUIPMENT_STATS.get(id);
-//        return stats.configStats.entrySet().stream().collect(
-//                Collectors.toMap(entry -> entry.getKey(),
-//                        (entry) -> entry.getValue().get(),
-//                        null,
-//                        HashMap::new));
         Map<EquipmentStatType, Double> nMap = new HashMap<>();
-        for (var ele: stats.configStats.entrySet()) {
+        for (var ele: stats.getStats().entrySet()) {
             nMap.put(ele.getKey(), ele.getValue().get()) ;
         }
 
