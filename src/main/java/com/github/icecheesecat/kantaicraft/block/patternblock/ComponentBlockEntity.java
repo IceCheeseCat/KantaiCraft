@@ -1,5 +1,6 @@
-package com.github.icecheesecat.kantaicraft.block.basic;
+package com.github.icecheesecat.kantaicraft.block.patternblock;
 
+import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.BlockPosHelper;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

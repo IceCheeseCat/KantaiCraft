@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.capability;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.faction.FactionTagCapability;
 import com.github.icecheesecat.kantaicraft.faction.LevelFactionCapability;
@@ -9,6 +9,7 @@ import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -34,6 +35,11 @@ public class CapabilitiesEvent {
             }
         }
 
+        if (event.getObject() instanceof Player player) {
+            if (!player.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
+                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability(player));
+            }
+        }
     }
 
     @SubscribeEvent

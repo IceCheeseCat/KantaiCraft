@@ -1,11 +1,6 @@
-package com.github.icecheesecat.kantaicraft.block;
+package com.github.icecheesecat.kantaicraft.block.shipyard;
 
-import com.github.icecheesecat.kantaicraft.block.basic.ComponentBlockEntity;
-import com.github.icecheesecat.kantaicraft.block.basic.CoreBlockEntity;
-import com.github.icecheesecat.kantaicraft.block.basic.IComponentDrops;
-import com.github.icecheesecat.kantaicraft.block.basic.MenuCoreBlockEntity;
-import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BuiltData;
-import com.github.icecheesecat.kantaicraft.block.shipyardUtil.ShipBlueprintStackHandler;
+import com.github.icecheesecat.kantaicraft.block.patternblock.MenuCoreBlockEntity;
 import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
 import com.github.icecheesecat.kantaicraft.menu.shipyard.ShipyardMenu;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
@@ -16,10 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -30,7 +21,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 

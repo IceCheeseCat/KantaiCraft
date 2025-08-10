@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.menu.shipyard;
 
-import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
-import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BuiltData;
+import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.shipyard.BuiltData;
 import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
 import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import net.minecraft.client.Minecraft;

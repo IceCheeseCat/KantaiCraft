@@ -6,7 +6,7 @@ import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.CannonFireMode;
-import com.github.icecheesecat.kantaicraft.network.Cache;
+import com.github.icecheesecat.kantaicraft.network.Cache.Cache;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.github.icecheesecat.kantaicraft.equipment.Equipments;

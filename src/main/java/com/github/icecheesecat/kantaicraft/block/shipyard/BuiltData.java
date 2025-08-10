@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.block.shipyardUtil;
+package com.github.icecheesecat.kantaicraft.block.shipyard;
 
 import com.github.icecheesecat.kantaicraft.item.ShipBlueprintData;
 import net.minecraft.nbt.CompoundTag;

@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.network.packet;
 
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipScreen;
-import com.github.icecheesecat.kantaicraft.network.Cache;
+import com.github.icecheesecat.kantaicraft.network.Cache.Cache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;

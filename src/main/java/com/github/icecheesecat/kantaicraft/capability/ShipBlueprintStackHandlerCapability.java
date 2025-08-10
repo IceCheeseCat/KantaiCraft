@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.capability;
 
-import com.github.icecheesecat.kantaicraft.block.shipyardUtil.ShipBlueprintStackHandler;
+import com.github.icecheesecat.kantaicraft.block.shipyard.ShipBlueprintStackHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;

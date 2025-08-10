@@ -1,6 +1,5 @@
-package com.github.icecheesecat.kantaicraft.block.basic;
+package com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil;
 
-import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.PatternType;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 public class BlockStateProperties {

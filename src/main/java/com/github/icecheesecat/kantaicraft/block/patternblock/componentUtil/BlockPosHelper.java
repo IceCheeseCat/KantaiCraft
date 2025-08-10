@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.block.basic;
+package com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

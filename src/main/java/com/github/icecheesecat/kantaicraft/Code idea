@@ -14,20 +14,6 @@ TODO 4. Add more different classes ships and varies ships
     - (check out doc for list)
 
 TODO 5-1. Add more equipments
-    - Small cannon (12cmsgm, 12cmtgm, 12cmtgmbkai)
-    - Medium cannon
-        - 14cm single gun mount
-        - 15.5cm triple gun mount
-        - 20.3cm twin gun mount
-        - 20.3cm (No.3) twin gun mount
-        - 20.3cm (No.4) twin gun mount
-    - Large cannon
-        - 35.6cm twin gun mount
-        - Prototype 35.6cm twin gun mount
-        - 35.6cm twin gun mount kai 2
-        - 41cm twin gun mount
-        - Prototype 41cm twin gun mount
-        - 41cm twin gun mount kai 2
     - torpedo
         - 61cm Triple Torpedo Mount
         - 61cm Triple (Oxygen) Torpedo Mount
@@ -105,3 +91,12 @@ TODO 7. Different Ship Class Animation
     - General (wip)
     - Destroyer
     -
+
+TODO 8. Cannon displays when equipped on entity ship
+
+TODO 9. Ship gui upgrade
+
+TODO 10. Command Center
+    - storage for ships
+    - equipment installation
+    - equipment storage

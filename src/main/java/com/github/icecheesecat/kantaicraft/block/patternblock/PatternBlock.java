@@ -1,14 +1,10 @@
-package com.github.icecheesecat.kantaicraft.block.basic;
+package com.github.icecheesecat.kantaicraft.block.patternblock;
 
-import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.ComponentPattern;
-import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.PatternType;
+import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.ComponentPattern;
+import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.PatternType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;

@@ -81,6 +81,14 @@ public class ModPacketHandler {
                 ShipyardSpawnBuiltDataPacket::decode,
                 ShipyardSpawnBuiltDataPacket::handle
         );
+
+        INSTANCE.registerMessage(
+                id++,
+                PlayerKantaiDataPacket.class,
+                PlayerKantaiDataPacket::encode,
+                PlayerKantaiDataPacket::decode,
+                PlayerKantaiDataPacket::handle
+        );
     }
 
 }

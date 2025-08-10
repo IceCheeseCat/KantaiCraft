@@ -1,8 +1,7 @@
 package com.github.icecheesecat.kantaicraft.network.packet;
 
-import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
-import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BuiltData;
-import com.github.icecheesecat.kantaicraft.item.ShipBlueprintData;
+import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.shipyard.BuiltData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;

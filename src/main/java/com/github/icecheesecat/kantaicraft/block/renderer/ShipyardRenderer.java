@@ -1,9 +1,9 @@
 package com.github.icecheesecat.kantaicraft.block.renderer;
 
-import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
-import com.github.icecheesecat.kantaicraft.block.basic.BlockStateProperties;
-import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.PatternType;
-import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BuiltData;
+import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.BlockStateProperties;
+import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.PatternType;
+import com.github.icecheesecat.kantaicraft.block.shipyard.BuiltData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;

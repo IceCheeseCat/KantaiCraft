@@ -1,8 +1,8 @@
-package com.github.icecheesecat.kantaicraft.block.basic;
+package com.github.icecheesecat.kantaicraft.block.patternblock;
 
-import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.ComponentPattern;
-import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.PatternType;
-import com.google.common.collect.ImmutableMap;
+import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.BlockStateProperties;
+import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.IComponentDrops;
+import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.PatternType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -10,7 +10,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
@@ -20,10 +19,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 public abstract class CoreBlock extends PatternBlock implements IComponentDrops {
 

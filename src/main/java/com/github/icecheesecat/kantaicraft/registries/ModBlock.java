@@ -2,9 +2,11 @@ package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.block.*;
-import com.github.icecheesecat.kantaicraft.block.basic.ComponentBlock;
-import com.github.icecheesecat.kantaicraft.block.basic.ComponentBlockEntity;
-import com.github.icecheesecat.kantaicraft.block.basic.CoreBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.patternblock.ComponentBlock;
+import com.github.icecheesecat.kantaicraft.block.patternblock.ComponentBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.commandcenter.CommandCenterBlock;
+import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardCoreBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -26,6 +28,7 @@ public class ModBlock {
     public static final RegistryObject<Block> SHIPYARD_CORE = registerBlock("shipyard_block", () -> new ShipyardCoreBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
     public static final RegistryObject<Block> FLOOR = registerBlock("floor_block", () -> new ComponentBlock(BlockBehaviour.Properties.copy(Blocks.STONE)));
     public static final RegistryObject<Block> CRANE = registerBlock("crane_block", () -> new ComponentBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
+    public static final RegistryObject<Block> COMMAND_CENTER = registerBlock("command_center_block", () -> new CommandCenterBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
 
     public static final RegistryObject<BlockEntityType<PortBlockEntity>> PORT_BETYPE = BLOCK_ENTITIES.register("port_block_entity_type", () -> BlockEntityType.Builder.of(PortBlockEntity::new, PORT.get()).build(null));
     public static final RegistryObject<BlockEntityType<ComponentBlockEntity>> COMPONENT_BETYPE = BLOCK_ENTITIES.register("component_block_entity_type", () -> BlockEntityType.Builder.of(ComponentBlockEntity::new, FLOOR.get(), CRANE.get()).build(null));

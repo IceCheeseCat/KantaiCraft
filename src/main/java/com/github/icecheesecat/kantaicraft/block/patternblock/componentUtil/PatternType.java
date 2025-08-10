@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.block.basic.componentUtil;
+package com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil;
 
 import net.minecraft.util.StringRepresentable;
 

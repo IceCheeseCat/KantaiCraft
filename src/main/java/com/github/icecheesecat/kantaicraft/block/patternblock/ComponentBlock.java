@@ -1,7 +1,8 @@
-package com.github.icecheesecat.kantaicraft.block.basic;
+package com.github.icecheesecat.kantaicraft.block.patternblock;
 
-import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.ComponentPattern;
-import com.github.icecheesecat.kantaicraft.block.basic.componentUtil.PatternType;
+import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.BlockStateProperties;
+import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.ComponentPattern;
+import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.PatternType;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -10,7 +11,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;

@@ -214,6 +214,36 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
 
+        shipLoad(nbt);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
+
+        shipSave(nbt);
+    }
+
+    public CompoundTag shipSave(CompoundTag nbt) {
+        nbt.putBoolean("basicentityship.canmelee", this.entityData.get(DATA_CAN_MELEE));
+        nbt.putBoolean("basicentityship.canpickupitem", this.canPickUpItem);
+        nbt.putInt("basicentityship.data_aircraft", this.entityData.get(DATA_AIRCRAFT));
+        nbt.putFloat("basicentityship.data_fuel", this.entityData.get(DATA_FUEL));
+        nbt.putFloat("basicentityship.data_ammo", this.entityData.get(DATA_AMMO));
+        if (this.owner != null)
+            nbt.putUUID("basicentityship.owner", this.owner);
+        nbt.putBoolean("basicentityship.isguarding", this.entityData.get(DATA_IS_GUARDING));
+        nbt.putBoolean("basicentityship.canmelee", this.entityData.get(DATA_IS_GUARDING));
+        nbt.put("basicentityship.inventory", this.inventory.serializeNBT());
+        nbt.putInt("animation_state", this.entityData.get(DATA_ANIMATION_STATE).ordinal());
+        nbt.putInt("previous_animation_state", this.prevAnimationShipAnimationState.ordinal());
+        nbt.putInt("emotion_state", this.entityData.get(DATA_EMOTION_STATE).ordinal());
+        nbt.putLong("last_emotion_changed_tick", this.lastEmotionChangedTick);
+
+        return nbt;
+    }
+
+    public void shipLoad(CompoundTag nbt) {
         if (nbt.contains("basicentityship.canmelee")) {
             this.entityData.set(DATA_CAN_MELEE, nbt.getBoolean("basicentityship.canmelee"));
         }
@@ -250,27 +280,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         if (nbt.contains("last_emotion_changed_tick")) {
             this.lastEmotionChangedTick = nbt.getLong("last_emotion_changed_tick");
         }
-
-    }
-
-    @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
-
-        nbt.putBoolean("basicentityship.canmelee", this.entityData.get(DATA_CAN_MELEE));
-        nbt.putBoolean("basicentityship.canpickupitem", this.canPickUpItem);
-        nbt.putInt("basicentityship.data_aircraft", this.entityData.get(DATA_AIRCRAFT));
-        nbt.putFloat("basicentityship.data_fuel", this.entityData.get(DATA_FUEL));
-        nbt.putFloat("basicentityship.data_ammo", this.entityData.get(DATA_AMMO));
-        if (this.owner != null)
-            nbt.putUUID("basicentityship.owner", this.owner);
-        nbt.putBoolean("basicentityship.isguarding", this.entityData.get(DATA_IS_GUARDING));
-        nbt.putBoolean("basicentityship.canmelee", this.entityData.get(DATA_IS_GUARDING));
-        nbt.put("basicentityship.inventory", this.inventory.serializeNBT());
-        nbt.putInt("animation_state", this.entityData.get(DATA_ANIMATION_STATE).ordinal());
-        nbt.putInt("previous_animation_state", this.prevAnimationShipAnimationState.ordinal());
-        nbt.putInt("emotion_state", this.entityData.get(DATA_EMOTION_STATE).ordinal());
-        nbt.putLong("last_emotion_changed_tick", this.lastEmotionChangedTick);
     }
 
     @Override

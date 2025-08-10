@@ -16,6 +16,7 @@ public class ModCreativeTabs {
             .displayItems((parameters, output) -> {
                 output.accept(ModItem.DEBUG_FACTION_CHANGER.get());
                 output.accept(ModBlock.FLOOR.get());
+                output.accept(ModBlock.COMMAND_CENTER.get());
             }).build());
 
 }

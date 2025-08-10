@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.menu.shipyard;
 
-import com.github.icecheesecat.kantaicraft.block.ShipyardBlockEntity;
-import com.github.icecheesecat.kantaicraft.block.shipyardUtil.BuiltData;
+import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.shipyard.BuiltData;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.ShipyardSpawnBuiltDataPacket;
 import net.minecraft.client.Minecraft;
@@ -10,7 +10,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.UUID;
 

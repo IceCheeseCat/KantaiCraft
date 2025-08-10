@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.block.shipyardUtil;
+package com.github.icecheesecat.kantaicraft.block.shipyard;
 
 import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
 import com.github.icecheesecat.kantaicraft.registries.ModItem;
