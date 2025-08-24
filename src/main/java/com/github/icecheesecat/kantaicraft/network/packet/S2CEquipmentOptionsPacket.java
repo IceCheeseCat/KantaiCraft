@@ -53,9 +53,6 @@ public class S2CEquipmentOptionsPacket {
                     Cache.selectionCache = packet.validEquipmentIds;
                     Cache.selectionIndexCache = packet.index;
                     Cache.selectionEntityId = packet.entityId;
-
-                    screen.setSelectDirty(true);
-
                 }
             });
         });

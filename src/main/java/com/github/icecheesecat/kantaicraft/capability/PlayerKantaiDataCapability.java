@@ -12,17 +12,17 @@ import org.jetbrains.annotations.Nullable;
 public class PlayerKantaiDataCapability implements ICapabilitySerializable<CompoundTag> {
 
     public static final Capability<PlayerKantaiData> TOKEN = CapabilityManager.get(new CapabilityToken<>(){});
-    private PlayerKantaiData playerKantaiData = null;
-    private final LazyOptional<PlayerKantaiData> lazyPlayerKantaiData = LazyOptional.of(this::getPlayerKantaiData);
+    private PlayerKantaiData playerKantaiData;
+    LazyOptional<PlayerKantaiData> lazyPlayerKantaiData = LazyOptional.of(this::getPlayerKantaiData);
     private final Player player;
 
-    public PlayerKantaiDataCapability(@NotNull Player player) {
+    public PlayerKantaiDataCapability(Player player) {
         this.player = player;
     }
 
     private PlayerKantaiData getPlayerKantaiData() {
         if (this.playerKantaiData == null) {
-            this.playerKantaiData = new PlayerKantaiData(this.player);
+            this.playerKantaiData = new PlayerKantaiData();
         }
 
         return this.playerKantaiData;

@@ -101,11 +101,11 @@ public class SyncShipPacket {
                                     equipmentHandler.setOnClient(packet.index, (Equipment) packet.value);
                                 });
                                 if (Minecraft.getInstance().screen instanceof ShipScreen screen) {
-                                    screen.getEquipmentSection().widgets.forEach(w -> {
-                                        if (w instanceof EquipmentWidget equipmentWidget) {
-                                            equipmentWidget.evaluateState();
-                                        }
-                                    });
+//                                    screen.getEquipmentSection().widgets.forEach(w -> {
+//                                        if (w instanceof EquipmentWidget equipmentWidget) {
+//                                            equipmentWidget.evaluateState();
+//                                        }
+//                                    });
                                 }
                             }
                         }

@@ -4,6 +4,7 @@ import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -17,6 +18,7 @@ import java.util.function.Function;
 public class SyncedWidget<T> extends AbstractWidget {
 
     Map<T, ResourceLocation> resources;
+    ResourceLocation selected;
     BasicEntityShip ship;
     EntityDataAccessor<T> accessor;
     Function<T, T> operation;
@@ -34,7 +36,6 @@ public class SyncedWidget<T> extends AbstractWidget {
     @Override
     protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         T t = ship.getEntityData().get(accessor);
-
         pGuiGraphics.blit(resources.get(t), this.getX(), this.getY(), 0, 0, 32, 32, 32, 32);
     }
 
@@ -48,5 +49,12 @@ public class SyncedWidget<T> extends AbstractWidget {
         T t = ship.getEntityData().get(accessor);
 
         ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(syncType, ship.getId(), operation.apply(t)));
+    }
+
+    public boolean controlOn() {
+        if (this.ship.getEntityData().get(accessor) instanceof Boolean bool) {
+            return bool;
+        }
+        return false;
     }
 }

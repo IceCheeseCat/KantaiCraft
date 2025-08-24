@@ -1,47 +1,90 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.network.chat.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class SectionManager {
+public class SectionManager implements Renderable {
+    int index = 0;
+    int maxIndex = 0;
+    private List<ScreenSection> allSections = new ArrayList<>();
+    private ScreenSection displayedSection;
 
-    private boolean hasSelected = false;
-    private Map<SectionSelector, ScreenSection> allSections = new HashMap<>();
+    public SectionManager() {
+    }
 
-    public void addSection(SectionSelector selector, ScreenSection section) {
-        this.allSections.put(selector, section);
-        if (!hasSelected) {
-            selector.setSelected(true);
-            this.hasSelected = true;
+    public void addSection(ScreenSection section) {
+        if (this.allSections.contains(section)) return;
+        section.setShow(false);
+        this.allSections.add(section);
+        this.maxIndex++;
+    }
+
+    public void addSection(int i, ScreenSection section) {
+        if (this.allSections.contains(section)) return;
+        section.setShow(false);
+        this.allSections.add(i, section);
+        this.maxIndex++;
+    }
+
+    public void addMainSection(ScreenSection section) {
+        if (this.allSections.contains(section)) return;
+        section.setShow(true);
+        this.allSections.add(0, section);
+        this.displayedSection = section;
+        this.maxIndex++;
+    }
+
+    public void nextSection() {
+        index = nextIndex();
+        this.allSections.forEach(screenSection -> screenSection.setShow(false));
+        this.displayedSection = this.allSections.get(index);
+        this.displayedSection.setShow(true);
+    }
+    public void prevSection() {
+        index = prevIndex();
+        this.allSections.forEach(screenSection -> screenSection.setShow(false));
+        this.displayedSection = this.allSections.get(index);
+        this.displayedSection.setShow(true);
+    }
+
+    private int nextIndex() {
+        return (index + 1) % maxIndex;
+    }
+
+    private int prevIndex() {
+        return  (index - 1 + maxIndex) % maxIndex;
+    }
+
+    public void check() {
+        if (this.displayedSection == null) {
+            throw new IllegalStateException("Must has at least one section on display");
         }
-        else {
-            selector.setSelected(false);
+        if (this.allSections.size() == 0) {
+            throw new IllegalStateException("Must has at least one section");
         }
     }
 
-    public void addSectionAndSetSelected(SectionSelector selector, ScreenSection section) {
-        this.allSections.forEach((ss, ss2) -> ss.setSelected(false));
-        this.allSections.put(selector, section);
-        selector.setSelected(true);
+    public Component getCurrentSection() {
+        return this.displayedSection.getTitle();
     }
 
-    public void controlSections(double pMouseX, double pMouseY, int pButton) {
-        allSections.forEach(
-                (ss, section) -> {
-                    if (ss.mouseClicked(pMouseX, pMouseY, pButton)) {
-                        allSections.forEach((ss1, section1) -> {
-                            ss1.setSelected(false);
-                        });
-                        ss.setSelected(true);
-                    }
-                }
-        );
+    public Component getNextSection() {
+        return this.allSections.get(nextIndex()).getTitle();
+    }
+    public Component getPrevSection() {
+        return this.allSections.get(prevIndex()).getTitle();
     }
 
-    public void renderAll(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.allSections.values().forEach(screenSection -> screenSection.render(guiGraphics, mouseX, mouseY, partialTick));
+    @Override
+    public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        this.displayedSection.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
     }
 
 }

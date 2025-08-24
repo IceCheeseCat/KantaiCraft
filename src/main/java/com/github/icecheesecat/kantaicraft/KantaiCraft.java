@@ -11,12 +11,16 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(KantaiCraft.MODID)
 public class KantaiCraft
 {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "kantaicraft";
+    public static final Logger LOGGER = LogManager.getLogManager().getLogger(MODID);
 
     public KantaiCraft()
     {

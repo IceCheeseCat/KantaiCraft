@@ -22,7 +22,7 @@ public class ModAttribute {
     public static final RegistryObject<Attribute> AIRCRAFT = ATTRIBUTES.register("aircraft", () -> new SyncableAttribute("aircraft", 0.0d));
     public static final RegistryObject<Attribute> FUEL = ATTRIBUTES.register("fuel", () -> new SyncableAttribute("fuel", 10.0d));
     public static final RegistryObject<Attribute> AMMO = ATTRIBUTES.register("ammo", () -> new SyncableAttribute("ammo", 12.0d));
-    public static final RegistryObject<Attribute> SLOT_SIZE = ATTRIBUTES.register("slotsize", () -> new SyncableAttribute("slotsize", 4.0d));
+    public static final RegistryObject<Attribute> SLOT_SIZE = ATTRIBUTES.register("slotsize", () -> new SyncableAttribute("slotsize", 36.0d));
     public static final RegistryObject<Attribute> SHIPSONAL_SPACE = ATTRIBUTES.register("shipsonal_space", () -> new SyncableAttribute("shipsonal_space", 3.0d));
 
 }

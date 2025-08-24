@@ -23,6 +23,8 @@ public class ShipMenu extends AbstractContainerMenu implements IContainerFactory
         super(ModMenu.SHIP_MENU.get(), containerId);
 
         this.playerInventory = inv;
+        this.entityShip.getShipInventory();
+
         this.entityShip = entityShip;
     }
 

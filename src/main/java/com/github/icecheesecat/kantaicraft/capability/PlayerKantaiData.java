@@ -13,33 +13,8 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 
     protected final List<CompoundTag> ships = new ArrayList<>();
     protected final List<CompoundTag> equipments = new ArrayList<>();
-    private UUID playerUUID;
 
     public PlayerKantaiData() {
-    }
-
-    public PlayerKantaiData(@NotNull Player player) {
-        this.playerUUID = player.getUUID();
-    }
-
-    public List<CompoundTag> shipsOfPlayer(Player player) {
-        if (player.getUUID().compareTo(this.playerUUID) == 0) {
-            return this.ships;
-        }
-
-        return null;
-    }
-
-    public List<CompoundTag> equipmentsOfPlayer(Player player) {
-        if (player.getUUID().compareTo(this.playerUUID) == 0) {
-            return this.equipments;
-        }
-
-        return null;
-    }
-
-    public UUID getPlayerUUID() {
-        return this.playerUUID;
     }
 
     @Override
@@ -56,7 +31,6 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
             nbt.put("equipments." + i,  equipments.get(i));
         }
 
-        nbt.putUUID("playeruuid", this.playerUUID);
         return nbt;
     }
 
@@ -74,6 +48,5 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
             equipments.add(i, (CompoundTag) nbt.get("equipments." + i));
         }
 
-        this.playerUUID = nbt.getUUID("playeruuid");
     }
 }

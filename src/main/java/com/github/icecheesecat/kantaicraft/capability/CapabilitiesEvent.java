@@ -6,7 +6,9 @@ import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.faction.FactionTagCapability;
 import com.github.icecheesecat.kantaicraft.faction.LevelFactionCapability;
 import com.github.icecheesecat.kantaicraft.registries.ModItem;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -36,9 +38,17 @@ public class CapabilitiesEvent {
         }
 
         if (event.getObject() instanceof Player player) {
-            if (!player.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
-                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability(player));
-            }
+//            if (player instanceof ServerPlayer serverPlayer) {
+//                if (!serverPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
+//                    event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability(player));
+//                }
+//            }
+//            if (player instanceof LocalPlayer localPlayer) {
+//                if (!localPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
+//                    event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability(player));
+//                }
+//            }
+
         }
     }
 

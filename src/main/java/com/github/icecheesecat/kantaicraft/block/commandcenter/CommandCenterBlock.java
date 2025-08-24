@@ -50,18 +50,20 @@ public class CommandCenterBlock extends TwoPartBlock implements EntityBlock {
                     ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) pPlayer), new PlayerKantaiDataPacket(playerKantaiData));
                 }));
 
-                NetworkHooks.openScreen();
+//                NetworkHooks.openScreen();
 
             }
 
             return InteractionResult.SUCCESS;
 
         }
+
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new ComponentBlockEntity();
+        return new ComponentBlockEntity(pPos, pState);
     }
 
     @Override

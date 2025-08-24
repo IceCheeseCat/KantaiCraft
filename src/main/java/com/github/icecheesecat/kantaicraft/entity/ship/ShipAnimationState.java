@@ -4,8 +4,8 @@ public enum ShipAnimationState {
     IDLE(Type.MAIN),
     WALK(Type.TEMP),
     RUN(Type.TEMP),
-    SIT(Type.TEMP),
-    GUARD(Type.MAIN);
+    SIT(Type.TEMP);
+//    GUARD(Type.MAIN);
 
     private final Type type;
 

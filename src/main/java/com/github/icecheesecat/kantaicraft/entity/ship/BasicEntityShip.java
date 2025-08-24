@@ -28,6 +28,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
@@ -50,6 +51,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -295,7 +297,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
                 this.setAnimationState(prevAnimationShipAnimationState);
             }
 
-            if (this.navigation.isInProgress()) {
+            if (this.walkAnimation.isMoving()) {
                 if (this.walkAnimation.speed() > 0.4f) {
                     this.setAnimationState(ShipAnimationState.RUN);
                 }
@@ -312,13 +314,13 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
                 this.blinkAnimationState.start(this.tickCount);
 //                this.setEmotionState(EmotionState.create(this.random.nextInt(0, 5)), this.tickCount);
             }
-            System.out.println(this.getAnimationState());
+//            System.out.println(this.getAnimationState());
         }
     }
 
     protected boolean continueAnimationState() {
          return switch (this.getAnimationState()) {
-            case IDLE, GUARD -> true;
+            case IDLE -> true;
             case WALK -> this.navigation.isInProgress();
             case RUN -> this.navigation.isInProgress() && this.walkAnimation.speed() > 0.4f;
             default -> {
@@ -435,12 +437,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
             this.getBrain().eraseMemory(ModMemoryModuleType.IS_GUARDING.get());
         }
         this.entityData.set(DATA_IS_GUARDING, guarding);
-        if (guarding) {
-            this.setAnimationState(ShipAnimationState.GUARD);
-        }
-        else {
-            this.setAnimationState(ShipAnimationState.IDLE);
-        }
     }
 
     public double getAttributeValue(Attribute attribute) {
@@ -535,9 +531,8 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.getCapabilities().invalidate();
     }
 
-    ItemStackHandler inventory = new ItemStackHandler((int) this.getAttributeValue(ModAttribute.SLOT_SIZE.get()));
-    ItemStackHandler simulateInventory = new ItemStackHandler((int) this.getAttributeValue(ModAttribute.SLOT_SIZE.get()));
-    LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> inventory);
+    SimpleContainer inventory = new SimpleContainer(36);
+    LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> new InvWrapper(inventory));
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
@@ -548,7 +543,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         return super.getCapability(capability, facing);
     }
 
-    public IItemHandler getShipInventory() {
+    public SimpleContainer getShipInventory() {
         if (this.level().isClientSide) return null;
         return this.inventory;
     }

@@ -11,10 +11,9 @@ public class TextGridLayout {
 
     List<GridCell> grid = new ArrayList<>();
     int x, y, fontSize;
-    int fontWidth;
     int color = FastColor.ARGB32.color(255, 255, 255, 255);
 
-    public TextGridLayout(int x, int y, int fontSize, int fontWidth) {
+    public TextGridLayout(int x, int y, int fontSize) {
         this.x = x;
         this.y = y;
         this.fontSize = fontSize;
@@ -98,7 +97,7 @@ public class TextGridLayout {
             int row = cell.row;
             int column = cell.column;
 
-            cell.setPos(new TextPos(row * fontWidth, column * fontSize, row * (fontWidth + 1), column * (fontSize + 1)));
+//            cell.setPos(new TextPos(row * fontWidth, column * fontSize, row * (fontWidth + 1), column * (fontSize + 1)));
         }
 
         switchToRelativePoses();
