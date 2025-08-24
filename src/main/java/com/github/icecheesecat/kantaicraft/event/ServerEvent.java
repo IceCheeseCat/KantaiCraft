@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.event;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.container.ShipContainer;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import net.minecraft.world.entity.Entity;
@@ -27,8 +28,8 @@ public class ServerEvent {
     public static void onLivingDeathDrops(LivingDropsEvent event) {
 
         if (event.getSource().getEntity() instanceof BasicEntityShip ship) {
-            IItemHandler handler = ship.getShipInventory();
-            if (handler == null) return;
+            ShipContainer inventory = ship.getShipInventory();
+            if (inventory == null) return;
 
             List<ItemEntity> drops = new ArrayList<>(event.getDrops());
 

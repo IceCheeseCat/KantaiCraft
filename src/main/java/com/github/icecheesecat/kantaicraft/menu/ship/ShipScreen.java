@@ -5,10 +5,13 @@ import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.menu.IconWithTextElement;
+import com.github.icecheesecat.kantaicraft.menu.ToggleSlot;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -17,10 +20,14 @@ import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -73,11 +80,11 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         super(menu, inventory, title);
 
         this.ship = this.getMenu().getEntityShip();
-        this.ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
-            handler -> {
-                this.equipmentHandler = handler;
-            }
-        );
+//        this.ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
+//            handler -> {
+//                this.equipmentHandler = handler;
+//            }
+//        );
 
     }
 
@@ -112,12 +119,15 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
         this.statLayout = createStatLayout();
 
+        // Next section button
         this.addRenderableWidget(new SectionButton((int) (this.width * 0.75f), SECTION_Y / 2, 16, 16, Component.empty(), NEXT_ICON, NEXT_ICON_HOVERED, sectionManager) {
             @Override
             public void onPress() {
                 this.sectionManager.nextSection();
             }
         });
+
+        // Prev section button
         this.addRenderableWidget(new SectionButton((int) (this.width * 0.25f), SECTION_Y / 2, 16, 16, Component.empty(), PREV_ICON, PREV_ICON_HOVERED, sectionManager) {
             @Override
             public void onPress() {
@@ -127,6 +137,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
         this.sectionSelectDisplayer = new SectionSelectDisplayer(sectionManager, this.width/2, SECTION_Y/2 -3, 0, 0, 70);
         this.addRenderableOnly(this.sectionSelectDisplayer);
+
     }
 
 
@@ -147,7 +158,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     }
 
     private ScreenSection createInventorySection() {
-        ScreenSection screenSection = new ScreenSection(Component.translatable("ship_screen_inventory_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
+        InventorySection screenSection = new InventorySection(Component.translatable("ship_screen_inventory_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT, this.menu.slots);
 
         int playerX = (int) (this.width * 0.1f);
         int playerY = (int) (SECTION_Y + (this.height - SECTION_Y) * 0.3f);
@@ -246,13 +257,19 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBg(guiGraphics, partialTick, mouseX, mouseY);
-        this.renderEntityModel(guiGraphics, mouseX, mouseY);
-        this.renderables.forEach(renderable -> renderable.render(guiGraphics, mouseX, mouseY, partialTick));
-        sectionManager.render(guiGraphics, mouseX, mouseY, partialTick);
-        renderOnControl(guiGraphics);
-        updateWidget();
+    public void render(@NotNull GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float partialTick) {
+        super.render(pGuiGraphics, pMouseX, pMouseY, partialTick);
+//        this.renderBg(pGuiGraphics, partialTick, pMouseX, pMouseY);
+        this.renderEntityModel(pGuiGraphics, pMouseX, pMouseY);
+//        this.renderables.forEach(renderable -> renderable.render(pGuiGraphics, pMouseX, pMouseY, partialTick));
+        sectionManager.render(pGuiGraphics, pMouseX, pMouseY, partialTick);
+        renderOnControl(pGuiGraphics);
+
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY) {
+//        super.renderLabels(pGuiGraphics, pMouseX, pMouseY);
     }
 
     @Override

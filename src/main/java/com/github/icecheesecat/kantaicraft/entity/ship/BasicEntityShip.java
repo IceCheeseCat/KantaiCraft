@@ -4,6 +4,8 @@ import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability
 import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
 import com.github.icecheesecat.kantaicraft.client.animation.util.BlinkAnimationControl;
 import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
+import com.github.icecheesecat.kantaicraft.container.ShipContainer;
+import com.github.icecheesecat.kantaicraft.entity.ShipLevel;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.item.ShipBlueprintData;
 import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
@@ -18,6 +20,7 @@ import com.github.icecheesecat.kantaicraft.entity.attribute.shipAttributes.IStat
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -25,10 +28,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Unit;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
@@ -74,6 +74,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     public static final EntityDataAccessor<Boolean> DATA_CAN_MELEE = SynchedEntityData.defineId(BasicEntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<ShipAnimationState> DATA_ANIMATION_STATE = SynchedEntityData.defineId(BasicEntityShip.class, ModEntityDataSerializer.ANIMATION_STATE_SERIALIZER.get());
     public static final EntityDataAccessor<EmotionState> DATA_EMOTION_STATE = SynchedEntityData.defineId(BasicEntityShip.class, ModEntityDataSerializer.EMOTION_STATE_SERIALIZER.get());
+    public static final EntityDataAccessor<ShipLevel> DATA_SHIP_LEVEL = SynchedEntityData.defineId(BasicEntityShip.class, ModEntityDataSerializer.SHIP_LEVEL_SERIALIZER.get());
     private ShipAnimationState prevAnimationShipAnimationState;
     private boolean canPickUpItem = false;
     private UUID owner;
@@ -127,6 +128,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.entityData.define(DATA_CAN_MELEE, false);
         this.entityData.define(DATA_ANIMATION_STATE, ShipAnimationState.IDLE);
         this.entityData.define(DATA_EMOTION_STATE, EmotionState.NORMAL);
+        this.entityData.define(DATA_SHIP_LEVEL, ShipLevel.levelZero());
     }
 
     protected abstract void initEquipments();
@@ -213,13 +215,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
-
-        shipLoad(nbt);
-    }
-
-    @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
 
@@ -236,13 +231,40 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
             nbt.putUUID("basicentityship.owner", this.owner);
         nbt.putBoolean("basicentityship.isguarding", this.entityData.get(DATA_IS_GUARDING));
         nbt.putBoolean("basicentityship.canmelee", this.entityData.get(DATA_IS_GUARDING));
-        nbt.put("basicentityship.inventory", this.inventory.serializeNBT());
         nbt.putInt("animation_state", this.entityData.get(DATA_ANIMATION_STATE).ordinal());
         nbt.putInt("previous_animation_state", this.prevAnimationShipAnimationState.ordinal());
         nbt.putInt("emotion_state", this.entityData.get(DATA_EMOTION_STATE).ordinal());
         nbt.putLong("last_emotion_changed_tick", this.lastEmotionChangedTick);
+        nbt.put("shiplevel", this.entityData.get(DATA_SHIP_LEVEL).serializeNBT());
+        nbt.put("inventory", saveInventory());
 
         return nbt;
+    }
+
+    protected CompoundTag saveInventory() {
+        CompoundTag nbt = new CompoundTag();
+        ListTag listtag = new ListTag();
+
+        for(int i = 0; i < this.inventory.getContainerSize(); ++i) {
+            ItemStack itemstack = this.inventory.getItem(i);
+            if (!itemstack.isEmpty()) {
+                CompoundTag compoundtag = new CompoundTag();
+                compoundtag.putByte("Slot", (byte)i);
+                itemstack.save(compoundtag);
+                listtag.add(compoundtag);
+            }
+        }
+
+        nbt.put("Items", listtag);
+
+        return nbt;
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
+
+        shipLoad(nbt);
     }
 
     public void shipLoad(CompoundTag nbt) {
@@ -267,9 +289,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         if (nbt.contains("basicentityship.isguarding")) {
             this.entityData.set(DATA_IS_GUARDING, nbt.getBoolean("basicentityship.isguarding"));
         }
-        if (nbt.contains("basicentityship.inventory")) {
-            this.inventory.deserializeNBT((CompoundTag) nbt.get("basicentityship.inventory"));
-        }
         if (nbt.contains("animation_state")) {
             this.entityData.set(DATA_ANIMATION_STATE, ShipAnimationState.create(nbt.getInt("animation_state")));
         }
@@ -281,6 +300,24 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         }
         if (nbt.contains("last_emotion_changed_tick")) {
             this.lastEmotionChangedTick = nbt.getLong("last_emotion_changed_tick");
+        }
+        if (nbt.contains("shiplevel")) {
+            this.entityData.get(DATA_SHIP_LEVEL).deserializeNBT((CompoundTag) nbt.get("shiplevel"));
+        }
+        if (nbt.contains("inventory")) {
+            loadInventory(nbt.getCompound("inventory"));
+        }
+    }
+
+    protected void loadInventory(CompoundTag nbt) {
+        ListTag listtag = nbt.getList("Items", 10);
+
+        for(int i = 0; i < listtag.size(); ++i) {
+            CompoundTag compoundtag = listtag.getCompound(i);
+            int j = compoundtag.getByte("Slot") & 255;
+            if (j >= 2 && j < this.inventory.getContainerSize()) {
+                this.inventory.setItem(j, ItemStack.of(compoundtag));
+            }
         }
     }
 
@@ -511,18 +548,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
                     }
                 }
         );
-
-    }
-
-    public boolean shipCanPickUp(ItemEntity itemEntity) {
-        ItemStack stack = itemEntity.getItem().copy();
-        for (int i = 0; i < this.inventory.getSlots(); i++) {
-            stack = this.inventory.insertItem(i, stack, true);
-            if (stack.isEmpty()) break;
-        }
-
-        if (stack.isEmpty()) return true;
-        return false;
+//        this.getShipInventory().addItem(itemEntity.getItem());
     }
 
     @Override
@@ -531,7 +557,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         this.getCapabilities().invalidate();
     }
 
-    SimpleContainer inventory = new SimpleContainer(36);
+    ShipContainer inventory = new ShipContainer(36, this);
     LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> new InvWrapper(inventory));
 
     @Override
@@ -543,16 +569,16 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         return super.getCapability(capability, facing);
     }
 
-    public SimpleContainer getShipInventory() {
-        if (this.level().isClientSide) return null;
+    public ShipContainer getShipInventory() {
         return this.inventory;
     }
 
     @Override
     protected void dropCustomDeathLoot(DamageSource pSource, int pLooting, boolean pRecentlyHit) {
         super.dropCustomDeathLoot(pSource, pLooting, pRecentlyHit);
-        for (int i = 0; i < this.inventory.getSlots(); i++) {
-            ItemStack stack = this.inventory.extractItem(i, this.inventory.getSlotLimit(i), false);
+        // drop all item in ship's inventory
+        for (int i = 0; i < this.inventory.getMaxStackSize(); i++) {
+            ItemStack stack = this.inventory.getItem(i);
             if (stack.isEmpty()) continue;
             ItemEntity itemEntity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), stack);
             level().addFreshEntity(itemEntity);
@@ -636,6 +662,14 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         if (currentTick >= this.lastEmotionChangedTick + this.getEmotionState().getDuration()) {
             this.setEmotionState(EmotionState.NORMAL, -1);
         }
+    }
+
+    public int getShipLevel() {
+        return this.entityData.get(DATA_SHIP_LEVEL).getLevel();
+    }
+
+    public int getShipExp() {
+        return this.entityData.get(DATA_SHIP_LEVEL).getExp();
     }
 
 }

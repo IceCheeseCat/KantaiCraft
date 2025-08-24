@@ -1,5 +1,6 @@
 package com.github.icecheesecat.kantaicraft.brain.ship.behavior;
 
+import com.github.icecheesecat.kantaicraft.container.ShipContainer;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
@@ -18,8 +19,11 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Control Ship to pick up Mob drops they killed.
+ * TODO pick up drops nearby if target is out of certain range
+ */
 
-// TO-DO bug fixing: sometimes can't correctly calculate path to the itemEntity
 public class PickUpKilledMobDrops extends Behavior<BasicEntityShip> {
 
     private ItemEntity itemEntity;
@@ -54,10 +58,6 @@ public class PickUpKilledMobDrops extends Behavior<BasicEntityShip> {
             return;
         }
 
-        if (pOwner.blockPosition().equals(this.walkTarget.getTarget().currentBlockPosition())) {
-            System.out.println("At Spot!!!");
-        }
-
         double dis = pOwner.distanceTo(itemEntity);
         if (dis < 1.5d) {
             // memory remove same itemEntity
@@ -73,17 +73,14 @@ public class PickUpKilledMobDrops extends Behavior<BasicEntityShip> {
             this.stopped = true;
         }
 
-        Path path;
-        if (pOwner.getBrain().getMemory(MemoryModuleType.PATH).isPresent()) {
-            path = pOwner.getBrain().getMemory(MemoryModuleType.PATH).get();
-            System.out.println(path);
-            for (var node: path.getClosedSet()) {
-                System.out.println(" " + node.asBlockPos());
-            }
-        }
-
-
-
+//        Path path;
+//        if (pOwner.getBrain().getMemory(MemoryModuleType.PATH).isPresent()) {
+//            path = pOwner.getBrain().getMemory(MemoryModuleType.PATH).get();
+//            System.out.println(path);
+//            for (var node: path.getClosedSet()) {
+//                System.out.println(" " + node.asBlockPos());
+//            }
+//        }
 
     }
 
@@ -162,16 +159,17 @@ public class PickUpKilledMobDrops extends Behavior<BasicEntityShip> {
         ItemStack originStack = t_itemEntity.getItem();
         ItemStack testStack = t_itemEntity.getItem().copy();
 
-        IItemHandler itemHandler = pOwner.getShipInventory();
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            testStack = itemHandler.insertItem(i, testStack, true);
-            if (testStack.getCount() != originStack.getCount()) {
-                this.itemEntity = t_itemEntity;
-                return true;
-            }
-        }
+        ShipContainer inventory = pOwner.getShipInventory();
+        return inventory.canAddItem(testStack);
+//        for (int i = 0; i < itemHandler.getSlots(); i++) {
+//            testStack = itemHandler.insertItem(i, testStack, true);
+//            if (testStack.getCount() != originStack.getCount()) {
+//                this.itemEntity = t_itemEntity;
+//                return true;
+//            }
+//        }
 
-        return false;
+//        return false;
     }
 
     private void eraseRemovedItemThanSort(List<ItemEntity> itemEntities, Entity owner) {
