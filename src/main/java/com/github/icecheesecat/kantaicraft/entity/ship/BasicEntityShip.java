@@ -1,20 +1,17 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
+import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
-import com.github.icecheesecat.kantaicraft.capability.ShipBlueprintCapability;
 import com.github.icecheesecat.kantaicraft.client.animation.util.BlinkAnimationControl;
 import com.github.icecheesecat.kantaicraft.common.CommonEntityData;
 import com.github.icecheesecat.kantaicraft.container.ShipContainer;
-import com.github.icecheesecat.kantaicraft.entity.ShipLevel;
+import com.github.icecheesecat.kantaicraft.entity.*;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
-import com.github.icecheesecat.kantaicraft.item.ShipBlueprintData;
 import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.github.icecheesecat.kantaicraft.registries.*;
-import com.github.icecheesecat.kantaicraft.entity.IFaction;
-import com.github.icecheesecat.kantaicraft.entity.IPhysicalEntity;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
 import com.github.icecheesecat.kantaicraft.entity.attribute.shipAttributes.IStatsGrowth;
 import com.google.common.collect.ImmutableList;
@@ -44,13 +41,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
@@ -61,7 +58,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class BasicEntityShip extends PathfinderMob implements MenuProvider, IStatsGrowth, IFaction<BasicEntityShip>, IPhysicalEntity, ISlotCheckerEntity, IShipField, IEquipmentSelector {
+public abstract class BasicEntityShip extends PathfinderMob implements MenuProvider, IStatsGrowth, IFaction<BasicEntityShip>, IPhysicalEntity, ISlotCheckerEntity, IEquipmentSelector, ShipClassification {
 
     /**
      * ship attributes: hp, def, atk, ...
@@ -76,9 +73,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     public static final EntityDataAccessor<EmotionState> DATA_EMOTION_STATE = SynchedEntityData.defineId(BasicEntityShip.class, ModEntityDataSerializer.EMOTION_STATE_SERIALIZER.get());
     public static final EntityDataAccessor<ShipLevel> DATA_SHIP_LEVEL = SynchedEntityData.defineId(BasicEntityShip.class, ModEntityDataSerializer.SHIP_LEVEL_SERIALIZER.get());
     private ShipAnimationState prevAnimationShipAnimationState;
-    private boolean canPickUpItem = false;
     private UUID owner;
-    protected boolean debugMode = false;
     protected final List<EquipmentType> attackbleEquipmentTypes;
     public final AnimationState breathAnimationState;
     public final AnimationState idleAnimationState;
@@ -223,7 +218,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
 
     public CompoundTag shipSave(CompoundTag nbt) {
         nbt.putBoolean("basicentityship.canmelee", this.entityData.get(DATA_CAN_MELEE));
-        nbt.putBoolean("basicentityship.canpickupitem", this.canPickUpItem);
         nbt.putInt("basicentityship.data_aircraft", this.entityData.get(DATA_AIRCRAFT));
         nbt.putFloat("basicentityship.data_fuel", this.entityData.get(DATA_FUEL));
         nbt.putFloat("basicentityship.data_ammo", this.entityData.get(DATA_AMMO));
@@ -270,9 +264,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     public void shipLoad(CompoundTag nbt) {
         if (nbt.contains("basicentityship.canmelee")) {
             this.entityData.set(DATA_CAN_MELEE, nbt.getBoolean("basicentityship.canmelee"));
-        }
-        if (nbt.contains("basicentityship.canpickupitem")) {
-            this.canPickUpItem = nbt.getBoolean("basicentityship.canpickupitem");
         }
         if (nbt.contains("basicentityship.data_aircraft")) {
             this.entityData.set(DATA_AIRCRAFT, nbt.getInt("basicentityship.data_aircraft"));
@@ -446,14 +437,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         return InteractionResult.PASS;
     }
 
-    public boolean isCanPickUpItem() {
-        return canPickUpItem;
-    }
-
-    public void setCanPickUpItem(boolean canPickUpItem) {
-        this.canPickUpItem = canPickUpItem;
-    }
-
     public boolean canMelee() {
         return this.entityData.get(DATA_CAN_MELEE);
     }
@@ -524,14 +507,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         return this.owner;
     }
 
-    public boolean isDebugMode() {
-        return debugMode;
-    }
-
-    public void setDebugMode(boolean debugMode) {
-        this.debugMode = debugMode;
-    }
-
     public void shipPickUpItem(ItemEntity itemEntity) {
 
         this.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(
@@ -587,7 +562,7 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
         // drop a blueprint of this ship
         UUID builder = getBuilder(pSource);
         if (builder != null) {
-            ItemEntity blueprintEntity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), this.makeBlueprint(pSource.getEntity().getUUID()));
+            ItemEntity blueprintEntity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), this.makeBlueprint());
             level().addFreshEntity(blueprintEntity);
         }
     }
@@ -616,17 +591,6 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
 
         return r.get();
 
-    }
-
-    public ItemStack makeBlueprint(UUID builder) {
-        ItemStack blueprint = new ItemStack(ModItem.SHIP_BLUEPRINT.get());
-        blueprint.getCapability(ShipBlueprintCapability.TOKEN).ifPresent(
-                data -> {
-                    data.set(ShipBlueprintData.create(this, builder));
-                }
-        );
-
-        return blueprint;
     }
 
     public ShipAnimationState getAnimationState() {
@@ -671,5 +635,19 @@ public abstract class BasicEntityShip extends PathfinderMob implements MenuProvi
     public int getShipExp() {
         return this.entityData.get(DATA_SHIP_LEVEL).getExp();
     }
+
+    public abstract EntityID getEntityId();
+
+    public abstract int getProcessTime();
+
+    // save blueprint to itemstack nbt
+    public ItemStack makeBlueprint() {
+        ItemStack itemStack = new ItemStack(ModItem.SHIP_BLUEPRINT.get());
+        itemStack.setTag(Blueprint.create(this).serializeNBT());
+
+        return itemStack;
+    }
+
+    public abstract Rarity getRarity();
 
 }

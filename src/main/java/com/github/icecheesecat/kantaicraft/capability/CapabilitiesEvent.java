@@ -5,10 +5,9 @@ import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.faction.FactionTagCapability;
 import com.github.icecheesecat.kantaicraft.faction.LevelFactionCapability;
+import com.github.icecheesecat.kantaicraft.item.BlueprintItem;
 import com.github.icecheesecat.kantaicraft.registries.ModItem;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -62,18 +61,21 @@ public class CapabilitiesEvent {
 
     @SubscribeEvent
     public static void onBlockEntityAttach(AttachCapabilitiesEvent<BlockEntity> event) {
-        if (event.getObject() instanceof ShipyardBlockEntity shipyardBlockEntity) {
-            if (!shipyardBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).isPresent()) {
-                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.ship_blueprint_stack_handler"), new ShipBlueprintStackHandlerCapability(shipyardBlockEntity.processShipSize));
-            }
-        }
+//        if (event.getObject() instanceof ShipyardBlockEntity shipyardBlockEntity) {
+//            if (!shipyardBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).isPresent()) {
+//                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.ship_blueprint_stack_handler"), new ShipBlueprintStackHandlerCapability(shipyardBlockEntity.processShipSize));
+//            }
+//        }
     }
 
     @SubscribeEvent
     public static void onItemStackAttach(AttachCapabilitiesEvent<ItemStack> event) {
-        if (event.getObject().is(ModItem.SHIP_BLUEPRINT.get())) {
-            event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.ship_blueprint_data"), new ShipBlueprintCapability());
-        }
+//        ItemStack itemStack = event.getObject();
+//        if (itemStack.is(ModItem.SHIP_BLUEPRINT.get())) {
+//            if (!itemStack.getCapability(BlueprintCapability.TOKEN).isPresent()) {
+//                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "blueprint"), new BlueprintCapability());
+//            }
+//        }
     }
 
 }

@@ -87,4 +87,10 @@ public class SectionManager implements Renderable {
         this.displayedSection.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
     }
 
+    public void clear() {
+        this.allSections.clear();
+        this.maxIndex = 0;
+        this.index = 0;
+    }
+
 }

@@ -1,17 +1,12 @@
 package com.github.icecheesecat.kantaicraft.entity.ship.destroyer;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicCannonShip;
+import com.github.icecheesecat.kantaicraft.entity.EntityID;
 import com.github.icecheesecat.kantaicraft.entity.ship.BasicDestroyerShip;
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.SlotChecker;
-import com.github.icecheesecat.kantaicraft.util.ShipFields;
-import com.google.common.collect.ImmutableSet;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
-
-import java.util.List;
 
 public class EntityDestroyerIClass extends BasicDestroyerShip {
 
@@ -30,12 +25,22 @@ public class EntityDestroyerIClass extends BasicDestroyerShip {
     }
 
     @Override
-    public ShipFields.ShipName getShipName() {
-        return ShipFields.ShipName.DestroyerIClass;
+    protected void initEquipments() {
+
     }
 
     @Override
-    protected void initEquipments() {
+    public EntityID getEntityId() {
+        return EntityID.DestroyerIClass;
+    }
 
+    @Override
+    public int getProcessTime() {
+        return 200;
+    }
+
+    @Override
+    public Rarity getRarity() {
+        return Rarity.COMMON;
     }
 }

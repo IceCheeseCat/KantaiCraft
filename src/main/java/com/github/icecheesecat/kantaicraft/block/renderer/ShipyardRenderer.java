@@ -3,7 +3,6 @@ package com.github.icecheesecat.kantaicraft.block.renderer;
 import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.BlockStateProperties;
 import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.PatternType;
-import com.github.icecheesecat.kantaicraft.block.shipyard.BuiltData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -22,7 +21,6 @@ public class ShipyardRenderer implements BlockEntityRenderer<ShipyardBlockEntity
 
     BlockEntityRendererProvider.Context context;
     LivingEntity dummyEntity;
-    BuiltData tempData;
 
     public ShipyardRenderer(BlockEntityRendererProvider.Context ctx) {
         this.context = ctx;
@@ -42,27 +40,27 @@ public class ShipyardRenderer implements BlockEntityRenderer<ShipyardBlockEntity
         int packedLight =
                 LightTexture.pack(level.getBrightness(LightLayer.BLOCK, pos), level.getBrightness(LightLayer.SKY, pos));
 
-        this.drawBuiltData(pBlockEntity.getBuiltData(), pPoseStack, pPartialTick, pBuffer, packedLight);
+//        this.drawBuiltData(pBlockEntity.getBuiltData(), pPoseStack, pPartialTick, pBuffer, packedLight);
 
     }
 
-    private void drawBuiltData(List<BuiltData> builtData, PoseStack poseStack, float partialTick, MultiBufferSource pBuffer, int packedLight) {
-        if (builtData == null || builtData.isEmpty()) return;
-        if (tempData == null) {
-            this.tempData = builtData.get(0);
-            this.dummyEntity = this.tempData.getData().getEntityType().create(Minecraft.getInstance().level);
-        }
-        else if (!tempData.equals(builtData.get(0))) {
-            this.tempData = builtData.get(0);
-            this.dummyEntity = this.tempData.getData().getEntityType().create(Minecraft.getInstance().level);
-        }
-
-        poseStack.pushPose();
-        poseStack.translate(0.5f, 0.5f, 0.5f);
-        poseStack.scale(0.3f, 0.3f, 0.3f);
-        EntityRenderer<LivingEntity> entityRenderer = (EntityRenderer<LivingEntity>) Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(this.tempData.getData().getEntityType());
-        entityRenderer.render(dummyEntity, 0, partialTick, poseStack, pBuffer, packedLight);
-        poseStack.popPose();
-    }
+//    private void drawBuiltData(List<BuiltData> builtData, PoseStack poseStack, float partialTick, MultiBufferSource pBuffer, int packedLight) {
+//        if (builtData == null || builtData.isEmpty()) return;
+//        if (tempData == null) {
+//            this.tempData = builtData.get(0);
+//            this.dummyEntity = this.tempData.getData().getEntityType().create(Minecraft.getInstance().level);
+//        }
+//        else if (!tempData.equals(builtData.get(0))) {
+//            this.tempData = builtData.get(0);
+//            this.dummyEntity = this.tempData.getData().getEntityType().create(Minecraft.getInstance().level);
+//        }
+//
+//        poseStack.pushPose();
+//        poseStack.translate(0.5f, 0.5f, 0.5f);
+//        poseStack.scale(0.3f, 0.3f, 0.3f);
+//        EntityRenderer<LivingEntity> entityRenderer = (EntityRenderer<LivingEntity>) Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(this.tempData.getData().getEntityType());
+//        entityRenderer.render(dummyEntity, 0, partialTick, poseStack, pBuffer, packedLight);
+//        poseStack.popPose();
+//    }
 
 }

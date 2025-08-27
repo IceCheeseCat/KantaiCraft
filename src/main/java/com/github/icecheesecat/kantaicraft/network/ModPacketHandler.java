@@ -68,18 +68,10 @@ public class ModPacketHandler {
 
         INSTANCE.registerMessage(
                 id++,
-                ShipyardBuiltDataPacket.class,
-                ShipyardBuiltDataPacket::encode,
-                ShipyardBuiltDataPacket::decode,
-                ShipyardBuiltDataPacket::handle
-        );
-
-        INSTANCE.registerMessage(
-                id++,
-                ShipyardSpawnBuiltDataPacket.class,
-                ShipyardSpawnBuiltDataPacket::encode,
-                ShipyardSpawnBuiltDataPacket::decode,
-                ShipyardSpawnBuiltDataPacket::handle
+                ShipyardSpawnEntityPacket.class,
+                ShipyardSpawnEntityPacket::encode,
+                ShipyardSpawnEntityPacket::decode,
+                ShipyardSpawnEntityPacket::handle
         );
 
         INSTANCE.registerMessage(
@@ -88,6 +80,14 @@ public class ModPacketHandler {
                 PlayerKantaiDataPacket::encode,
                 PlayerKantaiDataPacket::decode,
                 PlayerKantaiDataPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                SetShipyardSlotOwnerPacket.class,
+                SetShipyardSlotOwnerPacket::encode,
+                SetShipyardSlotOwnerPacket::decode,
+                SetShipyardSlotOwnerPacket::handle
         );
     }
 

@@ -3,7 +3,9 @@ package com.github.icecheesecat.kantaicraft.block.shipyard;
 import com.github.icecheesecat.kantaicraft.block.patternblock.CoreBlock;
 import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.ComponentPattern;
 import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.PatternType;
+import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
+import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -67,13 +69,6 @@ public class ShipyardCoreBlock extends CoreBlock {
                     }
             );
 
-            // drop built data
-            List<BuiltData> builtData = shipyardBlockEntity.getBuiltData();
-            for (var data: builtData) {
-                ItemStack itemStack = data.getData().createItemStack();
-                ItemEntity itemEntity = new ItemEntity(pLevel, x, y, z, itemStack);
-                pLevel.addFreshEntity(itemEntity);
-            }
         }
     }
 }

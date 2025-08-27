@@ -13,6 +13,7 @@ import net.minecraft.util.FastColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ScreenSection implements Renderable {
 
@@ -21,6 +22,7 @@ public class ScreenSection implements Renderable {
     private final Component title;
     protected int x, y, width, height;
     private final List<ImageDisplay> imageDisplays = new ArrayList<>();
+    private List<TextInstance> textInstances = new ArrayList<>();
 
     public ScreenSection(Component title, int x, int y, int width, int height) {
         this.title = title;
@@ -47,10 +49,17 @@ public class ScreenSection implements Renderable {
             guiGraphics.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         });
         RenderSystem.disableBlend();
+        this.textInstances.forEach(instance -> {
+            guiGraphics.drawString(Minecraft.getInstance().font, instance.text, instance.x, instance.y, instance.fontColor);
+        });
     }
 
     public Component getTitle() {
         return this.title;
+    }
+
+    public void addTextInstance(TextInstance textInstance) {
+        this.textInstances.add(textInstance);
     }
 
 //    public TextGridLayout getTextGridLayout() {
@@ -86,5 +95,7 @@ public class ScreenSection implements Renderable {
         return false;
     }
 
+    public record TextInstance(int x, int y, String text, int fontColor) {
+    }
 }
 

@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -111,8 +113,10 @@ public class ComponentBlock extends PatternBlock {
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (pLevel.isClientSide) return InteractionResult.SUCCESS;
         if (pLevel.getBlockEntity(pPos) instanceof ComponentBlockEntity cbe) {
-            if (cbe.getCoreBlockEntity(pLevel) instanceof  MenuCoreBlockEntity menuCoreBlockEntity) {
-                menuCoreBlockEntity.openMenu((ServerPlayer) pPlayer);
+            if (cbe.getCoreBlockEntity(pLevel) instanceof  MenuProvider menuProvider) {
+                NetworkHooks.openScreen((ServerPlayer) pPlayer, menuProvider, buf -> {
+                    buf.writeBlockPos(cbe.getCorePos());
+                });
                 return InteractionResult.SUCCESS;
             }
         }

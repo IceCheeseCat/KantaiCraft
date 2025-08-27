@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.List;
 
@@ -141,9 +143,10 @@ public abstract class CoreBlock extends PatternBlock implements IComponentDrops 
         if (pLevel.isClientSide) return InteractionResult.SUCCESS;
 
         var be = pLevel.getBlockEntity(pPos);
-        if (be instanceof MenuCoreBlockEntity menuCoreBlockEntity) {
-            if (!menuCoreBlockEntity.canUse()) return InteractionResult.PASS;
-            menuCoreBlockEntity.openMenu((ServerPlayer) pPlayer);
+        if (be instanceof MenuProvider menuProvider) {
+            NetworkHooks.openScreen((ServerPlayer) pPlayer, menuProvider, buf -> {
+                buf.writeBlockPos(pPos);
+            });
             return InteractionResult.SUCCESS;
         }
 

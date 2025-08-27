@@ -1,13 +1,10 @@
 package com.github.icecheesecat.kantaicraft.capability;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 

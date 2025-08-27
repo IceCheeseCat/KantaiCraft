@@ -5,8 +5,8 @@ import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.equipment.SlotChecker;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
-import com.github.icecheesecat.kantaicraft.util.ShipFields;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -17,6 +17,7 @@ import java.util.List;
 
 public abstract class BasicDestroyerShip extends BasicCannonShip {
 
+    public static final Component DESTROYER = Component.translatable("entity.shiptype.destroyer");
     private static final SlotChecker GENERAL_DESTROYER_SLOT_CHECKER = SlotChecker.create(ImmutableSet.of(EquipmentType.SMALL_CANNON, EquipmentType.RADAR));
     private static final AttributeSupplier DESTROYER_GROWTH = new AttributeSupplier.Builder()
             .add(ModAttribute.FIREPOWER.get(), 0.5d)
@@ -42,11 +43,6 @@ public abstract class BasicDestroyerShip extends BasicCannonShip {
     }
 
     @Override
-    public ShipFields.ShipClass getShipClass() {
-        return ShipFields.ShipClass.DESTROYER;
-    }
-
-    @Override
     public List<Equipment> evaluateEquipments(List<Equipment> equipments) {
         return equipments.stream().filter(equipment ->
             equipment.getType() == EquipmentType.SMALL_CANNON && (int) equipment.getStat(EquipmentStatType.CANNON_SIZE) == 0
@@ -58,4 +54,8 @@ public abstract class BasicDestroyerShip extends BasicCannonShip {
         return GENERAL_DESTROYER_SLOT_CHECKER;
     }
 
+    @Override
+    public Component getShipClass() {
+        return DESTROYER;
+    }
 }

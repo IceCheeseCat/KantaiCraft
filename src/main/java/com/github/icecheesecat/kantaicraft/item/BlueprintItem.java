@@ -1,9 +1,13 @@
 package com.github.icecheesecat.kantaicraft.item;
 
-import com.github.icecheesecat.kantaicraft.registries.ModItem;
+import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class BlueprintItem extends Item {
 
@@ -13,26 +17,9 @@ public class BlueprintItem extends Item {
 
     @Override
     public Rarity getRarity(ItemStack pStack) {
-        if (pStack.hasTag()) {
-            var nbt = pStack.getTag();
-            byte r = nbt.getByte("rarity");
-            switch (r) {
-                case 1 -> {
-                    return Rarity.UNCOMMON;
-                }
-                case 2 -> {
-                    return Rarity.RARE;
-                }
-                case 3 -> {
-                    return Rarity.EPIC;
-                }
-                default -> {
-                    return Rarity.COMMON;
-                }
-            }
-        }
+        var blueprint = Blueprint.createFromTag(pStack.getTag());
 
-        return Rarity.COMMON;
+        return blueprint.getRarity();
     }
 
 }

@@ -91,8 +91,10 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     private void initVar() {
         this.imageWidth = 256;
         this.imageHeight = 144;
-        this.leftPos = (this.width - this.imageWidth) / 2;
-        this.topPos = (this.height - this.imageHeight) / 2;
+        this.width = Minecraft.getInstance().screen.width;
+        this.height = Minecraft.getInstance().screen.height;
+        this.leftPos = (int) (this.width * 0.5f);
+        this.topPos = (int) (this.height * 0.5f);
 
         SECTION_X = 0;
         SECTION_Y = (int) (this.height * 0.3125f);
@@ -104,11 +106,13 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         MODEL_X = this.width / 2;
         MODEL_Y = this.height + 40;
         MODEL_SCALE = 90;
+
     }
 
     @Override
     protected void init() {
         initVar();
+        this.sectionManager.clear();
         var mainSection = createMainSection();
         var equipmentSection = createEquipmentSection();
         var inventorySection = createInventorySection();
@@ -140,8 +144,6 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
     }
 
-
-
     private ScreenSection createMainSection() {
         this.controlLayout = createControlLayout();
         GridSection gridSection = new GridSection(Component.translatable("ship_screen_main_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
@@ -159,17 +161,19 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
     private ScreenSection createInventorySection() {
         InventorySection screenSection = new InventorySection(Component.translatable("ship_screen_inventory_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT, this.menu.slots);
+        int playerX = this.leftPos - 154  - 20;
+        int playerY = this.topPos + 3;
+        int shipX = this.leftPos + 18;
+        int shipY = this.topPos + 3;
+        int blitOffset = 0;
+        int white = FastColor.ARGB32.color(255, 255, 255, 255);
 
-        int playerX = (int) (this.width * 0.1f);
-        int playerY = (int) (SECTION_Y + (this.height - SECTION_Y) * 0.3f);
-        int shipX = (int) (this.width * 0.9f) - 154;
-        int shipY = (int) (SECTION_Y + (this.height - SECTION_Y) * 0.3f);
-        int blitOffset = 1000;
-
-        ScreenSection.ImageDisplay playerInventoryDisplay = new ScreenSection.ImageDisplay(playerX, playerY, blitOffset, 154, 73, INVENTORY_SLOTS, 0.4f);
-        ScreenSection.ImageDisplay shipInventoryDisplay = new ScreenSection.ImageDisplay(shipX, shipY, blitOffset,154, 73, INVENTORY_SLOTS, 0.4f);
+        ScreenSection.ImageDisplay playerInventoryDisplay = new ScreenSection.ImageDisplay(playerX, playerY, blitOffset, 154, 73, INVENTORY_SLOTS, 0.8f);
+        ScreenSection.ImageDisplay shipInventoryDisplay = new ScreenSection.ImageDisplay(shipX, shipY, blitOffset,154, 73, INVENTORY_SLOTS, 0.8f);
         screenSection.addImageDisplay(playerInventoryDisplay);
+        screenSection.addTextInstance(new ScreenSection.TextInstance(playerX, playerY-10, "Player Inventory", white));
         screenSection.addImageDisplay(shipInventoryDisplay);
+        screenSection.addTextInstance(new ScreenSection.TextInstance(shipX, shipY-10, "Ship Inventory", white));
 
         return screenSection;
     }
@@ -201,10 +205,10 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         gridLayout.defaultCellSetting().paddingRight(4);
         gridLayout.defaultCellSetting().paddingBottom(4);
         int index = 0;
-        gridLayout.addChild(new EquipmentWidget(SECTION_X, SECTION_Y, this.ship, 0), index++, 0);
-        gridLayout.addChild(new EquipmentWidget(SECTION_X, SECTION_Y, this.ship, 1), index++, 0);
-        gridLayout.addChild(new EquipmentWidget(SECTION_X, SECTION_Y, this.ship, 2), index++, 0);
-        gridLayout.addChild(new EquipmentWidget(SECTION_X, SECTION_Y, this.ship, 3), index++, 0);
+//        gridLayout.addChild(new EquipmentWidget(SECTION_X, SECTION_Y, this.ship, 0), index++, 0);
+//        gridLayout.addChild(new EquipmentWidget(SECTION_X, SECTION_Y, this.ship, 1), index++, 0);
+//        gridLayout.addChild(new EquipmentWidget(SECTION_X, SECTION_Y, this.ship, 2), index++, 0);
+//        gridLayout.addChild(new EquipmentWidget(SECTION_X, SECTION_Y, this.ship, 3), index++, 0);
         gridLayout.arrangeElements();
         gridLayout.visitWidgets(this::addRenderableWidget);
 
@@ -279,7 +283,10 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
     private void renderEntityModel(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int eyeY = (int) (MODEL_Y - MODEL_SCALE );
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, -500);
         InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, MODEL_X, MODEL_Y, MODEL_SCALE, MODEL_X - mouseX, eyeY - mouseY, this.ship);
+        guiGraphics.pose().popPose();
     }
 
     private void renderOnControl(GuiGraphics pGuiGraphics) {

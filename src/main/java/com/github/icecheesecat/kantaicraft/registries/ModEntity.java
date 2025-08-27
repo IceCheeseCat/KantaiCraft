@@ -1,10 +1,13 @@
 package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.entity.EntityID;
 import com.github.icecheesecat.kantaicraft.entity.plane.fighter.EntityA6MZeroFighter;
+import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityDestroyerIClass;
 import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityDestroyerRoClass;
 import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityInazuma;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -12,10 +15,14 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ModEntity {
 
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES,
             KantaiCraft.MODID);
+
 
     public static final RegistryObject<EntityType<EntityDestroyerRoClass>> DestroyerRoClass = ENTITIES.register("destroyer_ro_class", () ->
             EntityType.Builder.of(EntityDestroyerRoClass::new, MobCategory.MISC).sized(0.8f, 0.8f).build(new ResourceLocation(KantaiCraft.MODID, "destroyer_ro_class").toString()));
@@ -28,6 +35,15 @@ public class ModEntity {
 
     public static final RegistryObject<EntityType<EntityA6MZeroFighter>> A6M_Zero_Fighter = ENTITIES.register("a6m_zero_fighter", () ->
             EntityType.Builder.of(EntityA6MZeroFighter::new, MobCategory.MISC).sized(1.0f, 1.0f).build(new ResourceLocation(KantaiCraft.MODID, "a6m_zero_fighter").toString()));
+
+    public static EntityType<?> getByEntityId(EntityID entityID) {
+        return switch (entityID.getId()) {
+            case 0 -> DestroyerRoClass.get();
+            case 1 -> DestroyerIClass.get();
+            case 2 -> Inazuma.get();
+            default -> null;
+        };
+    }
 
 }
 //

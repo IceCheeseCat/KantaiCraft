@@ -5,6 +5,7 @@ import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import com.github.icecheesecat.kantaicraft.registries.ModMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -12,41 +13,45 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ShipyardMenu extends AbstractContainerMenu {
-    private Inventory inventory;
+    private Container shipyardContainer;
+    private ShipyardBlockEntity shipyardBlockEntity;
     private ContainerLevelAccess access;
-    ShipyardBlockEntity shipyardBlockEntity;
+    List<BlueprintSlot> blueprintSlots = new ArrayList<>();
 
     // server side
     public ShipyardMenu(int pContainerId, Inventory inventory, ShipyardBlockEntity shipyardBlockEntity, ContainerLevelAccess access) {
         super(ModMenu.SHIPYARD_MENU.get(), pContainerId);
 
-        this.inventory = inventory;
+        this.shipyardContainer = shipyardBlockEntity;
+        this.shipyardBlockEntity = shipyardBlockEntity;
 
         // Player inventory show in menu
-        int i = 0;
+        int inventoryX = 8;
+        int inventoryY = 110;
+        int inventoryHotbarY = 168;
         // inventory
         for(int l = 0; l < 3; ++l) {
             for(int j1 = 0; j1 < 9; ++j1) {
-                this.addSlot(new Slot(inventory, j1 + l * 9 + 9, 8 + j1 * 18, 103 + l * 18 + i));
+                this.addSlot(new Slot(inventory, j1 + l * 9 + 9, inventoryX + j1 * 18, inventoryY + l * 18));
             }
         }
-
         // hot bar
         for(int i1 = 0; i1 < 9; ++i1) {
-            this.addSlot(new Slot(inventory, i1, 8 + i1 * 18, 161 + i));
+            this.addSlot(new Slot(inventory, i1, inventoryX + i1 * 18, inventoryHotbarY));
         }
 
-        this.shipyardBlockEntity = shipyardBlockEntity;
-        // blueprint itemhandler slot
-        shipyardBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(
-                stackHandler -> {
-                    for (int index = 0; index < stackHandler.getSlots(); index++) {
-                        this.addSlot(new SlotItemHandler(stackHandler, index, 20 * index + 9, 20));
-                    }
-                }
-        );
-
+        // Shipyard blueprint item slots
+        int bpX = 26;
+        int bpY = 12;
+        for (int i = 0; i < 4; i++) {
+            var blueprintSlot = new BlueprintSlot(this.shipyardContainer, i, i, bpX, bpY + 23 * i, this.shipyardBlockEntity.getBlockPos());
+            this.addSlot(blueprintSlot);
+            this.blueprintSlots.add(blueprintSlot);
+        }
 
         this.access = access;
     }
@@ -93,5 +98,10 @@ public class ShipyardMenu extends AbstractContainerMenu {
     public boolean stillValid(Player pPlayer) {
         return AbstractContainerMenu.stillValid(this.access, pPlayer, ModBlock.SHIPYARD_CORE.get());
     }
+
+    public ShipyardBlockEntity getShipyardBlockEntity() {
+        return shipyardBlockEntity;
+    }
+
 
 }

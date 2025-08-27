@@ -30,30 +30,35 @@ public class ShipMenu extends AbstractContainerMenu implements IContainerFactory
         this.entityShip = entityShip;
         this.shipInventory = entityShip.getShipInventory();
 
-
         // player inventory
-        int playerX = -42;
-        int playerY = 132;
+        int playerX = - 154  - 19;
+        int playerY = 0;
         int slotSize = 17;
-        for (int i = 0; i < 9; i++) {
-            for (int j = 1; j < 4; j++) {
-                this.addSlot(new ToggleSlot(this.playerInventory,   i + j * 9, i * slotSize + playerX, playerY - j * slotSize - 4));
+        int playerHotbarY = playerY + slotSize * 3 + 8;
+        for(int l = 0; l < 3; ++l) {
+            for(int j1 = 0; j1 < 9; ++j1) {
+                this.addSlot(new ToggleSlot(this.playerInventory, j1 + (l + 1) * 9, playerX + j1 * slotSize, playerY + l * slotSize + 4));
             }
         }
-        for (int i = 0; i < 9; i++) {
-            this.addSlot(new ToggleSlot(this.playerInventory,   i, i * slotSize + playerX,  playerY));
+
+        for(int i1 = 0; i1 < 9; ++i1) {
+            this.addSlot(new ToggleSlot(this.playerInventory, i1, playerX + i1 * slotSize, playerHotbarY));
         }
+
+
 
         // ship inventory
-        int shipX = 146;
-        int shipY = 132;
-        for (int i = 0; i < 9; i++) {
-            for (int j = 1; j < 4; j++) {
-                this.addSlot(new ToggleSlot(this.shipInventory,   i + j * 9, i * slotSize + shipX, shipY - j * slotSize - 4));
+        int shipX = 19;
+        int shipY = 0;
+        int shipHotbarY = shipY + slotSize * 3 + 8;
+        for(int l = 0; l < 3; ++l) {
+            for(int j1 = 0; j1 < 9; ++j1) {
+                this.addSlot(new ToggleSlot(this.shipInventory, j1 + (l + 1) * 9, shipX + j1 * slotSize, shipY + l * slotSize + 4));
             }
         }
-        for (int i = 0; i < 9; i++) {
-            this.addSlot(new ToggleSlot(this.shipInventory,   i, i * slotSize + shipX,  shipY));
+
+        for(int i1 = 0; i1 < 9; ++i1) {
+            this.addSlot(new ToggleSlot(this.shipInventory, i1, shipX + i1 * slotSize, shipHotbarY));
         }
     }
 
@@ -64,8 +69,29 @@ public class ShipMenu extends AbstractContainerMenu implements IContainerFactory
 
     // TODO
     @Override
-    public @NotNull ItemStack quickMoveStack(@NotNull Player p_38941_, int p_38942_) {
-        return ItemStack.EMPTY;
+    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int pIndex) {
+        ItemStack itemstack = ItemStack.EMPTY;
+        int containerRows = 4;
+        Slot slot = this.slots.get(pIndex);
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
+            itemstack = itemstack1.copy();
+            if (pIndex < containerRows * 9) {
+                if (!this.moveItemStackTo(itemstack1, containerRows * 9, this.slots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.moveItemStackTo(itemstack1, 0, containerRows * 9, false)) {
+                return ItemStack.EMPTY;
+            }
+
+            if (itemstack1.isEmpty()) {
+                slot.setByPlayer(ItemStack.EMPTY);
+            } else {
+                slot.setChanged();
+            }
+        }
+
+        return itemstack;
     }
 
     // TODO entity stop moving and look at player

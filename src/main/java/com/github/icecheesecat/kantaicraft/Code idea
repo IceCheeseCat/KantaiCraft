@@ -1,10 +1,11 @@
 STOPPED 1. ship screen faction display (stopped)
     - nice icon (read from file or default)
 
-DONE 2. Shipyard
+TODO 2. Shipyard
     - build a new ship from blueprint (done)
-    - better looking screen
+    - better looking screen (done)
     - shipyard model
+    - fuel to build
 
 
 DONE 3. Blueprint
@@ -95,6 +96,7 @@ TODO 7. Different Ship Class Animation
 TODO 8. Cannon displays when equipped on entity ship
 
 TODO 9. Ship gui upgrade
+    - level display
 
 TODO 10. Command Center
     - storage for ships
@@ -103,4 +105,5 @@ TODO 10. Command Center
 
 TODO 11. Ship level
     - kill hostile entity gain exp
+    - unlock more inventory with higher level
     - unlock more inventory with higher level

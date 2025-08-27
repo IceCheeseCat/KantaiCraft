@@ -24,7 +24,7 @@ public class BurnFuel extends Behavior<BasicEntityShip> {
     protected void tick(ServerLevel serverLevel, BasicEntityShip basicEntityShip, long gametime) {
         if (gametime % TIME_PERIOD == 0) {
             basicEntityShip.setFuel(basicEntityShip.getFuel() - 0.1f); // 1 second minus 0.1 bucket
-            System.out.println(basicEntityShip.getShipName() + ", " + basicEntityShip.getFuel());
+            System.out.println(basicEntityShip + ", " + basicEntityShip.getFuel());
         }
     }
 
