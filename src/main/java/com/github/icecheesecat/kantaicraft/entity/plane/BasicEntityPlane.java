@@ -1,8 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entity.plane;
 
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
-import com.github.icecheesecat.kantaicraft.entity.IFaction;
-import com.github.icecheesecat.kantaicraft.brain.plane.PlaneAi;
+import com.github.icecheesecat.kantaicraft.entity.brain.plane.PlaneAi;
 import com.github.icecheesecat.kantaicraft.entity.plane.fighter.EntityFighterPlane;
 import com.github.icecheesecat.kantaicraft.entity.attribute.planeAttributes.PlaneAttributes;
 import com.mojang.serialization.Dynamic;
@@ -23,7 +22,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class BasicEntityPlane extends Mob implements IFaction<BasicEntityPlane> {
+public abstract class BasicEntityPlane extends Mob {
 
     protected PlaneAttributes planeAttributes;
 
@@ -89,17 +88,6 @@ public abstract class BasicEntityPlane extends Mob implements IFaction<BasicEnti
     private void setOwnerShip(LivingEntity ownerShip) {
         this.getBrain().setMemory(ModMemoryModuleType.OWNERSHIP.get(), ownerShip.getUUID());
     }
-
-    @Override
-    public int getFactionId() {
-        return this.entityData.get(DATA_FACTION);
-    }
-
-    @Override
-    public void setFactionId(int factionId) {
-        this.entityData.set(DATA_FACTION, factionId);
-    }
-
 
     public PlaneAttributes getPlaneAttributes() {
         return planeAttributes;

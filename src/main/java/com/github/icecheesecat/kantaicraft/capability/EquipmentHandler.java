@@ -21,15 +21,23 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
         this.dirty = NonNullList.withSize(size, false);
     }
 
-    public boolean canApplyAtSlot(int i, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
-        return slotCheckerEntity.get(i).contains(equipment.getType());
+    protected boolean canApplyAtSlot(int i, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
+        return i < slotSize && slotCheckerEntity.getSlotChecker(i).contains(equipment.getType());
     }
 
-    public void setEquipment(int i, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
+    public Equipment setEquipment(int i, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
         if (canApplyAtSlot(i, equipment, slotCheckerEntity)) {
             Equipment r = this.equipments.set(i, equipment);
             this.dirty.set(i, true);
+
+            return r;
         }
+
+        return equipment;
+    }
+
+    public void addEquipment(Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
+
     }
 
     public void setOnClient(int i, Equipment equipment) {
@@ -84,4 +92,13 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
         return equipments;
     }
 
+    @Override
+    public String toString() {
+        String string = "";
+        for (int i = 0; i < this.slotSize; i++) {
+            string += i + ": " + this.equipments.get(i).getName() + "\n";
+        }
+        string += "\n";
+        return string;
+    }
 }

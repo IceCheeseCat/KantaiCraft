@@ -1,17 +1,20 @@
 package com.github.icecheesecat.kantaicraft.event;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.container.ShipContainer;
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.items.IItemHandler;
 
 import java.util.*;
 
@@ -27,9 +30,8 @@ public class ServerEvent {
     @SubscribeEvent
     public static void onLivingDeathDrops(LivingDropsEvent event) {
 
-        if (event.getSource().getEntity() instanceof BasicEntityShip ship) {
-            ShipContainer inventory = ship.getShipInventory();
-            if (inventory == null) return;
+        if (event.getSource().getEntity() instanceof EntityShip ship) {
+            if (!ship.hasInventory()) return;
 
             List<ItemEntity> drops = new ArrayList<>(event.getDrops());
 
@@ -46,4 +48,29 @@ public class ServerEvent {
         }
 
     }
+
+    /**
+     * When player gets hurt, announce {@link EntityShip} helps admiral fight entity damages him
+     */
+    @SubscribeEvent
+    public static void onPlayerHurt(LivingDamageEvent event) {
+        Entity damageEntity = event.getSource().getEntity();
+        if (event.getEntity() instanceof Player player && damageEntity != null) {
+            if (!(damageEntity instanceof LivingEntity)) {
+                return;
+            }
+            if (damageEntity instanceof EntityShip damageFromShip && damageFromShip.isShipOwner(player)) {
+                return;
+            }
+            Level level = event.getEntity().level();
+            List<Entity> entityList = level.getEntities(player, AABB.ofSize(player.getEyePosition(), 40, 40, 40), entity -> entity instanceof EntityShip entityShip && entityShip.isShipOwner(player));
+            entityList.forEach(entity -> {
+                if (entity instanceof EntityShip entityShip) {
+                    entityShip.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) damageEntity);
+                }
+            });
+        }
+    }
+
+
 }

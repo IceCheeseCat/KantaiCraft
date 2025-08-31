@@ -9,6 +9,6 @@ import com.github.icecheesecat.kantaicraft.equipment.SlotChecker;
  */
 public interface ISlotCheckerEntity {
 
-    SlotChecker get(int index);
+    SlotChecker getSlotChecker(int index);
 
 }

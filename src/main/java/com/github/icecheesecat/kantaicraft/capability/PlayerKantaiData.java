@@ -5,10 +5,12 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 
-    protected final List<CompoundTag> ships = new ArrayList<>();
+    protected final List<UUID> ships = new ArrayList<>();
     protected final List<CompoundTag> equipments = new ArrayList<>();
 
     public PlayerKantaiData() {
@@ -20,7 +22,7 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 
         nbt.putInt("ships", ships.size());
         for (int i = 0; i < ships.size(); i++) {
-            nbt.put("ships." + i,  ships.get(i));
+            nbt.putUUID("ships." + i,  ships.get(i));
         }
 
         nbt.putInt("equipments", equipments.size());
@@ -36,7 +38,7 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         int ships_size = nbt.getInt("ships");
         ships.clear();
         for (int i = 0; i < ships_size; i++) {
-            ships.add(i, (CompoundTag) nbt.get("ships." + i));
+            ships.add(i, nbt.getUUID("ships." + i));
         }
 
         int equipments_size = nbt.getInt("equipments");
@@ -45,5 +47,9 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
             equipments.add(i, (CompoundTag) nbt.get("equipments." + i));
         }
 
+    }
+
+    public void iterateOverShips(Consumer<UUID> consumer) {
+        this.ships.forEach(consumer);
     }
 }

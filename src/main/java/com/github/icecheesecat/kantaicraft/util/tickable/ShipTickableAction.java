@@ -53,4 +53,13 @@ public abstract class ShipTickableAction implements IActionCooldown {
     }
 
     abstract public void tick();
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.cooldown);
+    }
+
+    public boolean isEmpty() {
+        return this.maxCooldown == Integer.MAX_VALUE;
+    }
 }

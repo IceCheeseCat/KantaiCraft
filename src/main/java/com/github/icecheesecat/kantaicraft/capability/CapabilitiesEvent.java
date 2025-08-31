@@ -1,12 +1,9 @@
 package com.github.icecheesecat.kantaicraft.capability;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.faction.FactionTagCapability;
 import com.github.icecheesecat.kantaicraft.faction.LevelFactionCapability;
-import com.github.icecheesecat.kantaicraft.item.BlueprintItem;
-import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -24,7 +20,7 @@ public class CapabilitiesEvent {
 
     @SubscribeEvent
     public static void onEntityAttachingCapability(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof BasicEntityShip ship) {
+        if (event.getObject() instanceof EntityShip ship) {
             if (!ship.getCapability(EquipmentHandlerCapability.TOKEN).isPresent()) {
                 event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.equipment_handler"), new EquipmentHandlerCapability(4));
             }

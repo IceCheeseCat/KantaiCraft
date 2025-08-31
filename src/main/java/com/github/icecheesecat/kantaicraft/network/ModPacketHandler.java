@@ -28,10 +28,10 @@ public class ModPacketHandler {
 
         INSTANCE.registerMessage(
                 id++,
-                SyncShipPacket.class,
-                SyncShipPacket::encode,
-                SyncShipPacket::decode,
-                SyncShipPacket::handle
+                TogglePlayerShipPacket.class,
+                TogglePlayerShipPacket::encode,
+                TogglePlayerShipPacket::decode,
+                TogglePlayerShipPacket::handle
         );
 
         INSTANCE.registerMessage(

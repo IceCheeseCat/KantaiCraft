@@ -13,8 +13,9 @@ public class EntityAttributesEvent {
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
 
-        event.put(ModEntity.DestroyerRoClass.get(), ShipAttributes.DESTROYER_CLASS);
-        event.put(ModEntity.Inazuma.get(), ShipAttributes.DESTROYER_CLASS);
+        event.put(ModEntity.PlayerShip.DESTROYER_RO_CLASS.get(), ShipAttributes.DESTROYER_CLASS);
+        event.put(ModEntity.PlayerShip.INAZUMA.get(), ShipAttributes.DESTROYER_CLASS);
+        event.put(ModEntity.HostileShip.INAZUMA.get(), ShipAttributes.DESTROYER_CLASS);
 
     }
 

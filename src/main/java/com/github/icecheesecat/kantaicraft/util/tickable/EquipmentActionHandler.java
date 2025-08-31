@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.util.tickable;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 import com.github.icecheesecat.kantaicraft.util.tickable.attack.ShipCannonAttack;
@@ -12,32 +12,15 @@ import java.util.List;
 
 public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
 
-    BasicEntityShip entityShip;
+    EntityShip entityShip;
     EquipmentHandler equipmentHandler;
 
-    public EquipmentActionHandler(BasicEntityShip entityShip, EquipmentHandler equipmentHandler) {
+    public EquipmentActionHandler(EntityShip entityShip, EquipmentHandler equipmentHandler) {
         this.entityShip = entityShip;
         this.equipmentHandler = equipmentHandler;
         for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
             this.add(ShipTickableAction.NULL);
         }
-
-        resetAllActions();
-    }
-
-    public void resetAllActions() {
-        for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
-            this.updateAction(i);
-        }
-    }
-
-    public void updateAction(int i) {
-        Equipment equipment = equipmentHandler.getEquipments().get(i);
-         switch (equipment.getType()) {
-             case SMALL_CANNON -> this.set(i, new ShipCannonAttack(entityShip, equipment, (int) equipment.getStat(EquipmentStatType.CANNON_COOLDOWN)));
-             case NONE -> this.set(i, ShipTickableAction.NULL);
-             default -> throw new RuntimeException("Unknown equipment type at " + entityShip);
-         }
     }
 
     @Override
@@ -75,4 +58,14 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
         this.forEach(ShipTickableAction::tick);
     }
 
+    @Override
+    public String toString() {
+        String string = "";
+        for (int i = 0; i < this.size(); i++) {
+            if (this.get(i).isEmpty()) continue;
+            string += i + ">>" + this.get(i) + "\n";
+        }
+
+        return string;
+    }
 }

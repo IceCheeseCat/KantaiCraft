@@ -20,8 +20,8 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
 //        simpleItem(ModItem.TwelveCMSmallGunMount);
-        simpleItem(ModItem.DEBUG_FACTION_CHANGER);
-        simpleItem(ModItem.DEBUG_DESTROYER_RO);
+        simpleItem(ModItem.INAZUMA_SPAWN_EGG);
+        simpleItem(ModItem.HOSTILE_INAZUMA_SPAWN_EGG);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

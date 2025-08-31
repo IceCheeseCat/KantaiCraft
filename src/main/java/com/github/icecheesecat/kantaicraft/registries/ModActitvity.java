@@ -15,6 +15,8 @@ public class ModActitvity {
     public static final RegistryObject<Activity> RETURN = ACTIVITIES.register("activity.return", () -> new Activity("return"));
     public static final RegistryObject<Activity> MISSION = ACTIVITIES.register("activity.mission", () -> new Activity("mission"));
     public static final RegistryObject<Activity> BURN_OUT_FUELS = ACTIVITIES.register("activity.burn_out_fuels", () -> new Activity("burn_out_fuels"));
-    public static final RegistryObject<Activity> GUARD = ACTIVITIES.register("activity.guard", () -> new Activity("guard"));
+//    public static final RegistryObject<Activity> GUARD = ACTIVITIES.register("activity.guard", () -> new Activity("guard"));
+    public static final RegistryObject<Activity> HOSTILE_ATTACK = ACTIVITIES.register("activity.hostile_attack", () -> new Activity("hostile_attack"));
+//    public static final RegistryObject<Activity> OWNED_SHIP = ACTIVITIES.register("activity.owned_ship", () -> new Activity("owned_ship"));
 
 }

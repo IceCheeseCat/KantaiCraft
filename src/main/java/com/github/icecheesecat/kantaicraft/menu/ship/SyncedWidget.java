@@ -1,10 +1,9 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.TogglePlayerShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -19,12 +18,12 @@ public class SyncedWidget<T> extends AbstractWidget {
 
     Map<T, ResourceLocation> resources;
     ResourceLocation selected;
-    BasicEntityShip ship;
+    EntityShip ship;
     EntityDataAccessor<T> accessor;
     Function<T, T> operation;
     SyncType syncType;
 
-    public SyncedWidget(int pX, int pY, int pWidth, int pHeight, BasicEntityShip ship, EntityDataAccessor<T> accessor, Map<T, ResourceLocation> resources, SyncType syncType, Function<T, T> operation) {
+    public SyncedWidget(int pX, int pY, int pWidth, int pHeight, EntityShip ship, EntityDataAccessor<T> accessor, Map<T, ResourceLocation> resources, SyncType syncType, Function<T, T> operation) {
         super(pX, pY, pWidth, pHeight, Component.empty());
         this.ship = ship;
         this.accessor = accessor;
@@ -48,7 +47,7 @@ public class SyncedWidget<T> extends AbstractWidget {
     public void onClick(double pMouseX, double pMouseY) {
         T t = ship.getEntityData().get(accessor);
 
-        ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(syncType, ship.getId(), operation.apply(t)));
+        ModPacketHandler.INSTANCE.sendToServer(new TogglePlayerShipPacket(syncType, ship.getId(), operation.apply(t)));
     }
 
     public boolean controlOn() {

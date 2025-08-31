@@ -2,7 +2,6 @@ package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.item.BlueprintItem;
-import com.github.icecheesecat.kantaicraft.item.DebugFactionChanger;
 import com.github.icecheesecat.kantaicraft.item.ShipSpawnEgg;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.item.Item;
@@ -15,8 +14,20 @@ public class ModItem
 
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, KantaiCraft.MODID);
 
-	public static final RegistryObject<Item> DEBUG_FACTION_CHANGER = ITEMS.register("debug_faction_changer", () -> new DebugFactionChanger(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<Item> DEBUG_DESTROYER_RO = ITEMS.register("debug_destroyer_ro", () -> new ShipSpawnEgg(ModEntity.DestroyerRoClass, FastColor.ABGR32.red(128), FastColor.ABGR32.green(128), true, (s) -> {}, new Item.Properties()));
+	public static final RegistryObject<Item> INAZUMA_SPAWN_EGG = ITEMS.register("inazuma_with_full_resources", () -> new ShipSpawnEgg(ModEntity.PlayerShip.INAZUMA, FastColor.ABGR32.red(128), FastColor.ABGR32.green(128),
+			(ship, player) -> {
+				ship.setShipOwner(player.getUUID());
+				ship.setFuel(100.0f);
+				ship.setAmmo(100.0f);
+			}
+	, new Item.Properties()));
+
+	public static final RegistryObject<Item> HOSTILE_INAZUMA_SPAWN_EGG = ITEMS.register("hostile_inazuma", () -> new ShipSpawnEgg(ModEntity.HostileShip.INAZUMA, FastColor.ABGR32.red(128), FastColor.ABGR32.green(128),
+			(ship, player) -> {
+			}
+	, new Item.Properties()));
+
+
 	public static final RegistryObject<Item> SHIP_BLUEPRINT = ITEMS.register("ship_blueprint", () -> new BlueprintItem(new Item.Properties().stacksTo(1)));
 
 	//	//spawn egg

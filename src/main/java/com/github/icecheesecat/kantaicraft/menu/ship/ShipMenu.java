@@ -1,12 +1,11 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
-import com.github.icecheesecat.kantaicraft.container.ShipContainer;
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.menu.ToggleSlot;
 import com.github.icecheesecat.kantaicraft.registries.ModMenu;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -19,11 +18,11 @@ import org.jetbrains.annotations.Nullable;
 public class ShipMenu extends AbstractContainerMenu implements IContainerFactory<ShipMenu> {
 
     final Inventory playerInventory;
-    final ShipContainer shipInventory;
-    @NotNull BasicEntityShip entityShip;
+    final Container shipInventory;
+    @NotNull EntityShip entityShip;
 
     // server
-    public ShipMenu(int containerId, Inventory inv, @NotNull BasicEntityShip entityShip) {
+    public ShipMenu(int containerId, Inventory inv, @NotNull EntityShip entityShip) {
         super(ModMenu.SHIP_MENU.get(), containerId);
 
         this.playerInventory = inv;
@@ -64,7 +63,7 @@ public class ShipMenu extends AbstractContainerMenu implements IContainerFactory
 
     // client
     public ShipMenu(int containerId, Inventory inv, FriendlyByteBuf buf) {
-        this(containerId, inv, (BasicEntityShip) Minecraft.getInstance().level.getEntity(buf.readInt()));
+        this(containerId, inv, (EntityShip) Minecraft.getInstance().level.getEntity(buf.readInt()));
     }
 
     // TODO
@@ -115,7 +114,7 @@ public class ShipMenu extends AbstractContainerMenu implements IContainerFactory
         return playerInventory;
     }
 
-    public @Nullable BasicEntityShip getEntityShip() {
+    public @Nullable EntityShip getEntityShip() {
         return entityShip;
     }
 

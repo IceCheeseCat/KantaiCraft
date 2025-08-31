@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -18,16 +18,19 @@ import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+/**
+ * Not Used
+ */
 public class ShipContainer implements Container, StackedContentsCompatible {
     private final int size;
     private final NonNullList<ItemStack> items;
     @Nullable
     private List<ContainerListener> listeners;
-    BasicEntityShip ship;
+    EntityShip ship;
     private final int upgradeLevel = 10;
     private final int upgradeSize = 9;
 
-    public ShipContainer(int pSize, BasicEntityShip ship) {
+    public ShipContainer(int pSize, EntityShip ship) {
         this.size = pSize;
         this.items = NonNullList.withSize(pSize, ItemStack.EMPTY);
         this.ship = ship;

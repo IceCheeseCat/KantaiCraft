@@ -2,32 +2,22 @@ package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.menu.IconWithTextElement;
-import com.github.icecheesecat.kantaicraft.menu.ToggleSlot;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.google.common.collect.ImmutableMap;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -66,7 +56,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
     private static final int BACKGROUND_COLOR = FastColor.ARGB32.color(102, 0, 0, 0);
 
-    private final BasicEntityShip ship;
+    private final EntityShip ship;
 
     private GridLayout controlLayout;
     private GridLayout statLayout;
@@ -185,10 +175,10 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         GridLayout gridLayout = new GridLayout(x, y);
         gridLayout.defaultCellSetting().padding(4);
         int indexOfCell = 0;
-        gridLayout.addChild(new SyncedWidget<>(0, 0, 32, 32, this.ship, BasicEntityShip.DATA_IS_GUARDING,
+        gridLayout.addChild(new SyncedWidget<>(0, 0, 32, 32, this.ship, EntityShip.DATA_IS_GUARDING,
                         ImmutableMap.of(false, GUARD_ICON, true, GUARD_ICON), SyncType.GUARD, (b) -> !b),
                 0, indexOfCell++);
-        gridLayout.addChild(new SyncedWidget<>(0, 0, 32, 32, this.ship, BasicEntityShip.DATA_CAN_MELEE,
+        gridLayout.addChild(new SyncedWidget<>(0, 0, 32, 32, this.ship, EntityShip.DATA_CAN_MELEE,
                         ImmutableMap.of(false, MELEE_ICON, true, MELEE_ICON), SyncType.MELEE, (b) -> !b),
                 0, indexOfCell++);
         gridLayout.arrangeElements();

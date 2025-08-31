@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.network.packet;
 
 import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
 import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -68,11 +68,15 @@ public class ShipyardSpawnEntityPacket {
 
     private static void shipyardSpawn(int index, ShipyardBlockEntity shipyardBlockEntity, ServerPlayer serverPlayer) {
         var blueprint = Blueprint.createFromTag(shipyardBlockEntity.getItem(index).getTag());
-        var entityType = ModEntity.getByEntityId(blueprint.getEntityID());
-        BasicEntityShip basicEntityShip = (BasicEntityShip) entityType.spawn((ServerLevel) serverPlayer.level(), shipyardBlockEntity.getBlockPos().above(), MobSpawnType.SPAWN_EGG);
-        entityType.create(serverPlayer.level());
-        basicEntityShip.setOwner(shipyardBlockEntity.getOwners().get(index));
-        serverPlayer.level().addFreshEntity(basicEntityShip);
+        var entityTypeOptional = blueprint.getEntityType();
+        if (entityTypeOptional.isPresent()) {
+            var entityType = entityTypeOptional.get();
+            EntityShip entityShip = (EntityShip) entityType.spawn((ServerLevel) serverPlayer.level(), shipyardBlockEntity.getBlockPos().above(), MobSpawnType.SPAWN_EGG);
+            if (entityShip != null) {
+                entityShip.setShipOwner(shipyardBlockEntity.getOwners().get(index));
+            }
+        }
+
     }
 
 }

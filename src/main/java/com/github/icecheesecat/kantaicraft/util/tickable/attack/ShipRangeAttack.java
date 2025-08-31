@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.util.tickable.attack;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.util.tickable.ShipTickableAction;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,10 +10,10 @@ import net.minecraft.world.level.Level;
 
 public abstract class ShipRangeAttack extends ShipTickableAction {
 
-    private BasicEntityShip ship;
+    private EntityShip ship;
     private LivingEntity target;
 
-    public ShipRangeAttack(BasicEntityShip ship, int cooldown) {
+    public ShipRangeAttack(EntityShip ship, int cooldown) {
         super(cooldown);
         this.ship = ship;
     }
@@ -28,7 +28,7 @@ public abstract class ShipRangeAttack extends ShipTickableAction {
         }
     }
 
-    public BasicEntityShip getShip() {
+    public EntityShip getShip() {
         return ship;
     }
 

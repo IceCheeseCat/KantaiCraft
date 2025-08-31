@@ -4,6 +4,7 @@ import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentStats;
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentTree;
 import com.github.icecheesecat.kantaicraft.registries.*;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -42,7 +43,6 @@ public class KantaiCraft
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentTree.SPEC, KantaiCraft.MODID + "_equipment_tree.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentStats.SPEC, KantaiCraft.MODID + "_equipment_stats.toml");
-
     }
 
 }

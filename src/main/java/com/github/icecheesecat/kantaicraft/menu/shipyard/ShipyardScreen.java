@@ -2,13 +2,11 @@ package com.github.icecheesecat.kantaicraft.menu.shipyard;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
-import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import com.github.icecheesecat.kantaicraft.registries.ModItem;
-import com.github.icecheesecat.kantaicraft.tags.EntityTypeTags;
+import com.github.icecheesecat.kantaicraft.tags.ModEntityTypeTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -96,8 +94,6 @@ public class ShipyardScreen extends AbstractContainerScreen<ShipyardMenu> {
         ItemStack itemStack = this.getMenu().getItems().get(i + 36);
         String strTemp = "undefined";
         if (itemStack.is(ModItem.SHIP_BLUEPRINT.get())) {
-            var blueprint = Blueprint.createFromTag(itemStack.getTag());
-            var entityType = ModEntity.getByEntityId(blueprint.getEntityID());
             strTemp = remainTimeStr;
         }
 
@@ -126,10 +122,13 @@ public class ShipyardScreen extends AbstractContainerScreen<ShipyardMenu> {
         for (int i = 0; i < shipyardBlockEntity.processShipSize; i++) {
             if (this.shipyardBlockEntity.getItem(i).isEmpty()) continue;
             var data = shipyardBlockEntity.getBlueprintAt(i);
-            var entityType = ModEntity.getByEntityId(data.getEntityID());
-            if (entityType.is(EntityTypeTags.DESTROYER_TAG)) {
-                float percentage = shipyardBlockEntity.getProcessPercentage(i);
-                guiGraphics.blit(DESTROYER_SILHOUETTE, SILHOUETTE_X, SILHOUETTE_Y + SILHOUETTE_PADDING * i, 0, 0, SILHOUETTE_WIDTH, (int) (SILHOUETTE_HEIGHT * percentage), SILHOUETTE_WIDTH, SILHOUETTE_HEIGHT);
+            var shipClass = data.getShipClass();
+            float percentage = shipyardBlockEntity.getProcessPercentage(i);
+            switch (shipClass) {
+                case DESTROYER ->
+                    guiGraphics.blit(DESTROYER_SILHOUETTE, SILHOUETTE_X, SILHOUETTE_Y + SILHOUETTE_PADDING * i, 0, 0, SILHOUETTE_WIDTH, (int) (SILHOUETTE_HEIGHT * percentage), SILHOUETTE_WIDTH, SILHOUETTE_HEIGHT);
+                default ->
+                    guiGraphics.fill(SILHOUETTE_X, SILHOUETTE_Y + SILHOUETTE_PADDING * i, SILHOUETTE_X + SILHOUETTE_WIDTH, (int) (SILHOUETTE_Y + SILHOUETTE_PADDING * i + SILHOUETTE_HEIGHT * percentage), FastColor.ARGB32.color(255, 0, 255, 255));
             }
         }
     }

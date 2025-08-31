@@ -3,8 +3,11 @@ package com.github.icecheesecat.kantaicraft.client.model;
 import com.github.icecheesecat.kantaicraft.client.animation.Animations;
 import com.github.icecheesecat.kantaicraft.client.animation.FacialAnimations;
 import com.github.icecheesecat.kantaicraft.client.animation.util.AnimationUtil;
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.EmotionState;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -12,7 +15,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AnimatedModel<T extends BasicEntityShip> extends HierarchicalModel<T> {
+public abstract class AnimatedModel<T extends EntityShip> extends HierarchicalModel<T> implements MaskModelColor {
 
     public abstract ModelPart getHead();
     protected static Map<EmotionState, AnimationDefinition> emotionCorrespondToFacialAnimation = new HashMap<>();
@@ -27,7 +30,7 @@ public abstract class AnimatedModel<T extends BasicEntityShip> extends Hierarchi
     }
 
     @Override
-    public void setupAnim(BasicEntityShip entity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(EntityShip entity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float netHeadYaw, float headPitch) {
         root().getAllParts().forEach(ModelPart::resetPose); // TODO Animation Blend in
 
         //// General Animation
@@ -52,4 +55,8 @@ public abstract class AnimatedModel<T extends BasicEntityShip> extends Hierarchi
 
     }
 
+    @Override
+    public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, float pRed, float pGreen, float pBlue, float pAlpha) {
+        super.renderToBuffer(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pRed * getRed(), pGreen * getGreen(), pBlue * getBlue(), pAlpha * getAlpha());
+    }
 }

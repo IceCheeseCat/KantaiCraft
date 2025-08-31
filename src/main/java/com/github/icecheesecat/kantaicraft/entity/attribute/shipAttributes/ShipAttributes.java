@@ -21,7 +21,7 @@ public class ShipAttributes {
             .add(ModAttribute.AIRCRAFT.get(), 0.0d)
             .add(ModAttribute.FUEL.get(), 10.0f)
             .add(ModAttribute.AMMO.get(), 12.0f)
-            .add(Attributes.ATTACK_DAMAGE, 30.0d)
+            .add(Attributes.ATTACK_DAMAGE, 1.0d)
             .add(Attributes.ATTACK_SPEED)
             .add(ModAttribute.SLOT_SIZE.get(), 4.0d)
             .add(ModAttribute.SHIPSONAL_SPACE.get(), 3.0d)

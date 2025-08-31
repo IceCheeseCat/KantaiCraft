@@ -1,48 +1,63 @@
 package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entity.EntityID;
 import com.github.icecheesecat.kantaicraft.entity.plane.fighter.EntityA6MZeroFighter;
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityDestroyerIClass;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityDestroyerRoClass;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.EntityInazuma;
-import net.minecraft.network.chat.Component;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerIClass;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerRoClass;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.hostile.HostileDestroyerIClass;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.Inazuma;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.hostile.HostileDestroyerRoClass;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.hostile.HostileInazuma;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 
 public class ModEntity {
 
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES,
             KantaiCraft.MODID);
 
+    public static HashSet<EntityType<?>> ENTITIES_SET;
 
-    public static final RegistryObject<EntityType<EntityDestroyerRoClass>> DestroyerRoClass = ENTITIES.register("destroyer_ro_class", () ->
-            EntityType.Builder.of(EntityDestroyerRoClass::new, MobCategory.MISC).sized(0.8f, 0.8f).build(new ResourceLocation(KantaiCraft.MODID, "destroyer_ro_class").toString()));
+    public static final MobCategory HOSTILE_SHIP = MobCategory.create("hostile_ship", "kantaicraft:hostile_ship", 20, false, false, 128);
+    public static final MobCategory PLAYER_SHIP = MobCategory.create("player_ship", "kantaicraft:player_ship", -1, true, true, 128);
 
-    public static final RegistryObject<EntityType<EntityDestroyerIClass>> DestroyerIClass = ENTITIES.register("destroyer_i_class", () ->
-            EntityType.Builder.of(EntityDestroyerIClass::new, MobCategory.MISC).sized(0.8f, 0.8f).build(new ResourceLocation(KantaiCraft.MODID, "destroyer_i_class").toString()));
+    public static class PlayerShip {
+        public static final RegistryObject<EntityType<DestroyerRoClass>> DESTROYER_RO_CLASS =
+                registerPlayerShip(DestroyerRoClass::new, "destroyer_ro_class", 1.0f, 0.8f);
+        public static final RegistryObject<EntityType<DestroyerIClass>> DESTROYER_I_CLASS =
+                registerPlayerShip(DestroyerIClass::new, "destroyer_i_class", 1.0f, 0.8f);
+        public static final RegistryObject<EntityType<Inazuma>> INAZUMA =
+                registerPlayerShip(Inazuma::new, "inazuma", 0.8f, 1.6f);
+    }
 
-    public static final RegistryObject<EntityType<EntityInazuma>> Inazuma = ENTITIES.register("inazuma", () ->
-            EntityType.Builder.of(EntityInazuma::new, MobCategory.MISC).sized(0.8f, 1.6f).build(new ResourceLocation(KantaiCraft.MODID, "inazuma").toString()));
+    public static class HostileShip {
+
+        public static final RegistryObject<EntityType<HostileDestroyerRoClass>> DESTROYER_RO_CLASS =
+                registerHostileShip(HostileDestroyerRoClass::new, "hostile_destroyer_ro_class", 1.0f, 0.8f);
+        public static final RegistryObject<EntityType<DestroyerIClass>> DESTROYER_I_CLASS =
+                registerHostileShip(HostileDestroyerIClass::new, "hostile_destroyer_i_class", 1.0f, 0.8f);
+        public static final RegistryObject<EntityType<HostileInazuma>> INAZUMA =
+                registerPlayerShip(HostileInazuma::new, "hostile_inazama", 0.8f, 1.6f);
+    }
 
     public static final RegistryObject<EntityType<EntityA6MZeroFighter>> A6M_Zero_Fighter = ENTITIES.register("a6m_zero_fighter", () ->
             EntityType.Builder.of(EntityA6MZeroFighter::new, MobCategory.MISC).sized(1.0f, 1.0f).build(new ResourceLocation(KantaiCraft.MODID, "a6m_zero_fighter").toString()));
 
-    public static EntityType<?> getByEntityId(EntityID entityID) {
-        return switch (entityID.getId()) {
-            case 0 -> DestroyerRoClass.get();
-            case 1 -> DestroyerIClass.get();
-            case 2 -> Inazuma.get();
-            default -> null;
-        };
+    private static <T extends Entity> RegistryObject<EntityType<T>> registerPlayerShip(EntityType.EntityFactory<T> factory, String name, float width, float height) {
+        return ENTITIES.register(name, () ->
+            EntityType.Builder.of(factory, PLAYER_SHIP).sized(width, height).build(new ResourceLocation(KantaiCraft.MODID, name).toString()));
+    }
+
+    private static <T extends Entity> RegistryObject<EntityType<T>> registerHostileShip(EntityType.EntityFactory<T> factory, String name, float width, float height) {
+        return ENTITIES.register(name, () ->
+            EntityType.Builder.of(factory, HOSTILE_SHIP).sized(width, height).build(new ResourceLocation(KantaiCraft.MODID, name).toString()));
     }
 
 }
@@ -56,7 +71,7 @@ public class ModEntity {
 //import com.lulan.shincolle.entity.battleship.EntityBBKirishimaMob;
 //import com.lulan.shincolle.entity.battleship.EntityBBKongou;
 //import com.lulan.shincolle.entity.battleship.EntityBBKongouMob;
-//import com.lulan.shincolle.entity.battleship.EntityBattleshipNGT;
+ //import com.lulan.shincolle.entity.battleship.EntityBattleshipNGT;
 //import com.lulan.shincolle.entity.battleship.EntityBattleshipNGTMob;
 //import com.lulan.shincolle.entity.battleship.EntityBattleshipRe;
 //import com.lulan.shincolle.entity.battleship.EntityBattleshipRu;

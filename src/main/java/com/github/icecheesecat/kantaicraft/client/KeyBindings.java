@@ -1,15 +1,12 @@
 package com.github.icecheesecat.kantaicraft.client;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -41,7 +38,7 @@ public final class KeyBindings {
                 if (Minecraft.getInstance().level != null) {
                     var entities = Minecraft.getInstance().level.getEntities(Minecraft.getInstance().player, Minecraft.getInstance().player.getBoundingBox().inflate(10.0d));
                     for (var entity: entities) {
-                        if (entity instanceof BasicEntityShip ship) {
+                        if (entity instanceof EntityShip ship) {
                             ship.debugAnim();
                         }
                     }

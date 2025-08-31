@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.util.tickable.attack;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 import com.github.icecheesecat.kantaicraft.network.packet.ClientRemoveTrajectoryPacket;
@@ -23,7 +23,7 @@ public class ShipCannonAttack extends ShipRangeAttack {
     Equipment cannon;
     List<Trajectory> trajectories = new ArrayList<>();
 
-    public ShipCannonAttack(BasicEntityShip ship, Equipment cannon, int cooldown) {
+    public ShipCannonAttack(EntityShip ship, Equipment cannon, int cooldown) {
         super(ship, cooldown);
         this.cannon = cannon;
     }
@@ -53,7 +53,7 @@ public class ShipCannonAttack extends ShipRangeAttack {
     }
 
     public void doHitTarget(Entity entity) {
-        BasicEntityShip ship = getShip();
+        EntityShip ship = getShip();
         entity.hurt(ship.damageSources().mobAttack(ship), (float) ship.getAttributeValue(ModAttribute.FIREPOWER.get()));
     }
 
@@ -61,10 +61,9 @@ public class ShipCannonAttack extends ShipRangeAttack {
     protected void tickTrajectories() {
         List<Trajectory> invalids = new ArrayList<>();
 
-//        System.out.println(trajectories.size());
         for (var t: trajectories) {
 
-            HitResult hitResult = t.getHitResult(entity -> entity instanceof LivingEntity livingEntity && this.getShip().isEnemy(livingEntity), getShip().level());
+            HitResult hitResult = t.getHitResult(entity -> entity instanceof LivingEntity livingEntity && this.getShip().canAttack(livingEntity), this.getShip().level());
             if (hitResult.getType() != HitResult.Type.MISS) {
                 if (hitResult instanceof EntityHitResult ehr) {
                     Entity entity = ehr.getEntity();

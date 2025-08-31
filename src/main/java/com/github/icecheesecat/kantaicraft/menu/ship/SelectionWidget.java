@@ -1,10 +1,10 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.BasicEntityShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentResourceLocation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.SyncShipPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.TogglePlayerShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,10 +26,10 @@ public class SelectionWidget extends AbstractWidget {
     private static final int BACKGROUND_COLOR = FastColor.ARGB32.color(255, 0, 166, 199);
 
     Equipment equipment;
-    BasicEntityShip ship;
+    EntityShip ship;
     int index;
 
-    public SelectionWidget(int pX, int pY, Equipment equipment, BasicEntityShip ship, int index) {
+    public SelectionWidget(int pX, int pY, Equipment equipment, EntityShip ship, int index) {
         super(pX, pY, width, height, Component.empty());
         this.imageStartX = this.getX() + 10;
         this.imageStartY = this.getY();
@@ -49,7 +49,7 @@ public class SelectionWidget extends AbstractWidget {
 
     @Override
     public void onClick(double pMouseX, double pMouseY) {
-        ModPacketHandler.INSTANCE.sendToServer(new SyncShipPacket(SyncType.EQUIPMENT, this.ship.getId(), this.equipment, (byte) this.index));
+        ModPacketHandler.INSTANCE.sendToServer(new TogglePlayerShipPacket(SyncType.EQUIPMENT, this.ship.getId(), this.equipment, (byte) this.index));
     }
 
     @Override
