@@ -28,9 +28,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -58,13 +56,22 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.GeckoLib;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class EntityShip extends PathfinderMob implements IPhysicalEntity, ISlotCheckerEntity, MenuProvider {
+public abstract class EntityShip extends PathfinderMob implements IPhysicalEntity, ISlotCheckerEntity, MenuProvider, GeoEntity {
 
     public static final EntityDataAccessor<Integer> DATA_AIRCRAFT = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Float> DATA_FUEL = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
@@ -81,15 +88,15 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
 
     private ShipAnimationState prevAnimationShipAnimationState;
     protected final List<EquipmentType> equippableTypes;
-    public final AnimationState breathAnimationState;
-    public final AnimationState idleAnimationState;
-    public final AnimationState walkAnimationState;
-    public final AnimationState sitAnimationState;
-    public final AnimationState attackAnimationState;
-    public final AnimationState emotionAnimationState;
-    public final AnimationState blinkAnimationState;
-    public final AnimationState runAnimationState;
-    public final AnimationState debugAnimationState;
+//    public final AnimationState breathAnimationState;
+//    public final AnimationState idleAnimationState;
+//    public final AnimationState walkAnimationState;
+//    public final AnimationState sitAnimationState;
+//    public final AnimationState attackAnimationState;
+//    public final AnimationState emotionAnimationState;
+//    public final AnimationState blinkAnimationState;
+//    public final AnimationState runAnimationState;
+//    public final AnimationState debugAnimationState;
 
     private final BlinkAnimationControl blinkAnimationControl = new BlinkAnimationControl(60, 80, this.random);
     private long lastEmotionChangedTick = -1;
@@ -101,16 +108,16 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(this::initEquipments);
 
         // Animations_0
-        breathAnimationState = new AnimationState(); breathAnimationState.startIfStopped(this.tickCount);
-        idleAnimationState = new AnimationState();
-        walkAnimationState = new AnimationState();
-        sitAnimationState = new AnimationState();
-        attackAnimationState = new AnimationState();
-        emotionAnimationState = new AnimationState();
-        runAnimationState = new AnimationState();
-        blinkAnimationState = new AnimationState();
-        debugAnimationState = new AnimationState();
-        this.prevAnimationShipAnimationState = ShipAnimationState.IDLE;
+//        breathAnimationState = new AnimationState(); breathAnimationState.startIfStopped(this.tickCount);
+//        idleAnimationState = new AnimationState();
+//        walkAnimationState = new AnimationState();
+//        sitAnimationState = new AnimationState();
+//        attackAnimationState = new AnimationState();
+//        emotionAnimationState = new AnimationState();
+//        runAnimationState = new AnimationState();
+//        blinkAnimationState = new AnimationState();
+//        debugAnimationState = new AnimationState();
+//        this.prevAnimationShipAnimationState = ShipAnimationState.IDLE;
 
         this.shipClass = shipClass;
     }
@@ -357,21 +364,23 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
             }
 
             tickEmotionState(this.tickCount);
+            changeEmotion();
 
             if (!this.isHostileShip()) {
-                this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
-                        System.out::println
-                );
-                this.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get()).ifPresent(System.out::println);
+//                this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
+//                        System.out::println
+//                );
+//                this.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get()).ifPresent(System.out::println);
+                if (this.navigation.isInProgress()) {
+                    System.out.print("has path");
+                }
+                if (this.walkAnimation.isMoving()) {
+                    System.out.println(" >> is moving");
+                }
             }
         }
         else {
             // client side
-            if (blinkAnimationControl.canAnimate(this.tickCount)) {
-                this.blinkAnimationState.start(this.tickCount);
-//                this.setEmotionState(EmotionState.create(this.random.nextInt(0, 5)), this.tickCount);
-            }
-//            System.out.println(this.getAnimationState());
         }
     }
 
@@ -389,48 +398,8 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
-        if (pKey.equals(DATA_ANIMATION_STATE)) {
-            updateAnimationState();
-        }
-        if (pKey.equals(DATA_EMOTION_STATE)) {
-            emotionAnimationState.stop();
-            emotionAnimationState.startIfStopped(this.tickCount);
-        }
 
         super.onSyncedDataUpdated(pKey);
-    }
-
-    protected void updateAnimationState() {
-        resetAnimation();
-        // always animated
-        breathAnimationState.startIfStopped(this.tickCount);
-        emotionAnimationState.startIfStopped(this.tickCount);
-        switch (this.getAnimationState()) {
-            case IDLE -> idleAnimationState.startIfStopped(this.tickCount);
-            case WALK -> walkAnimationState.startIfStopped(this.tickCount);
-            case RUN -> runAnimationState.startIfStopped(this.tickCount);
-            default -> {
-                System.out.println(this.getAnimationState().name() + " animation state does nothing yet.");
-            }
-        }
-    }
-
-    public void attackAnim() {
-        this.attackAnimationState.start(this.tickCount);
-    }
-
-    public void debugAnim() {
-        this.debugAnimationState.start(this.tickCount);
-    }
-
-    protected void resetAnimation() {
-        breathAnimationState.stop();
-        idleAnimationState.stop();
-        walkAnimationState.stop();
-        sitAnimationState.stop();
-        attackAnimationState.stop();
-        runAnimationState.stop();
-        debugAnimationState.stop();
     }
 
     public void broadcastEquipmentHandler() {
@@ -532,9 +501,6 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         this.entityData.set(DATA_ANIMATION_STATE, shipAnimationState);
     }
 
-    public AnimationState getAttackAnimationState() {
-        return attackAnimationState;
-    }
 
     public void setEmotionState(EmotionState emotionState, long lastEmotionChangedTick) {
         if (!emotionState.isConsistent()) {
@@ -552,6 +518,15 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         if (currentTick >= this.lastEmotionChangedTick + this.getEmotionState().getDuration()) {
             this.setEmotionState(EmotionState.NORMAL, -1);
         }
+    }
+
+    protected void changeEmotion() {
+        this.getBrain().getActiveNonCoreActivity().ifPresent(activity -> {
+                if (activity.equals(Activity.FIGHT)) {
+                    this.setEmotionState(EmotionState.SERIOUS, this.tickCount);
+                }
+            }
+        );
     }
 
     public int getShipLevel() {
@@ -738,4 +713,63 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     public boolean isPersistenceRequired() {
         return this.getType().getCategory().isPersistent();
     }
+
+    /**
+     * {@link GeckoLib}
+     */
+
+    private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
+    protected static final RawAnimation WALKING_ANIMATION = RawAnimation.begin().thenLoop("walk");
+    protected static final RawAnimation RUNNING_ANIMATION = RawAnimation.begin().thenLoop("run");
+    protected static final RawAnimation BLINK_ANIMATION = RawAnimation.begin().thenPlay("blink");
+//    protected static final RawAnimation FACIAL_FEATURES = RawAnimation.begin().thenLoop("facial_features");
+    protected static final RawAnimation NORMAL_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.normal");
+    protected static final RawAnimation SHOCK_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.shock");
+    protected static final RawAnimation SAD_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.sad");
+    protected static final RawAnimation SERIOUS_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.serious");
+    protected static final RawAnimation HAPPY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.happy");
+    protected static final RawAnimation ANGRY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.angry");
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return animatableInstanceCache;
+    }
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "walking", 5, this::moveAnimationController));
+        controllers.add(new AnimationController<>(this, "expression", 5, this::expressionController));
+        controllers.add(new AnimationController<>(this, "blink", 5, this::blinkAnimationController));
+    }
+
+    protected <E extends EntityShip> PlayState moveAnimationController(final AnimationState<E> event) {
+        if (event.isMoving() || (this.walkAnimation.isMoving() && this.walkAnimation.speed() > 0.05f)) {
+            if (this.walkAnimation.speed() < 0.3f)
+                return event.setAndContinue(WALKING_ANIMATION);
+            else
+                return event.setAndContinue(RUNNING_ANIMATION);
+        }
+
+        return PlayState.STOP;
+    }
+
+    protected <E extends EntityShip> PlayState expressionController(final AnimationState<E> event) {
+        event.getController().forceAnimationReset();
+        return switch (this.getEmotionState()) {
+            case NORMAL -> event.setAndContinue(NORMAL_EXPRESSION);
+            case HAPPY -> event.setAndContinue(HAPPY_EXPRESSION);
+            case SAD -> event.setAndContinue(SAD_EXPRESSION);
+            case ANGRY -> event.setAndContinue(ANGRY_EXPRESSION);
+            case SERIOUS -> event.setAndContinue(SERIOUS_EXPRESSION);
+            case SHOCK -> event.setAndContinue(SHOCK_EXPRESSION);
+        };
+    }
+
+
+    protected <E extends EntityShip> PlayState blinkAnimationController(final AnimationState<E> event) {
+        if (this.blinkAnimationControl.canAnimate(this.tickCount)) {
+            event.getController().forceAnimationReset();
+            event.getController().setAnimation(BLINK_ANIMATION);
+        }
+        return PlayState.CONTINUE;
+    }
+
 }

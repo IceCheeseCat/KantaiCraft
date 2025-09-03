@@ -35,7 +35,6 @@ public class ShipEquipmentSensor extends Sensor<EntityShip> {
 
                 pEntity.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get()).ifPresent(
                     shipTickableActions -> {
-                        System.out.println("has memory");
                         for (int i = 0; i < shipTickableActions.size(); i++) {
                            updateAction(pEntity, equipmentHandler, shipTickableActions, i);
                         }

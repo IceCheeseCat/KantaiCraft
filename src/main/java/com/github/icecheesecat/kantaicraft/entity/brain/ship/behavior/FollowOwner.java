@@ -37,6 +37,12 @@ public class FollowOwner extends SingleBehaviour<EntityShip> {
         }
     }
 
+    @Override
+    protected boolean checkExtraStartConditions(ServerLevel pLevel, EntityShip pOwner) {
+        var playerPositionTracker = this.playerPositionTracker(pOwner);
+        return playerPositionTracker.isPresent() && pOwner.distanceToSqr(playerPositionTracker.get().currentPosition()) > this.closeEnough * this.closeEnough;
+    }
+
     private Optional<PositionTracker> playerPositionTracker(LivingEntity livingEntity) {
         if (livingEntity instanceof EntityShip entityShip) {
             if (entityShip.getShipOwner().isPresent()) {

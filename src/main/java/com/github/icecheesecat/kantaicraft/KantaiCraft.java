@@ -11,6 +11,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import software.bernie.geckolib.GeckoLib;
 
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -25,6 +26,8 @@ public class KantaiCraft
 
     public KantaiCraft()
     {
+        GeckoLib.initialize();
+
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);

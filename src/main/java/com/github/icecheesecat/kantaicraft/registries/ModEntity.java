@@ -21,9 +21,7 @@ import java.util.HashSet;
 public class ModEntity {
 
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES,
-            KantaiCraft.MODID);
-
-    public static HashSet<EntityType<?>> ENTITIES_SET;
+    KantaiCraft.MODID);
 
     public static final MobCategory HOSTILE_SHIP = MobCategory.create("hostile_ship", "kantaicraft:hostile_ship", 20, false, false, 128);
     public static final MobCategory PLAYER_SHIP = MobCategory.create("player_ship", "kantaicraft:player_ship", -1, true, true, 128);
@@ -44,7 +42,7 @@ public class ModEntity {
         public static final RegistryObject<EntityType<DestroyerIClass>> DESTROYER_I_CLASS =
                 registerHostileShip(HostileDestroyerIClass::new, "hostile_destroyer_i_class", 1.0f, 0.8f);
         public static final RegistryObject<EntityType<HostileInazuma>> INAZUMA =
-                registerPlayerShip(HostileInazuma::new, "hostile_inazama", 0.8f, 1.6f);
+                registerPlayerShip(HostileInazuma::new, "hostile_inazama", 0.8f, 1.4f);
     }
 
     public static final RegistryObject<EntityType<EntityA6MZeroFighter>> A6M_Zero_Fighter = ENTITIES.register("a6m_zero_fighter", () ->

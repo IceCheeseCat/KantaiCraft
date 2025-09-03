@@ -34,16 +34,7 @@ public final class KeyBindings {
 
         @SubscribeEvent
         public static void registerKeys(TickEvent.ClientTickEvent event) {
-            if (debugEntityRootRotation.isDown()) {
-                if (Minecraft.getInstance().level != null) {
-                    var entities = Minecraft.getInstance().level.getEntities(Minecraft.getInstance().player, Minecraft.getInstance().player.getBoundingBox().inflate(10.0d));
-                    for (var entity: entities) {
-                        if (entity instanceof EntityShip ship) {
-                            ship.debugAnim();
-                        }
-                    }
-                }
-            }
+
         }
 
     }

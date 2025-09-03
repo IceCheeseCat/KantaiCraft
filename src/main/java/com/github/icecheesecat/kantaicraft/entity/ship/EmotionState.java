@@ -12,7 +12,7 @@ public enum EmotionState {
     HAPPY(200),
     SAD(200),
     ANGRY(200),
-    SERIOUS(-1),
+    SERIOUS(100),
     SHOCK(100);
 
     private final int duration;

@@ -3,12 +3,10 @@ package com.github.icecheesecat.kantaicraft.client.model;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.block.renderer.ShipyardRenderer;
-import com.github.icecheesecat.kantaicraft.client.model.model.HostileInazumaModel;
-import com.github.icecheesecat.kantaicraft.client.model.model.InazumaModel;
 import com.github.icecheesecat.kantaicraft.client.model.model.DestroyerRoClassModel;
+import com.github.icecheesecat.kantaicraft.client.model.renderer.InazumaRenderer;
 import com.github.icecheesecat.kantaicraft.client.model.renderer.RendererDestroyerRo;
-import com.github.icecheesecat.kantaicraft.client.model.renderer.RendererHostileInazuma;
-import com.github.icecheesecat.kantaicraft.client.model.renderer.RendererInazuma;
+import com.github.icecheesecat.kantaicraft.client.model.renderer.HostileInazumaRenderer;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,19 +21,19 @@ public class ModelEvent {
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         // entity
         event.registerLayerDefinition(DestroyerRoClassModel.LAYER_LOCATION, DestroyerRoClassModel::createBodyLayer);
-        event.registerLayerDefinition(InazumaModel.LAYER_LOCATION, InazumaModel::createBodyLayer);
+//        event.registerLayerDefinition(InazumaModel.LAYER_LOCATION, InazumaModel::createBodyLayer);
         // hostile entity
-        event.registerLayerDefinition(HostileInazumaModel.LAYER_LOCATION, HostileInazumaModel::createBodyLayer);
+//        event.registerLayerDefinition(HostileInazumaModel.LAYER_LOCATION, HostileInazumaModel::createBodyLayer);
     }
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         // Entity
         event.registerEntityRenderer(ModEntity.PlayerShip.DESTROYER_RO_CLASS.get(), RendererDestroyerRo::new);
-        event.registerEntityRenderer(ModEntity.PlayerShip.INAZUMA.get(), RendererInazuma::new);
+        event.registerEntityRenderer(ModEntity.PlayerShip.INAZUMA.get(), InazumaRenderer::new);
 
         // hostile entity
-        event.registerEntityRenderer(ModEntity.HostileShip.INAZUMA.get(), RendererHostileInazuma::new);
+        event.registerEntityRenderer(ModEntity.HostileShip.INAZUMA.get(), HostileInazumaRenderer::new);
 
         // BlockEntity
         event.registerBlockEntityRenderer(ModBlock.SHIPYARD_BETPYE.get(), ShipyardRenderer::new);
