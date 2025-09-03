@@ -117,7 +117,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
 //        runAnimationState = new AnimationState();
 //        blinkAnimationState = new AnimationState();
 //        debugAnimationState = new AnimationState();
-//        this.prevAnimationShipAnimationState = ShipAnimationState.IDLE;
+        this.prevAnimationShipAnimationState = ShipAnimationState.IDLE;
 
         this.shipClass = shipClass;
     }
@@ -366,17 +366,11 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
             tickEmotionState(this.tickCount);
             changeEmotion();
 
-            if (!this.isHostileShip()) {
+            if (this.isHostileShip()) {
 //                this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
 //                        System.out::println
 //                );
-//                this.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get()).ifPresent(System.out::println);
-                if (this.navigation.isInProgress()) {
-                    System.out.print("has path");
-                }
-                if (this.walkAnimation.isMoving()) {
-                    System.out.println(" >> is moving");
-                }
+                this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(System.out::println);
             }
         }
         else {
@@ -649,8 +643,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
             return false;
         }
 
-        // immune to fall damage
-        if (pSource.is(DamageTypes.FALL)) {
+        if (pSource.getEntity() != null && pSource.getEntity().is(this)) {
             return false;
         }
 
