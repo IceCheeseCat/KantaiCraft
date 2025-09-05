@@ -40,22 +40,7 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
     }
 
     @Nullable
-    public ShipTickableAction getActionByWeaponTypeAndNotInCooldown(EquipmentType type) {
-
-        for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
-            if (equipmentHandler.getEquipments().get(i).getType() == type) {
-                ShipTickableAction a = this.get(i);
-                if (!a.inCooldown()) {
-                    return a;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    @Nullable
-    public CannonShipAttack getCannonAction() {
+    public CannonShipAttack getReadyCannonAction() {
 
         for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
             var equipment = equipmentHandler.getEquipments().get(i);

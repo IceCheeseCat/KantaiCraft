@@ -2,15 +2,19 @@ package com.github.icecheesecat.kantaicraft.capability;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.ISlotCheckerEntity;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.equipment.Equipments;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.List;
+import java.util.Set;
 
 public class EquipmentHandler implements INBTSerializable<CompoundTag> {
-
+    public static final ImmutableSet<EquipmentType> CANNON_WEAPON = ImmutableSet.of(EquipmentType.SMALL_CANNON, EquipmentType.MEDIUM_CANNON, EquipmentType.LARGE_CANNON);
+    public static final ImmutableSet<EquipmentType> ATTACK_AIRCRAFT = ImmutableSet.of(EquipmentType.AIRCRAFT_DIVE_BOMBER, EquipmentType.AIRCRAFT_TORPEDO_BOMBER);
     private NonNullList<Equipment> equipments;
     private NonNullList<Boolean> dirty;
     private int slotSize;
@@ -55,6 +59,15 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
 
     public Equipment getEquipment(int index) {
         return this.equipments.get(index);
+    }
+
+    public boolean hasAnyOfType(EquipmentType type) {
+        return this.equipments.stream().anyMatch(equipment -> equipment.isTypeOf(type));
+    }
+
+    public boolean hasRangeAttackWeapon() {
+        return this.equipments.stream().anyMatch(equipment -> CANNON_WEAPON.stream().anyMatch(equipment::isTypeOf)) ||
+        this.equipments.stream().anyMatch(equipment -> ATTACK_AIRCRAFT.stream().anyMatch(equipment::isTypeOf));
     }
 
     @Override

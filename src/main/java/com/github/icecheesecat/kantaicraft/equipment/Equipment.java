@@ -80,6 +80,10 @@ public class Equipment implements INBTSerializable<CompoundTag> {
         return this.defaultValue;
     }
 
+    public boolean isTypeOf(EquipmentType type) {
+        return this.type == type;
+    }
+
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();

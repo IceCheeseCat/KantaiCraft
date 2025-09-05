@@ -398,9 +398,9 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         this.entityData.set(DATA_CAN_MELEE, canMelee);
     }
 
-//    public boolean canMeleeAndRange() {
-//        this.getCapability()
-//    }
+    public boolean canRangeAttack() {
+        return this.equipmentHandler.hasRangeAttackWeapon() && hasEnoughAmmo();
+    }
 
     public double getAttributeValue(Attribute attribute) {
         if (this.getAttributes().hasAttribute(attribute)) {
@@ -453,15 +453,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     }
 
     public boolean hasAttackableEquipment() {
-        AtomicBoolean r = new AtomicBoolean(false);
-        this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
-                handler -> {
-                    r.set(handler.getEquipments().stream().anyMatch(e -> this.equippableTypes.contains(e.getType())));
-                }
-        );
-
-        return r.get();
-
+        return this.equipmentHandler.getEquipments().stream().anyMatch(equipment -> this.equippableTypes.contains(equipment.getType()));
     }
 
     public ShipAnimationState getAnimationState() {
