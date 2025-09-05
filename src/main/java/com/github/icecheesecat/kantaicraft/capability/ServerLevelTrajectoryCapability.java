@@ -39,11 +39,11 @@ public class ServerLevelTrajectoryCapability implements ICapabilitySerializable<
 
     @Override
     public CompoundTag serializeNBT() {
-        return this.serverLevelTrajectory.serializeNBT();
+        return this.getLevelTrajectory().serializeNBT();
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.serverLevelTrajectory.deserializeNBT(nbt);
+        this.getLevelTrajectory().deserializeNBT(nbt);
     }
 }

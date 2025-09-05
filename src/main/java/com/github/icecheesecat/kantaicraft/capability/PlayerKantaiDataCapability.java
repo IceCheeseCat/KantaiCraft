@@ -14,10 +14,8 @@ public class PlayerKantaiDataCapability implements ICapabilitySerializable<Compo
     public static final Capability<PlayerKantaiData> TOKEN = CapabilityManager.get(new CapabilityToken<>(){});
     private PlayerKantaiData playerKantaiData;
     LazyOptional<PlayerKantaiData> lazyPlayerKantaiData = LazyOptional.of(this::getPlayerKantaiData);
-    private final Player player;
 
-    public PlayerKantaiDataCapability(Player player) {
-        this.player = player;
+    public PlayerKantaiDataCapability() {
     }
 
     private PlayerKantaiData getPlayerKantaiData() {
@@ -39,11 +37,11 @@ public class PlayerKantaiDataCapability implements ICapabilitySerializable<Compo
 
     @Override
     public CompoundTag serializeNBT() {
-        return this.playerKantaiData.serializeNBT();
+        return this.getPlayerKantaiData().serializeNBT();
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.playerKantaiData.deserializeNBT(nbt);
+        this.getPlayerKantaiData().deserializeNBT(nbt);
     }
 }
