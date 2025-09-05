@@ -9,7 +9,7 @@ public enum PlaneModel {
 
     public BasicEntityPlane getEntity(Level level) {
         if (this == A6M_Zero) {
-            return new EntityA6MZeroFighter(ModEntity.A6M_Zero_Fighter.get(), level);
+//            return new EntityA6MZeroFighter(ModEntity.A6M_Zero_Fighter.get(), level);
         }
 
         return null;

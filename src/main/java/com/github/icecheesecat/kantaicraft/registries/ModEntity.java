@@ -45,9 +45,8 @@ public class ModEntity {
                 registerPlayerShip(HostileInazuma::new, "hostile_inazama", 0.8f, 1.4f);
     }
 
-    public static final RegistryObject<EntityType<EntityA6MZeroFighter>> A6M_Zero_Fighter = ENTITIES.register("a6m_zero_fighter", () ->
-            EntityType.Builder.of(EntityA6MZeroFighter::new, MobCategory.MISC).sized(1.0f, 1.0f).build(new ResourceLocation(KantaiCraft.MODID, "a6m_zero_fighter").toString()));
-
+//    public static final RegistryObject<EntityType<EntityA6MZeroFighter>> A6M_Zero_Fighter = ENTITIES.register("a6m_zero_fighter", () ->
+//            EntityType.Builder.of(EntityA6MZeroFighter::new, MobCategory.MISC).sized(1.0f, 1.0f).build(new ResourceLocation(KantaiCraft.MODID, "a6m_zero_fighter").toString()));
     private static <T extends Entity> RegistryObject<EntityType<T>> registerPlayerShip(EntityType.EntityFactory<T> factory, String name, float width, float height) {
         return ENTITIES.register(name, () ->
             EntityType.Builder.of(factory, PLAYER_SHIP).sized(width, height).build(new ResourceLocation(KantaiCraft.MODID, name).toString()));
