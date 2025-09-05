@@ -351,7 +351,8 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
 //                        System.out::println
 //                );
                 this.getBrain().getActiveNonCoreActivity().ifPresent(System.out::println);
-                this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(System.out::println);
+                this.getBrain().getMemory(MemoryModuleType.LOOK_TARGET).ifPresent(System.out::println);
+                System.out.println(this.getEmotionState());
             }
         }
         else {
@@ -650,7 +651,10 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
      */
     @Override
     protected void actuallyHurt(DamageSource pDamageSource, float pDamageAmount) {
-        if (pDamageSource.getEntity() instanceof EntityShip entityShip) {
+        if (pDamageSource.is(DamageTypes.GENERIC_KILL)) {
+            super.actuallyHurt(pDamageSource, pDamageAmount);
+        }
+        else if (pDamageSource.getEntity() instanceof EntityShip entityShip) {
             super.actuallyHurt(pDamageSource, pDamageAmount);
         }
         else {
@@ -746,7 +750,6 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     }
 
     protected <E extends EntityShip> PlayState expressionController(final AnimationState<E> event) {
-        event.getController().forceAnimationReset();
         return switch (this.getEmotionState()) {
             case NORMAL -> event.setAndContinue(NORMAL_EXPRESSION);
             case HAPPY -> event.setAndContinue(HAPPY_EXPRESSION);
