@@ -3,7 +3,9 @@ package com.github.icecheesecat.kantaicraft.util.tickable;
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
+import com.github.icecheesecat.kantaicraft.util.tickable.attack.CannonShipAttack;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +39,7 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
         return ret;
     }
 
+    @Nullable
     public ShipTickableAction getActionByWeaponTypeAndNotInCooldown(EquipmentType type) {
 
         for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
@@ -45,6 +48,25 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
                 if (!a.inCooldown()) {
                     return a;
                 }
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public CannonShipAttack getCannonAction() {
+
+        for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
+            var equipment = equipmentHandler.getEquipments().get(i);
+            if (equipment.isTypeOf(EquipmentType.SMALL_CANNON) ||
+                    equipment.isTypeOf(EquipmentType.MEDIUM_CANNON) ||
+                    equipment.isTypeOf(EquipmentType.LARGE_CANNON)) {
+
+                if (!this.get(i).inCooldown()) {
+                    return (CannonShipAttack) this.get(i);
+                }
+
             }
         }
 
