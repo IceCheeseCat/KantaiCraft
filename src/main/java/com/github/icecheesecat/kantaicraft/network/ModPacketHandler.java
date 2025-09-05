@@ -36,10 +36,10 @@ public class ModPacketHandler {
 
         INSTANCE.registerMessage(
                 id++,
-                ClientRemoveTrajectoryPacket.class,
-                ClientRemoveTrajectoryPacket::encode,
-                ClientRemoveTrajectoryPacket::decode,
-                ClientRemoveTrajectoryPacket::handle
+                ClientSetDestroyTrajectoryPacket.class,
+                ClientSetDestroyTrajectoryPacket::encode,
+                ClientSetDestroyTrajectoryPacket::decode,
+                ClientSetDestroyTrajectoryPacket::handle
         );
 
         INSTANCE.registerMessage(

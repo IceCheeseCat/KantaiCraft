@@ -4,7 +4,7 @@ import com.github.icecheesecat.kantaicraft.entity.ship.CannonShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.util.tickable.EquipmentActionHandler;
-import com.github.icecheesecat.kantaicraft.util.tickable.attack.ShipCannonAttack;
+import com.github.icecheesecat.kantaicraft.util.tickable.attack.CannonShipAttack;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,7 +31,7 @@ public class CannonAttackBehavior extends Behavior<CannonShip> {
 
     @Override
     protected void tick(ServerLevel pLevel, CannonShip pOwner, long pGameTime) {
-        var action = (ShipCannonAttack) actionHandler.getActionByWeaponTypeAndNotInCooldown(EquipmentType.SMALL_CANNON);
+        var action = (CannonShipAttack) actionHandler.getActionByWeaponTypeAndNotInCooldown(EquipmentType.SMALL_CANNON);
         if (action != null) {
             action.checkAndPerformCannon(target);
         }

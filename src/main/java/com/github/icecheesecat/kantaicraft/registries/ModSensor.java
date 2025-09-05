@@ -25,7 +25,7 @@ public class ModSensor {
     public static final RegistryObject<SensorType<ShipEquipmentSensor>> SHIP_EQUIPMENT_SENSOR = SENSOR_TYPES.register("sensor_type.ship_equipment_sensor", () -> new SensorType<>(ShipEquipmentSensor::new));
 
     public static boolean playerShipTargeting(Entity entity) {
-        return entity instanceof Enemy;
+        return entity instanceof Enemy || (entity instanceof EntityShip entityShip && entityShip.isHostileShip());
     }
 
     public static boolean hostileShipTargeting(Entity entity) {

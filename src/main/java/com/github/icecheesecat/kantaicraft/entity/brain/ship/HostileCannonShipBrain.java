@@ -29,6 +29,7 @@ public class HostileCannonShipBrain {
                 ModSensor.SHIP_EQUIPMENT_SENSOR.get(),
                 ModSensor.HOSTILE_SHIP_TARGETING_SENSOR.get());
         MEMORY_TYPES = List.of(
+                ModMemoryModuleType.IS_HOSTILE_SHIP.get(),
                 ModMemoryModuleType.OUT_OF_FUEL.get(),
                 ModMemoryModuleType.OUT_OF_AMMO.get(),
                 ModMemoryModuleType.OUT_OF_AIRCRAFT.get(),

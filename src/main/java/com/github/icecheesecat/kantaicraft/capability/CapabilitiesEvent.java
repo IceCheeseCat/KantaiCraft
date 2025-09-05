@@ -2,11 +2,12 @@ package com.github.icecheesecat.kantaicraft.capability;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
-import com.github.icecheesecat.kantaicraft.faction.FactionTagCapability;
-import com.github.icecheesecat.kantaicraft.faction.LevelFactionCapability;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -26,23 +27,17 @@ public class CapabilitiesEvent {
             }
         }
 
-        if (event.getObject() instanceof LivingEntity livingEntity) {
-            if (!livingEntity.getCapability(FactionTagCapability.FACTION_TAG).isPresent()) {
-                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.faction_tag"), new FactionTagCapability());
-            }
-        }
-
         if (event.getObject() instanceof Player player) {
-//            if (player instanceof ServerPlayer serverPlayer) {
-//                if (!serverPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
-//                    event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability(player));
-//                }
-//            }
-//            if (player instanceof LocalPlayer localPlayer) {
-//                if (!localPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
-//                    event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability(player));
-//                }
-//            }
+            if (player instanceof ServerPlayer serverPlayer) {
+                if (!serverPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
+                    event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability(player));
+                }
+            }
+            if (player instanceof LocalPlayer localPlayer) {
+                if (!localPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
+                    event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability(player));
+                }
+            }
 
         }
     }
@@ -50,8 +45,15 @@ public class CapabilitiesEvent {
     @SubscribeEvent
     public static void onLevelAttachingCapability(AttachCapabilitiesEvent<Level> event) {
         Level level = event.getObject();
-        if (!level.getCapability(LevelFactionCapability.FACTION).isPresent()) {
-            event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.faction"), new LevelFactionCapability());
+        if (level instanceof ServerLevel serverLevel) {
+            if (!level.getCapability(ServerLevelTrajectoryCapability.TOKEN).isPresent()) {
+                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "server_level_trajectories"), new ServerLevelTrajectoryCapability(serverLevel));
+            }
+        }
+        if (level instanceof ClientLevel clientLevel) {
+            if (!level.getCapability(ClientLevelTrajectoryCapability.TOKEN).isPresent()) {
+                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "client_level_trajectories"), new ClientLevelTrajectoryCapability(clientLevel));
+            }
         }
     }
 

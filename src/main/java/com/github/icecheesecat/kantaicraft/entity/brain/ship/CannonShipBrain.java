@@ -31,6 +31,7 @@ public class CannonShipBrain {
                 ModSensor.SHIP_EQUIPMENT_SENSOR.get(),
                 ModSensor.PLAYER_SHIP_TARGETING_SENSOR.get());
         MEMORY_TYPES = List.of(
+                ModMemoryModuleType.IS_PLAYER_SHIP.get(),
                 ModMemoryModuleType.OWNERSHIP.get(),
                 ModMemoryModuleType.OUT_OF_FUEL.get(),
                 ModMemoryModuleType.OUT_OF_AMMO.get(),

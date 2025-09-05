@@ -2,9 +2,6 @@ package com.github.icecheesecat.kantaicraft.util.tickable;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
-import com.github.icecheesecat.kantaicraft.util.tickable.attack.ShipCannonAttack;
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 
 import java.util.ArrayList;

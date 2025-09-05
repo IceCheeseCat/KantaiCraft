@@ -8,10 +8,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 
-public class ReloadCannon extends Behavior<EntityShip> {
+public class ReloadEquipmentActions extends Behavior<EntityShip> {
 
     boolean reloadWhenOutOfFuel;
-    public ReloadCannon(boolean reloadWhenOutOfFuel) {
+    public ReloadEquipmentActions(boolean reloadWhenOutOfFuel) {
         super(ImmutableMap.of(ModMemoryModuleType.ACTION_HANDLER.get(), MemoryStatus.VALUE_PRESENT));
         this.reloadWhenOutOfFuel = reloadWhenOutOfFuel;
     }

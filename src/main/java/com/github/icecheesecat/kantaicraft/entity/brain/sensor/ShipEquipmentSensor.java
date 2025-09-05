@@ -8,13 +8,12 @@ import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.util.tickable.EquipmentActionHandler;
 import com.github.icecheesecat.kantaicraft.util.tickable.ShipTickableAction;
-import com.github.icecheesecat.kantaicraft.util.tickable.attack.ShipCannonAttack;
+import com.github.icecheesecat.kantaicraft.util.tickable.attack.CannonShipAttack;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 
-import java.util.Optional;
 import java.util.Set;
 
 public class ShipEquipmentSensor extends Sensor<EntityShip> {
@@ -55,7 +54,7 @@ public class ShipEquipmentSensor extends Sensor<EntityShip> {
 
         Equipment equipment = equipmentHandler.getEquipments().get(i);
         switch (equipment.getType()) {
-            case SMALL_CANNON -> equipmentActionHandler.set(i, new ShipCannonAttack(ship, equipment, (int) equipment.getStat(EquipmentStatType.CANNON_COOLDOWN)));
+            case SMALL_CANNON -> equipmentActionHandler.set(i, new CannonShipAttack(ship, equipment, (int) equipment.getStat(EquipmentStatType.CANNON_COOLDOWN)));
             case NONE -> equipmentActionHandler.set(i, ShipTickableAction.NULL);
             default -> throw new RuntimeException("Unknown equipment type at " + ship);
         }

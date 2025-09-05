@@ -64,39 +64,39 @@ public class DefaultValue {
     static {
         // small cannon
         register(EquipmentProperties.__12cm_single_gun_mount__.getId(),
-                createSmallCannon(20.0d, 45.0d, 100)
+                createSmallCannon(400.0d, 45.0d, 100)
                         .addStat(EquipmentStatType.FIREPOWER, 1.0d)
                         .addStat(EquipmentStatType.ANTIAIR, 1.0d));
         register(EquipmentProperties.__12cm_twin_gun_mount__.getId(),
-                createSmallCannon(20.0d, 45.0d, 100)
+                createSmallCannon(400.0d, 45.0d, 100)
                         .addStat(EquipmentStatType.FIREPOWER, 2.0d)
                         .addStat(EquipmentStatType.ANTIAIR, 2.0d));
         register(EquipmentProperties.__12cm_twin_gun_mount_model_b_kai_2__.getId(),
-                createSmallCannon(20.0d, 45.0d, 100)
+                createSmallCannon(400.0d, 45.0d, 100)
                         .addStat(EquipmentStatType.FIREPOWER, 3.0d)
                         .addStat(EquipmentStatType.ANTIAIR, 2.0d));
 
         // medium cannon
         register(EquipmentProperties.__14cm_single_gun_mount__.getId(),
-                createMediumCannon(20.0d, 45.0d, 200)
+                createMediumCannon(400.0d, 45.0d, 200)
                         .addStat(EquipmentStatType.FIREPOWER, 2.0d)
                         .addStat(EquipmentStatType.ANTIAIR, 1.0d));
         register(EquipmentProperties.__155mm_triple_gun_mount__.getId(),
-                createMediumCannon(20.0d, 45.0d, 200)
+                createMediumCannon(400.0d, 45.0d, 200)
                         .addStat(EquipmentStatType.FIREPOWER, 7.0d)
                         .addStat(EquipmentStatType.ANTIAIR, 4.0d)
                         .addStat(EquipmentStatType.ACCURACY, 1.0d));
         register(EquipmentProperties.__203mm_twin_gun_mount__.getId(),
-                createMediumCannon(20.0d, 45.0d, 200)
+                createMediumCannon(400.0d, 45.0d, 200)
                     .addStat(EquipmentStatType.FIREPOWER, 8.0d)
                     .addStat(EquipmentStatType.ANTIAIR, 3.0d));
         register(EquipmentProperties.__203mm_no3_single_gun_mount__.getId(),
-                createMediumCannon(20.0d, 45.0d, 200)
+                createMediumCannon(400.0d, 45.0d, 200)
                     .addStat(EquipmentStatType.FIREPOWER, 10.0d)
                     .addStat(EquipmentStatType.ANTIAIR, 4.0d)
                     .addStat(EquipmentStatType.ACCURACY, 1.0d));
         register(EquipmentProperties.__prototype_203mm_no4_single_gun_mount__.getId(),
-                createMediumCannon(20.0d, 45.0d, 200)
+                createMediumCannon(400.0d, 45.0d, 200)
                     .addStat(EquipmentStatType.FIREPOWER, 11.0d)
                     .addStat(EquipmentStatType.ANTIAIR, 4.0d)
                     .addStat(EquipmentStatType.ARMOR, 1.0d)
@@ -104,37 +104,37 @@ public class DefaultValue {
 
         // large cannon
         register(EquipmentProperties.__356mm_twin_gun_mount__.getId(),
-                createLargeCannon(20.0d, 45.0d, 400)
+                createLargeCannon(400.0d, 45.0d, 400)
                     .addStat(EquipmentStatType.FIREPOWER, 15.0d)
                     .addStat(EquipmentStatType.ANTIAIR, 4.0d));
         register(EquipmentProperties.__prototype_356mm_triple_gun_mount__.getId(),
-                createLargeCannon(20.0d, 45.0d, 400)
+                createLargeCannon(400.0d, 45.0d, 400)
                     .addStat(EquipmentStatType.FIREPOWER, 18.0d)
                     .addStat(EquipmentStatType.ANTIAIR, 5.0d)
                     .addStat(EquipmentStatType.ACCURACY, 2.0d));
         register(EquipmentProperties.__356mm_twin_gun_mount_kai_2__.getId(),
-                createLargeCannon(20.0d, 45.0d, 400)
+                createLargeCannon(400.0d, 45.0d, 400)
                     .addStat(EquipmentStatType.FIREPOWER, 17.0d)
                     .addStat(EquipmentStatType.ANTIAIR, 5.0d)
                     .addStat(EquipmentStatType.ARMOR, 2.0d)
                     .addStat(EquipmentStatType.ACCURACY, 5.0d)
                     .addStat(EquipmentStatType.EVASION, 2.0d));
         register(EquipmentProperties.__41cm_twin_gun_mount__.getId(),
-                createLargeCannon(20.0d, 45.0d, 400)
+                createLargeCannon(400.0d, 45.0d, 400)
                     .addStat(EquipmentStatType.FIREPOWER, 20.0d)
                     .addStat(EquipmentStatType.ANTIAIR, 4.0d));
         register(EquipmentProperties.__prototype_41cm_triple_gun_mount__.getId(),
-                createLargeCannon(20.0d, 45.0d, 400)
+                createLargeCannon(400.0d, 45.0d, 400)
                     .addStat(EquipmentStatType.FIREPOWER, 20.0d)
                     .addStat(EquipmentStatType.ANTIAIR, 4.0d));
         register(EquipmentProperties.__41cm_triple_gun_mount_kai__.getId(),
-                createLargeCannon(20.0d, 45.0d, 400)
+                createLargeCannon(400.0d, 45.0d, 400)
                     .addStat(EquipmentStatType.FIREPOWER, 22.0d)
                     .addStat(EquipmentStatType.ANTIAIR, 6.0d)
                     .addStat(EquipmentStatType.ARMOR, 1.0d)
                     .addStat(EquipmentStatType.ACCURACY, 4.0d));
         register(EquipmentProperties.__41cm_triple_gun_mount_kai_2__.getId(),
-                createLargeCannon(20.0d, 45.0d, 400)
+                createLargeCannon(400.0d, 45.0d, 400)
                     .addStat(EquipmentStatType.FIREPOWER, 23.0d)
                     .addStat(EquipmentStatType.ANTIAIR, 6.0d)
                     .addStat(EquipmentStatType.ACCURACY, 5.0d));

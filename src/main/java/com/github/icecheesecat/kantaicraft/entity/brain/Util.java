@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entity.brain;
 
-import com.github.icecheesecat.kantaicraft.entity.brain.ship.behavior.ReloadCannon;
+import com.github.icecheesecat.kantaicraft.entity.brain.ship.behavior.ReloadEquipmentActions;
 import com.github.icecheesecat.kantaicraft.entity.brain.ship.behavior.*;
 import com.github.icecheesecat.kantaicraft.entity.ship.CannonShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
@@ -33,7 +33,7 @@ public class Util {
         brain.addActivity(Activity.CORE,
                 ImmutableList.of(
                         Pair.of(0, StopAttackingIfTargetInvalid.create()),
-                        Pair.of(0, new ReloadCannon(true)),
+                        Pair.of(0, new ReloadEquipmentActions(true)),
                         Pair.of(1, new MoveToTargetSink()),
                         Pair.of(2, new PickUpKilledMobDrops()),
                         Pair.of(3, new LookAtTargetSink(45, 90))
@@ -68,8 +68,8 @@ public class Util {
                             Pair.of(5, new FollowOwner(20, entityShip.getFollowOwnerDistance(), entityShip.getFollowTooCloseDistance())),
                             Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60))),
                             Pair.of(10, new RunOne<>(ImmutableList.of(
-                                    Pair.of(RandomStroll.stroll(0.4F), 2),
-                                    Pair.of(SetWalkTargetFromLookTarget.create(0.4F, 3), 2),
+                                    Pair.of(RandomStroll.stroll(entityShip.getNormalSpeedModifier()), 2),
+                                    Pair.of(SetWalkTargetFromLookTarget.create(entityShip.getNormalSpeedModifier(), 3), 2),
                                     Pair.of(new DoNothing(30, 60), 1))))),
                     ImmutableSet.of(Pair.of(ModMemoryModuleType.OUT_OF_FUEL.get(), MemoryStatus.VALUE_ABSENT))
             );

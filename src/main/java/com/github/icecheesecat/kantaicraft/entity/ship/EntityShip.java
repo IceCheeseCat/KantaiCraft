@@ -88,16 +88,6 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
 
     private ShipAnimationState prevAnimationShipAnimationState;
     protected final List<EquipmentType> equippableTypes;
-//    public final AnimationState breathAnimationState;
-//    public final AnimationState idleAnimationState;
-//    public final AnimationState walkAnimationState;
-//    public final AnimationState sitAnimationState;
-//    public final AnimationState attackAnimationState;
-//    public final AnimationState emotionAnimationState;
-//    public final AnimationState blinkAnimationState;
-//    public final AnimationState runAnimationState;
-//    public final AnimationState debugAnimationState;
-
     private final BlinkAnimationControl blinkAnimationControl = new BlinkAnimationControl(60, 80, this.random);
     private long lastEmotionChangedTick = -1;
     private final ShipClass shipClass;
@@ -107,16 +97,6 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         this.equippableTypes = ImmutableList.copyOf(equippableTypes);
         this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(this::initEquipments);
 
-        // Animations_0
-//        breathAnimationState = new AnimationState(); breathAnimationState.startIfStopped(this.tickCount);
-//        idleAnimationState = new AnimationState();
-//        walkAnimationState = new AnimationState();
-//        sitAnimationState = new AnimationState();
-//        attackAnimationState = new AnimationState();
-//        emotionAnimationState = new AnimationState();
-//        runAnimationState = new AnimationState();
-//        blinkAnimationState = new AnimationState();
-//        debugAnimationState = new AnimationState();
         this.prevAnimationShipAnimationState = ShipAnimationState.IDLE;
 
         this.shipClass = shipClass;
@@ -366,10 +346,11 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
             tickEmotionState(this.tickCount);
             changeEmotion();
 
-            if (this.isHostileShip()) {
+            if (!this.isHostileShip()) {
 //                this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
 //                        System.out::println
 //                );
+                this.getBrain().getActiveNonCoreActivity().ifPresent(System.out::println);
                 this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(System.out::println);
             }
         }
@@ -659,13 +640,33 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         return true;
     }
 
+    @Override
+    public boolean isInvulnerableTo(DamageSource pSource) {
+        return pSource.is(DamageTypes.FALL) || super.isInvulnerableTo(pSource);
+    }
+
+    /**
+     * Only {@link EntityShip} has the full damage output on entity
+     */
+    @Override
+    protected void actuallyHurt(DamageSource pDamageSource, float pDamageAmount) {
+        if (pDamageSource.getEntity() instanceof EntityShip entityShip) {
+            super.actuallyHurt(pDamageSource, pDamageAmount);
+        }
+        else {
+            super.actuallyHurt(pDamageSource, 1.0f);
+        }
+    }
 
     @Override
     public boolean canAttack(@NotNull LivingEntity pTarget) {
+        if (pTarget.is(this)) {
+            return false;
+        }
         if (pTarget instanceof Player player) {
             return !this.isShipOwner(player);
         }
-        else if (pTarget instanceof EntityShip entityShip) {
+        if (pTarget instanceof EntityShip entityShip) {
             return !this.hasSameShipOwner(entityShip);
         }
 
