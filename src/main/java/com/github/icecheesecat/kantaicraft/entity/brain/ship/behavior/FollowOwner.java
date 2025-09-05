@@ -78,7 +78,7 @@ public class FollowOwner extends SingleBehaviour<EntityShip> {
     }
 
     /**
-     * References from {@link FollowOwnerGoal#teleportToOwner()} <p></p>
+     * References from {@link FollowOwnerGoal} <p></p>
      * finds a stand able block around player's current blockPos 3 * 3 * 3
      */
     private void teleportToOwner(Level level, PositionTracker playerPosition, EntityShip entityShip) {
