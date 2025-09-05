@@ -84,14 +84,16 @@ public class FollowOwner extends SingleBehaviour<EntityShip> {
     private void teleportToOwner(Level level, PositionTracker playerPosition, EntityShip entityShip) {
         BlockPos blockpos = playerPosition.currentBlockPosition();
 
-        for(int i = 0; i < 10; ++i) {
-            int j = this.randomIntInclusive(-3, 3, entityShip);
-            int k = this.randomIntInclusive(-1, 1, entityShip);
-            int l = this.randomIntInclusive(-3, 3, entityShip);
-            boolean flag = this.maybeTeleportTo(blockpos.getX() + j, blockpos.getY() + k, blockpos.getZ() + l, level, playerPosition, entityShip);
-            if (flag) {
-                return;
+        for(int i = -3; i <= 3; ++i) {
+            for (int j = -1; j <= 1; j++) {
+                for (int k = -3; k <= 3; k++) {
+                    boolean flag = this.maybeTeleportTo(blockpos.getX() + i, blockpos.getY() + j, blockpos.getZ() + k, level, playerPosition, entityShip);
+                    if (flag) {
+                        return;
+                    }
+                }
             }
+
         }
 
     }
@@ -110,6 +112,7 @@ public class FollowOwner extends SingleBehaviour<EntityShip> {
 
     private boolean canTeleportTo(BlockPos pPos, Level level, EntityShip entityShip) {
         BlockPathTypes blockpathtypes = WalkNodeEvaluator.getBlockPathTypeStatic(level, pPos.mutable());
+        System.out.println(pPos);
         if (blockpathtypes != BlockPathTypes.WALKABLE) {
             return false;
         } else {
