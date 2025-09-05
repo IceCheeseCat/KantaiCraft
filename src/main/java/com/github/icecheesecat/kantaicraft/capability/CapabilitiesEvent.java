@@ -21,11 +21,11 @@ public class CapabilitiesEvent {
 
     @SubscribeEvent
     public static void onEntityAttachingCapability(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof EntityShip ship) {
-            if (!ship.getCapability(EquipmentHandlerCapability.TOKEN).isPresent()) {
-                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.equipment_handler"), new EquipmentHandlerCapability(4));
-            }
-        }
+//        if (event.getObject() instanceof EntityShip ship) {
+//            if (!ship.getCapability(EquipmentHandlerCapability.TOKEN).isPresent()) {
+//                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.equipment_handler"), new EquipmentHandlerCapability(4));
+//            }
+//        }
 
         if (event.getObject() instanceof Player player) {
             if (player instanceof ServerPlayer serverPlayer) {

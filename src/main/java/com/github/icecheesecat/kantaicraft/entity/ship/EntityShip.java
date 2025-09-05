@@ -352,7 +352,9 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
 //                );
                 this.getBrain().getActiveNonCoreActivity().ifPresent(System.out::println);
                 this.getBrain().getMemory(MemoryModuleType.LOOK_TARGET).ifPresent(System.out::println);
+                this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(System.out::println);
                 System.out.println(this.getEmotionState());
+                System.out.println();
             }
         }
         else {
@@ -395,6 +397,10 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     public void setCanMelee(boolean canMelee) {
         this.entityData.set(DATA_CAN_MELEE, canMelee);
     }
+
+//    public boolean canMeleeAndRange() {
+//        this.getCapability()
+//    }
 
     public double getAttributeValue(Attribute attribute) {
         if (this.getAttributes().hasAttribute(attribute)) {
@@ -444,12 +450,6 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
                 }
         );
 //        this.getShipInventory().addItem(itemEntity.getItem());
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        this.getCapabilities().invalidate();
     }
 
     public boolean hasAttackableEquipment() {
@@ -550,13 +550,29 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         return this.inventory != null;
     }
 
+    /**
+     * {@link EquipmentHandler}
+     */
+    EquipmentHandler equipmentHandler = new EquipmentHandler(4);
+    LazyOptional<EquipmentHandler> equipmentHandlerLazyOptional = LazyOptional.of(() -> equipmentHandler);
+
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (capability == ForgeCapabilities.ITEM_HANDLER) {
             return lazyItemHandler.cast();
         }
+        if (capability == EquipmentHandlerCapability.TOKEN) {
+            return  equipmentHandlerLazyOptional.cast();
+        }
 
         return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        lazyItemHandler.invalidate();
+        equipmentHandlerLazyOptional.invalidate();
     }
 
     public SimpleContainer getShipInventory() {
@@ -655,6 +671,9 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
             super.actuallyHurt(pDamageSource, pDamageAmount);
         }
         else if (pDamageSource.getEntity() instanceof EntityShip entityShip) {
+            super.actuallyHurt(pDamageSource, pDamageAmount);
+        }
+        else if (pDamageSource.is(DamageTypes.PLAYER_ATTACK) && isShipOwner((Player) pDamageSource.getEntity())) {
             super.actuallyHurt(pDamageSource, pDamageAmount);
         }
         else {
@@ -768,5 +787,6 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         }
         return PlayState.CONTINUE;
     }
+
 
 }
