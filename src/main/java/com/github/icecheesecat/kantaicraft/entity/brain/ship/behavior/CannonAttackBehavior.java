@@ -4,7 +4,6 @@ import com.github.icecheesecat.kantaicraft.entity.ship.CannonShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.util.tickable.EquipmentActionHandler;
-import com.github.icecheesecat.kantaicraft.util.tickable.attack.CannonShipAttack;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,12 +25,13 @@ public class CannonAttackBehavior extends Behavior<CannonShip> {
 
     @Override
     protected void start(ServerLevel pLevel, CannonShip pEntity, long pGameTime) {
-        pEntity.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
+        this.target = pEntity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get();
+        pEntity.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(this.target, true));
     }
 
     @Override
     protected void tick(ServerLevel pLevel, CannonShip pOwner, long pGameTime) {
-        var action = (CannonShipAttack) actionHandler.getActionByWeaponTypeAndNotInCooldown(EquipmentType.SMALL_CANNON);
+        var action = actionHandler.getReadyCannonAction();
         if (action != null) {
             action.checkAndPerformCannon(target);
         }
@@ -39,32 +39,27 @@ public class CannonAttackBehavior extends Behavior<CannonShip> {
 
     @Override
     protected void stop(ServerLevel pLevel, CannonShip pEntity, long pGameTime) {
-        pEntity.getBrain().eraseMemory(MemoryModuleType.LOOK_TARGET);
         this.actionHandler = null;
     }
 
     @Override
     protected boolean canStillUse(ServerLevel pLevel, CannonShip pEntity, long pGameTime) {
-        return pEntity.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET) && pEntity.hasEnoughAmmo() && !actionHandler.getActionsByWeaponType(EquipmentType.SMALL_CANNON).isEmpty();
+        return pEntity.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET) && pEntity.canRangeAttack();
     }
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel pLevel, CannonShip cannonShip) {
-        var target = cannonShip.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET);
-        if (target.isEmpty()) return false;
-        else this.target = target.get();
 
-        if (!cannonShip.hasEnoughAmmo()) {
+        if (!cannonShip.canRangeAttack()) {
             return false;
         }
 
         // has action handler and cannon action
         var actionHandler = cannonShip.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get());
-        if (actionHandler.isPresent() && !actionHandler.get().getActionsByWeaponType(EquipmentType.SMALL_CANNON).isEmpty()) {
-            this.actionHandler = actionHandler.get();
-            return true;
-        }
+        if (actionHandler.isEmpty()) return false;
+        if (actionHandler.get().getActionsByWeaponType(EquipmentType.SMALL_CANNON).isEmpty()) return false;
 
-        return false;
+        this.actionHandler = actionHandler.get();
+        return true;
     }
 }
