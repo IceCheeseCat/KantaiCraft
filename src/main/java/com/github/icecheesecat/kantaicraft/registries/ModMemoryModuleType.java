@@ -31,5 +31,8 @@ public class ModMemoryModuleType {
     public static final RegistryObject<MemoryModuleType<List<LivingEntity>>> NEARBY_TARGETS = MEMORY_MODULE_TYPES.register("nearby_targets", () -> new MemoryModuleType<>(Optional.empty()));
     public static final RegistryObject<MemoryModuleType<EquipmentActionHandler>> ACTION_HANDLER = MEMORY_MODULE_TYPES.register("action_handler", () -> new MemoryModuleType<>(Optional.empty()));
     public static final RegistryObject<MemoryModuleType<List<ItemEntity>>> KILLED_ENTITY_DROPS = MEMORY_MODULE_TYPES.register("killed_entity_drops", () -> new MemoryModuleType<>(Optional.empty()));
+    public static final RegistryObject<MemoryModuleType<Unit>> IS_HOSTILE_SHIP = MEMORY_MODULE_TYPES.register("is_hostile_ship", () -> new MemoryModuleType<>(Optional.of(Codec.unit(Unit.INSTANCE))));
+    public static final RegistryObject<MemoryModuleType<Unit>> IS_PLAYER_SHIP = MEMORY_MODULE_TYPES.register("is_player_ship", () -> new MemoryModuleType<>(Optional.of(Codec.unit(Unit.INSTANCE))));
+
 
 }
