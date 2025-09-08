@@ -1,11 +1,9 @@
 package com.github.icecheesecat.kantaicraft.entity.brain.ship;
 
-import com.github.icecheesecat.kantaicraft.entity.brain.Util;
+import com.github.icecheesecat.kantaicraft.entity.brain.BrainActivities;
 import com.github.icecheesecat.kantaicraft.entity.ship.CannonShip;
-import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.registries.ModSensor;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.world.entity.ai.Brain;
@@ -23,13 +21,14 @@ public class CannonShipBrain {
 
     static {
         SENSOR_TYPES = List.of(
-                SensorType.NEAREST_ITEMS,
                 SensorType.NEAREST_LIVING_ENTITIES,
                 SensorType.NEAREST_PLAYERS,
                 SensorType.IS_IN_WATER,
                 ModSensor.SHIP_RESOURCES_SENSOR.get(),
                 ModSensor.SHIP_EQUIPMENT_SENSOR.get(),
-                ModSensor.PLAYER_SHIP_TARGETING_SENSOR.get());
+                ModSensor.PLAYER_SHIP_TARGETING_SENSOR.get(),
+                ModSensor.ATTACK_TARGET_VISIBILITY_SENSOR.get(),
+                ModSensor.MOB_DROPS_SENSOR.get());
         MEMORY_TYPES = List.of(
                 ModMemoryModuleType.IS_PLAYER_SHIP.get(),
                 ModMemoryModuleType.OWNERSHIP.get(),
@@ -48,17 +47,19 @@ public class CannonShipBrain {
                 MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
                 MemoryModuleType.PATH,
                 MemoryModuleType.ATTACK_TARGET,
-                ModMemoryModuleType.KILLED_ENTITY_DROPS.get());
+                ModMemoryModuleType.KILLED_ENTITY_DROPS.get(),
+                ModMemoryModuleType.CANT_SEE_TARGET_SINCE.get(),
+                ModMemoryModuleType.LAST_SAW_TARGET_POS.get());
     }
 
     public static Brain<CannonShip> makeBrain(CannonShip cannonShip, Dynamic<?> dyn) {
 
         Brain.Provider<CannonShip> brainProvider = Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
         Brain<CannonShip> brain = brainProvider.makeBrain(dyn);
-        Util.initCoreActivity(brain);
-        Util.initBurnOutActivity(cannonShip, brain);
-        Util.initFightActivity(cannonShip, brain);
-        Util.PlayerShip.initIdleActivity(cannonShip, brain);
+        BrainActivities.initCoreActivity(brain);
+        BrainActivities.initBurnOutActivity(cannonShip, brain);
+        BrainActivities.initFightActivity(cannonShip, brain);
+        BrainActivities.PlayerShip.initIdleActivity(cannonShip, brain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
         brain.setDefaultActivity(Activity.IDLE);
         brain.useDefaultActivity();

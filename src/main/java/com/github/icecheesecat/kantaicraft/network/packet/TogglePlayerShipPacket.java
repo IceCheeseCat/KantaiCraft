@@ -112,7 +112,7 @@ public class TogglePlayerShipPacket {
                 if (entity instanceof EntityShip ship) {
                     switch (syncType) {
                         case GUARD -> ship.setGuarding((Boolean) packet.value);
-                        case MELEE -> ship.setCanMelee((Boolean) packet.value);
+                        case MELEE -> ship.setForceMelee((Boolean) packet.value);
                         case EQUIPMENT -> {
                             ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
                                     equipmentHandler -> {

@@ -62,4 +62,6 @@ public abstract class ShipTickableAction implements IActionCooldown {
     public boolean isEmpty() {
         return this.maxCooldown == Integer.MAX_VALUE;
     }
+
+
 }

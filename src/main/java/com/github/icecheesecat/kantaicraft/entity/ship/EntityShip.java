@@ -69,14 +69,13 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class EntityShip extends PathfinderMob implements IPhysicalEntity, ISlotCheckerEntity, MenuProvider, GeoEntity {
 
     public static final EntityDataAccessor<Integer> DATA_AIRCRAFT = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Float> DATA_FUEL = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Float> DATA_AMMO = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
-    public static final EntityDataAccessor<Boolean> DATA_CAN_MELEE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> DATA_FORCE_MELEE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<ShipAnimationState> DATA_ANIMATION_STATE = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.ANIMATION_STATE_SERIALIZER.get());
     public static final EntityDataAccessor<EmotionState> DATA_EMOTION_STATE = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.EMOTION_STATE_SERIALIZER.get());
     public static final EntityDataAccessor<ShipLeveling> DATA_SHIP_LEVEL = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.SHIP_LEVEL_SERIALIZER.get());
@@ -107,7 +106,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         super.defineSynchedData();
 
         this.entityData.define(DATA_IS_GUARDING, false);
-        this.entityData.define(DATA_CAN_MELEE, false);
+        this.entityData.define(DATA_FORCE_MELEE, false);
         this.entityData.define(DATA_ANIMATION_STATE, ShipAnimationState.IDLE);
         this.entityData.define(DATA_EMOTION_STATE, EmotionState.NORMAL);
         this.entityData.define(DATA_SHIP_OWNER, Optional.empty());
@@ -223,11 +222,10 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
 
-        nbt.putBoolean("canmelee", this.entityData.get(DATA_CAN_MELEE));
+        nbt.putBoolean("forcemelee", this.entityData.get(DATA_FORCE_MELEE));
         nbt.putInt("data_aircraft", this.entityData.get(DATA_AIRCRAFT));
         nbt.putFloat("data_fuel", this.entityData.get(DATA_FUEL));
         nbt.putFloat("data_ammo", this.entityData.get(DATA_AMMO));
-        nbt.putBoolean("canmelee", this.entityData.get(DATA_CAN_MELEE));
         nbt.putInt("animation_state", this.entityData.get(DATA_ANIMATION_STATE).ordinal());
         nbt.putInt("previous_animation_state", this.prevAnimationShipAnimationState.ordinal());
         nbt.putInt("emotion_state", this.entityData.get(DATA_EMOTION_STATE).ordinal());
@@ -266,8 +264,8 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
 
-        if (nbt.contains("canmelee")) {
-            this.entityData.set(DATA_CAN_MELEE, nbt.getBoolean("canmelee"));
+        if (nbt.contains("forcemelee")) {
+            this.entityData.set(DATA_FORCE_MELEE, nbt.getBoolean("forcemelee"));
         }
         if (nbt.contains("data_aircraft")) {
             this.entityData.set(DATA_AIRCRAFT, nbt.getInt("data_aircraft"));
@@ -351,8 +349,12 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
 //                        System.out::println
 //                );
                 this.getBrain().getActiveNonCoreActivity().ifPresent(System.out::println);
-                this.getBrain().getMemory(MemoryModuleType.LOOK_TARGET).ifPresent(System.out::println);
+                System.out.println("walk target: ");
+                this.getBrain().getMemory(MemoryModuleType.WALK_TARGET).ifPresent(System.out::println);
+                System.out.println("attack target: ");
                 this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(System.out::println);
+                System.out.println("path: ");
+                this.getBrain().getMemory(MemoryModuleType.PATH).ifPresent(System.out::println);
                 System.out.println(this.getEmotionState());
                 System.out.println();
             }
@@ -390,12 +392,12 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         );
     }
 
-    public boolean canMelee() {
-        return this.entityData.get(DATA_CAN_MELEE);
+    public boolean forceMelee() {
+        return this.entityData.get(DATA_FORCE_MELEE);
     }
 
-    public void setCanMelee(boolean canMelee) {
-        this.entityData.set(DATA_CAN_MELEE, canMelee);
+    public void setForceMelee(boolean canMelee) {
+        this.entityData.set(DATA_FORCE_MELEE, canMelee);
     }
 
     public boolean canRangeAttack() {
@@ -524,7 +526,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     }
 
     public float getRunSpeedModifier() {
-        return this.entityData.get(DATA_SPEED_MODIFIER) * 2.0f;
+        return this.entityData.get(DATA_SPEED_MODIFIER) * 2.5f;
     }
 
     public ShipClass getShipClass() {

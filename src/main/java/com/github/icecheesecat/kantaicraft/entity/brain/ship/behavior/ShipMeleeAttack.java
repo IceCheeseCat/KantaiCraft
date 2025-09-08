@@ -36,6 +36,6 @@ public class ShipMeleeAttack extends SingleBehaviour<EntityShip> {
     @Override
     protected boolean checkExtraStartConditions(ServerLevel pLevel, EntityShip pOwner) {
         LivingEntity attackTarget = pOwner.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get();
-        return pOwner.isWithinMeleeAttackRange(attackTarget) && (pOwner.canMelee() || pOwner.distanceTo(attackTarget) < MELEE_IF_TARGET_TOO_CLOSE);
+        return pOwner.isWithinMeleeAttackRange(attackTarget);
     }
 }

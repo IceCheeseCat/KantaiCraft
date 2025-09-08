@@ -178,7 +178,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         gridLayout.addChild(new SyncedWidget<>(0, 0, 32, 32, this.ship, EntityShip.DATA_IS_GUARDING,
                         ImmutableMap.of(false, GUARD_ICON, true, GUARD_ICON), SyncType.GUARD, (b) -> !b),
                 0, indexOfCell++);
-        gridLayout.addChild(new SyncedWidget<>(0, 0, 32, 32, this.ship, EntityShip.DATA_CAN_MELEE,
+        gridLayout.addChild(new SyncedWidget<>(0, 0, 32, 32, this.ship, EntityShip.DATA_FORCE_MELEE,
                         ImmutableMap.of(false, MELEE_ICON, true, MELEE_ICON), SyncType.MELEE, (b) -> !b),
                 0, indexOfCell++);
         gridLayout.arrangeElements();

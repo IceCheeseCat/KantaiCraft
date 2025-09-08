@@ -1,10 +1,7 @@
 package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entity.brain.sensor.NearestEnemyPlaneSensor;
-import com.github.icecheesecat.kantaicraft.entity.brain.sensor.ShipEquipmentSensor;
-import com.github.icecheesecat.kantaicraft.entity.brain.sensor.ShipResourcesSensor;
-import com.github.icecheesecat.kantaicraft.entity.brain.sensor.TargetingNearbyVisibleEntitySensor;
+import com.github.icecheesecat.kantaicraft.entity.brain.sensor.*;
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.sensing.SensorType;
@@ -23,6 +20,8 @@ public class ModSensor {
     public static final RegistryObject<SensorType<TargetingNearbyVisibleEntitySensor>> PLAYER_SHIP_TARGETING_SENSOR = SENSOR_TYPES.register("sensor_type.player_ship_targeting", () -> new SensorType<>(() -> new TargetingNearbyVisibleEntitySensor(ModSensor::playerShipTargeting)));
     public static final RegistryObject<SensorType<ShipResourcesSensor>> SHIP_RESOURCES_SENSOR = SENSOR_TYPES.register("sensor_type.ship_resources_sensor", () -> new SensorType<>(ShipResourcesSensor::new));
     public static final RegistryObject<SensorType<ShipEquipmentSensor>> SHIP_EQUIPMENT_SENSOR = SENSOR_TYPES.register("sensor_type.ship_equipment_sensor", () -> new SensorType<>(ShipEquipmentSensor::new));
+    public static final RegistryObject<SensorType<AttackTargetVisibilitySensor>> ATTACK_TARGET_VISIBILITY_SENSOR = SENSOR_TYPES.register("sensor_type.attack_target_visibility_sensor", () -> new SensorType<>(AttackTargetVisibilitySensor::new));
+    public static final RegistryObject<SensorType<MobDropsSensor>> MOB_DROPS_SENSOR = SENSOR_TYPES.register("sensor_type.mob_drops_sensor", () -> new SensorType<>(MobDropsSensor::new));
 
     public static boolean playerShipTargeting(Entity entity) {
         return entity instanceof Enemy || (entity instanceof EntityShip entityShip && entityShip.isHostileShip());

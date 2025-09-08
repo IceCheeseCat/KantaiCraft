@@ -50,6 +50,10 @@ public class CannonAttackBehavior extends Behavior<CannonShip> {
     @Override
     protected boolean checkExtraStartConditions(ServerLevel pLevel, CannonShip cannonShip) {
 
+        if (cannonShip.forceMelee()) {
+            return false;
+        }
+
         if (!cannonShip.canRangeAttack()) {
             return false;
         }

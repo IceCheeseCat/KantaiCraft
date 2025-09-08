@@ -1,8 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entity.brain.ship;
 
-import com.github.icecheesecat.kantaicraft.entity.brain.Util;
+import com.github.icecheesecat.kantaicraft.entity.brain.BrainActivities;
 import com.github.icecheesecat.kantaicraft.entity.ship.CannonShip;
-import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.registries.ModSensor;
 import com.google.common.collect.ImmutableSet;
@@ -27,7 +26,8 @@ public class HostileCannonShipBrain {
                 SensorType.IS_IN_WATER,
                 ModSensor.SHIP_RESOURCES_SENSOR.get(),
                 ModSensor.SHIP_EQUIPMENT_SENSOR.get(),
-                ModSensor.HOSTILE_SHIP_TARGETING_SENSOR.get());
+                ModSensor.HOSTILE_SHIP_TARGETING_SENSOR.get(),
+                ModSensor.ATTACK_TARGET_VISIBILITY_SENSOR.get());
         MEMORY_TYPES = List.of(
                 ModMemoryModuleType.IS_HOSTILE_SHIP.get(),
                 ModMemoryModuleType.OUT_OF_FUEL.get(),
@@ -43,17 +43,19 @@ public class HostileCannonShipBrain {
                 MemoryModuleType.WALK_TARGET,
                 MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
                 MemoryModuleType.PATH,
-                MemoryModuleType.ATTACK_TARGET);
+                MemoryModuleType.ATTACK_TARGET,
+                ModMemoryModuleType.CANT_SEE_TARGET_SINCE.get(),
+                ModMemoryModuleType.LAST_SAW_TARGET_POS.get());
     }
 
     public static Brain<CannonShip> makeBrain(CannonShip cannonShip, Dynamic<?> dyn) {
 
         Brain.Provider<CannonShip> brainProvider = Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
         Brain<CannonShip> brain = brainProvider.makeBrain(dyn);
-        Util.initCoreActivity(brain);
-        Util.initBurnOutActivity(cannonShip, brain);
-        Util.initFightActivity(cannonShip, brain);
-        Util.HostileShip.initIdleActivity(cannonShip, brain);
+        BrainActivities.initCoreActivity(brain);
+        BrainActivities.initBurnOutActivity(cannonShip, brain);
+        BrainActivities.initFightActivity(cannonShip, brain);
+        BrainActivities.HostileShip.initIdleActivity(cannonShip, brain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
         brain.setDefaultActivity(Activity.CORE);
         brain.useDefaultActivity();

@@ -20,7 +20,7 @@ import net.minecraft.world.entity.schedule.Activity;
 
 import java.util.*;
 
-public class Util {
+public class BrainActivities {
 
     public static Optional<? extends LivingEntity> getAttackTargetFromNearbyTargets(EntityShip entityShip) {
         Optional<List<LivingEntity>> nearbyTargets = entityShip.getBrain().getMemory(ModMemoryModuleType.NEARBY_TARGETS.get());
@@ -32,7 +32,7 @@ public class Util {
     public static void initCoreActivity(Brain<? extends EntityShip> brain) {
         brain.addActivity(Activity.CORE,
                 ImmutableList.of(
-                        Pair.of(0, StopAttackingIfTargetInvalid.create()),
+                        Pair.of(0, new ShipAttackTargetRemovedIfInvalid()),
                         Pair.of(0, new ReloadEquipmentActions(true)),
                         Pair.of(1, new MoveToTargetSink()),
                         Pair.of(2, new PickUpKilledMobDrops()),
@@ -51,9 +51,10 @@ public class Util {
 
     public static void initFightActivity(CannonShip cannonShip, Brain<CannonShip> brain) {
         brain.addActivityAndRemoveMemoriesWhenStopped(Activity.FIGHT, ImmutableList.of(
-                Pair.of(0, new CannonAttackBehavior()),
-                Pair.of(1, new ShipMeleeAttack(20)),
-                Pair.of(1, new ShipWalkToAttackTarget(20)),
+                Pair.of(4, new CannonAttackBehavior()),
+                Pair.of(4, new ShipMeleeAttack(20)),
+                Pair.of(1, new ShipMeleeWalkToAttackTarget(1)),
+                Pair.of(1, new ShipRangeWalkToAttackTarget(1)),
                 Pair.of(0, SetEntityLookTarget.create(livingEntity -> cannonShip.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).filter(
                         attack_target -> attack_target.is(livingEntity)
                 ).isPresent(), (float) cannonShip.getAttributeValue(ModAttribute.LOS.get())))
@@ -82,7 +83,7 @@ public class Util {
         public static void initIdleActivity(EntityShip entityShip, Brain<? extends EntityShip> brain) {
             brain.addActivityWithConditions(Activity.IDLE,
                     ImmutableList.of(
-                            Pair.of(1, StartAttacking.create(Util::getAttackTargetFromNearbyTargets)),
+                            Pair.of(1, StartAttacking.create(BrainActivities::getAttackTargetFromNearbyTargets)),
                             Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60))),
                             Pair.of(10, new RunOne<>(ImmutableList.of(
                                     Pair.of(RandomStroll.stroll(0.4F), 2),
