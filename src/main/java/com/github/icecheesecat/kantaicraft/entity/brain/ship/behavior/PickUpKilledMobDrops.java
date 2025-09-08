@@ -4,19 +4,13 @@ import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Control Ship to pick up Mob drops they killed.
@@ -28,7 +22,7 @@ public class PickUpKilledMobDrops extends Behavior<EntityShip> {
     private ItemEntity itemEntity;
     private static final int TIMEOUT = 200;
 //    private int hasAttackTargetCountdown;
-    private static final int MAX_HAS_ATTACK_TARGET_COUNTDOWN = 5 * 20;
+//    private static final int MAX_HAS_ATTACK_TARGET_COUNTDOWN = 5 * 20;
     private WalkTarget walkTarget;
     private boolean stopped;
 
@@ -43,14 +37,14 @@ public class PickUpKilledMobDrops extends Behavior<EntityShip> {
     }
 
     @Override
-    protected void start(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
+    protected void start(@NotNull ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
         this.stopped = false;
         this.walkTarget = new WalkTarget(itemEntity.blockPosition(), 1.0f, 0);
         pEntity.getBrain().setMemory(MemoryModuleType.WALK_TARGET, this.walkTarget);
     }
 
     @Override
-    protected void tick(ServerLevel pLevel, EntityShip pOwner, long pGameTime) {
+    protected void tick(@NotNull ServerLevel pLevel, @NotNull EntityShip pOwner, long pGameTime) {
         if (this.itemEntity == null || this.itemEntity.isRemoved()) {
             this.stopped = true;
             return;
@@ -61,9 +55,7 @@ public class PickUpKilledMobDrops extends Behavior<EntityShip> {
             // memory remove same itemEntity
             pOwner.getBrain().getMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get()).ifPresent(
                     itemEntities -> {
-                        if (itemEntities.contains(itemEntity)) {
-                            itemEntities.remove(itemEntity);
-                        }
+                        itemEntities.remove(itemEntity);
                     }
             );
 
@@ -74,7 +66,7 @@ public class PickUpKilledMobDrops extends Behavior<EntityShip> {
     }
 
     @Override
-    protected void stop(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
+    protected void stop(@NotNull ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
         this.stopped = true;
         this.itemEntity = null;
         pEntity.getBrain().getMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get()).ifPresent(
@@ -83,7 +75,7 @@ public class PickUpKilledMobDrops extends Behavior<EntityShip> {
     }
 
     @Override
-    protected boolean canStillUse(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
+    protected boolean canStillUse(@NotNull ServerLevel pLevel, @NotNull EntityShip pEntity, long pGameTime) {
         if (changedWalkTarget(pEntity)) {
             return false;
         }
@@ -93,9 +85,7 @@ public class PickUpKilledMobDrops extends Behavior<EntityShip> {
     private boolean changedWalkTarget(LivingEntity entity) {
         if (entity.getBrain().getMemory(MemoryModuleType.WALK_TARGET).isPresent()) {
             var memWalkTarget = entity.getBrain().getMemory(MemoryModuleType.WALK_TARGET).get();
-            if (memWalkTarget.equals(this.walkTarget)) {
-                return false;
-            }
+            return !memWalkTarget.equals(this.walkTarget);
         }
 
         return true;
@@ -104,7 +94,7 @@ public class PickUpKilledMobDrops extends Behavior<EntityShip> {
      * Check whether there is room for a {@link net.minecraft.world.item.ItemStack} to insert into the ship inventory
      */
     @Override
-    protected boolean checkExtraStartConditions(ServerLevel pLevel, EntityShip pOwner) {
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel pLevel, EntityShip pOwner) {
         if (!pOwner.hasInventory()) {
             return false;
         }
