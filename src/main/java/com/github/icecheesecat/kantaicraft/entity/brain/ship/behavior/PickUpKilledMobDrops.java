@@ -15,6 +15,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class PickUpKilledMobDrops extends Behavior<EntityShip> {
 
     private ItemEntity itemEntity;
     private static final int TIMEOUT = 200;
-    private int hasAttackTargetCountdown;
+//    private int hasAttackTargetCountdown;
     private static final int MAX_HAS_ATTACK_TARGET_COUNTDOWN = 5 * 20;
     private WalkTarget walkTarget;
     private boolean stopped;
@@ -34,16 +35,15 @@ public class PickUpKilledMobDrops extends Behavior<EntityShip> {
     public PickUpKilledMobDrops() {
         super(
                 ImmutableMap.of(ModMemoryModuleType.KILLED_ENTITY_DROPS.get(), MemoryStatus.VALUE_PRESENT,
+                        MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT,
                         MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryStatus.REGISTERED,
                         MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED,
                         MemoryModuleType.PATH, MemoryStatus.REGISTERED),
                 TIMEOUT);
-        this.hasAttackTargetCountdown = MAX_HAS_ATTACK_TARGET_COUNTDOWN;
     }
 
     @Override
     protected void start(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
-//        this.tickReCalcPath = 0;
         this.stopped = false;
         this.walkTarget = new WalkTarget(itemEntity.blockPosition(), 1.0f, 0);
         pEntity.getBrain().setMemory(MemoryModuleType.WALK_TARGET, this.walkTarget);
@@ -71,38 +71,23 @@ public class PickUpKilledMobDrops extends Behavior<EntityShip> {
             this.stopped = true;
         }
 
-//        Path path;
-//        if (pOwner.getBrain().getMemory(MemoryModuleType.PATH).isPresent()) {
-//            path = pOwner.getBrain().getMemory(MemoryModuleType.PATH).get();
-//            System.out.println(path);
-//            for (var node: path.getClosedSet()) {
-//                System.out.println(" " + node.asBlockPos());
-//            }
-//        }
-
     }
 
     @Override
     protected void stop(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
         this.stopped = true;
         this.itemEntity = null;
+        pEntity.getBrain().getMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get()).ifPresent(
+                itemEntities -> itemEntities.remove(this.itemEntity)
+        ); // remove itemEntity from memory (for timeout)
     }
 
     @Override
     protected boolean canStillUse(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
-        if (pEntity.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET)) {
-            this.hasAttackTargetCountdown = MAX_HAS_ATTACK_TARGET_COUNTDOWN;
-            return false;
-        }
         if (changedWalkTarget(pEntity)) {
             return false;
         }
         return !this.stopped && this.itemEntity != null && !this.itemEntity.isRemoved();
-    }
-
-    @Override
-    protected boolean timedOut(long pGameTime) {
-        return false;
     }
 
     private boolean changedWalkTarget(LivingEntity entity) {
@@ -123,60 +108,21 @@ public class PickUpKilledMobDrops extends Behavior<EntityShip> {
         if (!pOwner.hasInventory()) {
             return false;
         }
-        if (pOwner.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET)) {
-            this.hasAttackTargetCountdown = MAX_HAS_ATTACK_TARGET_COUNTDOWN;
-            return false;
-        }
-        if (this.hasAttackTargetCountdown > 0) {
-            this.hasAttackTargetCountdown--;
-            return false;
-        }
 
         var optional = pOwner.getBrain().getMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get());
-        if (optional.isPresent()) {
-            var list = optional.get();
+        if (optional.isEmpty()) return false;
+        var itemEntities = optional.get();
+        if (itemEntities.isEmpty()) return false;
 
-            if (list.isEmpty()) return false;
-            this.eraseRemovedItemThanSort(list, pOwner); // handle removed itemEntity
-
-            // check ship inventory has room for the items on the ground
-            for (var ele: list) {
-                if (pOwner.getShipInventory().canAddItem(ele.getItem()) && ele.onGround()) {
-                    this.itemEntity = ele;
-                    return true;
-                }
-            }
-
-            if (this.itemEntity == null) {
-                return false;
-            }
-
-        }
-
-        return false;
-    }
-
-    private void eraseRemovedItemThanSort(List<ItemEntity> itemEntities, Entity owner) {
-
-        List<ItemEntity> removed = new ArrayList<>();
-        for (var itemEntity: itemEntities) {
-            if (itemEntity == null) {
-                removed.add(itemEntity);
-            }
-            else if (itemEntity.isRemoved()) {
-                removed.add(itemEntity);
-            }
-            else if (itemEntity.getItem().isEmpty()) {
-                removed.add(itemEntity);
+        // check ship inventory has room for the items on the ground
+        for (var ele: itemEntities) {
+            if (pOwner.getShipInventory().canAddItem(ele.getItem()) && ele.onGround()) {
+                this.itemEntity = ele;
+                return true;
             }
         }
 
-        itemEntities.removeAll(removed);
-        itemEntities.sort((ie1, ie2) -> {
-            if (ie1.distanceTo(owner) < ie2.distanceTo(owner)) return -1;
-            else if (ie1.distanceTo(owner) > ie2.distanceTo(owner)) return 1;
-            return 0;
-        });
-
+        return this.itemEntity != null;
     }
+
 }
