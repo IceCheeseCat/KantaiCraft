@@ -357,6 +357,8 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
                 this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(System.out::println);
                 System.out.println("path: ");
                 this.getBrain().getMemory(MemoryModuleType.PATH).ifPresent(System.out::println);
+                System.out.println("look target: ");
+                this.getBrain().getMemory(MemoryModuleType.LOOK_TARGET).ifPresent(System.out::println);
                 System.out.println(this.getEmotionState());
                 System.out.println();
             }
@@ -759,13 +761,14 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     protected static final RawAnimation WALKING_ANIMATION = RawAnimation.begin().thenLoop("walk");
     protected static final RawAnimation RUNNING_ANIMATION = RawAnimation.begin().thenLoop("run");
     protected static final RawAnimation BLINK_ANIMATION = RawAnimation.begin().thenPlay("blink");
-//    protected static final RawAnimation FACIAL_FEATURES = RawAnimation.begin().thenLoop("facial_features");
     protected static final RawAnimation NORMAL_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.normal");
     protected static final RawAnimation SHOCK_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.shock");
     protected static final RawAnimation SAD_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.sad");
     protected static final RawAnimation SERIOUS_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.serious");
     protected static final RawAnimation HAPPY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.happy");
     protected static final RawAnimation ANGRY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.angry");
+    protected static final RawAnimation BREATH_ANIMATION = RawAnimation.begin().thenLoop("breath");
+
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return animatableInstanceCache;
@@ -775,6 +778,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         controllers.add(new AnimationController<>(this, "walking", 5, this::moveAnimationController));
         controllers.add(new AnimationController<>(this, "expression", 5, this::expressionController));
         controllers.add(new AnimationController<>(this, "blink", 5, this::blinkAnimationController));
+        controllers.add(new AnimationController<>(this, "idle", 5, this::idleAnimationController));
     }
 
     protected <E extends EntityShip> PlayState moveAnimationController(final AnimationState<E> event) {
@@ -808,5 +812,16 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         return PlayState.CONTINUE;
     }
 
+    protected <E extends EntityShip> PlayState idleAnimationController(final AnimationState<E> event) {
+        if (this.getBrain().getActiveNonCoreActivity().isPresent() && this.getBrain().getActiveNonCoreActivity().get() == Activity.IDLE && !isWalkingOrRunning()) { // BUG : walking animation cannot play with breath animation (because they use same part of the body?)
+            return event.setAndContinue(BREATH_ANIMATION);
+        }
+
+        return PlayState.STOP;
+    }
+
+    private boolean isWalkingOrRunning() {
+        return this.walkAnimation.isMoving() && this.walkAnimation.speed() > 0.05f;
+    }
 
 }
