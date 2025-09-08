@@ -13,6 +13,7 @@ import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.github.icecheesecat.kantaicraft.network.packet.TogglePlayerShipPacket;
 import com.github.icecheesecat.kantaicraft.registries.*;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -32,6 +33,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -614,6 +616,19 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         return this.entityData.get(DATA_SHIP_OWNER);
     }
 
+    @Nullable
+    public LivingEntity getOwnerEntity() {
+        if (this.getShipOwner().isEmpty()) return null;
+        if (this.level() instanceof ClientLevel clientLevel) {
+            return null; // TODO request from client to get Entity id
+        }
+        else if (this.level() instanceof ServerLevel serverLevel) {
+            var entity = serverLevel.getEntity(this.getShipOwner().get());
+            return entity instanceof LivingEntity ? (LivingEntity) entity : null;
+        }
+        return null;
+    }
+
     public void setShipOwner(UUID uuid) {
         if (this.isHostileShip()) return;
         this.entityData.set(DATA_SHIP_OWNER, Optional.of(uuid));
@@ -627,6 +642,14 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     public boolean hasSameShipOwner(EntityShip entityShip) {
         if (this.isHostileShip()) return false;
         return this.getShipOwner().isPresent() && entityShip.getShipOwner().isPresent() && this.getShipOwner().get().compareTo(entityShip.getShipOwner().get()) == 0;
+    }
+
+    public boolean hasSameOwner(TamableAnimal tamableAnimal) {
+        if (this.getShipOwner().isEmpty()) return false;
+        UUID ownerUUID = this.getShipOwner().get();
+        if (tamableAnimal.getOwnerUUID() == null) return false;
+
+        return tamableAnimal.getOwnerUUID().compareTo(ownerUUID) == 0;
     }
 
     @Override
@@ -685,6 +708,9 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         }
         if (pTarget instanceof EntityShip entityShip) {
             return !this.hasSameShipOwner(entityShip);
+        }
+        if (pTarget instanceof TamableAnimal tamableAnimal) {
+            return !tamableAnimal.isTame();
         }
 
         return true;

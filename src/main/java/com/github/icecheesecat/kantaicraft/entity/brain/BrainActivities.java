@@ -65,7 +65,8 @@ public class BrainActivities {
         public static void initIdleActivity(EntityShip entityShip, Brain<? extends EntityShip> brain) {
             brain.addActivityWithConditions(Activity.IDLE,
                     ImmutableList.of(
-                            Pair.of(1, new GuardModeAttackTargeting()),
+                            Pair.of(1, new OwnerHurtTarget()),
+                            Pair.of(2, new GuardModeAttackTargeting()),
                             Pair.of(5, new FollowOwner(20, entityShip.getFollowOwnerDistance(), entityShip.getFollowTooCloseDistance())),
                             Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60))),
                             Pair.of(10, new RunOne<>(ImmutableList.of(
