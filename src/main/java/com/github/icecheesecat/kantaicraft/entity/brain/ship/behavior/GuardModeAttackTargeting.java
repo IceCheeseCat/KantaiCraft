@@ -31,4 +31,9 @@ public class GuardModeAttackTargeting extends SingleBehaviour<EntityShip> {
             pEntity.getNavigation().stop();
         }
     }
+
+    @Override
+    protected boolean checkExtraStartConditions(ServerLevel pLevel, EntityShip pOwner) {
+        return !pOwner.isSitDown();
+    }
 }

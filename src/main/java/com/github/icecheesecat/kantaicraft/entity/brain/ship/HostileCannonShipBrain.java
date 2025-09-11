@@ -45,7 +45,8 @@ public class HostileCannonShipBrain {
                 MemoryModuleType.PATH,
                 MemoryModuleType.ATTACK_TARGET,
                 ModMemoryModuleType.CANT_SEE_TARGET_SINCE.get(),
-                ModMemoryModuleType.LAST_SAW_TARGET_POS.get());
+                ModMemoryModuleType.LAST_SAW_TARGET_POS.get(),
+                MemoryModuleType.GAZE_COOLDOWN_TICKS);
     }
 
     public static Brain<CannonShip> makeBrain(CannonShip cannonShip, Dynamic<?> dyn) {

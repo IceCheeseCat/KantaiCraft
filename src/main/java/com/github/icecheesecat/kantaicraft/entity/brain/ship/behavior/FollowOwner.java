@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
+import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.behavior.PositionTracker;
 import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -18,8 +19,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
@@ -27,31 +30,55 @@ import java.util.Optional;
 /**
  * {@link EntityShip} of not hostile follow Owner Player
  */
-public class FollowOwner extends SingleBehaviour<EntityShip> {
+public class FollowOwner extends Behavior<EntityShip> {
     int closeEnough, tooClose;
-    public FollowOwner(int cooldown, int closeEnough, int tooClose) {
+    @Nullable LivingEntity entityOwner;
+    @Nullable Path path;
+    int recalculatePathTimeout;
+    final int TIMEOUT = 200;
+    public FollowOwner(int closeEnough, int tooClose) {
         super(ImmutableMap.of(
                 ModMemoryModuleType.IS_PLAYER_SHIP.get(), MemoryStatus.REGISTERED,
                 MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED,
-                MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED), cooldown);
+                MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED,
+                MemoryModuleType.PATH, MemoryStatus.REGISTERED), 400);
         this.closeEnough = closeEnough;
         this.tooClose = tooClose;
     }
 
     @Override
-    protected void singlePerform(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
-        var optional = playerPositionTracker(pEntity);
-        if (!optional.isEmpty()) {
-            PositionTracker positiontracker = optional.get();
-            if (teleportWhenDistanceGreaterThan(positiontracker.currentPosition(), pEntity.position(), 144.0d)) {
-                this.teleportToOwner(pLevel, positiontracker, pEntity);
-            }
-            else if (!pEntity.position().closerThan(positiontracker.currentPosition(), tooClose)) {
-                PositionTracker positiontracker1 = optional.get();
-                pEntity.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, positiontracker1);
-                pEntity.getBrain().setMemory(MemoryModuleType.WALK_TARGET,  new WalkTarget(positiontracker1, pEntity.getRunSpeedModifier(), tooClose));
+    protected void start(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
+        this.path = null;
+        this.recalculatePathTimeout = TIMEOUT;
+    }
+
+    @Override
+    protected void tick(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
+
+        pEntity.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(this.entityOwner, true));
+
+        if (teleportWhenDistanceGreaterThan(this.entityOwner.position(), pEntity.position(), 144.0d)) {
+            this.teleportToOwner(pLevel, this.entityOwner.blockPosition(), pEntity);
+        }
+        else if (!pEntity.position().closerThan(this.entityOwner.position(), tooClose)) {
+            this.path = pEntity.getNavigation().createPath(this.entityOwner, 1);
+            this.submitNewPath(pEntity, this.path);
+
+            if (pEntity.getNavigation().isStuck()) {
+                this.recalculatePathTimeout--;
             }
         }
+    }
+
+    @Override
+    protected void stop(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
+        pEntity.getBrain().eraseMemory(MemoryModuleType.PATH);
+        pEntity.getNavigation().stop();
+    }
+
+    private void submitNewPath(EntityShip entityShip, Path path) {
+        entityShip.getBrain().setMemory(MemoryModuleType.PATH, path);
+        entityShip.getNavigation().moveTo(path, entityShip.getRunSpeedModifier());
     }
 
     protected boolean teleportWhenDistanceGreaterThan(Vec3 playerPosition, Vec3 shipPosition, double distance) {
@@ -60,34 +87,34 @@ public class FollowOwner extends SingleBehaviour<EntityShip> {
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel pLevel, EntityShip pOwner) {
-        var playerPositionTracker = this.playerPositionTracker(pOwner);
-        return playerPositionTracker.isPresent() && pOwner.distanceToSqr(playerPositionTracker.get().currentPosition()) > this.closeEnough * this.closeEnough;
+        if (pOwner.isSitDown()) return false;
+
+        this.entityOwner = pOwner.getOwnerEntity();
+        if (this.entityOwner == null) return false;
+
+        return pOwner.distanceTo(this.entityOwner) > this.closeEnough;
     }
 
-    private Optional<PositionTracker> playerPositionTracker(LivingEntity livingEntity) {
-        if (livingEntity instanceof EntityShip entityShip) {
-            if (entityShip.getShipOwner().isPresent()) {
-                Player player = entityShip.level().getPlayerByUUID(entityShip.getShipOwner().get());
-                if (player != null) {
-                    return Optional.of(new BlockPosTracker(player.position()));
-                }
-            }
-        }
+    @Override
+    protected boolean canStillUse(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
+        if (this.entityOwner == null) return false;
+        boolean isCloseEnough = pEntity.distanceTo(this.entityOwner) < this.closeEnough;
+        boolean timeout = this.recalculatePathTimeout <= 0;
+        boolean finishedPathing = pEntity.getNavigation().isDone();
 
-        return Optional.empty();
+        return !isCloseEnough || !timeout || !finishedPathing;
     }
 
     /**
      * References from {@link FollowOwnerGoal} <p></p>
      * finds a stand able block around player's current blockPos 3 * 3 * 3
      */
-    private void teleportToOwner(Level level, PositionTracker playerPosition, EntityShip entityShip) {
-        BlockPos blockpos = playerPosition.currentBlockPosition();
+    private void teleportToOwner(Level level, BlockPos playerPosition, EntityShip entityShip) {
 
         for(int i = -3; i <= 3; ++i) {
             for (int j = -1; j <= 1; j++) {
                 for (int k = -3; k <= 3; k++) {
-                    boolean flag = this.maybeTeleportTo(blockpos.getX() + i, blockpos.getY() + j, blockpos.getZ() + k, level, playerPosition, entityShip);
+                    boolean flag = this.maybeTeleportTo(playerPosition.getX() + i, playerPosition.getY() + j, playerPosition.getZ() + k, level, playerPosition, entityShip);
                     if (flag) {
                         return;
                     }
@@ -98,8 +125,8 @@ public class FollowOwner extends SingleBehaviour<EntityShip> {
 
     }
 
-    private boolean maybeTeleportTo(int pX, int pY, int pZ, Level level, PositionTracker playerPosition, EntityShip entityShip) {
-        if (Math.abs((double)pX - playerPosition.currentPosition().x) < 2.0D && Math.abs((double)pZ - playerPosition.currentPosition().z) < 2.0D) {
+    private boolean maybeTeleportTo(int pX, int pY, int pZ, Level level, BlockPos playerPosition, EntityShip entityShip) {
+        if (Math.abs((double)pX - playerPosition.getX()) < 2.0D && Math.abs((double)pZ - playerPosition.getZ()) < 2.0D) {
             return false;
         } else if (!this.canTeleportTo(new BlockPos(pX, pY, pZ), level, entityShip)) {
             return false;

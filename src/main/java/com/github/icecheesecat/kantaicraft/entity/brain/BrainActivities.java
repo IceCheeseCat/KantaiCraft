@@ -14,6 +14,7 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.*;
+import net.minecraft.world.entity.ai.behavior.declarative.BehaviorBuilder;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.schedule.Activity;
@@ -32,6 +33,7 @@ public class BrainActivities {
     public static void initCoreActivity(Brain<? extends EntityShip> brain) {
         brain.addActivity(Activity.CORE,
                 ImmutableList.of(
+                        Pair.of(0, new CountDownCooldownTicks(MemoryModuleType.GAZE_COOLDOWN_TICKS)),
                         Pair.of(0, new ShipAttackTargetRemovedIfInvalid()),
                         Pair.of(0, new ReloadEquipmentActions(true)),
                         Pair.of(1, new MoveToTargetSink()),
@@ -67,12 +69,14 @@ public class BrainActivities {
                     ImmutableList.of(
                             Pair.of(1, new OwnerHurtTarget()),
                             Pair.of(2, new GuardModeAttackTargeting()),
-                            Pair.of(5, new FollowOwner(20, entityShip.getFollowOwnerDistance(), entityShip.getFollowTooCloseDistance())),
+                            Pair.of(5, new FollowOwner(entityShip.getFollowOwnerDistance(), entityShip.getFollowTooCloseDistance())),
                             Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60))),
-                            Pair.of(10, new RunOne<>(ImmutableList.of(
-                                    Pair.of(RandomStroll.stroll(entityShip.getNormalSpeedModifier()), 2),
-                                    Pair.of(SetWalkTargetFromLookTarget.create(entityShip.getNormalSpeedModifier(), 3), 2),
-                                    Pair.of(new DoNothing(30, 60), 1))))),
+                            Pair.of(8, new RunOne<>(ImmutableList.of(
+                                    Pair.of(BehaviorBuilder.triggerIf(livingEntity -> !livingEntity.isSitDown() ,RandomStroll.stroll(entityShip.getNormalSpeedModifier())), 2),
+                                    Pair.of(BehaviorBuilder.triggerIf(livingEntity -> !livingEntity.isSitDown() ,SetWalkTargetFromLookTarget.create(entityShip.getNormalSpeedModifier(), 3)), 2),
+                                    Pair.of(new RandomLookAround(UniformInt.of(150, 200), 30.0F, 0.0F, 15.0F), 2),
+                                    Pair.of(new DoNothing(30, 60), 1))))
+                    ),
                     ImmutableSet.of(Pair.of(ModMemoryModuleType.OUT_OF_FUEL.get(), MemoryStatus.VALUE_ABSENT))
             );
         }

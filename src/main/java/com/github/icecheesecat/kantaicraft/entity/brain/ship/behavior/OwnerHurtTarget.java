@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entity.brain.ship.behavior;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
+import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -30,6 +31,7 @@ public class OwnerHurtTarget extends Behavior<EntityShip> {
         this.ownerAttackedTarget = this.entityOwner.getLastHurtMob();
         if (this.ownerAttackedTarget == null) return false;
         if (!pOwner.canAttack(this.ownerAttackedTarget)) return false;
+        if (pOwner.isSitDown()) return false;
 
         return true;
     }
