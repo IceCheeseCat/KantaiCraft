@@ -7,14 +7,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
-import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
 import net.minecraft.world.entity.ai.behavior.EntityTracker;
-import net.minecraft.world.entity.ai.behavior.PositionTracker;
 import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,9 +20,6 @@ import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.Optional;
-
 /**
  * {@link EntityShip} of not hostile follow Owner Player
  */
@@ -34,8 +27,6 @@ public class FollowOwner extends Behavior<EntityShip> {
     int closeEnough, tooClose;
     @Nullable LivingEntity entityOwner;
     @Nullable Path path;
-    int recalculatePathTimeout;
-    final int TIMEOUT = 200;
     public FollowOwner(int closeEnough, int tooClose) {
         super(ImmutableMap.of(
                 ModMemoryModuleType.IS_PLAYER_SHIP.get(), MemoryStatus.REGISTERED,
@@ -49,12 +40,10 @@ public class FollowOwner extends Behavior<EntityShip> {
     @Override
     protected void start(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
         this.path = null;
-        this.recalculatePathTimeout = TIMEOUT;
     }
 
     @Override
     protected void tick(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
-
         pEntity.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(this.entityOwner, true));
 
         if (teleportWhenDistanceGreaterThan(this.entityOwner.position(), pEntity.position(), 144.0d)) {
@@ -64,9 +53,6 @@ public class FollowOwner extends Behavior<EntityShip> {
             this.path = pEntity.getNavigation().createPath(this.entityOwner, 1);
             this.submitNewPath(pEntity, this.path);
 
-            if (pEntity.getNavigation().isStuck()) {
-                this.recalculatePathTimeout--;
-            }
         }
     }
 
@@ -98,11 +84,10 @@ public class FollowOwner extends Behavior<EntityShip> {
     @Override
     protected boolean canStillUse(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
         if (this.entityOwner == null) return false;
-        boolean isCloseEnough = pEntity.distanceTo(this.entityOwner) < this.closeEnough;
-        boolean timeout = this.recalculatePathTimeout <= 0;
+        boolean isTooClose = pEntity.distanceTo(this.entityOwner) < this.tooClose;
         boolean finishedPathing = pEntity.getNavigation().isDone();
 
-        return !isCloseEnough || !timeout || !finishedPathing;
+        return !isTooClose || !finishedPathing;
     }
 
     /**
