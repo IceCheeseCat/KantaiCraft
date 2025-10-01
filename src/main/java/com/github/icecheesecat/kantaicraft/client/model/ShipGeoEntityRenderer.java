@@ -36,9 +36,8 @@ public class ShipGeoEntityRenderer<T extends EntityShip> extends GeoEntityRender
     @Override
     public void render(@NotNull T entity, float entityYaw, float partialTick, PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
         poseStack.pushPose();
-        poseStack.scale(0.35f, 0.35f, 0.35f);
+        poseStack.scale(this.scale, this.scale, this.scale);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         poseStack.popPose();
     }
 

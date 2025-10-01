@@ -18,6 +18,6 @@ public class InazumaModel<T extends Inazuma> extends GeoModel<T> {
 
     @Override
     public ResourceLocation getAnimationResource(Inazuma inazuma) {
-        return new ResourceLocation(KantaiCraft.MODID, "animations/animation.json");
+        return new ResourceLocation(KantaiCraft.MODID, "animations/inazuma.animation.json");
     }
 }

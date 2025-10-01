@@ -84,6 +84,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     public static final EntityDataAccessor<Float> DATA_SPEED_MODIFIER = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Boolean> DATA_IS_GUARDING = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Optional<UUID>> DATA_SHIP_OWNER = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.OPTIONAL_UUID);
+    public static final EntityDataAccessor<Boolean> DATA_SIT_DOWN = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
 
     public static final EntityDataAccessor<Integer> DATA_FOLLOW_DISTANCE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
 
@@ -135,6 +136,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         this.entityData.define(DATA_FUEL, 100.0f);
         this.entityData.define(DATA_AMMO, 0.0f);
         this.entityData.define(DATA_SHIP_LEVEL, ShipLeveling.levelZero());
+        this.entityData.define(DATA_SIT_DOWN, false);
     }
 
     protected abstract void initEquipments(EquipmentHandler equipmentHandler);
@@ -220,6 +222,14 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         this.entityData.set(DATA_FOLLOW_DISTANCE, num);
     }
 
+    public boolean isSitDown() {
+        return this.entityData.get(DATA_SIT_DOWN);
+    }
+
+    public void toggleSitDown() {
+        this.entityData.set(DATA_SIT_DOWN, !this.isSitDown());
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
@@ -240,6 +250,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         this.entityData.get(DATA_SHIP_OWNER).ifPresent(uuid ->
             nbt.putUUID("shipowner", uuid));
         nbt.putInt("follow_distance", this.getFollowOwnerDistance());
+        nbt.putBoolean("sit_down", this.isSitDown());
 
     }
 
@@ -308,6 +319,9 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         if (nbt.contains("follow_distance")) {
             this.setFollowOwnerDistance(nbt.getInt("follow_distance"));
         }
+        if (nbt.contains("sit_down")) {
+            this.entityData.set(DATA_SIT_DOWN, nbt.getBoolean("sit_down"));
+        }
     }
 
     protected void loadInventory(CompoundTag nbt) {
@@ -359,6 +373,8 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
                 this.getBrain().getMemory(MemoryModuleType.PATH).ifPresent(System.out::println);
                 System.out.println("look target: ");
                 this.getBrain().getMemory(MemoryModuleType.LOOK_TARGET).ifPresent(System.out::println);
+//                System.out.println("gaze tick: ");
+//                this.getBrain().getMemory(MemoryModuleType.GAZE_COOLDOWN_TICKS).ifPresent(System.out::println);
                 System.out.println(this.getEmotionState());
                 System.out.println();
             }
@@ -733,7 +749,15 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
             return InteractionResult.PASS;
         }
 
-        if (pPlayer.isShiftKeyDown() && pHand == InteractionHand.MAIN_HAND && pPlayer instanceof ServerPlayer serverPlayer) {
+        if (pHand == InteractionHand.MAIN_HAND && pPlayer.isShiftKeyDown()) {
+            if (!this.isSitDown())  {
+                orderedToSit();
+            }
+            this.toggleSitDown();
+            return InteractionResult.SUCCESS;
+        }
+
+        if (pHand == InteractionHand.MAIN_HAND && pPlayer instanceof ServerPlayer serverPlayer) {
             NetworkHooks.openScreen(serverPlayer, this, (friendlyByteBuf -> {
                 friendlyByteBuf.writeInt(this.getId());
             }));
@@ -741,6 +765,12 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         }
 
         return InteractionResult.PASS;
+    }
+
+    protected void orderedToSit() {
+        this.navigation.stop();
+        this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+        this.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
     }
 
     @Override
@@ -759,15 +789,16 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
 
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
     protected static final RawAnimation WALKING_ANIMATION = RawAnimation.begin().thenLoop("walk");
-    protected static final RawAnimation RUNNING_ANIMATION = RawAnimation.begin().thenLoop("run");
+//    protected static final RawAnimation RUNNING_ANIMATION = RawAnimation.begin().thenLoop("run");
     protected static final RawAnimation BLINK_ANIMATION = RawAnimation.begin().thenPlay("blink");
-    protected static final RawAnimation NORMAL_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.normal");
-    protected static final RawAnimation SHOCK_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.shock");
-    protected static final RawAnimation SAD_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.sad");
-    protected static final RawAnimation SERIOUS_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.serious");
-    protected static final RawAnimation HAPPY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.happy");
-    protected static final RawAnimation ANGRY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.angry");
+//    protected static final RawAnimation NORMAL_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.normal");
+//    protected static final RawAnimation SHOCK_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.shock");
+//    protected static final RawAnimation SAD_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.sad");
+//    protected static final RawAnimation SERIOUS_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.serious");
+//    protected static final RawAnimation HAPPY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.happy");
+//    protected static final RawAnimation ANGRY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.angry");
     protected static final RawAnimation BREATH_ANIMATION = RawAnimation.begin().thenLoop("breath");
+    protected static final RawAnimation DUCK_POSE_ANIMATION = RawAnimation.begin().thenPlayAndHold("duck_pose");
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
@@ -775,33 +806,34 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     }
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "walking", 5, this::moveAnimationController));
-        controllers.add(new AnimationController<>(this, "expression", 5, this::expressionController));
+        controllers.add(new AnimationController<>(this, "movement", 5, this::moveAnimationController));
+//        controllers.add(new AnimationController<>(this, "expression", 5, this::expressionController));
         controllers.add(new AnimationController<>(this, "blink", 5, this::blinkAnimationController));
         controllers.add(new AnimationController<>(this, "idle", 5, this::idleAnimationController));
+        controllers.add(new AnimationController<>(this, "sit", 5, this::sitAnimationController));
     }
 
     protected <E extends EntityShip> PlayState moveAnimationController(final AnimationState<E> event) {
         if (event.isMoving() || (this.walkAnimation.isMoving() && this.walkAnimation.speed() > 0.05f)) {
-            if (this.walkAnimation.speed() < 0.3f)
+//            if (this.walkAnimation.speed() < 0.3f)
                 return event.setAndContinue(WALKING_ANIMATION);
-            else
-                return event.setAndContinue(RUNNING_ANIMATION);
+//            else
+//                return event.setAndContinue(RUNNING_ANIMATION);
         }
 
         return PlayState.STOP;
     }
 
-    protected <E extends EntityShip> PlayState expressionController(final AnimationState<E> event) {
-        return switch (this.getEmotionState()) {
-            case NORMAL -> event.setAndContinue(NORMAL_EXPRESSION);
-            case HAPPY -> event.setAndContinue(HAPPY_EXPRESSION);
-            case SAD -> event.setAndContinue(SAD_EXPRESSION);
-            case ANGRY -> event.setAndContinue(ANGRY_EXPRESSION);
-            case SERIOUS -> event.setAndContinue(SERIOUS_EXPRESSION);
-            case SHOCK -> event.setAndContinue(SHOCK_EXPRESSION);
-        };
-    }
+//    protected <E extends EntityShip> PlayState expressionController(final AnimationState<E> event) {
+//        return switch (this.getEmotionState()) {
+//            case NORMAL -> event.setAndContinue(NORMAL_EXPRESSION);
+//            case HAPPY -> event.setAndContinue(HAPPY_EXPRESSION);
+//            case SAD -> event.setAndContinue(SAD_EXPRESSION);
+//            case ANGRY -> event.setAndContinue(ANGRY_EXPRESSION);
+//            case SERIOUS -> event.setAndContinue(SERIOUS_EXPRESSION);
+//            case SHOCK -> event.setAndContinue(SHOCK_EXPRESSION);
+//        };
+//    }
 
 
     protected <E extends EntityShip> PlayState blinkAnimationController(final AnimationState<E> event) {
@@ -817,6 +849,14 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
             return event.setAndContinue(BREATH_ANIMATION);
         }
 
+        return PlayState.STOP;
+    }
+
+    protected <E extends EntityShip> PlayState sitAnimationController(final AnimationState<E> event) {
+        if (this.isSitDown()) {
+            return event.setAndContinue(DUCK_POSE_ANIMATION);
+        }
+        event.getController().forceAnimationReset();
         return PlayState.STOP;
     }
 
