@@ -2,6 +2,7 @@ package com.github.icecheesecat.kantaicraft.entity.ship;
 
 import com.github.icecheesecat.kantaicraft.entity.brain.ship.CannonShipBrain;
 import com.github.icecheesecat.kantaicraft.entity.brain.ship.HostileCannonShipBrain;
+import com.github.icecheesecat.kantaicraft.entity.stance.EntityStance;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Dynamic;
@@ -16,8 +17,8 @@ public abstract class CannonShip extends EntityShip {
 
     public static final List<EquipmentType> EQUITABLE_TYPES = ImmutableList.of(EquipmentType.SMALL_CANNON);
 
-    public CannonShip(EntityType<? extends PathfinderMob> entityType,  ShipClass shipClass, Level level) {
-        super(entityType, shipClass, level, EQUITABLE_TYPES);
+    public CannonShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, EntityStance entityStance) {
+        super(entityType, shipClass, level, EQUITABLE_TYPES, entityStance);
     }
 
     @Override

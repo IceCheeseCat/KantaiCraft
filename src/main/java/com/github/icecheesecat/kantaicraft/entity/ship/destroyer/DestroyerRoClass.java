@@ -2,6 +2,7 @@ package com.github.icecheesecat.kantaicraft.entity.ship.destroyer;
 
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.entity.ship.DestroyerShip;
+import com.github.icecheesecat.kantaicraft.entity.stance.EntityStance;
 import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
@@ -11,9 +12,8 @@ import net.minecraft.world.level.Level;
 public class DestroyerRoClass extends DestroyerShip
 {
 
-	public DestroyerRoClass(EntityType<? extends PathfinderMob> entityType, Level level)
-	{
-		super(entityType, level);
+	public DestroyerRoClass(EntityType<? extends PathfinderMob> entityType, Level level, EntityStance entityStance) {
+		super(entityType, level, entityStance);
 	}
 
 	@Override
@@ -42,8 +42,4 @@ public class DestroyerRoClass extends DestroyerShip
 		return Rarity.COMMON;
 	}
 
-	@Override
-	public boolean isHostileShip() {
-		return false;
-	}
 }

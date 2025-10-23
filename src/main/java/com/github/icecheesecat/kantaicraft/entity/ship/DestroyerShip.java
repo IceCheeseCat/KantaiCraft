@@ -1,5 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entity.ship;
 
+import com.github.icecheesecat.kantaicraft.entity.stance.EntityStance;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
@@ -19,8 +20,8 @@ public abstract class DestroyerShip extends CannonShip {
 
     private static final SlotChecker GENERAL_DESTROYER_SLOT_CHECKER = SlotChecker.create(ImmutableSet.of(EquipmentType.SMALL_CANNON, EquipmentType.RADAR));
 
-    public DestroyerShip(EntityType<? extends PathfinderMob> entityType, Level level) {
-        super(entityType, ShipClass.DESTROYER, level);
+    public DestroyerShip(EntityType<? extends PathfinderMob> entityType, Level level, EntityStance entityStance) {
+        super(entityType, ShipClass.DESTROYER, level, entityStance);
     }
 
     @Override

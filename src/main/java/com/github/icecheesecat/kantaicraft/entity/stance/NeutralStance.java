@@ -7,18 +7,18 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class PlayerStance extends EntityStance {
+public class NeutralStance extends EntityStance {
 
-    public PlayerStance() {
-        super(Side.PLAYER);
+    public NeutralStance() {
+        super(Side.NEUTRAL);
     }
 
     @Override
     public void setupSyncedData(SynchedEntityData entityData, RandomSource random) {
-        entityData.define(EntityShip.DATA_AIRCRAFT, 0);
-        entityData.define(EntityShip.DATA_FUEL, 100.0f);
-        entityData.define(EntityShip.DATA_AMMO, 0.0f);
-        entityData.define(EntityShip.DATA_SHIP_LEVEL, ShipLeveling.levelZero());
+        entityData.define(EntityShip.DATA_AIRCRAFT, Integer.MAX_VALUE);
+        entityData.define(EntityShip.DATA_FUEL, Float.MAX_VALUE);
+        entityData.define(EntityShip.DATA_AMMO, Float.MAX_VALUE);
+        entityData.define(EntityShip.DATA_SHIP_LEVEL, ShipLeveling.createRandom(random));
     }
 
     @Override

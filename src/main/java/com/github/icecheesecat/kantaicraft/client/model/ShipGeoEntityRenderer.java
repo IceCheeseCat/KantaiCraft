@@ -17,9 +17,7 @@ public class ShipGeoEntityRenderer<T extends EntityShip> extends GeoEntityRender
     protected final float scale;
     protected final Color color;
     public static final Color HOSTILE_COLOR = Color.ofRGBA(0.1f, 0.1f, 0.1f, 1.0f);
-    public ShipGeoEntityRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model, float scale, float shadowRadius) {
-        this(renderManager, model, scale, shadowRadius, Color.WHITE);
-    }
+    public static final Color NORMAL_COLOR = Color.WHITE;
 
     public ShipGeoEntityRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model, float scale, float shadowRadius, Color color) {
         super(renderManager, model);

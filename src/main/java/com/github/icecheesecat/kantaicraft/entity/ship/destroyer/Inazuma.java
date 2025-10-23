@@ -2,6 +2,7 @@ package com.github.icecheesecat.kantaicraft.entity.ship.destroyer;
 
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.entity.ship.DestroyerShip;
+import com.github.icecheesecat.kantaicraft.entity.stance.EntityStance;
 import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
@@ -11,8 +12,8 @@ import software.bernie.geckolib.core.animatable.GeoAnimatable;
 
 public class Inazuma extends DestroyerShip {
 
-    public Inazuma(EntityType<? extends PathfinderMob> entityType, Level level) {
-        super(entityType, level);
+    public Inazuma(EntityType<? extends PathfinderMob> entityType, Level level, EntityStance entityStance) {
+        super(entityType, level, entityStance);
     }
 
     @Override
@@ -28,11 +29,6 @@ public class Inazuma extends DestroyerShip {
     @Override
     public Rarity getRarity() {
         return Rarity.UNCOMMON;
-    }
-
-    @Override
-    public boolean isHostileShip() {
-        return false;
     }
 
     @Override
