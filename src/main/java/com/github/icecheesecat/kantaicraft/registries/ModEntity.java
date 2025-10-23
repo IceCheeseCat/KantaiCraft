@@ -2,10 +2,7 @@ package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerIClass;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerRoClass;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.Ikazuchi;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.Inazuma;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.*;
 import com.github.icecheesecat.kantaicraft.entity.stance.EntityStance;
 import com.github.icecheesecat.kantaicraft.entity.stance.HostileStance;
 import com.github.icecheesecat.kantaicraft.entity.stance.PlayerStance;
@@ -38,6 +35,9 @@ public class ModEntity {
                 registerPlayerShip((entityType, level) -> new Inazuma(entityType, level, new PlayerStance()), "inazuma", 0.8f, 1.6f);
         public static final RegistryObject<EntityType<Ikazuchi>> IKAZUCHI =
                 registerPlayerShip((entityType, level) -> new Ikazuchi(entityType, level, new PlayerStance()), "ikazuchi", 0.8f, 1.6f);
+        public static final RegistryObject<EntityType<Hibiki>> HIBIKI =
+                registerPlayerShip((entityType, level) -> new Hibiki(entityType, level, new PlayerStance()), "hibiki", 0.8f, 1.6f);
+
     }
 
     public static class HostileShip {
@@ -47,9 +47,11 @@ public class ModEntity {
         public static final RegistryObject<EntityType<DestroyerIClass>> DESTROYER_I_CLASS =
                 registerHostileShip((entityType, level) -> new DestroyerIClass(entityType, level, new HostileStance()), "hostile_destroyer_i_class", 1.0f, 0.8f);
         public static final RegistryObject<EntityType<Inazuma>> INAZUMA =
-                registerPlayerShip((entityType, level) -> new Inazuma(entityType, level, new HostileStance()), "hostile_inazama", 0.8f, 1.4f);
+                registerHostileShip((entityType, level) -> new Inazuma(entityType, level, new HostileStance()), "hostile_inazama", 0.8f, 1.4f);
         public static final RegistryObject<EntityType<Ikazuchi>> IKAZUCHI =
-                registerPlayerShip((entityType, level) -> new Ikazuchi(entityType, level, new HostileStance()), "hostile_ikazuchi", 0.8f, 1.4f);
+                registerHostileShip((entityType, level) -> new Ikazuchi(entityType, level, new HostileStance()), "hostile_ikazuchi", 0.8f, 1.4f);
+        public static final RegistryObject<EntityType<Hibiki>> HIBIKI =
+                registerHostileShip((entityType, level) -> new Hibiki(entityType, level, new HostileStance()), "hostile_hibiki", 0.8f, 1.4f);
     }
 
 //    public static final RegistryObject<EntityType<EntityA6MZeroFighter>> A6M_Zero_Fighter = ENTITIES.register("a6m_zero_fighter", () ->

@@ -30,10 +30,12 @@ public class ModelEvent {
         event.registerEntityRenderer(ModEntity.PlayerShip.DESTROYER_RO_CLASS.get(), RendererDestroyerRo::new);
         event.registerEntityRenderer(ModEntity.PlayerShip.INAZUMA.get(), (context) -> new InazumaRenderer(context, ShipGeoEntityRenderer.NORMAL_COLOR));
         event.registerEntityRenderer(ModEntity.PlayerShip.IKAZUCHI.get(), (context) -> new IkazuchiRenderer(context, ShipGeoEntityRenderer.NORMAL_COLOR));
+        event.registerEntityRenderer(ModEntity.PlayerShip.HIBIKI.get(), (context) -> new HibikiRenderer(context, ShipGeoEntityRenderer.NORMAL_COLOR));
 
         // Hostile entity
         event.registerEntityRenderer(ModEntity.HostileShip.INAZUMA.get(), (context) -> new InazumaRenderer(context, ShipGeoEntityRenderer.HOSTILE_COLOR));
         event.registerEntityRenderer(ModEntity.HostileShip.IKAZUCHI.get(), (context) -> new IkazuchiRenderer(context, ShipGeoEntityRenderer.HOSTILE_COLOR));
+        event.registerEntityRenderer(ModEntity.HostileShip.HIBIKI.get(), (context) -> new HibikiRenderer(context, ShipGeoEntityRenderer.HOSTILE_COLOR));
 
         // BlockEntity
         event.registerBlockEntityRenderer(ModBlock.SHIPYARD_BETPYE.get(), ShipyardRenderer::new);

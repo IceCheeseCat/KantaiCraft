@@ -18,6 +18,8 @@ public class EntityAttributesEvent {
         event.put(ModEntity.HostileShip.INAZUMA.get(), ShipAttributes.DESTROYER_CLASS);
         event.put(ModEntity.PlayerShip.IKAZUCHI.get(), ShipAttributes.DESTROYER_CLASS);
         event.put(ModEntity.HostileShip.IKAZUCHI.get(), ShipAttributes.DESTROYER_CLASS);
+        event.put(ModEntity.PlayerShip.HIBIKI.get(), ShipAttributes.DESTROYER_CLASS);
+        event.put(ModEntity.HostileShip.HIBIKI.get(), ShipAttributes.DESTROYER_CLASS);
 
     }
 
