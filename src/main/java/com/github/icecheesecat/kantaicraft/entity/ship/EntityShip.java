@@ -4,7 +4,6 @@ import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.client.animation.util.BlinkAnimationControl;
-import com.github.icecheesecat.kantaicraft.entity.IPhysicalEntity;
 import com.github.icecheesecat.kantaicraft.entity.stance.EntityStance;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
@@ -73,7 +72,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class EntityShip extends PathfinderMob implements IPhysicalEntity, ISlotCheckerEntity, MenuProvider, GeoEntity {
+public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEntity, MenuProvider, GeoEntity {
 
     public static final EntityDataAccessor<Integer> DATA_AIRCRAFT = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Float> DATA_FUEL = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);

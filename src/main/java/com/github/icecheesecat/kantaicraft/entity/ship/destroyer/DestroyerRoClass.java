@@ -9,21 +9,10 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 
-public class DestroyerRoClass extends DestroyerShip
-{
+public class DestroyerRoClass extends DestroyerShip {
 
 	public DestroyerRoClass(EntityType<? extends PathfinderMob> entityType, Level level, EntityStance entityStance) {
 		super(entityType, level, entityStance);
-	}
-
-	@Override
-	public double getPhysicalTurnRate() {
-		return 0;
-	}
-
-	@Override
-	public double getPhysicalSpeed() {
-		return 0;
 	}
 
 	@Override

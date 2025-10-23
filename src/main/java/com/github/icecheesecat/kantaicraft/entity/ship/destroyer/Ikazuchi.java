@@ -30,14 +30,4 @@ public class Ikazuchi extends DestroyerShip {
         return Rarity.UNCOMMON;
     }
 
-    @Override
-    public double getPhysicalTurnRate() {
-        return 0;
-    }
-
-    @Override
-    public double getPhysicalSpeed() {
-        return 0;
-    }
-
 }
