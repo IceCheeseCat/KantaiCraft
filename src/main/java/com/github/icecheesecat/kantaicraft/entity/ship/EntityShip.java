@@ -5,6 +5,7 @@ import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.client.animation.util.BlinkAnimationControl;
 import com.github.icecheesecat.kantaicraft.entity.IPhysicalEntity;
+import com.github.icecheesecat.kantaicraft.entity.stance.EntityStance;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
 import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
@@ -93,15 +94,15 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     private final BlinkAnimationControl blinkAnimationControl = new BlinkAnimationControl(60, 80, this.random);
     private long lastEmotionChangedTick = -1;
     private final ShipClass shipClass;
+    private final EntityStance entityStance;
 
-    public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentType> equippableTypes) {
+    public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentType> equippableTypes, EntityStance entityStance) {
         super(entityType, level);
         this.equippableTypes = ImmutableList.copyOf(equippableTypes);
         this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(this::initEquipments);
-
         this.prevAnimationShipAnimationState = ShipAnimationState.IDLE;
-
         this.shipClass = shipClass;
+        this.entityStance = entityStance;
     }
 
     @Override
@@ -116,28 +117,22 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         this.entityData.define(DATA_SPEED_MODIFIER, 0.4f);
         this.entityData.define(DATA_FOLLOW_DISTANCE, 10);
         this.entityData.define(DATA_SIT_DOWN, false);
-
-        if (this.isHostileShip()) {
-            setupHostileShipData();
-        }
-        else {
-            setupPlayerShipData();
-        }
+        this.entityStance.setupSyncedData(this.entityData, this.random);
     }
 
-    protected void setupHostileShipData() {
-        this.entityData.define(DATA_AIRCRAFT, Integer.MAX_VALUE);
-        this.entityData.define(DATA_FUEL, Float.MAX_VALUE);
-        this.entityData.define(DATA_AMMO, Float.MAX_VALUE);
-        this.entityData.define(DATA_SHIP_LEVEL, ShipLeveling.createRandom(this.random));
-    }
-
-    protected void setupPlayerShipData() {
-        this.entityData.define(DATA_AIRCRAFT, 0);
-        this.entityData.define(DATA_FUEL, 100.0f);
-        this.entityData.define(DATA_AMMO, 0.0f);
-        this.entityData.define(DATA_SHIP_LEVEL, ShipLeveling.levelZero());
-    }
+//    protected void setupHostileShipData() {
+//        this.entityData.define(DATA_AIRCRAFT, Integer.MAX_VALUE);
+//        this.entityData.define(DATA_FUEL, Float.MAX_VALUE);
+//        this.entityData.define(DATA_AMMO, Float.MAX_VALUE);
+//        this.entityData.define(DATA_SHIP_LEVEL, ShipLeveling.createRandom(this.random));
+//    }
+//
+//    protected void setupPlayerShipData() {
+//        this.entityData.define(DATA_AIRCRAFT, 0);
+//        this.entityData.define(DATA_FUEL, 100.0f);
+//        this.entityData.define(DATA_AMMO, 0.0f);
+//        this.entityData.define(DATA_SHIP_LEVEL, ShipLeveling.levelZero());
+//    }
 
     protected abstract void initEquipments(EquipmentHandler equipmentHandler);
 
@@ -360,24 +355,20 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
             tickEmotionState(this.tickCount);
             changeEmotion();
 
-            if (!this.isHostileShip()) {
-//                this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
-//                        System.out::println
-//                );
-                this.getBrain().getActiveNonCoreActivity().ifPresent(System.out::println);
-                System.out.println("walk target: ");
-                this.getBrain().getMemory(MemoryModuleType.WALK_TARGET).ifPresent(System.out::println);
-                System.out.println("attack target: ");
-                this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(System.out::println);
-                System.out.println("path: ");
-                this.getBrain().getMemory(MemoryModuleType.PATH).ifPresent(System.out::println);
-                System.out.println("look target: ");
-                this.getBrain().getMemory(MemoryModuleType.LOOK_TARGET).ifPresent(System.out::println);
+            this.getBrain().getActiveNonCoreActivity().ifPresent(System.out::println);
+            System.out.println("walk target: ");
+            this.getBrain().getMemory(MemoryModuleType.WALK_TARGET).ifPresent(System.out::println);
+            System.out.println("attack target: ");
+            this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(System.out::println);
+            System.out.println("path: ");
+            this.getBrain().getMemory(MemoryModuleType.PATH).ifPresent(System.out::println);
+            System.out.println("look target: ");
+            this.getBrain().getMemory(MemoryModuleType.LOOK_TARGET).ifPresent(System.out::println);
 //                System.out.println("gaze tick: ");
 //                this.getBrain().getMemory(MemoryModuleType.GAZE_COOLDOWN_TICKS).ifPresent(System.out::println);
-                System.out.println(this.getEmotionState());
-                System.out.println();
-            }
+            System.out.println(this.getEmotionState());
+            System.out.println();
+
         }
         else {
             // client side
