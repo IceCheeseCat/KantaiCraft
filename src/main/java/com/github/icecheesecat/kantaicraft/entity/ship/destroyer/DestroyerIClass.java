@@ -17,18 +17,6 @@ public class DestroyerIClass extends DestroyerShip {
         super(entityType, level, entityStance);
     }
 
-    public static DestroyerIClass createPlayer(EntityType<? extends PathfinderMob> entityType, Level level) {
-        return new DestroyerIClass(entityType, level, new PlayerStance());
-    }
-
-    public static DestroyerIClass createHostile(EntityType<? extends PathfinderMob> entityType, Level level) {
-        return new DestroyerIClass(entityType, level, new HostileStance());
-    }
-
-    public static DestroyerIClass createNeutral(EntityType<? extends PathfinderMob> entityType, Level level) {
-        return new DestroyerIClass(entityType, level, new NeutralStance());
-    }
-
     @Override
     public double getPhysicalTurnRate() {
         return 0;
