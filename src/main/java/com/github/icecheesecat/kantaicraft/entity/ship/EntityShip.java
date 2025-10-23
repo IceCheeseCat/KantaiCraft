@@ -80,7 +80,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     public static final EntityDataAccessor<Float> DATA_AMMO = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Boolean> DATA_FORCE_MELEE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<ShipAnimationState> DATA_ANIMATION_STATE = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.ANIMATION_STATE_SERIALIZER.get());
-    public static final EntityDataAccessor<EmotionState> DATA_EMOTION_STATE = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.EMOTION_STATE_SERIALIZER.get());
+//    public static final EntityDataAccessor<EmotionState> DATA_EMOTION_STATE = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.EMOTION_STATE_SERIALIZER.get());
     public static final EntityDataAccessor<ShipLeveling> DATA_SHIP_LEVEL = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.SHIP_LEVEL_SERIALIZER.get());
     public static final EntityDataAccessor<Float> DATA_SPEED_MODIFIER = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Boolean> DATA_IS_GUARDING = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
@@ -112,7 +112,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         this.entityData.define(DATA_IS_GUARDING, false);
         this.entityData.define(DATA_FORCE_MELEE, false);
         this.entityData.define(DATA_ANIMATION_STATE, ShipAnimationState.IDLE);
-        this.entityData.define(DATA_EMOTION_STATE, EmotionState.NORMAL);
+//        this.entityData.define(DATA_EMOTION_STATE, EmotionState.NORMAL);
         this.entityData.define(DATA_SHIP_OWNER, Optional.empty());
         this.entityData.define(DATA_SPEED_MODIFIER, 0.4f);
         this.entityData.define(DATA_FOLLOW_DISTANCE, 10);
@@ -235,7 +235,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         nbt.putFloat("data_ammo", this.entityData.get(DATA_AMMO));
         nbt.putInt("animation_state", this.entityData.get(DATA_ANIMATION_STATE).ordinal());
         nbt.putInt("previous_animation_state", this.prevAnimationShipAnimationState.ordinal());
-        nbt.putInt("emotion_state", this.entityData.get(DATA_EMOTION_STATE).ordinal());
+//        nbt.putInt("emotion_state", this.entityData.get(DATA_EMOTION_STATE).ordinal());
         nbt.putLong("last_emotion_changed_tick", this.lastEmotionChangedTick);
         nbt.put("shiplevel", this.entityData.get(DATA_SHIP_LEVEL).serializeNBT());
         nbt.putFloat("speedmodifier", this.getNormalSpeedModifier());
@@ -290,9 +290,9 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         if (nbt.contains("previous_animation_state")) {
             this.prevAnimationShipAnimationState = ShipAnimationState.create(nbt.getInt("previous_animation_state"));
         }
-        if (nbt.contains("emotion_state")) {
-            this.entityData.set(DATA_EMOTION_STATE, EmotionState.create(nbt.getInt("emotion_state")));
-        }
+//        if (nbt.contains("emotion_state")) {
+//            this.entityData.set(DATA_EMOTION_STATE, EmotionState.create(nbt.getInt("emotion_state")));
+//        }
         if (nbt.contains("last_emotion_changed_tick")) {
             this.lastEmotionChangedTick = nbt.getLong("last_emotion_changed_tick");
         }
@@ -352,9 +352,6 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
                 }
             }
 
-            tickEmotionState(this.tickCount);
-            changeEmotion();
-
             this.getBrain().getActiveNonCoreActivity().ifPresent(System.out::println);
             System.out.println("walk target: ");
             this.getBrain().getMemory(MemoryModuleType.WALK_TARGET).ifPresent(System.out::println);
@@ -364,10 +361,6 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
             this.getBrain().getMemory(MemoryModuleType.PATH).ifPresent(System.out::println);
             System.out.println("look target: ");
             this.getBrain().getMemory(MemoryModuleType.LOOK_TARGET).ifPresent(System.out::println);
-//                System.out.println("gaze tick: ");
-//                this.getBrain().getMemory(MemoryModuleType.GAZE_COOLDOWN_TICKS).ifPresent(System.out::println);
-            System.out.println(this.getEmotionState());
-            System.out.println();
 
         }
         else {
@@ -483,32 +476,32 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
     }
 
 
-    public void setEmotionState(EmotionState emotionState, long lastEmotionChangedTick) {
-        if (!emotionState.isConsistent()) {
-            this.lastEmotionChangedTick = lastEmotionChangedTick;
-        }
-        this.entityData.set(DATA_EMOTION_STATE, emotionState);
-    }
+//    public void setEmotionState(EmotionState emotionState, long lastEmotionChangedTick) {
+//        if (!emotionState.isConsistent()) {
+//            this.lastEmotionChangedTick = lastEmotionChangedTick;
+//        }
+//        this.entityData.set(DATA_EMOTION_STATE, emotionState);
+//    }
+//
+//    public EmotionState getEmotionState() {
+//        return this.entityData.get(DATA_EMOTION_STATE);
+//    }
 
-    public EmotionState getEmotionState() {
-        return this.entityData.get(DATA_EMOTION_STATE);
-    }
-
-    private void tickEmotionState(long currentTick) {
-        if (this.getEmotionState().isConsistent()) return;
-        if (currentTick >= this.lastEmotionChangedTick + this.getEmotionState().getDuration()) {
-            this.setEmotionState(EmotionState.NORMAL, -1);
-        }
-    }
-
-    protected void changeEmotion() {
-        this.getBrain().getActiveNonCoreActivity().ifPresent(activity -> {
-                if (activity.equals(Activity.FIGHT)) {
-                    this.setEmotionState(EmotionState.SERIOUS, this.tickCount);
-                }
-            }
-        );
-    }
+//    private void tickEmotionState(long currentTick) {
+//        if (this.getEmotionState().isConsistent()) return;
+//        if (currentTick >= this.lastEmotionChangedTick + this.getEmotionState().getDuration()) {
+//            this.setEmotionState(EmotionState.NORMAL, -1);
+//        }
+//    }
+//
+//    protected void changeEmotion() {
+//        this.getBrain().getActiveNonCoreActivity().ifPresent(activity -> {
+//                if (activity.equals(Activity.FIGHT)) {
+//                    this.setEmotionState(EmotionState.SERIOUS, this.tickCount);
+//                }
+//            }
+//        );
+//    }
 
     public int getShipLevel() {
         return this.entityData.get(DATA_SHIP_LEVEL).getLevel();
