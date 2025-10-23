@@ -598,7 +598,13 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
 
     }
 
-    public abstract boolean isHostileShip();
+    public boolean isHostileShip() {
+        return this.entityStance.isHostileSide();
+    }
+
+    public boolean isPlayerShip() {
+        return this.entityStance.isPlayerSide();
+    }
 
     public boolean isGuarding() {
         return this.entityData.get(DATA_IS_GUARDING);

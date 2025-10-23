@@ -538,7 +538,7 @@
            The hook falls back to checking the permission level if the source of
            the command is not a ServerPlayer, such as for command blocks and
            functions.
- - 43.0.17 Allow FakePlayer to report its position (#8963)
+ - 43.0.17 Allow FakePlayer to report its side (#8963)
  - 43.0.16 Add alternate version of renderEntityInInventory to allow for directly specifying the angles (#8961)
  - 43.0.15 Add cancellable ToastAddEvent (#8952)
  - 43.0.14 Modify ScreenEvent.RenderInventoryMobEffects to allow moving the effect stack left or right (#8951)
@@ -554,7 +554,7 @@
  - 43.0.5  Fix `LivingEntity#isBlocking` to use `ToolActions#SHIELD_BLOCK` instead of `UseAnim#BLOCK` (#8933)
  - 43.0.4  Add Custom HolderSet Types allowing for logical combining of sets. (#8928)
  - 43.0.3  Add values to VersionSupportMatrix to support loading mods that restrict versions to 1.19.1 on 1.19.2 (#8946)
- - 43.0.2  Fix certain particles not updating their bounding box when their position changes (#8925)
+ - 43.0.2  Fix certain particles not updating their bounding box when their side changes (#8925)
  - 43.0.1  Update EventBus to address concurrency issue in ModLauncher Factory. Closes #8924
  - 43.0.0  1.19.2
 
@@ -585,7 +585,7 @@
 ====
  - 41.0.113 Allow faces of an "elements" model to be made emissive (#8890)
  - 41.0.112 Fix invalid channel names sent from the server causing the network thread to error. (#8902)
- - 41.0.111 Fix PlayerEvent.BreakSpeed using magic block position to signify invalid position. Closes #8906
+ - 41.0.111 Fix PlayerEvent.BreakSpeed using magic block side to signify invalid side. Closes #8906
  - 41.0.110 Fix cases where URIs would not work properly with JarInJar (#8900)
  - 41.0.109 Add new hook to allow modification of lightmap via Dimension special effects (#8863)
  - 41.0.108 Fix Forge's equipmentS2CPacket handling on play messages. (#8875)

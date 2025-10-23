@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entity.stance;
 
-public enum Position {
+public enum Side {
     NEUTRAL,
     HOSTILE,
     PLAYER

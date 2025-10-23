@@ -11,7 +11,7 @@ public class PlayerStance extends EntityStance {
 
 
     public PlayerStance() {
-        super(Position.PLAYER);
+        super(Side.PLAYER);
     }
 
     @Override
