@@ -1,18 +1,18 @@
 package com.github.icecheesecat.kantaicraft.client.model.model;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.Ikazuchi;
 import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.Inazuma;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
-import software.bernie.geckolib.model.GeoModel;
 
-public class InazumaModel<T extends Inazuma> extends DefaultedEntityGeoModel<T> {
-    public InazumaModel() {
-        super(new ResourceLocation(KantaiCraft.MODID, "inazuma"), true);
+public class IkazuchiModel<T extends Ikazuchi> extends DefaultedEntityGeoModel<T> {
+    public IkazuchiModel() {
+        super(new ResourceLocation(KantaiCraft.MODID, "ikazuchi"), true);
     }
-
+    
     @Override
-    public ResourceLocation getAnimationResource(Inazuma inazuma) {
+    public ResourceLocation getAnimationResource(Ikazuchi ikazuchi) {
         return new ResourceLocation(KantaiCraft.MODID, "animations/entity/destroyer.animation.json");
     }
 }

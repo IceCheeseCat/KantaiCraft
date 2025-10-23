@@ -4,9 +4,7 @@ package com.github.icecheesecat.kantaicraft.client.model;
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.block.renderer.ShipyardRenderer;
 import com.github.icecheesecat.kantaicraft.client.model.model.DestroyerRoClassModel;
-import com.github.icecheesecat.kantaicraft.client.model.renderer.InazumaRenderer;
-import com.github.icecheesecat.kantaicraft.client.model.renderer.RendererDestroyerRo;
-import com.github.icecheesecat.kantaicraft.client.model.renderer.HostileInazumaRenderer;
+import com.github.icecheesecat.kantaicraft.client.model.renderer.*;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,9 +29,11 @@ public class ModelEvent {
         // Entity
         event.registerEntityRenderer(ModEntity.PlayerShip.DESTROYER_RO_CLASS.get(), RendererDestroyerRo::new);
         event.registerEntityRenderer(ModEntity.PlayerShip.INAZUMA.get(), InazumaRenderer::new);
+        event.registerEntityRenderer(ModEntity.PlayerShip.IKAZUCHI.get(), IkazuchiRenderer::new);
 
-        // hostile entity
+        // Hostile entity
         event.registerEntityRenderer(ModEntity.HostileShip.INAZUMA.get(), HostileInazumaRenderer::new);
+        event.registerEntityRenderer(ModEntity.HostileShip.IKAZUCHI.get(), HostileIkazuchiRenderer::new);
 
         // BlockEntity
         event.registerBlockEntityRenderer(ModBlock.SHIPYARD_BETPYE.get(), ShipyardRenderer::new);

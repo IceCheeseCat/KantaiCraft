@@ -4,9 +4,11 @@ import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.entity.plane.fighter.EntityA6MZeroFighter;
 import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerIClass;
 import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerRoClass;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.Ikazuchi;
 import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.hostile.HostileDestroyerIClass;
 import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.Inazuma;
 import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.hostile.HostileDestroyerRoClass;
+import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.hostile.HostileIkazuchi;
 import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.hostile.HostileInazuma;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -33,6 +35,8 @@ public class ModEntity {
                 registerPlayerShip(DestroyerIClass::new, "destroyer_i_class", 1.0f, 0.8f);
         public static final RegistryObject<EntityType<Inazuma>> INAZUMA =
                 registerPlayerShip(Inazuma::new, "inazuma", 0.8f, 1.6f);
+        public static final RegistryObject<EntityType<Ikazuchi>> IKAZUCHI =
+                registerPlayerShip(Ikazuchi::new, "ikazuchi", 0.8f, 1.6f);
     }
 
     public static class HostileShip {
@@ -43,6 +47,8 @@ public class ModEntity {
                 registerHostileShip(HostileDestroyerIClass::new, "hostile_destroyer_i_class", 1.0f, 0.8f);
         public static final RegistryObject<EntityType<HostileInazuma>> INAZUMA =
                 registerPlayerShip(HostileInazuma::new, "hostile_inazama", 0.8f, 1.4f);
+        public static final RegistryObject<EntityType<HostileIkazuchi>> IKAZUCHI =
+                registerPlayerShip(HostileIkazuchi::new, "hostile_ikazuchi", 0.8f, 1.4f);
     }
 
 //    public static final RegistryObject<EntityType<EntityA6MZeroFighter>> A6M_Zero_Fighter = ENTITIES.register("a6m_zero_fighter", () ->

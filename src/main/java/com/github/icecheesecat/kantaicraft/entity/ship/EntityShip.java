@@ -115,6 +115,7 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         this.entityData.define(DATA_SHIP_OWNER, Optional.empty());
         this.entityData.define(DATA_SPEED_MODIFIER, 0.4f);
         this.entityData.define(DATA_FOLLOW_DISTANCE, 10);
+        this.entityData.define(DATA_SIT_DOWN, false);
 
         if (this.isHostileShip()) {
             setupHostileShipData();
@@ -136,7 +137,6 @@ public abstract class EntityShip extends PathfinderMob implements IPhysicalEntit
         this.entityData.define(DATA_FUEL, 100.0f);
         this.entityData.define(DATA_AMMO, 0.0f);
         this.entityData.define(DATA_SHIP_LEVEL, ShipLeveling.levelZero());
-        this.entityData.define(DATA_SIT_DOWN, false);
     }
 
     protected abstract void initEquipments(EquipmentHandler equipmentHandler);

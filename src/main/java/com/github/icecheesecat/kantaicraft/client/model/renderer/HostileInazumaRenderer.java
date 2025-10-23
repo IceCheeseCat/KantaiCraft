@@ -9,7 +9,11 @@ import software.bernie.geckolib.core.object.Color;
 public class HostileInazumaRenderer extends ShipGeoEntityRenderer<HostileInazuma> {
 
     public HostileInazumaRenderer(EntityRendererProvider.Context renderManager) {
-        super(renderManager, new InazumaModel(), 0.35f, 0.4f, HOSTILE_COLOR);
+        super(renderManager, new InazumaModel<>(), 0.35f, 0.4f, HOSTILE_COLOR);
     }
 
+    @Override
+    public Color getRenderColor(HostileInazuma animatable, float partialTick, int packedLight) {
+        return super.getRenderColor(animatable, partialTick, packedLight);
+    }
 }

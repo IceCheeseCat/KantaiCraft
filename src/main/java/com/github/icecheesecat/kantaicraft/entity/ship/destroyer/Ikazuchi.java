@@ -1,0 +1,47 @@
+package com.github.icecheesecat.kantaicraft.entity.ship.destroyer;
+
+import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.entity.ship.DestroyerShip;
+import com.github.icecheesecat.kantaicraft.equipment.Equipments;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
+
+public class Ikazuchi extends DestroyerShip {
+
+    public Ikazuchi(EntityType<? extends PathfinderMob> entityType, Level level) {
+        super(entityType, level);
+    }
+
+    @Override
+    protected void initEquipments(EquipmentHandler equipmentHandler) {
+        equipmentHandler.setEquipment(0, Equipments.getEquipmentInstanceById(101), this);
+    }
+
+    @Override
+    public int getProcessTime() {
+        return 400;
+    }
+
+    @Override
+    public Rarity getRarity() {
+        return Rarity.UNCOMMON;
+    }
+
+    @Override
+    public boolean isHostileShip() {
+        return false;
+    }
+
+    @Override
+    public double getPhysicalTurnRate() {
+        return 0;
+    }
+
+    @Override
+    public double getPhysicalSpeed() {
+        return 0;
+    }
+
+}
