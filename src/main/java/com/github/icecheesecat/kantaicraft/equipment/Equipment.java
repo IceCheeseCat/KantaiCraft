@@ -10,27 +10,24 @@ import java.util.Map;
 public class Equipment implements INBTSerializable<CompoundTag> {
 
     protected Map<EquipmentStatType, Double> stats = new HashMap<>();
-    private int id;
-    private Component name;
+//    private int id;
+//    private Component name;
+//    private EquipmentType type;
+    private EquipmentProperties equipmentProperties;
     private int level;
-    private EquipmentType type;
     private final DefaultValue defaultValue;
 
     public static final int MAX_LEVEL = 10;
 
     public Equipment(Equipment equipment) {
-        this.id = equipment.id;
-        this.name = equipment.name;
-        this.type = equipment.type;
+        this.equipmentProperties = equipment.equipmentProperties;
         this.level= equipment.level;
         this.stats = new HashMap<>(equipment.stats);
         this.defaultValue = equipment.defaultValue;
     }
 
     public Equipment(EquipmentProperties equipmentProperties, DefaultValue defaultValue) {
-        this.id = equipmentProperties.getId();
-        this.name = equipmentProperties.getComponentName();
-        this.type = equipmentProperties.getEquipmentType();
+        this.equipmentProperties = equipmentProperties;
         this.level = 0;
         this.defaultValue = defaultValue;
     }
@@ -49,11 +46,11 @@ public class Equipment implements INBTSerializable<CompoundTag> {
     }
 
     public int getId() {
-        return id;
+        return equipmentProperties.getId();
     }
 
     public Component getName() {
-        return this.name;
+        return equipmentProperties.getComponentName();
     }
 
     public int getLevel() {
@@ -69,7 +66,7 @@ public class Equipment implements INBTSerializable<CompoundTag> {
     }
 
     public EquipmentType getType() {
-        return this.type;
+        return this.equipmentProperties.getEquipmentType();
     }
 
     public Equipment asCopy() {
@@ -81,7 +78,7 @@ public class Equipment implements INBTSerializable<CompoundTag> {
     }
 
     public boolean isTypeOf(EquipmentType type) {
-        return this.type == type;
+        return getType() == type;
     }
 
     @Override
@@ -94,10 +91,8 @@ public class Equipment implements INBTSerializable<CompoundTag> {
             nbt.putDouble("equipment_stat_value_" + i, entry_set.get(i).getValue());
         }
 
-        nbt.putInt("id", this.id);
         nbt.putInt("level", this.level);
-        nbt.putInt("equipment_type", this.type.ordinal());
-        nbt.putString("name", Component.Serializer.toJson(name));
+        nbt.put("properties", this.equipmentProperties.serializeNBT());
 
         return nbt;
     }
@@ -113,10 +108,8 @@ public class Equipment implements INBTSerializable<CompoundTag> {
             );
         }
 
-        this.id = nbt.getInt("id");
         this.level = nbt.getInt("level");
-        this.type = EquipmentType.get(nbt.getInt("equipment_type"));
-        this.name = Component.Serializer.fromJson(nbt.getString("name"));
+        this.equipmentProperties.deserializeNBT(nbt.getCompound("properties"));
 
     }
 }

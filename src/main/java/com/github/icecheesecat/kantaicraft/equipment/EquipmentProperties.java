@@ -1,8 +1,10 @@
 package com.github.icecheesecat.kantaicraft.equipment;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.common.util.INBTSerializable;
 
-public class EquipmentProperties {
+public class EquipmentProperties implements INBTSerializable<CompoundTag> {
 
     public static final EquipmentProperties EMPTY = new EquipmentProperties(-1, Component.translatable("equipment.empty"), EquipmentType.NONE);
     public static final EquipmentProperties __12cm_single_gun_mount__ = new EquipmentProperties(101, Component.translatable("small_cannon.12cm_single_gun_mount"), EquipmentType.SMALL_CANNON);
@@ -78,8 +80,8 @@ public class EquipmentProperties {
     public static final EquipmentProperties __type_95_depth_charge__ = new EquipmentProperties(1105, Component.translatable("anti_submarine.type_95_depth_charge"), EquipmentType.ANTI_SUBMARINE);
     public static final EquipmentProperties __type_2_depth_charge__ = new EquipmentProperties(1106, Component.translatable("anti_submarine.type_2_depth_charge"), EquipmentType.ANTI_SUBMARINE);
 
-    private final int id;
-    private final Component name;
+    private int id;
+    private Component name;
     private EquipmentType equipmentType;
 
     private EquipmentProperties(int id, Component name, EquipmentType equipmentType) {
@@ -104,4 +106,20 @@ public class EquipmentProperties {
         return this.equipmentType;
     }
 
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putInt("id", this.id);
+        nbt.putInt("equipment_type", this.equipmentType.ordinal());
+        nbt.putString("name", Component.Serializer.toJson(name));
+
+        return nbt;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        this.id = nbt.getInt("id");
+        this.equipmentType = EquipmentType.get(nbt.getInt("equipment_type"));
+        this.name = Component.Serializer.fromJson(nbt.getString("name"));
+    }
 }
