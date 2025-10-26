@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entity.brain.ship.behavior;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.CannonShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.CannonEntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.util.tickable.EquipmentActionHandler;
@@ -12,7 +12,7 @@ import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 
-public class CannonAttackBehavior extends Behavior<CannonShip> {
+public class CannonAttackBehavior extends Behavior<CannonEntityShip> {
 
     EquipmentActionHandler actionHandler;
     LivingEntity target;
@@ -24,13 +24,13 @@ public class CannonAttackBehavior extends Behavior<CannonShip> {
     }
 
     @Override
-    protected void start(ServerLevel pLevel, CannonShip pEntity, long pGameTime) {
+    protected void start(ServerLevel pLevel, CannonEntityShip pEntity, long pGameTime) {
         this.target = pEntity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get();
         pEntity.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(this.target, true));
     }
 
     @Override
-    protected void tick(ServerLevel pLevel, CannonShip pOwner, long pGameTime) {
+    protected void tick(ServerLevel pLevel, CannonEntityShip pOwner, long pGameTime) {
         var action = actionHandler.getReadyCannonAction();
         if (action != null) {
             action.checkAndPerformCannon(target);
@@ -38,17 +38,17 @@ public class CannonAttackBehavior extends Behavior<CannonShip> {
     }
 
     @Override
-    protected void stop(ServerLevel pLevel, CannonShip pEntity, long pGameTime) {
+    protected void stop(ServerLevel pLevel, CannonEntityShip pEntity, long pGameTime) {
         this.actionHandler = null;
     }
 
     @Override
-    protected boolean canStillUse(ServerLevel pLevel, CannonShip pEntity, long pGameTime) {
+    protected boolean canStillUse(ServerLevel pLevel, CannonEntityShip pEntity, long pGameTime) {
         return pEntity.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET) && pEntity.canRangeAttack();
     }
 
     @Override
-    protected boolean checkExtraStartConditions(ServerLevel pLevel, CannonShip cannonShip) {
+    protected boolean checkExtraStartConditions(ServerLevel pLevel, CannonEntityShip cannonShip) {
 
         if (cannonShip.forceMelee()) {
             return false;

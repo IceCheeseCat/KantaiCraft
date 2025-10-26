@@ -14,7 +14,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ShipSpawnEgg extends ForgeSpawnEggItem {

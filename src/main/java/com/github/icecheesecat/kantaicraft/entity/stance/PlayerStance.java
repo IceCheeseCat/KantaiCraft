@@ -7,14 +7,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class PlayerStance extends EntityStance {
-
-    public PlayerStance() {
-        super(Side.PLAYER);
-    }
+public interface PlayerStance extends Stance {
 
     @Override
-    public void setupSyncedData(SynchedEntityData entityData, RandomSource random) {
+    default void setupSyncedDataFromStance(SynchedEntityData entityData, RandomSource random) {
         entityData.define(EntityShip.DATA_AIRCRAFT, 0);
         entityData.define(EntityShip.DATA_FUEL, 100.0f);
         entityData.define(EntityShip.DATA_AMMO, 0.0f);
@@ -22,12 +18,27 @@ public class PlayerStance extends EntityStance {
     }
 
     @Override
-    public boolean isHostileToPlayer(Player player) {
+    default boolean isHostileToPlayer(Player player) {
         return false;
     }
 
     @Override
-    public boolean isHostileToLiving(LivingEntity livingEntity) {
+    default boolean isHostileToLiving(LivingEntity livingEntity) {
+        return false;
+    }
+
+    @Override
+    default boolean isPlayerSide() {
+        return true;
+    }
+
+    @Override
+    default boolean isHostileSide() {
+        return false;
+    }
+
+    @Override
+    default boolean isNeutralSide() {
         return false;
     }
 }

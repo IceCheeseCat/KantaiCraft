@@ -1,8 +1,6 @@
 package com.github.icecheesecat.kantaicraft.client.model;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.Inazuma;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

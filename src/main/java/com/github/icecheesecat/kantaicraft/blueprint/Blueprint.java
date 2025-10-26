@@ -4,7 +4,6 @@ import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.ShipClass;
 import com.github.icecheesecat.kantaicraft.entity.ship.ShipLeveling;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -59,12 +58,12 @@ public class Blueprint implements INBTSerializable<CompoundTag> {
         return blueprint;
     }
 
-    public static Blueprint create(EntityShip ship) {
-        return new Blueprint(ship.getProcessTime(), ship.getRarity(), ship.getShipLeveling(), ship.getShipClass(), ship.getEncodeId());
+    public static Blueprint create(EntityShip entityShip) {
+        return new Blueprint(entityShip.getProcessTime(), entityShip.getRarity(), entityShip.getShipLeveling(), entityShip.getShipClass(), entityShip.getEncodeId());
     }
 
-    public static Blueprint createWithLevelZero(EntityShip ship) {
-        var blueprint = create(ship);
+    public static Blueprint createWithLevelZero(EntityShip entityShip) {
+        var blueprint = create(entityShip);
         blueprint.setShipLevel(ShipLeveling.levelZero());
         return blueprint;
     }

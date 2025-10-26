@@ -56,7 +56,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 
     private static final int BACKGROUND_COLOR = FastColor.ARGB32.color(102, 0, 0, 0);
 
-    private final EntityShip ship;
+    private final EntityShip entityShip;
 
     private GridLayout controlLayout;
     private GridLayout statLayout;
@@ -69,7 +69,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     public ShipScreen(ShipMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
 
-        this.ship = this.getMenu().getEntityShip();
+        this.entityShip = this.getMenu().getEntityShip();
 //        this.ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
 //            handler -> {
 //                this.equipmentHandler = handler;
@@ -175,10 +175,10 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         GridLayout gridLayout = new GridLayout(x, y);
         gridLayout.defaultCellSetting().padding(4);
         int indexOfCell = 0;
-        gridLayout.addChild(new SyncedWidget<>(0, 0, 32, 32, this.ship, EntityShip.DATA_IS_GUARDING,
+        gridLayout.addChild(new SyncedWidget<>(0, 0, 32, 32, this.entityShip, EntityShip.DATA_IS_GUARDING,
                         ImmutableMap.of(false, GUARD_ICON, true, GUARD_ICON), SyncType.GUARD, (b) -> !b),
                 0, indexOfCell++);
-        gridLayout.addChild(new SyncedWidget<>(0, 0, 32, 32, this.ship, EntityShip.DATA_FORCE_MELEE,
+        gridLayout.addChild(new SyncedWidget<>(0, 0, 32, 32, this.entityShip, EntityShip.DATA_FORCE_MELEE,
                         ImmutableMap.of(false, MELEE_ICON, true, MELEE_ICON), SyncType.MELEE, (b) -> !b),
                 0, indexOfCell++);
         gridLayout.arrangeElements();
@@ -212,11 +212,11 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         gridLayout.defaultCellSetting().padding(0);
 
         int index = 0;
-        gridLayout.addChild(new IconWithTextElement(0, 0, HEART_ICON, 4, String.valueOf(this.ship.getHealth())), 0, index++);
-        gridLayout.addChild(new IconWithTextElement(0, 0, FIREPOWER_ICON, 4, String.valueOf(this.ship.getAttributeValue(ModAttribute.FIREPOWER.get()))), 0, index++);
-        gridLayout.addChild(new IconWithTextElement(0, 0, TORPEDO_ICON, 4, String.valueOf(this.ship.getAttributeValue(ModAttribute.TORPEDO.get()))), 0, index++);
-        gridLayout.addChild(new IconWithTextElement(0, 0, ANTIAIR_ICON, 4, String.valueOf(this.ship.getAttributeValue(ModAttribute.ANTIAIR.get()))), 0, index++);
-        gridLayout.addChild(new IconWithTextElement(0, 0, ASW_ICON, 4, String.valueOf(this.ship.getAttributeValue(ModAttribute.ASW.get()))), 0, index++);
+        gridLayout.addChild(new IconWithTextElement(0, 0, HEART_ICON, 4, String.valueOf(this.entityShip.getHealth())), 0, index++);
+        gridLayout.addChild(new IconWithTextElement(0, 0, FIREPOWER_ICON, 4, String.valueOf(this.entityShip.getAttributeValue(ModAttribute.FIREPOWER.get()))), 0, index++);
+        gridLayout.addChild(new IconWithTextElement(0, 0, TORPEDO_ICON, 4, String.valueOf(this.entityShip.getAttributeValue(ModAttribute.TORPEDO.get()))), 0, index++);
+        gridLayout.addChild(new IconWithTextElement(0, 0, ANTIAIR_ICON, 4, String.valueOf(this.entityShip.getAttributeValue(ModAttribute.ANTIAIR.get()))), 0, index++);
+        gridLayout.addChild(new IconWithTextElement(0, 0, ASW_ICON, 4, String.valueOf(this.entityShip.getAttributeValue(ModAttribute.ASW.get()))), 0, index++);
         gridLayout.arrangeElements();
         gridLayout.visitChildren(this::addRenderableLayoutElement);
         gridLayout.visitChildren((le) -> {
@@ -275,7 +275,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         int eyeY = (int) (MODEL_Y - MODEL_SCALE );
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, -500);
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, MODEL_X, MODEL_Y, MODEL_SCALE, MODEL_X - mouseX, eyeY - mouseY, this.ship);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, MODEL_X, MODEL_Y, MODEL_SCALE, MODEL_X - mouseX, eyeY - mouseY, this.entityShip);
         guiGraphics.pose().popPose();
     }
 

@@ -30,16 +30,16 @@ public class ServerEvent {
     @SubscribeEvent
     public static void onLivingDeathDrops(LivingDropsEvent event) {
 
-        if (event.getSource().getEntity() instanceof EntityShip ship) {
-            if (!ship.hasInventory()) return;
+        if (event.getSource().getEntity() instanceof EntityShip entityShip) {
+            if (!entityShip.hasInventory()) return;
 
             List<ItemEntity> drops = new ArrayList<>(event.getDrops());
 
-            if (!ship.getBrain().hasMemoryValue(ModMemoryModuleType.KILLED_ENTITY_DROPS.get())) {
-                 ship.getBrain().setMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get(), drops);
+            if (!entityShip.getBrain().hasMemoryValue(ModMemoryModuleType.KILLED_ENTITY_DROPS.get())) {
+                 entityShip.getBrain().setMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get(), drops);
             }
             else {
-                ship.getBrain().getMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get()).ifPresent(
+                entityShip.getBrain().getMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get()).ifPresent(
                     itemEntities -> itemEntities.addAll(drops)
                 );
             }
@@ -59,7 +59,7 @@ public class ServerEvent {
             if (!(damageEntity instanceof LivingEntity)) {
                 return;
             }
-            if (damageEntity instanceof EntityShip damageFromShip && damageFromShip.isShipOwner(player)) {
+            if (damageEntity instanceof EntityShip damageFromEntityShip && damageFromEntityShip.isShipOwner(player)) {
                 return;
             }
             Level level = event.getEntity().level();

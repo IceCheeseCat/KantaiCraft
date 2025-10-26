@@ -24,11 +24,11 @@ public class ModSensor {
     public static final RegistryObject<SensorType<MobDropsSensor>> MOB_DROPS_SENSOR = SENSOR_TYPES.register("sensor_type.mob_drops_sensor", () -> new SensorType<>(MobDropsSensor::new));
 
     public static boolean playerShipTargeting(Entity entity) {
-        return entity instanceof Enemy || (entity instanceof EntityShip entityShip && entityShip.isHostileShip());
+        return entity instanceof Enemy || (entity instanceof EntityShip entityShip && entityShip.isHostileSide());
     }
 
     public static boolean hostileShipTargeting(Entity entity) {
-        return entity instanceof Enemy || entity instanceof Player || (entity instanceof EntityShip entityShip && !entityShip.isHostileShip());
+        return entity instanceof Enemy || entity instanceof Player || (entity instanceof EntityShip entityShip && !entityShip.isHostileSide());
     }
 
 }

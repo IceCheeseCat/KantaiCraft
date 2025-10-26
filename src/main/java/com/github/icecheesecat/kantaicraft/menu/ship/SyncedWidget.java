@@ -18,14 +18,14 @@ public class SyncedWidget<T> extends AbstractWidget {
 
     Map<T, ResourceLocation> resources;
     ResourceLocation selected;
-    EntityShip ship;
+    EntityShip entityShip;
     EntityDataAccessor<T> accessor;
     Function<T, T> operation;
     SyncType syncType;
 
-    public SyncedWidget(int pX, int pY, int pWidth, int pHeight, EntityShip ship, EntityDataAccessor<T> accessor, Map<T, ResourceLocation> resources, SyncType syncType, Function<T, T> operation) {
+    public SyncedWidget(int pX, int pY, int pWidth, int pHeight, EntityShip entityShip, EntityDataAccessor<T> accessor, Map<T, ResourceLocation> resources, SyncType syncType, Function<T, T> operation) {
         super(pX, pY, pWidth, pHeight, Component.empty());
-        this.ship = ship;
+        this.entityShip = entityShip;
         this.accessor = accessor;
         this.resources = resources;
         this.operation = operation;
@@ -34,7 +34,7 @@ public class SyncedWidget<T> extends AbstractWidget {
 
     @Override
     protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        T t = ship.getEntityData().get(accessor);
+        T t = entityShip.getEntityData().get(accessor);
         pGuiGraphics.blit(resources.get(t), this.getX(), this.getY(), 0, 0, 32, 32, 32, 32);
     }
 
@@ -45,13 +45,13 @@ public class SyncedWidget<T> extends AbstractWidget {
 
     @Override
     public void onClick(double pMouseX, double pMouseY) {
-        T t = ship.getEntityData().get(accessor);
+        T t = entityShip.getEntityData().get(accessor);
 
-        ModPacketHandler.INSTANCE.sendToServer(new TogglePlayerShipPacket(syncType, ship.getId(), operation.apply(t)));
+        ModPacketHandler.INSTANCE.sendToServer(new TogglePlayerShipPacket(syncType, entityShip.getId(), operation.apply(t)));
     }
 
     public boolean controlOn() {
-        if (this.ship.getEntityData().get(accessor) instanceof Boolean bool) {
+        if (this.entityShip.getEntityData().get(accessor) instanceof Boolean bool) {
             return bool;
         }
         return false;

@@ -18,7 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
 public class EquipmentWidget extends AbstractWidget {
-    private EntityShip ship;
+    private EntityShip entityShip;
     private EquipmentHandler equipmentHandler;
     private int index;
     private static final int WHITE = FastColor.ARGB32.color(255, 0, 0, 0);
@@ -36,16 +36,16 @@ public class EquipmentWidget extends AbstractWidget {
     private static final int CHILD_OFFSET_Y = height;
     public WidgetState state;
 
-    public EquipmentWidget(int pX, int pY, EntityShip ship, int index) {
+    public EquipmentWidget(int pX, int pY, EntityShip entityShip, int index) {
         super(pX, pY, width, height, Component.empty());
         this.imageStartX = this.getX() + 30;
         this.imageStartY = this.getY();
         this.nameStartX = this.getX() + 60;
         this.levelTextStartX = this.getX() + 10;
         this.textCenterY = this.getY() + height / 2;
-        this.ship = ship;
+        this.entityShip = entityShip;
         this.index = index;
-        ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
+        entityShip.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
                 handler -> this.equipmentHandler = handler
         );
 
@@ -69,10 +69,10 @@ public class EquipmentWidget extends AbstractWidget {
     public void onClick(double pMouseX, double pMouseY) {
         switch (this.state) {
             case EMPTY_EQUIPMENT, UPGRADE_EQUIPMENT -> {
-                ModPacketHandler.INSTANCE.sendToServer(new C2SEquipmentOptionsPacket(this.ship.getId(), this.index, this.equipmentHandler.getEquipment(index).getId()));
+                ModPacketHandler.INSTANCE.sendToServer(new C2SEquipmentOptionsPacket(this.entityShip.getId(), this.index, this.equipmentHandler.getEquipment(index).getId()));
             }
             case LEVEL_UP_EQUIPMENT -> {
-                ModPacketHandler.INSTANCE.sendToServer(new TogglePlayerShipPacket(SyncType.LEVEL_UP_EQUIPMENT, this.ship.getId(), 1, (byte) this.index));
+                ModPacketHandler.INSTANCE.sendToServer(new TogglePlayerShipPacket(SyncType.LEVEL_UP_EQUIPMENT, this.entityShip.getId(), 1, (byte) this.index));
             }
         }
     }

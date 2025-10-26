@@ -4,7 +4,7 @@ import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.client.animation.util.BlinkAnimationControl;
-import com.github.icecheesecat.kantaicraft.entity.stance.EntityStance;
+import com.github.icecheesecat.kantaicraft.entity.stance.Stance;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
 import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
@@ -72,7 +72,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEntity, MenuProvider, GeoEntity {
+public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEntity, MenuProvider, GeoEntity, Stance {
 
     public static final EntityDataAccessor<Integer> DATA_AIRCRAFT = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Float> DATA_FUEL = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
@@ -93,15 +93,13 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     private final BlinkAnimationControl blinkAnimationControl = new BlinkAnimationControl(60, 80, this.random);
     private long lastEmotionChangedTick = -1;
     private final ShipClass shipClass;
-    private final EntityStance entityStance;
 
-    public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentType> equippableTypes, EntityStance entityStance) {
+    public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentType> equippableTypes) {
         super(entityType, level);
         this.equippableTypes = ImmutableList.copyOf(equippableTypes);
         this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(this::initEquipments);
         this.prevAnimationShipAnimationState = ShipAnimationState.IDLE;
         this.shipClass = shipClass;
-        this.entityStance = entityStance;
     }
 
     @Override
@@ -116,7 +114,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.entityData.define(DATA_SPEED_MODIFIER, 0.4f);
         this.entityData.define(DATA_FOLLOW_DISTANCE, 10);
         this.entityData.define(DATA_SIT_DOWN, false);
-        this.entityStance.setupSyncedData(this.entityData, this.random);
+        this.setupSyncedDataFromStance(entityData, this.random);
     }
 
 //    protected void setupHostileShipData() {
@@ -518,7 +516,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     // save blueprint to itemstack nbt
     public Blueprint makeBlueprint() {
-        return isHostileShip() ? Blueprint.createWithLevelZero(this) :
+        return isHostileSide() ? Blueprint.createWithLevelZero(this) :
                 Blueprint.create(this);
     }
 
@@ -540,7 +538,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> new InvWrapper(inventory));
 
     protected SimpleContainer createShipInventory() {
-        return this.isHostileShip() ? null : new SimpleContainer(36);
+        return this.isHostileSide() ? null : new SimpleContainer(36);
     }
 
     public boolean hasInventory() {
@@ -597,12 +595,8 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     }
 
-    public final boolean isHostileShip() {
-        return this.entityStance.isHostileSide();
-    }
-
     public boolean isPlayerShip() {
-        return this.entityStance.isPlayerSide();
+        return this.isPlayerSide();
     }
 
     public boolean isGuarding() {
@@ -637,17 +631,17 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     public void setShipOwner(UUID uuid) {
-        if (this.isHostileShip()) return;
+        if (this.isHostileSide()) return;
         this.entityData.set(DATA_SHIP_OWNER, Optional.of(uuid));
     }
 
     public boolean isShipOwner(Player player) {
-        if (this.isHostileShip()) return false;
+        if (this.isHostileSide()) return false;
         return this.getShipOwner().isPresent() && this.getShipOwner().get().compareTo(player.getUUID()) == 0;
     }
 
     public boolean hasSameShipOwner(EntityShip entityShip) {
-        if (this.isHostileShip()) return false;
+        if (this.isHostileSide()) return false;
         return this.getShipOwner().isPresent() && entityShip.getShipOwner().isPresent() && this.getShipOwner().get().compareTo(entityShip.getShipOwner().get()) == 0;
     }
 
@@ -734,7 +728,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         if (pPlayer.level().isClientSide) {
             return InteractionResult.PASS;
         }
-        if (this.isHostileShip()) {
+        if (this.isHostileSide()) {
             return InteractionResult.PASS;
         }
 

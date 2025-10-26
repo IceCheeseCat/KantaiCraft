@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.entity.brain;
 
 import com.github.icecheesecat.kantaicraft.entity.brain.ship.behavior.ReloadEquipmentActions;
 import com.github.icecheesecat.kantaicraft.entity.brain.ship.behavior.*;
-import com.github.icecheesecat.kantaicraft.entity.ship.CannonShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.CannonEntityShip;
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
@@ -42,7 +42,7 @@ public class BrainActivities {
                 ));
     }
 
-    public static void initBurnOutActivity(EntityShip cannonShip, Brain<? extends EntityShip> brain) {
+    public static void initBurnOutActivity(EntityShip cannonEntityShip, Brain<? extends EntityShip> brain) {
         brain.addActivityWithConditions(ModActitvity.BURN_OUT_FUELS.get(),
                 ImmutableList.of(
                         Pair.of(0, new SoutBurnOut())
@@ -51,7 +51,7 @@ public class BrainActivities {
         );
     }
 
-    public static void initFightActivity(CannonShip cannonShip, Brain<CannonShip> brain) {
+    public static void initFightActivity(CannonEntityShip cannonShip, Brain<CannonEntityShip> brain) {
         brain.addActivityAndRemoveMemoriesWhenStopped(Activity.FIGHT, ImmutableList.of(
                 Pair.of(4, new CannonAttackBehavior()),
                 Pair.of(4, new ShipMeleeAttack(20)),

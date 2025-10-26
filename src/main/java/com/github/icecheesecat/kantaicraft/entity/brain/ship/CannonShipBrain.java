@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entity.brain.ship;
 
 import com.github.icecheesecat.kantaicraft.entity.brain.BrainActivities;
-import com.github.icecheesecat.kantaicraft.entity.ship.CannonShip;
+import com.github.icecheesecat.kantaicraft.entity.ship.CannonEntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.registries.ModSensor;
 import com.google.common.collect.ImmutableSet;
@@ -16,7 +16,7 @@ import java.util.*;
 
 public class CannonShipBrain {
 
-    private static final List<SensorType<? extends Sensor<? super CannonShip>>> SENSOR_TYPES;
+    private static final List<SensorType<? extends Sensor<? super CannonEntityShip>>> SENSOR_TYPES;
     private static final List<MemoryModuleType<?>> MEMORY_TYPES;
 
     static {
@@ -53,10 +53,10 @@ public class CannonShipBrain {
                 MemoryModuleType.GAZE_COOLDOWN_TICKS);
     }
 
-    public static Brain<CannonShip> makeBrain(CannonShip cannonShip, Dynamic<?> dyn) {
+    public static Brain<CannonEntityShip> makeBrain(CannonEntityShip cannonShip, Dynamic<?> dyn) {
 
-        Brain.Provider<CannonShip> brainProvider = Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
-        Brain<CannonShip> brain = brainProvider.makeBrain(dyn);
+        Brain.Provider<CannonEntityShip> brainProvider = Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+        Brain<CannonEntityShip> brain = brainProvider.makeBrain(dyn);
         BrainActivities.initCoreActivity(brain);
         BrainActivities.initBurnOutActivity(cannonShip, brain);
         BrainActivities.initFightActivity(cannonShip, brain);

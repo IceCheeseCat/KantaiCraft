@@ -26,17 +26,17 @@ public class SelectionWidget extends AbstractWidget {
     private static final int BACKGROUND_COLOR = FastColor.ARGB32.color(255, 0, 166, 199);
 
     Equipment equipment;
-    EntityShip ship;
+    EntityShip entityShip;
     int index;
 
-    public SelectionWidget(int pX, int pY, Equipment equipment, EntityShip ship, int index) {
+    public SelectionWidget(int pX, int pY, Equipment equipment, EntityShip entityShip, int index) {
         super(pX, pY, width, height, Component.empty());
         this.imageStartX = this.getX() + 10;
         this.imageStartY = this.getY();
         this.nameStartX = this.getX() + 20;
         this.textCenterY = this.getY() + height / 2;
         this.equipment = equipment;
-        this.ship = ship;
+        this.entityShip = entityShip;
         this.index = index;
     }
 
@@ -49,7 +49,7 @@ public class SelectionWidget extends AbstractWidget {
 
     @Override
     public void onClick(double pMouseX, double pMouseY) {
-        ModPacketHandler.INSTANCE.sendToServer(new TogglePlayerShipPacket(SyncType.EQUIPMENT, this.ship.getId(), this.equipment, (byte) this.index));
+        ModPacketHandler.INSTANCE.sendToServer(new TogglePlayerShipPacket(SyncType.EQUIPMENT, this.entityShip.getId(), this.equipment, (byte) this.index));
     }
 
     @Override

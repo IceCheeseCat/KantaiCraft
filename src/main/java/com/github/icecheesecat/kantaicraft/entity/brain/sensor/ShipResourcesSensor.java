@@ -23,12 +23,12 @@ public class ShipResourcesSensor extends Sensor<EntityShip> {
         shipResourceCheck(pEntity, ModMemoryModuleType.OUT_OF_AIRCRAFT.get(), pEntity::hasNoAirCraft);
     }
 
-    private void shipResourceCheck(EntityShip playerShip, MemoryModuleType<Unit> memory, Supplier<Boolean> condition) {
+    private void shipResourceCheck(EntityShip playerEntityShip, MemoryModuleType<Unit> memory, Supplier<Boolean> condition) {
         if (condition.get()) {
-            playerShip.getBrain().setMemory(memory, Unit.INSTANCE);
+            playerEntityShip.getBrain().setMemory(memory, Unit.INSTANCE);
         }
         else {
-            playerShip.getBrain().eraseMemory(memory);
+            playerEntityShip.getBrain().eraseMemory(memory);
         }
     }
 

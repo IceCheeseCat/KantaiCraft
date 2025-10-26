@@ -3,7 +3,6 @@ package com.github.icecheesecat.kantaicraft.network.packet;
 import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
 import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
-import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

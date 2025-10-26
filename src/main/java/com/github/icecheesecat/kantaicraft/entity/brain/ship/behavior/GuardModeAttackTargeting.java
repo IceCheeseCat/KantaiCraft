@@ -4,13 +4,11 @@ import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 
 import java.util.Comparator;
-import java.util.Map;
 
 public class GuardModeAttackTargeting extends SingleBehaviour<EntityShip> {
     public GuardModeAttackTargeting() {

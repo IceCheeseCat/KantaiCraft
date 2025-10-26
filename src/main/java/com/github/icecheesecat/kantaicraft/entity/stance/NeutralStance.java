@@ -7,27 +7,38 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class NeutralStance extends EntityStance {
-
-    public NeutralStance() {
-        super(Side.NEUTRAL);
-    }
+public interface NeutralStance extends Stance {
 
     @Override
-    public void setupSyncedData(SynchedEntityData entityData, RandomSource random) {
-        entityData.define(EntityShip.DATA_AIRCRAFT, Integer.MAX_VALUE);
-        entityData.define(EntityShip.DATA_FUEL, Float.MAX_VALUE);
-        entityData.define(EntityShip.DATA_AMMO, Float.MAX_VALUE);
+    default void setupSyncedDataFromStance(SynchedEntityData entityData, RandomSource random) {
+        entityData.define(EntityShip.DATA_AIRCRAFT, 0);
+        entityData.define(EntityShip.DATA_FUEL, 100.0f);
+        entityData.define(EntityShip.DATA_AMMO, 0.0f);
         entityData.define(EntityShip.DATA_SHIP_LEVEL, ShipLeveling.createRandom(random));
     }
 
     @Override
-    public boolean isHostileToPlayer(Player player) {
+    default boolean isHostileToPlayer(Player player) {
         return false;
     }
 
     @Override
-    public boolean isHostileToLiving(LivingEntity livingEntity) {
+    default boolean isHostileToLiving(LivingEntity livingEntity) {
         return false;
+    }
+
+    @Override
+    default boolean isPlayerSide() {
+        return false;
+    }
+
+    @Override
+    default boolean isHostileSide() {
+        return false;
+    }
+
+    @Override
+    default boolean isNeutralSide() {
+        return true;
     }
 }

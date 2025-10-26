@@ -138,8 +138,8 @@ public class FollowOwner extends Behavior<EntityShip> {
         }
     }
 
-    private int randomIntInclusive(int pMin, int pMax, EntityShip ship) {
-        return ship.getRandom().nextInt(pMax - pMin + 1) + pMin;
+    private int randomIntInclusive(int pMin, int pMax, EntityShip entityShip) {
+        return entityShip.getRandom().nextInt(pMax - pMin + 1) + pMin;
     }
 
 }

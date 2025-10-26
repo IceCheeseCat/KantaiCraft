@@ -1,10 +1,8 @@
 package com.github.icecheesecat.kantaicraft.entity.brain.ship.behavior;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
-import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;

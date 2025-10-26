@@ -47,16 +47,16 @@ public class ShipEquipmentSensor extends Sensor<EntityShip> {
     /**
      * Update {@link EquipmentActionHandler} if {@link EquipmentHandler} has new equipment installed
      */
-    public void updateAction(EntityShip ship, EquipmentHandler equipmentHandler, EquipmentActionHandler equipmentActionHandler, int i) {
+    public void updateAction(EntityShip entityShip, EquipmentHandler equipmentHandler, EquipmentActionHandler equipmentActionHandler, int i) {
         if (!equipmentHandler.isDirty(i)) {
             return;
         }
 
         Equipment equipment = equipmentHandler.getEquipments().get(i);
         switch (equipment.getType()) {
-            case SMALL_CANNON -> equipmentActionHandler.set(i, new CannonShipAttack(ship, equipment, (int) equipment.getStat(EquipmentStatType.CANNON_COOLDOWN)));
+            case SMALL_CANNON -> equipmentActionHandler.set(i, new CannonShipAttack(entityShip, equipment, (int) equipment.getStat(EquipmentStatType.CANNON_COOLDOWN)));
             case NONE -> equipmentActionHandler.set(i, ShipTickableAction.NULL);
-            default -> throw new RuntimeException("Unknown equipment type at " + ship);
+            default -> throw new RuntimeException("Unknown equipment type at " + entityShip);
         }
         equipmentHandler.setNotDirty(i);
     }

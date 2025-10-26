@@ -1,15 +1,15 @@
-STOPPED 1. ship screen faction display (stopped)
+STOPPED 1. entityShip screen faction display (stopped)
     - nice icon (read from file or default)
 
 TODO 2. Shipyard
-    - build a new ship from blueprint (done)
+    - build a new entityShip from blueprint (done)
     - better looking screen (done)
     - shipyard model
     - fuel to build
 
 
 DONE 3. Blueprint
-    - record data from a ship
+    - record data from a entityShip
 
 TODO 4. Add more different classes ships and varies ships
     - (check out doc for list)
@@ -93,7 +93,7 @@ TODO 7. Different Ship Class Animation
     - Destroyer
     -
 
-TODO 8. Cannon displays when equipped on entity ship
+TODO 8. Cannon displays when equipped on entity entityShip
 
 TODO 9. Ship gui upgrade
     - level display

@@ -87,10 +87,10 @@ public class TogglePlayerShipPacket {
             if (ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
                 DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                     Entity entity = Minecraft.getInstance().level.getEntity(packet.entityId);
-                    if (entity instanceof EntityShip ship) {
+                    if (entity instanceof EntityShip entityShip) {
                         switch (packet.syncType) {
                             case EQUIPMENT -> {
-                                ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(equipmentHandler -> {
+                                entityShip.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(equipmentHandler -> {
                                     equipmentHandler.setOnClient(packet.index, (Equipment) packet.value);
                                 });
                                 if (Minecraft.getInstance().screen instanceof ShipScreen screen) {
@@ -109,15 +109,15 @@ public class TogglePlayerShipPacket {
                 SyncType syncType = packet.syncType;
                 int entityId = packet.entityId;
                 Entity entity = ctx.get().getSender().level().getEntity(entityId);
-                if (entity instanceof EntityShip ship) {
+                if (entity instanceof EntityShip entityShip) {
                     switch (syncType) {
-                        case GUARD -> ship.setGuarding((Boolean) packet.value);
-                        case MELEE -> ship.setForceMelee((Boolean) packet.value);
+                        case GUARD -> entityShip.setGuarding((Boolean) packet.value);
+                        case MELEE -> entityShip.setForceMelee((Boolean) packet.value);
                         case EQUIPMENT -> {
-                            ship.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
+                            entityShip.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
                                     equipmentHandler -> {
-                                        equipmentHandler.setEquipment(packet.index, (Equipment) packet.value, ship);
-                                        ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> ctx.get().getSender()), new TogglePlayerShipPacket(SyncType.EQUIPMENT, ship.getId(), packet.value, packet.index));
+                                        equipmentHandler.setEquipment(packet.index, (Equipment) packet.value, entityShip);
+                                        ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> ctx.get().getSender()), new TogglePlayerShipPacket(SyncType.EQUIPMENT, entityShip.getId(), packet.value, packet.index));
                                     }
                             );
                         }

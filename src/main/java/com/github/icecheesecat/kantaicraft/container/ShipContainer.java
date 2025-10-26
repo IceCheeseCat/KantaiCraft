@@ -26,14 +26,14 @@ public class ShipContainer implements Container, StackedContentsCompatible {
     private final NonNullList<ItemStack> items;
     @Nullable
     private List<ContainerListener> listeners;
-    EntityShip ship;
+    EntityShip entityShip;
     private final int upgradeLevel = 10;
     private final int upgradeSize = 9;
 
-    public ShipContainer(int pSize, EntityShip ship) {
+    public ShipContainer(int pSize, EntityShip entityShip) {
         this.size = pSize;
         this.items = NonNullList.withSize(pSize, ItemStack.EMPTY);
-        this.ship = ship;
+        this.entityShip = entityShip;
 
     }
 
@@ -146,7 +146,7 @@ public class ShipContainer implements Container, StackedContentsCompatible {
 
     @Override
     public boolean canPlaceItem(int pIndex, ItemStack pStack) {
-        return pIndex < (this.ship.getShipLevel() / upgradeLevel) * upgradeSize + 9;
+        return pIndex < (this.entityShip.getShipLevel() / upgradeLevel) * upgradeSize + 9;
     }
 
     /**
