@@ -31,20 +31,20 @@ public class Physics implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
-        nbt.put("pos", CompoundTagHelper.saveVec3(this.pos, "pos"));
-        nbt.put("vel", CompoundTagHelper.saveVec3(this.vel, "vel"));
-        nbt.put("acc", CompoundTagHelper.saveVec3(this.acc, "acc"));
-        nbt.put("prevpos", CompoundTagHelper.saveVec3(this.prevPos, "prevpos"));
+        nbt.put("pos", CompoundTagHelper.putVec3(this.pos, "pos"));
+        nbt.put("vel", CompoundTagHelper.putVec3(this.vel, "vel"));
+        nbt.put("acc", CompoundTagHelper.putVec3(this.acc, "acc"));
+        nbt.put("prevpos", CompoundTagHelper.putVec3(this.prevPos, "prevpos"));
 
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.pos = CompoundTagHelper.loadVec3(nbt.getCompound("pos"), "pos");
-        this.vel = CompoundTagHelper.loadVec3(nbt.getCompound("vel"), "vel");
-        this.acc = CompoundTagHelper.loadVec3(nbt.getCompound("acc"), "acc");
-        this.prevPos = CompoundTagHelper.loadVec3(nbt.getCompound("prevpos"), "prevpos");
+        this.pos = CompoundTagHelper.getVec3(nbt.getCompound("pos"), "pos");
+        this.vel = CompoundTagHelper.getVec3(nbt.getCompound("vel"), "vel");
+        this.acc = CompoundTagHelper.getVec3(nbt.getCompound("acc"), "acc");
+        this.prevPos = CompoundTagHelper.getVec3(nbt.getCompound("prevpos"), "prevpos");
 
     }
 

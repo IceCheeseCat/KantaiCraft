@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.util.tickable.attack;
+package com.github.icecheesecat.kantaicraft.tickable.attack;
 
 import com.github.icecheesecat.kantaicraft.capability.ServerLevelTrajectoryCapability;
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;

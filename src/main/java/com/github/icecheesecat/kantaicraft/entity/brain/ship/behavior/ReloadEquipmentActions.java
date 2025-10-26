@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.entity.brain.ship.behavior;
 
 import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
-import com.github.icecheesecat.kantaicraft.util.tickable.EquipmentActionHandler;
+import com.github.icecheesecat.kantaicraft.tickable.EquipmentActionHandler;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.behavior.Behavior;

@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.block.patternblock;
 
-import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.BlockPosHelper;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
+import com.github.icecheesecat.kantaicraft.util.CompoundTagHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -59,7 +59,7 @@ public class ComponentBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
         if (corePos != null) {
-            pTag.put("core_pos", BlockPosHelper.writeNbt(this.corePos));
+            pTag.put("core_pos", CompoundTagHelper.putBlockPos(this.corePos));
         }
 
     }
@@ -68,7 +68,7 @@ public class ComponentBlockEntity extends BlockEntity {
     public void load(CompoundTag pTag) {
         super.load(pTag);
         if (pTag.contains("core_pos")) {
-            this.corePos = BlockPosHelper.readNbt(pTag.getCompound("core_pos"));
+            this.corePos = CompoundTagHelper.getBlockPos(pTag.getCompound("core_pos"));
         }
 
     }
@@ -82,7 +82,7 @@ public class ComponentBlockEntity extends BlockEntity {
     public CompoundTag getUpdateTag() {
         CompoundTag nbt = super.getUpdateTag();
         if (this.corePos != null) {
-            nbt.put("core_pos", BlockPosHelper.writeNbt(this.corePos));
+            nbt.put("core_pos", CompoundTagHelper.putBlockPos(this.corePos));
         }
 
         return nbt;

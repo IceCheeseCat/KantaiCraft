@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.util.tickable;
+package com.github.icecheesecat.kantaicraft.tickable;
 
 public interface IActionCooldown {
 

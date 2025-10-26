@@ -1,8 +1,8 @@
 package com.github.icecheesecat.kantaicraft.block.patternblock;
 
-import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.BlockPosHelper;
 import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.BlockStateProperties;
 import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.PatternType;
+import com.github.icecheesecat.kantaicraft.util.CompoundTagHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -66,21 +66,21 @@ public class CoreBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
-        pTag.put("linked", BlockPosHelper.listWriteNbt(this.linkedBlockPos));
+        pTag.put("linked", CompoundTagHelper.putListOfBlockPos(this.linkedBlockPos));
         pTag.putBoolean("can_use", this.canUse);
     }
 
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
-        this.linkedBlockPos = BlockPosHelper.listReadNbt(pTag.getCompound("linked"));
+        this.linkedBlockPos = CompoundTagHelper.getListOfBlockPos(pTag.getCompound("linked"));
         this.canUse = pTag.getBoolean("can_use");
     }
 
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag nbt = super.getUpdateTag();
-        nbt.put("linked", BlockPosHelper.listWriteNbt(this.linkedBlockPos));
+        nbt.put("linked", CompoundTagHelper.putListOfBlockPos(this.linkedBlockPos));
         nbt.putBoolean("can_use", this.canUse);
         return nbt;
     }
