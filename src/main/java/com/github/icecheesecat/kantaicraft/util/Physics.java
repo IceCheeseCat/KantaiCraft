@@ -31,10 +31,10 @@ public class Physics implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
-        nbt.put("pos", CompoundTagHelper.putVec3("pos", this.pos));
-        nbt.put("vel", CompoundTagHelper.putVec3("vel", this.vel));
-        nbt.put("acc", CompoundTagHelper.putVec3("acc", this.acc));
-        nbt.put("prevpos", CompoundTagHelper.putVec3("prevpos", this.prevPos));
+        nbt.put("pos", CompoundTagHelper.putVec3(this.pos));
+        nbt.put("vel", CompoundTagHelper.putVec3(this.vel));
+        nbt.put("acc", CompoundTagHelper.putVec3(this.acc));
+        nbt.put("prevpos", CompoundTagHelper.putVec3(this.prevPos));
 
         return nbt;
     }

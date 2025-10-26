@@ -9,11 +9,11 @@ import java.util.List;
 
 public final class CompoundTagHelper {
 
-    public static CompoundTag putVec3(String name, Vec3 vec3) {
+    public static CompoundTag putVec3(Vec3 vec3) {
         CompoundTag nbt = new CompoundTag();
-        nbt.putDouble(name + ".x", vec3.x);
-        nbt.putDouble(name + ".y", vec3.y);
-        nbt.putDouble(name + ".z", vec3.z);
+        nbt.putDouble("x", vec3.x);
+        nbt.putDouble("y", vec3.y);
+        nbt.putDouble("z", vec3.z);
 
         return nbt;
     }
