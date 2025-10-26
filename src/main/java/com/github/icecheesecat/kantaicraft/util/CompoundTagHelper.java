@@ -9,7 +9,7 @@ import java.util.List;
 
 public final class CompoundTagHelper {
 
-    public static CompoundTag putVec3(Vec3 vec3, String name) {
+    public static CompoundTag putVec3(String name, Vec3 vec3) {
         CompoundTag nbt = new CompoundTag();
         nbt.putDouble(name + ".x", vec3.x);
         nbt.putDouble(name + ".y", vec3.y);
@@ -18,16 +18,16 @@ public final class CompoundTagHelper {
         return nbt;
     }
     
-    public static Vec3 getVec3(CompoundTag nbt, String name) {
+    public static Vec3 getVec3(CompoundTag nbt) {
         double x = 0, y = 0, z = 0;
-        if (nbt.contains(name + ".x")) {
-            x = nbt.getDouble(name + ".x");
+        if (nbt.contains("x")) {
+            x = nbt.getDouble("x");
         }
-        if (nbt.contains(name + ".y")) {
-            y = nbt.getDouble(name + ".y");
+        if (nbt.contains("y")) {
+            y = nbt.getDouble("y");
         }
-        if (nbt.contains(name + ".z")) {
-            z = nbt.getDouble(name + ".z");
+        if (nbt.contains("z")) {
+            z = nbt.getDouble("z");
         }
         
         return new Vec3(x, y, z);
