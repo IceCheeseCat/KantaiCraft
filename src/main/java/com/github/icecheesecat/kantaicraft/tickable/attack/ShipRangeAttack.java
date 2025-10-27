@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.tickable.attack;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.tickable.ShipTickableAction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;

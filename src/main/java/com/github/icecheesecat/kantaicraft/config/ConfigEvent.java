@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.config;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.equipment.Equipments;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
@@ -14,7 +14,7 @@ public class ConfigEvent {
         var config = event.getConfig();
 
         if (config.getFileName().equals(KantaiCraft.MODID + "_equipment_stats.toml")) {
-            Equipments.ALL_EQUIPMENTS.forEach((id, equipment) -> {
+            EquipmentManager.ALL_EQUIPMENTS.forEach((id, equipment) -> {
                 equipment.setStats(ConfigEquipmentStats.createMap(id));
             });
         }

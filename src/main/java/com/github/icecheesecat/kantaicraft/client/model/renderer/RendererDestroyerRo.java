@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.client.model.renderer;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.client.model.model.DestroyerRoClassModel;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerRoClass;
+import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.DestroyerRoClass;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

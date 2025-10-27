@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class Equipment implements INBTSerializable<CompoundTag> {
 
+    public static final Equipment EMPTY = new Equipment(EquipmentProperties.EMPTY, new DefaultValue());
     protected Map<EquipmentStatType, Double> stats = new HashMap<>();
 //    private int id;
 //    private Component name;

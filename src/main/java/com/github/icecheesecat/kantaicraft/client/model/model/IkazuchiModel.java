@@ -1,8 +1,7 @@
 package com.github.icecheesecat.kantaicraft.client.model.model;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.Ikazuchi;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.Inazuma;
+import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.Ikazuchi;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 

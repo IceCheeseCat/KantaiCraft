@@ -1,0 +1,148 @@
+package com.github.icecheesecat.kantaicraft.equipment;
+
+import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.equipment.entity.EquipmentEntity;
+import com.github.icecheesecat.kantaicraft.registries.ModEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class EquipmentManager {
+
+    public static final Map<Integer, Equipment> ALL_EQUIPMENTS = new HashMap<>();
+    public static final Map<Integer, RegistryObject<EntityType<EquipmentEntity>>> ALL_EQUIPMENT_ENTITY = new HashMap<>();
+    public static final Map<Integer, ResourceLocation> EQUIPMENT_ICON_LOCATION = new HashMap<>();
+    public static void init() {
+        registerEquipment(EquipmentProperties.__12cm_single_gun_mount__, EquipmentEntity.__12cm_single_gun_mount__::new, 1.0f, 1.0f);
+        registerEquipment(EquipmentProperties.__12cm_twin_gun_mount__, EquipmentEntity.__12cm_twin_gun_mount__::new, 1.0f, 1.0f);
+//        createEquipment(EquipmentProperties.__12cm_single_gun_mount__);
+//        createEquipment(EquipmentProperties.__12cm_twin_gun_mount__);
+//        createEquipment(EquipmentProperties.__12cm_twin_gun_mount_model_b_kai_2__);
+//        createEquipment(EquipmentProperties.__14cm_single_gun_mount__);
+//        createEquipment(EquipmentProperties.__155mm_triple_gun_mount__);
+//        createEquipment(EquipmentProperties.__203mm_twin_gun_mount__);
+//        createEquipment(EquipmentProperties.__203mm_no3_single_gun_mount__);
+//        createEquipment(EquipmentProperties.__prototype_203mm_no4_single_gun_mount__);
+//        createEquipment(EquipmentProperties.__356mm_twin_gun_mount__);
+//        createEquipment(EquipmentProperties.__prototype_356mm_triple_gun_mount__);
+//        createEquipment(EquipmentProperties.__356mm_twin_gun_mount_kai_2__);
+//        createEquipment(EquipmentProperties.__41cm_twin_gun_mount__);
+//        createEquipment(EquipmentProperties.__prototype_41cm_triple_gun_mount__);
+//        createEquipment(EquipmentProperties.__41cm_triple_gun_mount_kai_2__);
+//        createEquipment(EquipmentProperties.__61cm_triple_torpedo_mount__);
+//        createEquipment(EquipmentProperties.__61cm_triple_oxygen_torpedo_mount__);
+//        createEquipment(EquipmentProperties.__61cm_quadruple_torpedo_mount__);
+//        createEquipment(EquipmentProperties.__61cm_quadruple_oxygen_torpedo_mount__);
+//        createEquipment(EquipmentProperties.__61cm_quintuple_oxygen_torpedo_mount__);
+//        createEquipment(EquipmentProperties.__type_13_air_radar__);
+//        createEquipment(EquipmentProperties.__type_13_air_radar_kai__);
+//        createEquipment(EquipmentProperties.__type_22_surface_radar__);
+//        createEquipment(EquipmentProperties.__type_22_surface_radar_kai_4__);
+//        createEquipment(EquipmentProperties.__type_33_surface_radar__);
+//        createEquipment(EquipmentProperties.__type_21_air_radar__);
+//        createEquipment(EquipmentProperties.__type_21_air_radar_kai__);
+//        createEquipment(EquipmentProperties.__type_32_surface_radar__);
+//        createEquipment(EquipmentProperties.__type_42_air_radar__);
+//        createEquipment(EquipmentProperties.__type_0_reconnaissance_seaplane__);
+//        createEquipment(EquipmentProperties.__type_0_reconnaissance_seaplane_model_11b__);
+//        createEquipment(EquipmentProperties.__type_0_reconnaissance_seaplane_model_11b_skilled__);
+//        createEquipment(EquipmentProperties.__type_0_observation_seaplane__);
+//        createEquipment(EquipmentProperties.__type_98_reconnaissance_seaplane_night_recon__);
+//        createEquipment(EquipmentProperties.__type_0_reconnaissance_seaplane_model_11b_kai_night_recon__);
+//        createEquipment(EquipmentProperties.__type_2_seaplane_fighter_kai__);
+//        createEquipment(EquipmentProperties.__kyoufuu_kai__);
+//        createEquipment(EquipmentProperties.__type_99_dive_bomber__);
+//        createEquipment(EquipmentProperties.__type_99_dive_bomber_egusa_squadron__);
+//        createEquipment(EquipmentProperties.__suisei__);
+//        createEquipment(EquipmentProperties.__suisei_model_12a__);
+//        createEquipment(EquipmentProperties.__suisei_model_22_634_air_group__);
+//        createEquipment(EquipmentProperties.__suisei_601_air_group__);
+//        createEquipment(EquipmentProperties.__suisei_egusa_squadron__);
+//        createEquipment(EquipmentProperties.__type_97_torpedo_bomber__);
+//        createEquipment(EquipmentProperties.__type_97_torpedo_bomber_tomonaga_squadron__);
+//        createEquipment(EquipmentProperties.__type_97_torpedo_bomber_murata_squadron__);
+//        createEquipment(EquipmentProperties.__tenzan__);
+//        createEquipment(EquipmentProperties.__tenzan_601_air_group__);
+//        createEquipment(EquipmentProperties.__tenzan_model_12_tomonaga_squadron__);
+//        createEquipment(EquipmentProperties.__tenzan_model_12_murata_squadron__);
+//        createEquipment(EquipmentProperties.__ryuusei__);
+//        createEquipment(EquipmentProperties.__ryuusei_kai__);
+//        createEquipment(EquipmentProperties.__ryuusei_kai_cardiv_1__);
+//        createEquipment(EquipmentProperties.__type_96_fighter__);
+//        createEquipment(EquipmentProperties.__type_0_fighter_model_21__);
+//        createEquipment(EquipmentProperties.__type_0_fighter_model_21_skilled__);
+//        createEquipment(EquipmentProperties.__type_0_fighter_model_32__);
+//        createEquipment(EquipmentProperties.__type_0_fighter_model_52_skilled__);
+//        createEquipment(EquipmentProperties.__zero_fighter_model_52c_601_air_group__);
+//        createEquipment(EquipmentProperties.__shiden_kai_2__);
+//        createEquipment(EquipmentProperties.__prototype_reppuu_late_model__);
+//        createEquipment(EquipmentProperties.__reppuu_model_11__);
+//        createEquipment(EquipmentProperties.__reppuu_kai_prototype_carrier_based_model__);
+//        createEquipment(EquipmentProperties.__reppuu_kai_2__);
+//        createEquipment(EquipmentProperties.__shinden_kai__);
+//        createEquipment(EquipmentProperties.__type_93_passive_sonar__);
+//        createEquipment(EquipmentProperties.__type_3_active_sonar__);
+//        createEquipment(EquipmentProperties.__type_94_depth_charge_projector__);
+//        createEquipment(EquipmentProperties.__type_3_depth_charge_projector__);
+//        createEquipment(EquipmentProperties.__type_95_depth_charge__);
+//        createEquipment(EquipmentProperties.__type_2_depth_charge__);
+    }
+
+    private static void registerEquipment(EquipmentProperties equipmentProperties, EntityType.EntityFactory<EquipmentEntity> factory, float hitboxWidth, float hitboxHeight) {
+        registerGeneralEquipment(equipmentProperties.getId(), equipmentProperties);
+        registerEquipmentEntity(equipmentProperties.getId(), equipmentProperties, factory, hitboxWidth, hitboxHeight);
+        registerEquipmentIconLocation(equipmentProperties.getId(), equipmentProperties);
+    }
+
+    private static void registerGeneralEquipment(int id, EquipmentProperties equipmentProperties) {
+        if (ALL_EQUIPMENTS.containsKey(id)) {
+            throw new IllegalStateException("ALL EQUIPMENT has the same id equipment already!");
+        }
+        ALL_EQUIPMENTS.put(id,
+                new Equipment(equipmentProperties, DefaultValue.getById(id)));
+    }
+
+    private static void registerEquipmentEntity(int id, EquipmentProperties equipmentProperties, EntityType.EntityFactory<EquipmentEntity> factory, float hitboxWidth, float hitboxHeight) {
+        if (ALL_EQUIPMENT_ENTITY.containsKey(id)) {
+            throw new IllegalStateException("ALL EQUIPMENT ENTITY has the same id equipment entity already!");
+        }
+        ALL_EQUIPMENT_ENTITY.put(id, ModEntity.registerEquipmentEntity(factory, equipmentProperties.getName(), hitboxWidth, hitboxHeight));
+    }
+
+    private static void registerEquipmentIconLocation(int id, EquipmentProperties equipmentProperties) {
+        if (EQUIPMENT_ICON_LOCATION.containsKey(id)) {
+            throw new IllegalStateException("EQUIPMENT_ICON_LOCATION has the same id resourceLocation already!");
+        }
+        EQUIPMENT_ICON_LOCATION.put(id, new ResourceLocation(KantaiCraft.MODID, equipmentProperties.getName()));
+    }
+
+    private static Equipment getEquipment(int id) {
+        return ALL_EQUIPMENTS.getOrDefault(id, Equipment.EMPTY);
+    }
+
+    public static Equipment createNewEquipment(int id, int level) {
+        Equipment equipment = getEquipment(id);
+        if (equipment.equals(Equipment.EMPTY)) {
+            return Equipment.EMPTY;
+        }
+
+        Equipment e = equipment.asCopy();
+        e.setLevel(level);
+        return e;
+    }
+
+    @Nullable
+    public static RegistryObject<EntityType<EquipmentEntity>> getEquipmentEntityType(int id) {
+        return ALL_EQUIPMENT_ENTITY.getOrDefault(id, null);
+    }
+
+    @Nullable
+    public static ResourceLocation getEquipmentIconResourceLocation(int id) {
+        return EQUIPMENT_ICON_LOCATION.getOrDefault(id, null);
+    }
+
+}

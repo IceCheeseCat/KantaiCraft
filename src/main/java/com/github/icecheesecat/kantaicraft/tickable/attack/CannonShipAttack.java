@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.tickable.attack;
 
 import com.github.icecheesecat.kantaicraft.capability.ServerLevelTrajectoryCapability;
-import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;

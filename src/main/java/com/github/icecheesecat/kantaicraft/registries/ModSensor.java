@@ -1,8 +1,8 @@
 package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entity.brain.sensor.*;
-import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.brain.sensor.*;
+import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.monster.Enemy;

@@ -1,7 +1,5 @@
 package com.github.icecheesecat.kantaicraft.config;
 
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentProperties;
-import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import com.google.common.collect.ImmutableList;
 import net.minecraftforge.common.ForgeConfigSpec;
 

@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.client.model.renderer;
 
 import com.github.icecheesecat.kantaicraft.client.model.ShipGeoEntityRenderer;
 import com.github.icecheesecat.kantaicraft.client.model.model.InazumaModel;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.Inazuma;
+import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.Inazuma;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.core.object.Color;
 

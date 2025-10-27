@@ -1,11 +1,11 @@
 package com.github.icecheesecat.kantaicraft.network.packet;
 
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
-import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipScreen;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.equipment.Equipments;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -68,7 +68,7 @@ public class TogglePlayerShipPacket {
                 int id = buf.readInt();
                 int level = buf.readInt();
                 byte index = buf.readByte();
-                Equipment n_equipment = Equipments.getEquipmentInstanceById(id, level);
+                Equipment n_equipment = EquipmentManager.createNewEquipment(id, level);
 
                 return new TogglePlayerShipPacket(syncType, entityId, n_equipment, index);
             }

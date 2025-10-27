@@ -1,10 +1,8 @@
 package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.*;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.DestroyerIClass;
-import com.github.icecheesecat.kantaicraft.entity.stance.HostileStance;
-import com.github.icecheesecat.kantaicraft.entity.stance.PlayerStance;
+import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.*;
+import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.DestroyerIClass;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -15,11 +13,12 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ModEntity {
 
-    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES,
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES,
     KantaiCraft.MODID);
 
     public static final MobCategory HOSTILE_SHIP = MobCategory.create("hostile_ship", "kantaicraft:hostile_ship", 20, false, false, 128);
     public static final MobCategory PLAYER_SHIP = MobCategory.create("player_ship", "kantaicraft:player_ship", -1, true, true, 128);
+    public static final MobCategory EQUIPMENT_ENTITY = MobCategory.create("equipment_entity", "kantaicraft:equipment_entity", -1, true, true, 128);
 
     public static class PlayerShip {
         public static final RegistryObject<EntityType<DestroyerRoClass>> DESTROYER_RO_CLASS =
@@ -52,13 +51,18 @@ public class ModEntity {
 //    public static final RegistryObject<EntityType<EntityA6MZeroFighter>> A6M_Zero_Fighter = ENTITIES.register("a6m_zero_fighter", () ->
 //            EntityType.Builder.of(EntityA6MZeroFighter::new, MobCategory.MISC).sized(1.0f, 1.0f).build(new ResourceLocation(KantaiCraft.MODID, "a6m_zero_fighter").toString()));
     private static <T extends Entity> RegistryObject<EntityType<T>> registerPlayerShip(EntityType.EntityFactory<T> factory, String name, float width, float height) {
-        return ENTITIES.register(name, () ->
+        return ENTITY_TYPES.register(name, () ->
             EntityType.Builder.of(factory, PLAYER_SHIP).sized(width, height).build(new ResourceLocation(KantaiCraft.MODID, name).toString()));
     }
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerHostileShip(EntityType.EntityFactory<T> factory, String name, float width, float height) {
-        return ENTITIES.register(name, () ->
+        return ENTITY_TYPES.register(name, () ->
             EntityType.Builder.of(factory, HOSTILE_SHIP).sized(width, height).build(new ResourceLocation(KantaiCraft.MODID, name).toString()));
+    }
+
+    public static <T extends Entity> RegistryObject<EntityType<T>> registerEquipmentEntity(EntityType.EntityFactory<T> factory,  String name, float width, float height) {
+        return ENTITY_TYPES.register(name, () ->
+                EntityType.Builder.of(factory, HOSTILE_SHIP).sized(width, height).build(new ResourceLocation(KantaiCraft.MODID, name).toString()));
     }
 }
 //

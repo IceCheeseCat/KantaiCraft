@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.TogglePlayerShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;

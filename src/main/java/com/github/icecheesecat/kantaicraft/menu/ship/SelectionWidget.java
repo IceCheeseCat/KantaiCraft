@@ -1,8 +1,8 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentResourceLocation;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.TogglePlayerShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
@@ -58,7 +58,7 @@ public class SelectionWidget extends AbstractWidget {
     }
 
     protected void renderEquipmentIcon(GuiGraphics guiGraphics) {
-        ResourceLocation rl = EquipmentResourceLocation.getResourceById(this.equipment.getId());
+        ResourceLocation rl = EquipmentManager.getEquipmentIconResourceLocation(this.equipment.getId());
         if (rl == null) return;
 
         guiGraphics.blit(rl,

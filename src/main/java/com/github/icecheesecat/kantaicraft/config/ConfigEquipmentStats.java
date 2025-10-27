@@ -1,9 +1,6 @@
 package com.github.icecheesecat.kantaicraft.config;
 
-import com.github.icecheesecat.kantaicraft.equipment.DefaultValue;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentProperties;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
-import com.github.icecheesecat.kantaicraft.equipment.Equipments;
+import com.github.icecheesecat.kantaicraft.equipment.*;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.HashMap;
@@ -21,7 +18,7 @@ public class ConfigEquipmentStats {
         // TODO data generation from json file
         ALL_EQUIPMENT_STATS.put(EquipmentProperties.EMPTY.getId(),
                 EquipmentStats.create(BUILDER, EquipmentProperties.EMPTY.getName()));
-        Equipments.ALL_EQUIPMENTS.forEach((id, equipment) -> {
+        EquipmentManager.ALL_EQUIPMENTS.forEach((id, equipment) -> {
             var equipmentStats = EquipmentStats.create(BUILDER, equipment.getName().getString());
             DefaultValue defaultValue = equipment.defaultValue();
             defaultValue.getStats().forEach((equipmentStats::add));

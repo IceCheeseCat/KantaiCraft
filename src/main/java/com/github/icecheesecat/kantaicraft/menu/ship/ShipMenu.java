@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.menu.ToggleSlot;
 import com.github.icecheesecat.kantaicraft.registries.ModMenu;
 import net.minecraft.client.Minecraft;

@@ -1,8 +1,8 @@
 package com.github.icecheesecat.kantaicraft.blueprint;
 
-import com.github.icecheesecat.kantaicraft.entity.ship.EntityShip;
-import com.github.icecheesecat.kantaicraft.entity.ship.ShipClass;
-import com.github.icecheesecat.kantaicraft.entity.ship.ShipLeveling;
+import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.entity.ShipClass;
+import com.github.icecheesecat.kantaicraft.entityship.entity.ShipLeveling;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Rarity;

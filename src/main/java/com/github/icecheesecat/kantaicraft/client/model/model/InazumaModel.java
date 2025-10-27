@@ -1,10 +1,9 @@
 package com.github.icecheesecat.kantaicraft.client.model.model;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entity.ship.destroyer.Inazuma;
+import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.Inazuma;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
-import software.bernie.geckolib.model.GeoModel;
 
 public class InazumaModel<T extends Inazuma> extends DefaultedEntityGeoModel<T> {
     public InazumaModel() {
