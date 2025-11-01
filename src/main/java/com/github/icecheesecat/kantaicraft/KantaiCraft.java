@@ -3,13 +3,20 @@ package com.github.icecheesecat.kantaicraft;
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentStats;
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentTree;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
+import com.github.icecheesecat.kantaicraft.menu.ship.ShipScreen;
+import com.github.icecheesecat.kantaicraft.menu.shipyard.ShipyardScreen;
 import com.github.icecheesecat.kantaicraft.registries.*;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import software.bernie.geckolib.GeckoLib;
 
@@ -47,6 +54,21 @@ public class KantaiCraft
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentTree.SPEC, KantaiCraft.MODID + "_equipment_tree.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentStats.SPEC, KantaiCraft.MODID + "_equipment_stats.toml");
+    }
+
+    @Mod.EventBusSubscriber(modid = KantaiCraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    public static class MenuEvent {
+
+        @SubscribeEvent
+        public static void clientSetup(FMLClientSetupEvent event) {
+            event.enqueueWork(
+                    () -> {
+                        MenuScreens.register(ModMenu.SHIP_MENU.get(), ShipScreen::new);
+                        MenuScreens.register(ModMenu.SHIPYARD_MENU.get(), ShipyardScreen::new);
+                    }
+            );
+        }
+
     }
 
 }

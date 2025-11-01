@@ -62,7 +62,7 @@ public class ModEntity {
 
     public static <T extends Entity> RegistryObject<EntityType<T>> registerEquipmentEntity(EntityType.EntityFactory<T> factory,  String name, float width, float height) {
         return ENTITY_TYPES.register(name, () ->
-                EntityType.Builder.of(factory, HOSTILE_SHIP).sized(width, height).build(new ResourceLocation(KantaiCraft.MODID, name).toString()));
+                EntityType.Builder.of(factory, HOSTILE_SHIP).sized(width, height).noSave().build(new ResourceLocation(KantaiCraft.MODID, name).toString()));
     }
 }
 //

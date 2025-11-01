@@ -3,34 +3,35 @@ package com.github.icecheesecat.kantaicraft.equipment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.util.INBTSerializable;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Equipment implements INBTSerializable<CompoundTag> {
+public class Equipment implements INBTSerializable<CompoundTag>, GeoAnimatable {
 
-    public static final Equipment EMPTY = new Equipment(EquipmentProperties.EMPTY, new DefaultValue());
+    public static final Equipment EMPTY = new Equipment(EquipmentProperties.EMPTY);
     protected Map<EquipmentStatType, Double> stats = new HashMap<>();
-//    private int id;
-//    private Component name;
-//    private EquipmentType type;
     private EquipmentProperties equipmentProperties;
     private int level;
-    private final DefaultValue defaultValue;
-
     public static final int MAX_LEVEL = 10;
+    private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
+
+    public Equipment() {
+    }
 
     public Equipment(Equipment equipment) {
         this.equipmentProperties = equipment.equipmentProperties;
         this.level= equipment.level;
         this.stats = new HashMap<>(equipment.stats);
-        this.defaultValue = equipment.defaultValue;
     }
 
-    public Equipment(EquipmentProperties equipmentProperties, DefaultValue defaultValue) {
+    public Equipment(EquipmentProperties equipmentProperties) {
         this.equipmentProperties = equipmentProperties;
         this.level = 0;
-        this.defaultValue = defaultValue;
     }
 
     public double getStat(EquipmentStatType type) {
@@ -74,10 +75,6 @@ public class Equipment implements INBTSerializable<CompoundTag> {
         return new Equipment(this);
     }
 
-    public DefaultValue defaultValue() {
-        return this.defaultValue;
-    }
-
     public boolean isTypeOf(EquipmentType type) {
         return getType() == type;
     }
@@ -110,7 +107,23 @@ public class Equipment implements INBTSerializable<CompoundTag> {
         }
 
         this.level = nbt.getInt("level");
+        this.equipmentProperties = new EquipmentProperties();
         this.equipmentProperties.deserializeNBT(nbt.getCompound("properties"));
 
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return animatableInstanceCache;
+    }
+
+    @Override
+    public double getTick(Object o) {
+        return 0;
     }
 }

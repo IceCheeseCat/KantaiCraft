@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entityship.entity.destroyer;
 
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.entityship.entity.DestroyerEntityShip;
 import com.github.icecheesecat.kantaicraft.entityship.stance.HostileStance;
 import com.github.icecheesecat.kantaicraft.entityship.stance.PlayerStance;

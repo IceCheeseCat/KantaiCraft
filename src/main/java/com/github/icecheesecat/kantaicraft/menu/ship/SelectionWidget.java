@@ -49,7 +49,7 @@ public class SelectionWidget extends AbstractWidget {
 
     @Override
     public void onClick(double pMouseX, double pMouseY) {
-        ModPacketHandler.INSTANCE.sendToServer(new TogglePlayerShipPacket(SyncType.EQUIPMENT, this.entityShip.getId(), this.equipment, (byte) this.index));
+//        ModPacketHandler.INSTANCE.sendToServer(new TogglePlayerShipPacket(SyncType.EQUIPMENT, this.entityShip.getId(), this.equipment, (byte) this.index));
     }
 
     @Override

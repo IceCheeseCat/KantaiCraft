@@ -1,12 +1,12 @@
 package com.github.icecheesecat.kantaicraft.equipment;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.equipment.entity.EquipmentEntity;
-import com.github.icecheesecat.kantaicraft.registries.ModEntity;
+import com.github.icecheesecat.kantaicraft.model.equipment.renderer.EquipmentRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.model.DefaultedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,11 +14,12 @@ import java.util.Map;
 public class EquipmentManager {
 
     public static final Map<Integer, Equipment> ALL_EQUIPMENTS = new HashMap<>();
-    public static final Map<Integer, RegistryObject<EntityType<EquipmentEntity>>> ALL_EQUIPMENT_ENTITY = new HashMap<>();
     public static final Map<Integer, ResourceLocation> EQUIPMENT_ICON_LOCATION = new HashMap<>();
+    public static final Map<Integer, ModelFactory> EQUIPMENT_MODELS = new HashMap<>();
+    public static final Map<Integer, RendererFactory> EQUIPMENT_RENDERERS = new HashMap<>();
     public static void init() {
-        registerEquipment(EquipmentProperties.__12cm_single_gun_mount__, EquipmentEntity.__12cm_single_gun_mount__::new, 1.0f, 1.0f);
-        registerEquipment(EquipmentProperties.__12cm_twin_gun_mount__, EquipmentEntity.__12cm_twin_gun_mount__::new, 1.0f, 1.0f);
+        registerEquipment(EquipmentProperties.__12cm_single_gun_mount__);
+        registerEquipment(EquipmentProperties.__12cm_twin_gun_mount__);
 //        createEquipment(EquipmentProperties.__12cm_single_gun_mount__);
 //        createEquipment(EquipmentProperties.__12cm_twin_gun_mount__);
 //        createEquipment(EquipmentProperties.__12cm_twin_gun_mount_model_b_kai_2__);
@@ -92,10 +93,10 @@ public class EquipmentManager {
 //        createEquipment(EquipmentProperties.__type_2_depth_charge__);
     }
 
-    private static void registerEquipment(EquipmentProperties equipmentProperties, EntityType.EntityFactory<EquipmentEntity> factory, float hitboxWidth, float hitboxHeight) {
+    private static void registerEquipment(EquipmentProperties equipmentProperties) {
         registerGeneralEquipment(equipmentProperties.getId(), equipmentProperties);
-        registerEquipmentEntity(equipmentProperties.getId(), equipmentProperties, factory, hitboxWidth, hitboxHeight);
         registerEquipmentIconLocation(equipmentProperties.getId(), equipmentProperties);
+        registerEquipmentModelAndRenderer(equipmentProperties.getId(), equipmentProperties);
     }
 
     private static void registerGeneralEquipment(int id, EquipmentProperties equipmentProperties) {
@@ -103,14 +104,7 @@ public class EquipmentManager {
             throw new IllegalStateException("ALL EQUIPMENT has the same id equipment already!");
         }
         ALL_EQUIPMENTS.put(id,
-                new Equipment(equipmentProperties, DefaultValue.getById(id)));
-    }
-
-    private static void registerEquipmentEntity(int id, EquipmentProperties equipmentProperties, EntityType.EntityFactory<EquipmentEntity> factory, float hitboxWidth, float hitboxHeight) {
-        if (ALL_EQUIPMENT_ENTITY.containsKey(id)) {
-            throw new IllegalStateException("ALL EQUIPMENT ENTITY has the same id equipment entity already!");
-        }
-        ALL_EQUIPMENT_ENTITY.put(id, ModEntity.registerEquipmentEntity(factory, equipmentProperties.getName(), hitboxWidth, hitboxHeight));
+                new Equipment(equipmentProperties));
     }
 
     private static void registerEquipmentIconLocation(int id, EquipmentProperties equipmentProperties) {
@@ -118,6 +112,27 @@ public class EquipmentManager {
             throw new IllegalStateException("EQUIPMENT_ICON_LOCATION has the same id resourceLocation already!");
         }
         EQUIPMENT_ICON_LOCATION.put(id, new ResourceLocation(KantaiCraft.MODID, equipmentProperties.getName()));
+    }
+
+    private static void registerEquipmentModelAndRenderer(int id, EquipmentProperties equipmentProperties) {
+        if (EQUIPMENT_MODELS.containsKey(id)) {
+            throw new IllegalStateException("EQUIPMENT MODELS has the same id resourceLocation already!");
+        }
+        if (EQUIPMENT_RENDERERS.containsKey(id)) {
+            throw new IllegalStateException("EQUIPMENT RENDERERS has the same id resourceLocation already!");
+        }
+
+        ModelFactory modelFactory = () -> new DefaultedGeoModel<Equipment>(new ResourceLocation(KantaiCraft.MODID, equipmentProperties.getName())) {
+            @Override
+            protected String subtype() {
+                return "equipment";
+            }
+        };
+
+        RendererFactory rendererFactory = () -> new EquipmentRenderer(modelFactory.create());
+
+        EQUIPMENT_MODELS.put(id, modelFactory);
+        EQUIPMENT_RENDERERS.put(id, rendererFactory);
     }
 
     private static Equipment getEquipment(int id) {
@@ -136,13 +151,34 @@ public class EquipmentManager {
     }
 
     @Nullable
-    public static RegistryObject<EntityType<EquipmentEntity>> getEquipmentEntityType(int id) {
-        return ALL_EQUIPMENT_ENTITY.getOrDefault(id, null);
+    public static ResourceLocation getEquipmentIconResourceLocation(int id) {
+        return EQUIPMENT_ICON_LOCATION.getOrDefault(id, null);
     }
 
     @Nullable
-    public static ResourceLocation getEquipmentIconResourceLocation(int id) {
-        return EQUIPMENT_ICON_LOCATION.getOrDefault(id, null);
+    public static GeoModel<Equipment> createEquipmentModel(int id) {
+        if (EQUIPMENT_MODELS.containsKey(id)) {
+            return EQUIPMENT_MODELS.get(id).create();
+        }
+        return null;
+    }
+
+    @Nullable
+    public static GeoRenderer<Equipment> createEquipmentRenderer(int id) {
+        if (EQUIPMENT_RENDERERS.containsKey(id)) {
+            return EQUIPMENT_RENDERERS.get(id).create();
+        }
+        return null;
+    }
+
+    @FunctionalInterface
+    public interface ModelFactory {
+        DefaultedGeoModel<Equipment> create();
+    }
+
+    @FunctionalInterface
+    public interface RendererFactory {
+        GeoRenderer<Equipment> create();
     }
 
 }

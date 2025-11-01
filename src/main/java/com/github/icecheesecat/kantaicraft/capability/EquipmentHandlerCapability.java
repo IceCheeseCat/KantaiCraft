@@ -1,5 +1,6 @@
 package com.github.icecheesecat.kantaicraft.capability;
 
+import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.*;

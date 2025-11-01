@@ -89,6 +89,14 @@ public class ModPacketHandler {
                 SetShipyardSlotOwnerPacket::decode,
                 SetShipyardSlotOwnerPacket::handle
         );
+
+        INSTANCE.registerMessage(
+                id++,
+                S2CEquipmentHandlerPacket.class,
+                S2CEquipmentHandlerPacket::encode,
+                S2CEquipmentHandlerPacket::decode,
+                S2CEquipmentHandlerPacket::handle
+        );
     }
 
 }

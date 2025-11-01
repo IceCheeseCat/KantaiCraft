@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entityship.entity.destroyer;
 
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.entityship.entity.DestroyerEntityShip;
 import com.github.icecheesecat.kantaicraft.entityship.stance.HostileStance;
 import com.github.icecheesecat.kantaicraft.entityship.stance.PlayerStance;
@@ -15,12 +15,6 @@ public abstract class DestroyerRoClass extends DestroyerEntityShip {
 	public DestroyerRoClass(EntityType<? extends PathfinderMob> entityType, Level level) {
 		super(entityType, level);
 	}
-
-	@Override
-	protected void defaultEquipments(EquipmentHandler equipmentHandler) {
-		equipmentHandler.setEquipment(0, EquipmentManager.createNewEquipment(101, 0), this);
-	}
-
 
 	@Override
 	public int getProcessTime() {

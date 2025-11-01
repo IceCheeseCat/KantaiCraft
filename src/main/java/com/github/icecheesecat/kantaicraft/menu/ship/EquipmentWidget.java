@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
@@ -72,7 +72,7 @@ public class EquipmentWidget extends AbstractWidget {
                 ModPacketHandler.INSTANCE.sendToServer(new C2SEquipmentOptionsPacket(this.entityShip.getId(), this.index, this.equipmentHandler.getEquipment(index).getId()));
             }
             case LEVEL_UP_EQUIPMENT -> {
-                ModPacketHandler.INSTANCE.sendToServer(new TogglePlayerShipPacket(SyncType.LEVEL_UP_EQUIPMENT, this.entityShip.getId(), 1, (byte) this.index));
+//                ModPacketHandler.INSTANCE.sendToServer(new TogglePlayerShipPacket(SyncType.LEVEL_UP_EQUIPMENT, this.entityShip.getId(), 1, (byte) this.index));
             }
         }
     }

@@ -1,9 +1,9 @@
 package com.github.icecheesecat.kantaicraft.tickable;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
-import com.github.icecheesecat.kantaicraft.tickable.attack.CannonShipAttack;
+import com.github.icecheesecat.kantaicraft.tickable.attack.CannonAttack;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
     }
 
     @Nullable
-    public CannonShipAttack getReadyCannonAction() {
+    public CannonAttack getReadyCannonAction() {
 
         for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
             var equipment = equipmentHandler.getEquipments().get(i);
@@ -49,7 +49,7 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
                     equipment.isTypeOf(EquipmentType.LARGE_CANNON)) {
 
                 if (!this.get(i).inCooldown()) {
-                    return (CannonShipAttack) this.get(i);
+                    return (CannonAttack) this.get(i);
                 }
 
             }

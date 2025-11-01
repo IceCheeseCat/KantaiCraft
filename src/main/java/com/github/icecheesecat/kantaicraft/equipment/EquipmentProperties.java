@@ -84,6 +84,9 @@ public class EquipmentProperties implements INBTSerializable<CompoundTag> {
     private Component name;
     private EquipmentType equipmentType;
 
+    public EquipmentProperties() {
+    }
+
     public EquipmentProperties(int id, Component name, EquipmentType equipmentType) {
         this.id = id;
         this.name = name;

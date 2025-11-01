@@ -1,10 +1,9 @@
 package com.github.icecheesecat.kantaicraft.config;
 
+import com.github.icecheesecat.kantaicraft.equipment.DefaultStats;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.lang.invoke.WrongMethodTypeException;
-import java.rmi.NoSuchObjectException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +37,10 @@ public class EquipmentStats {
         configStats.put(type, doubleValue);
 
         return this;
+    }
+
+    public void addDefaultStats(DefaultStats defaultStats) {
+        defaultStats.getStats().forEach(this::add);
     }
 
     public double getValue(EquipmentStatType statType) {

@@ -1,14 +1,13 @@
 package com.github.icecheesecat.kantaicraft.entityship.brain.sensor;
 
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.tickable.EquipmentActionHandler;
 import com.github.icecheesecat.kantaicraft.tickable.ShipTickableAction;
-import com.github.icecheesecat.kantaicraft.tickable.attack.CannonShipAttack;
+import com.github.icecheesecat.kantaicraft.tickable.attack.CannonAttack;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -35,7 +34,7 @@ public class ShipEquipmentSensor extends Sensor<EntityShip> {
                 pEntity.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get()).ifPresent(
                     shipTickableActions -> {
                         for (int i = 0; i < shipTickableActions.size(); i++) {
-                           updateAction(pEntity, equipmentHandler, shipTickableActions, i);
+                           updateAction(pEntity, i, equipmentHandler, shipTickableActions);
                         }
 
                     }
@@ -47,18 +46,18 @@ public class ShipEquipmentSensor extends Sensor<EntityShip> {
     /**
      * Update {@link EquipmentActionHandler} if {@link EquipmentHandler} has new equipment installed
      */
-    public void updateAction(EntityShip entityShip, EquipmentHandler equipmentHandler, EquipmentActionHandler equipmentActionHandler, int i) {
-        if (!equipmentHandler.isDirty(i)) {
+    public void updateAction(EntityShip entityShip, int index, EquipmentHandler equipmentHandler, EquipmentActionHandler equipmentActionHandler) {
+        if (!equipmentHandler.isDirty(index)) {
             return;
         }
 
-        Equipment equipment = equipmentHandler.getEquipments().get(i);
+        Equipment equipment = equipmentHandler.getEquipments().get(index);
         switch (equipment.getType()) {
-            case SMALL_CANNON -> equipmentActionHandler.set(i, new CannonShipAttack(entityShip, equipment, (int) equipment.getStat(EquipmentStatType.CANNON_COOLDOWN)));
-            case NONE -> equipmentActionHandler.set(i, ShipTickableAction.NULL);
+            case SMALL_CANNON -> equipmentActionHandler.set(index, new CannonAttack(entityShip, equipment));
+            case NONE -> equipmentActionHandler.set(index, ShipTickableAction.NULL);
             default -> throw new RuntimeException("Unknown equipment type at " + entityShip);
         }
-        equipmentHandler.setNotDirty(i);
+        equipmentHandler.setNotDirty(index);
     }
 
     @Override

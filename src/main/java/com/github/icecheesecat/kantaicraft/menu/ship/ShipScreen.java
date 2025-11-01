@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.menu.IconWithTextElement;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;

@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entityship.entity.destroyer;
 
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.entityship.entity.DestroyerEntityShip;
 import com.github.icecheesecat.kantaicraft.entityship.stance.HostileStance;
 import com.github.icecheesecat.kantaicraft.entityship.stance.PlayerStance;
@@ -17,11 +17,6 @@ public abstract class Inazuma extends DestroyerEntityShip {
     }
 
     @Override
-    protected void defaultEquipments(EquipmentHandler equipmentHandler) {
-        equipmentHandler.setEquipment(0, EquipmentManager.createNewEquipment(101, 0), this);
-    }
-
-    @Override
     public int getProcessTime() {
         return 400;
     }
@@ -30,6 +25,7 @@ public abstract class Inazuma extends DestroyerEntityShip {
     public Rarity getRarity() {
         return Rarity.UNCOMMON;
     }
+
 
     public static class PlayerSide extends Inazuma implements PlayerStance {
         public PlayerSide(EntityType<? extends PathfinderMob> entityType, Level level) {

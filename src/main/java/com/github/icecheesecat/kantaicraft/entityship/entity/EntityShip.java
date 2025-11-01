@@ -1,16 +1,15 @@
 package com.github.icecheesecat.kantaicraft.entityship.entity;
 
 import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
-import com.github.icecheesecat.kantaicraft.client.animation.util.BlinkAnimationControl;
-import com.github.icecheesecat.kantaicraft.entityship.equipment.EquipmentEntitySystem;
-import com.github.icecheesecat.kantaicraft.entityship.equipment.PhysicalEquipmentSlot;
+import com.github.icecheesecat.kantaicraft.entityship.animation.BlinkAnimationControl;
 import com.github.icecheesecat.kantaicraft.entityship.stance.Stance;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
 import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
+import com.github.icecheesecat.kantaicraft.network.packet.S2CEquipmentHandlerPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.github.icecheesecat.kantaicraft.network.packet.TogglePlayerShipPacket;
 import com.github.icecheesecat.kantaicraft.registries.*;
@@ -44,9 +43,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -59,6 +56,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.GeckoLib;
 import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
@@ -70,7 +68,6 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEntity, MenuProvider, GeoEntity, Stance {
 
@@ -93,8 +90,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     private final BlinkAnimationControl blinkAnimationControl = new BlinkAnimationControl(60, 80, this.random);
     private long lastEmotionChangedTick = -1;
     private final ShipClass shipClass;
-    private final PhysicalEquipmentSlot physicalEquipmentSlot;
-    private final EquipmentEntitySystem equipmentEntitySystem;
+    BakedGeoModel bakedGeoModel;
 
     public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentType> equippableTypes) {
         super(entityType, level);
@@ -102,10 +98,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(this::defaultEquipments);
         this.prevAnimationShipAnimationState = ShipAnimationState.IDLE;
         this.shipClass = shipClass;
-        this.physicalEquipmentSlot = new PhysicalEquipmentSlot(this.equipmentHandler.getSlotSize());
-        this.equipmentEntitySystem = new EquipmentEntitySystem(this, this.level());
-        this.equipmentEntitySystem.spawnAllEntities();
-        this.definePhysicalSlotPositions();
     }
 
     @Override
@@ -121,9 +113,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.entityData.define(DATA_FOLLOW_DISTANCE, 10);
         this.entityData.define(DATA_SIT_DOWN, false);
         this.setupSyncedDataFromStance(entityData, this.random);
-    }
-
-    protected void definePhysicalSlotPositions() {
     }
 
     protected abstract void defaultEquipments(EquipmentHandler equipmentHandler);
@@ -329,8 +318,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
         if (!level().isClientSide) {
             //server side
-            broadcastEquipmentHandler();
-
             if (!continueAnimationState()) {
                 this.setAnimationState(prevAnimationShipAnimationState);
             }
@@ -344,20 +331,30 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
                 }
             }
 
-            this.getBrain().getActiveNonCoreActivity().ifPresent(System.out::println);
-            System.out.println("walk target: ");
-            this.getBrain().getMemory(MemoryModuleType.WALK_TARGET).ifPresent(System.out::println);
-            System.out.println("attack target: ");
-            this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(System.out::println);
-            System.out.println("path: ");
-            this.getBrain().getMemory(MemoryModuleType.PATH).ifPresent(System.out::println);
-            System.out.println("look target: ");
-            this.getBrain().getMemory(MemoryModuleType.LOOK_TARGET).ifPresent(System.out::println);
-
+            syncEquipmentHandler();
+            printServerDebug();
         }
         else {
             // client side
+            printClientDebug();
         }
+    }
+
+    private void printServerDebug() {
+//            this.getBrain().getActiveNonCoreActivity().ifPresent(System.out::println);
+//            System.out.println("walk target: ");
+//            this.getBrain().getMemory(MemoryModuleType.WALK_TARGET).ifPresent(System.out::println);
+//            System.out.println("attack target: ");
+//            this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(System.out::println);
+//            System.out.println("path: ");
+//            this.getBrain().getMemory(MemoryModuleType.PATH).ifPresent(System.out::println);
+//            System.out.println("look target: ");
+//            this.getBrain().getMemory(MemoryModuleType.LOOK_TARGET).ifPresent(System.out::println);
+    }
+
+    private void printClientDebug() {
+//        System.out.println("id: " + this.getId());
+        this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(System.out::println);
     }
 
     protected boolean continueAnimationState() {
@@ -378,12 +375,10 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         super.onSyncedDataUpdated(pKey);
     }
 
-    public void broadcastEquipmentHandler() {
+    public void syncEquipmentHandler() {
         this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
-                handler -> {
-                    for (int i = 0; i < handler.getSlotSize(); i++) {
-                        ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new TogglePlayerShipPacket(SyncType.EQUIPMENT, this.getId(), handler.getEquipment(i), (byte) i));
-                    }
+                equipmentHandler1 -> {
+                    ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), S2CEquipmentHandlerPacket.dirtyHandlerPacket(this.getId(), equipmentHandler1));
                 }
         );
     }
@@ -845,10 +840,5 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     private boolean isWalkingOrRunning() {
         return this.walkAnimation.isMoving() && this.walkAnimation.speed() > 0.05f;
     }
-
-    public PhysicalEquipmentSlot getPhysicalEquipmentSlot() {
-        return physicalEquipmentSlot;
-    }
-
 
 }
