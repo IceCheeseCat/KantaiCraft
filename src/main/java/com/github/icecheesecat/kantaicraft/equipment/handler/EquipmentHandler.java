@@ -2,9 +2,7 @@ package com.github.icecheesecat.kantaicraft.equipment.handler;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.ISlotCheckerEntity;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
-import com.github.icecheesecat.kantaicraft.model.equipment.BodyPart;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -29,37 +27,37 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
         this.dirty = NonNullList.withSize(size, true);
     }
 
-    protected EquipResult tryApplyAtSlot(int i, BodyPart bodyPart, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
+    protected EquipResult tryApplyAtSlot(int i, String equippedOnName, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
         if (i >= slotSize || i < 0) {
             return EquipResult.OUT_OF_INDEX;
         }
         else if (! slotCheckerEntity.getSlotChecker(i).contains(equipment.getType())) {
             return EquipResult.CANNOT_EQUIP_THIS_TYPE;
         }
-        else if (hasAlreadyEquippedSameBodyPart(bodyPart)) {
+        else if (hasAlreadyEquippedSameBodyPart(equippedOnName)) {
             return EquipResult.BODY_PART_HAS_USED;
         }
 
         return EquipResult.SUCCESS;
     }
 
-    public boolean hasAlreadyEquippedSameBodyPart(BodyPart bodyPart) {
-        return this.equipments.stream().anyMatch(armedEquipment -> armedEquipment.getArmedBodyPart() == bodyPart);
+    public boolean hasAlreadyEquippedSameBodyPart(String equippedOnName) {
+        return this.equipments.stream().anyMatch(armedEquipment -> armedEquipment.equippedOnName.equals(equippedOnName));
     }
 
     /**
      *
      * @param i
-     * @param bodyPart
+     * @param equippedOnName
      * @param equipment
      * @param slotCheckerEntity
      * @return Equipment -> returns back the equipment that was equipped before set.
      */
-    public Equipment setEquipment(int i, BodyPart bodyPart, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
+    public Equipment setEquipment(int i, String equippedOnName, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
 
-        return switch (tryApplyAtSlot(i, bodyPart, equipment, slotCheckerEntity)) {
+        return switch (tryApplyAtSlot(i, equippedOnName, equipment, slotCheckerEntity)) {
             case SUCCESS -> {
-                Equipment r = this.equipments.set(i, new ArmedEquipment(equipment, bodyPart)).getEquipment();
+                Equipment r = this.equipments.set(i, new ArmedEquipment(equipment, equippedOnName)).getEquipment();
                 this.dirty.set(i, true);
 
                 yield r;
@@ -69,7 +67,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     }
 
     public Equipment setEquipment(int i, ArmedEquipment armedEquipment, ISlotCheckerEntity slotCheckerEntity) {
-        return this.setEquipment(i, armedEquipment.getArmedBodyPart(), armedEquipment.getEquipment(), slotCheckerEntity);
+        return this.setEquipment(i, armedEquipment.equippedOnName, armedEquipment.getEquipment(), slotCheckerEntity);
     }
 
     public void setOnClient(int i, ArmedEquipment equipment) {
@@ -99,7 +97,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     }
 
     public boolean sameAsBodyPartName(int index, GeoBone bone) {
-        return this.equipments.get(index).getArmedBodyPart().name().equals(bone.getName());
+        return this.equipments.get(index).equippedOnName.equals(bone.getName());
     }
 
     public boolean hasRangeAttackWeapon() {
@@ -139,7 +137,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     public String toString() {
         String string = "";
         for (int i = 0; i < this.slotSize; i++) {
-            string += i + "[ equipment: " + this.equipments.get(i).getEquipment() + " bodyPart = " + this.equipments.get(i).getArmedBodyPart() + "]\n";
+            string += i + "[ equipment: " + this.equipments.get(i).getEquipment() + " bodyPart = " + this.equipments.get(i).equippedOnName + "]\n";
         }
         string += "\n";
         return string;

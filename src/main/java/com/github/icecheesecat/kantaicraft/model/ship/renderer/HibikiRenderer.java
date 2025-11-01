@@ -1,15 +1,12 @@
 package com.github.icecheesecat.kantaicraft.model.ship.renderer;
 
-import com.github.icecheesecat.kantaicraft.model.EntityShipRenderer;
-import com.github.icecheesecat.kantaicraft.model.equipment.BodyPart;
-import com.github.icecheesecat.kantaicraft.model.equipment.OffsetsMapping;
-import com.github.icecheesecat.kantaicraft.model.ship.model.HibikiModel;
 import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.Hibiki;
+import com.github.icecheesecat.kantaicraft.model.EntityShipRenderer;
+import com.github.icecheesecat.kantaicraft.model.equipment.ClientEquippableSlotDetails;
+import com.github.icecheesecat.kantaicraft.model.equipment.EquippableDetailSlots;
+import com.github.icecheesecat.kantaicraft.model.ship.model.HibikiModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import org.joml.Vector3d;
 import software.bernie.geckolib.core.object.Color;
-
-import java.util.Map;
 
 public class HibikiRenderer extends EntityShipRenderer<Hibiki> {
     public HibikiRenderer(EntityRendererProvider.Context renderManager, Color color) {
@@ -17,7 +14,7 @@ public class HibikiRenderer extends EntityShipRenderer<Hibiki> {
     }
 
     @Override
-    protected Map<BodyPart, Vector3d> defineBodyPartOffsetToWeapon() {
-        return OffsetsMapping.DESTROYER_DIVISION_6;
+    protected EquippableDetailSlots defineDetailSlots() {
+        return ClientEquippableSlotDetails.DESTROYER_DIVISION_6;
     }
 }

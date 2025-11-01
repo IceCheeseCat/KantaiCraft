@@ -90,7 +90,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     private final BlinkAnimationControl blinkAnimationControl = new BlinkAnimationControl(60, 80, this.random);
     private long lastEmotionChangedTick = -1;
     private final ShipClass shipClass;
-    BakedGeoModel bakedGeoModel;
+    private final EquippableSlots equippableSlots;
 
     public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentType> equippableTypes) {
         super(entityType, level);
@@ -98,6 +98,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(this::defaultEquipments);
         this.prevAnimationShipAnimationState = ShipAnimationState.IDLE;
         this.shipClass = shipClass;
+        this.equippableSlots = this.defineEquippableSlots();
     }
 
     @Override
@@ -114,6 +115,8 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.entityData.define(DATA_SIT_DOWN, false);
         this.setupSyncedDataFromStance(entityData, this.random);
     }
+
+    protected abstract EquippableSlots defineEquippableSlots();
 
     protected abstract void defaultEquipments(EquipmentHandler equipmentHandler);
 

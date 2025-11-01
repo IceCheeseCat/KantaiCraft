@@ -59,7 +59,7 @@ public class ComponentBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
         if (corePos != null) {
-            pTag.put("core_pos", CompoundTagHelper.putBlockPos(this.corePos));
+            pTag.put("core_pos", CompoundTagHelper.getNbtFromBlockPos(this.corePos));
         }
 
     }
@@ -82,7 +82,7 @@ public class ComponentBlockEntity extends BlockEntity {
     public CompoundTag getUpdateTag() {
         CompoundTag nbt = super.getUpdateTag();
         if (this.corePos != null) {
-            nbt.put("core_pos", CompoundTagHelper.putBlockPos(this.corePos));
+            nbt.put("core_pos", CompoundTagHelper.getNbtFromBlockPos(this.corePos));
         }
 
         return nbt;

@@ -9,7 +9,7 @@ import java.util.List;
 
 public final class CompoundTagHelper {
 
-    public static CompoundTag putVec3(Vec3 vec3) {
+    public static CompoundTag getNbtFromVec3(Vec3 vec3) {
         CompoundTag nbt = new CompoundTag();
         nbt.putDouble("x", vec3.x);
         nbt.putDouble("y", vec3.y);
@@ -33,7 +33,7 @@ public final class CompoundTagHelper {
         return new Vec3(x, y, z);
     }
 
-    public static CompoundTag putBlockPos(BlockPos blockPos) {
+    public static CompoundTag getNbtFromBlockPos(BlockPos blockPos) {
         CompoundTag nbt = new CompoundTag();
         nbt.putInt("pos_x", blockPos.getX());
         nbt.putInt("pos_y", blockPos.getY());
@@ -45,11 +45,11 @@ public final class CompoundTagHelper {
         return new BlockPos(nbt.getInt("pos_x"), nbt.getInt("pos_y"), nbt.getInt("pos_z"));
     }
 
-    public static CompoundTag putListOfBlockPos(List<BlockPos> blockPoses) {
+    public static CompoundTag getNbtFromListOfBlockPos(List<BlockPos> blockPoses) {
         CompoundTag nbt = new CompoundTag();
         nbt.putInt("poses_size", blockPoses.size());
         for (int i = 0; i < blockPoses.size(); i++) {
-            nbt.put("pos" + i, putBlockPos(blockPoses.get(i)));
+            nbt.put("pos" + i, getNbtFromBlockPos(blockPoses.get(i)));
         }
 
         return nbt;

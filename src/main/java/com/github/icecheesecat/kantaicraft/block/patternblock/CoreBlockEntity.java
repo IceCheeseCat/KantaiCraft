@@ -66,7 +66,7 @@ public class CoreBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
-        pTag.put("linked", CompoundTagHelper.putListOfBlockPos(this.linkedBlockPos));
+        pTag.put("linked", CompoundTagHelper.getNbtFromListOfBlockPos(this.linkedBlockPos));
         pTag.putBoolean("can_use", this.canUse);
     }
 
@@ -80,7 +80,7 @@ public class CoreBlockEntity extends BlockEntity {
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag nbt = super.getUpdateTag();
-        nbt.put("linked", CompoundTagHelper.putListOfBlockPos(this.linkedBlockPos));
+        nbt.put("linked", CompoundTagHelper.getNbtFromListOfBlockPos(this.linkedBlockPos));
         nbt.putBoolean("can_use", this.canUse);
         return nbt;
     }

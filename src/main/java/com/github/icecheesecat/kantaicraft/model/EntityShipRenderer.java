@@ -2,24 +2,16 @@ package com.github.icecheesecat.kantaicraft.model;
 
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
-import com.github.icecheesecat.kantaicraft.model.equipment.BodyPart;
-import com.github.icecheesecat.kantaicraft.model.equipment.PhysicalEquipmentPosition;
+import com.github.icecheesecat.kantaicraft.model.equipment.EquippableDetailSlots;
 import com.github.icecheesecat.kantaicraft.model.equipment.renderer.EquipmentRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
-import org.joml.*;
-import software.bernie.geckolib.GeckoLibException;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.object.Color;
 import software.bernie.geckolib.model.GeoModel;
@@ -28,7 +20,6 @@ import software.bernie.geckolib.util.RenderUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntityRenderer<T> {
 
@@ -36,7 +27,8 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
     protected final Color color;
     public static final Color HOSTILE_COLOR = Color.ofRGBA(0.1f, 0.1f, 0.1f, 1.0f);
     public static final Color NORMAL_COLOR = Color.WHITE;
-    protected final PhysicalEquipmentPosition physicalEquipmentPosition;
+//    protected final ArmingDetailManager armingDetailManager;
+    private EquippableDetailSlots equippableDetailSlots;
     private final Map<Integer, EquipmentRenderer> equipmentRenderersCache = new HashMap<>();
 
     public EntityShipRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model, float scale, float shadowRadius, Color color) {
@@ -44,11 +36,12 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
         this.scale = scale;
         this.shadowRadius = shadowRadius;
         this.color = color;
-        this.physicalEquipmentPosition = new PhysicalEquipmentPosition();
-        this.physicalEquipmentPosition.setupBodyPartPosition(model.getBakedModel(model.getModelResource(null)), defineBodyPartOffsetToWeapon());
+        this.equippableDetailSlots = this.defineDetailSlots();
+//        this.armingDetailManager = new ArmingDetailManager();
+//        this.armingDetailManager.setupBodyPartPosition(model.getBakedModel(model.getModelResource(null)), defineBodyPartOffsetToWeapon());
     }
 
-    protected abstract Map<BodyPart, Vector3d> defineBodyPartOffsetToWeapon();
+    protected abstract EquippableDetailSlots defineDetailSlots();
 
     @Override
     public ResourceLocation getTextureLocation(T animatable) {
@@ -92,16 +85,15 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
 
                         var equipment = equipmentHandler.getEquipment(i);
                         var armedEquipment = equipmentHandler.getArmedEquipment(i);
-                        var boneOptional = this.getGeoModel().getBone(armedEquipment.getArmedBodyPart().name());
+                        var boneOptional = this.getGeoModel().getBone(armedEquipment.getEquippedOnName());
                         if (boneOptional.isPresent()) {
 //                            poseStack.scale(100, 100, 100);
 //                            poseStack.mulPoseMatrix(boneOptional.get().getWorldSpaceMatrix());
 //                            poseStack.mulPoseMatrix(boneOptional.get().getLocalSpaceMatrix());
-                            this.entityRotation(entity, poseStack, partialTick);
-
-                            RenderUtils.rotateMatrixAroundBone(poseStack, boneOptional.get());
-
                             poseStack.translate(boneOptional.get().getLocalPosition().x, boneOptional.get().getLocalPosition().y, boneOptional.get().getLocalPosition().z);
+                            this.entityRotation(entity, poseStack, partialTick);
+                            RenderUtils.rotateMatrixAroundBone(poseStack, boneOptional.get());
+                            RenderUtils.rotateMatrixAroundBone(poseStack, boneOptional.get().getParent());
 //                            poseStack.translate(0.0f, -0.5f, 0);
 //                            poseStack.mulPoseMatrix(boneOptional.get().getLocalSpaceMatrix());
                             this.equipmentRenderersCache.get(i).defaultRender(poseStack, equipment, bufferSource, null, null, entityYaw, partialTick, packedLight);
@@ -132,14 +124,13 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
         for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
             var equipment = equipmentHandler.getEquipment(i);
             var armedEquipment = equipmentHandler.getArmedEquipment(i);
-            if (bone.getName().equals(armedEquipment.getArmedBodyPart().name())) {
+//            if (bone.getName().equals(armedEquipment.getArmedBodyPart().name())) {
 
                 poseStack.pushPose();
-                offsetToWeapon(poseStack, armedEquipment.getArmedBodyPart());
                 this.equipmentRenderersCache.get(i).defaultRender(poseStack, equipment, bufferSource, null, null, entityYaw, partialTick, packedLight);
                 poseStack.popPose();
 
-            }
+//            }
         }
 
 
@@ -147,11 +138,6 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
             recursivelyRenderWeapon(equipmentHandler, childBone, entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         }
         poseStack.popPose();
-    }
-
-    private void offsetToWeapon(PoseStack poseStack, BodyPart bodyPart) {
-        var vec3 = this.physicalEquipmentPosition.getBodyPartPosition(bodyPart).partOffsetToWeapon();
-        poseStack.translate(vec3.x, vec3.y, vec3.z);
     }
 
     public void cachingBakedModels(EquipmentHandler equipmentHandler) {

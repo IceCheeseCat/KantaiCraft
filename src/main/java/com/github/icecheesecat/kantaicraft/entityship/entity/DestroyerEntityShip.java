@@ -1,9 +1,8 @@
 package com.github.icecheesecat.kantaicraft.entityship.entity;
 
-import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.DestroyerDefaultEquipment;
+import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.EntityShipDefaultEquipments;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
 import com.github.icecheesecat.kantaicraft.equipment.SlotChecker;
-import com.github.icecheesecat.kantaicraft.equipment.handler.EquipResult;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.entity.EntityType;
@@ -30,8 +29,13 @@ public abstract class DestroyerEntityShip extends CannonEntityShip {
 
     @Override
     protected void defaultEquipments(EquipmentHandler equipmentHandler) {
-        DestroyerDefaultEquipment.DESTROYER.forEach((id, factory) -> {
+        EntityShipDefaultEquipments.DESTROYER.forEach((id, factory) -> {
             equipmentHandler.setEquipment(id, factory.get(), this);
         });
+    }
+
+    @Override
+    protected EquippableSlots defineEquippableSlots() {
+        return new EquippableSlots(EntityShipDefaultEquipments.equipment_1, EntityShipDefaultEquipments.equipment_2, EntityShipDefaultEquipments.equipment_3, EntityShipDefaultEquipments.equipment_4);
     }
 }
