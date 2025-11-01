@@ -52,4 +52,11 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
     public void iterateOverShips(Consumer<UUID> consumer) {
         this.ships.forEach(consumer);
     }
+
+    public void setDataOnClient(PlayerKantaiData data) {
+        this.ships.clear();
+        this.equipments.clear();
+        this.ships.addAll(data.ships);
+        this.equipments.addAll(data.equipments);
+    }
 }

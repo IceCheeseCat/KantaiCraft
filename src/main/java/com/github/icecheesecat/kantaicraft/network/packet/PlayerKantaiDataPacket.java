@@ -2,7 +2,10 @@ package com.github.icecheesecat.kantaicraft.network.packet;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiData;
+import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.network.Cache.Cache;
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -16,20 +19,22 @@ public class PlayerKantaiDataPacket {
     PlayerKantaiData playerKantaiData;
     UUID playerUUID;
 
-    public PlayerKantaiDataPacket(PlayerKantaiData data) {
+    public PlayerKantaiDataPacket(UUID playerUUID, PlayerKantaiData data) {
+        this.playerUUID = playerUUID;
         this.playerKantaiData = data;
     }
 
     public static void encode(PlayerKantaiDataPacket packet, FriendlyByteBuf buf) {
-        buf.writeNbt(packet.playerKantaiData.serializeNBT());
         buf.writeUUID(packet.playerUUID);
+        buf.writeNbt(packet.playerKantaiData.serializeNBT());
     }
 
     public static PlayerKantaiDataPacket decode(FriendlyByteBuf buf) {
+        UUID playerUUID = buf.readUUID();
+        CompoundTag nbt = buf.readNbt();
         PlayerKantaiData data = new PlayerKantaiData();
-        PlayerKantaiDataPacket packet = new PlayerKantaiDataPacket(null);
-        var nbt = buf.readNbt();
-        var uuid = buf.readUUID();
+
+        PlayerKantaiDataPacket packet = new PlayerKantaiDataPacket(playerUUID, null);
         if (nbt != null) {
             data.deserializeNBT(nbt);
             packet.playerKantaiData = data;
@@ -38,22 +43,24 @@ public class PlayerKantaiDataPacket {
             KantaiCraft.LOGGER.warning("PlayerKantaiDataPacket => Player's Kantai data missing. (Can be ignore)");
         }
 
-        if (uuid != null) {
-            packet.playerUUID = uuid;
-        }
-        else {
-            KantaiCraft.LOGGER.warning("PlayerKantaiDataPacket => Packet owner uuid missing. (Can be ignore)");
-        }
-
         return packet;
     }
 
-    // Server to client
+    /**
+     *  Sync {@link PlayerKantaiData} from server to client
+     */
     public static void handle(PlayerKantaiDataPacket packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                PlayerKantaiData playerKantaiData1 = packet.playerKantaiData;
-                Cache.allPlayerKantaiDataCache.setPlayerKantaiDataCache(playerKantaiData1, packet.playerUUID);
+                if (Minecraft.getInstance().level != null) {
+                    var clientPlayer = Minecraft.getInstance().level.getPlayerByUUID(packet.playerUUID);
+                    if (clientPlayer != null) {
+                        clientPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData1 -> {
+                            playerKantaiData1.setDataOnClient(packet.playerKantaiData);
+                        });
+                    }
+                }
+
             });
         });
         ctx.get().setPacketHandled(true);
