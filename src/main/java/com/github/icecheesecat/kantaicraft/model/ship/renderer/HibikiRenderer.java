@@ -10,7 +10,7 @@ import software.bernie.geckolib.core.object.Color;
 
 public class HibikiRenderer extends EntityShipRenderer<Hibiki> {
     public HibikiRenderer(EntityRendererProvider.Context renderManager, Color color) {
-        super(renderManager, new HibikiModel<>(), 0.78f, 0.4f, color);
+        super(renderManager, new HibikiModel(), 0.78f, 0.4f, color);
     }
 
     @Override

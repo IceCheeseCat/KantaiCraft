@@ -3,11 +3,10 @@ package com.github.icecheesecat.kantaicraft.model;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.block.renderer.ShipyardRenderer;
-import com.github.icecheesecat.kantaicraft.model.ship.model.DestroyerRoClassModel;
+import com.github.icecheesecat.kantaicraft.model.ship.renderer.AkatsukiRenderer;
 import com.github.icecheesecat.kantaicraft.model.ship.renderer.HibikiRenderer;
 import com.github.icecheesecat.kantaicraft.model.ship.renderer.IkazuchiRenderer;
 import com.github.icecheesecat.kantaicraft.model.ship.renderer.InazumaRenderer;
-import com.github.icecheesecat.kantaicraft.model.ship.renderer.RendererDestroyerRo;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,10 +20,7 @@ public class ModelEvent {
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         // entity
-        event.registerLayerDefinition(DestroyerRoClassModel.LAYER_LOCATION, DestroyerRoClassModel::createBodyLayer);
-//        event.registerLayerDefinition(InazumaModel.LAYER_LOCATION, InazumaModel::createBodyLayer);
-        // hostile entity
-//        event.registerLayerDefinition(HostileInazumaModel.LAYER_LOCATION, HostileInazumaModel::createBodyLayer);
+//        event.registerLayerDefinition(DestroyerRoClassModel.LAYER_LOCATION, DestroyerRoClassModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -34,11 +30,13 @@ public class ModelEvent {
         event.registerEntityRenderer(ModEntity.PlayerShip.INAZUMA.get(), (context) -> new InazumaRenderer(context, EntityShipRenderer.NORMAL_COLOR));
         event.registerEntityRenderer(ModEntity.PlayerShip.IKAZUCHI.get(), (context) -> new IkazuchiRenderer(context, EntityShipRenderer.NORMAL_COLOR));
         event.registerEntityRenderer(ModEntity.PlayerShip.HIBIKI.get(), (context) -> new HibikiRenderer(context, EntityShipRenderer.NORMAL_COLOR));
+        event.registerEntityRenderer(ModEntity.PlayerShip.AKATSUKI.get(), (context) -> new AkatsukiRenderer(context, EntityShipRenderer.NORMAL_COLOR));
 
         // Hostile entity
         event.registerEntityRenderer(ModEntity.HostileShip.INAZUMA.get(), (context) -> new InazumaRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
         event.registerEntityRenderer(ModEntity.HostileShip.IKAZUCHI.get(), (context) -> new IkazuchiRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
         event.registerEntityRenderer(ModEntity.HostileShip.HIBIKI.get(), (context) -> new HibikiRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
+        event.registerEntityRenderer(ModEntity.HostileShip.AKATSUKI.get(), (context) -> new AkatsukiRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
 
 
         // BlockEntity

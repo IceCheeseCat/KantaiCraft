@@ -16,7 +16,7 @@ import java.util.List;
 
 public class InazumaRenderer extends EntityShipRenderer<Inazuma> {
     public InazumaRenderer(EntityRendererProvider.Context renderManager, Color color) {
-        super(renderManager, new InazumaModel<>(), 0.78f, 0.4f, color);
+        super(renderManager, new InazumaModel(), 0.78f, 0.4f, color);
     }
 
     @Override
