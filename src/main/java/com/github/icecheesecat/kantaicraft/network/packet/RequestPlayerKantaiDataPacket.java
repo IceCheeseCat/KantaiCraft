@@ -3,6 +3,7 @@ package com.github.icecheesecat.kantaicraft.network.packet;
 import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentTree;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;

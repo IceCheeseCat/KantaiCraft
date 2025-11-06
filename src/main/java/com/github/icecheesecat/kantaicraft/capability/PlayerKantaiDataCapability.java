@@ -8,19 +8,23 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 @AutoRegisterCapability
 public class PlayerKantaiDataCapability implements ICapabilitySerializable<CompoundTag> {
 
     public static final Capability<PlayerKantaiData> TOKEN = CapabilityManager.get(new CapabilityToken<>(){});
     private PlayerKantaiData playerKantaiData;
+    final Player player;
     LazyOptional<PlayerKantaiData> lazyPlayerKantaiData = LazyOptional.of(this::getPlayerKantaiData);
 
-    public PlayerKantaiDataCapability() {
+    public PlayerKantaiDataCapability(Player player) {
+        this.player = player;
     }
 
     private PlayerKantaiData getPlayerKantaiData() {
         if (this.playerKantaiData == null) {
-            this.playerKantaiData = new PlayerKantaiData();
+            this.playerKantaiData = new PlayerKantaiData(player);
         }
 
         return this.playerKantaiData;

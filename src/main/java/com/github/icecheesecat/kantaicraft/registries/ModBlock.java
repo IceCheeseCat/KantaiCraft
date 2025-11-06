@@ -1,10 +1,11 @@
 package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.block.*;
+import com.github.icecheesecat.kantaicraft.block.PortBlock;
+import com.github.icecheesecat.kantaicraft.block.PortBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.commandcenter.CommandCenterBlock;
 import com.github.icecheesecat.kantaicraft.block.patternblock.ComponentBlock;
 import com.github.icecheesecat.kantaicraft.block.patternblock.ComponentBlockEntity;
-import com.github.icecheesecat.kantaicraft.block.commandcenter.CommandCenterBlock;
 import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardCoreBlock;
 import net.minecraft.world.item.BlockItem;

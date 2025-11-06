@@ -29,12 +29,13 @@ public class CapabilitiesEvent {
         if (event.getObject() instanceof Player player) {
             if (player instanceof ServerPlayer serverPlayer) {
                 if (!serverPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
-                    event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability());
+                    event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability(serverPlayer));
                 }
             }
             if (player instanceof LocalPlayer localPlayer) {
                 if (!localPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
-                    event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability());
+                    event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability(localPlayer));
+                    event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.client_player_kantai_data_cache"), new ClientPlayerKantaiDataCacheCapability());
                 }
             }
 

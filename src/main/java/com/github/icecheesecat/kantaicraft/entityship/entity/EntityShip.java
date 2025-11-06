@@ -10,14 +10,13 @@ import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
 import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.S2CEquipmentHandlerPacket;
-import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
-import com.github.icecheesecat.kantaicraft.network.packet.TogglePlayerShipPacket;
 import com.github.icecheesecat.kantaicraft.registries.*;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -56,7 +55,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.GeckoLib;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
@@ -212,7 +210,11 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
+        nbt.put("playerKantaiData", saveAsPlayerKantaiDataTag());
+    }
 
+    public CompoundTag saveAsPlayerKantaiDataTag() {
+        CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("forcemelee", this.entityData.get(DATA_FORCE_MELEE));
         nbt.putInt("data_aircraft", this.entityData.get(DATA_AIRCRAFT));
         nbt.putFloat("data_fuel", this.entityData.get(DATA_FUEL));
@@ -227,10 +229,13 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             nbt.put("inventory", this.saveInventory());
         nbt.putBoolean("isguarding", this.entityData.get(DATA_IS_GUARDING));
         this.entityData.get(DATA_SHIP_OWNER).ifPresent(uuid ->
-            nbt.putUUID("shipowner", uuid));
+                nbt.putUUID("shipowner", uuid));
         nbt.putInt("follow_distance", this.getFollowOwnerDistance());
         nbt.putBoolean("sit_down", this.isSitDown());
+        nbt.put("equipmentHandler", this.equipmentHandler.serializeNBT());
+        nbt.putString("entityType", this.getType().toString());
 
+        return nbt;
     }
 
     protected CompoundTag saveInventory() {
@@ -256,6 +261,11 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
 
+        this.loadPlayerKantaiDataTag(nbt.getCompound("playerKantaiData"));
+
+    }
+
+    public void loadPlayerKantaiDataTag(CompoundTag nbt) {
         if (nbt.contains("forcemelee")) {
             this.entityData.set(DATA_FORCE_MELEE, nbt.getBoolean("forcemelee"));
         }
@@ -300,6 +310,9 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         }
         if (nbt.contains("sit_down")) {
             this.entityData.set(DATA_SIT_DOWN, nbt.getBoolean("sit_down"));
+        }
+        if (nbt.contains("equipmentHandler")) {
+            this.equipmentHandler.deserializeNBT(nbt.getCompound("equipmentHandler"));
         }
     }
 
@@ -357,7 +370,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     private void printClientDebug() {
 //        System.out.println("id: " + this.getId());
-        this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(System.out::println);
+//        this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(System.out::println);
     }
 
     protected boolean continueAnimationState() {

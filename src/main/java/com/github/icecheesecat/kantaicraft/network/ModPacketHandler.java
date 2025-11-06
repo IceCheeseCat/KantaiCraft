@@ -84,6 +84,22 @@ public class ModPacketHandler {
 
         INSTANCE.registerMessage(
                 id++,
+                RequestPlayerKantaiDataPacket.class,
+                RequestPlayerKantaiDataPacket::encode,
+                RequestPlayerKantaiDataPacket::decode,
+                RequestPlayerKantaiDataPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                PlayerKantaiDataUpdatedPacket.class,
+                PlayerKantaiDataUpdatedPacket::encode,
+                PlayerKantaiDataUpdatedPacket::decode,
+                PlayerKantaiDataUpdatedPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
                 SetShipyardSlotOwnerPacket.class,
                 SetShipyardSlotOwnerPacket::encode,
                 SetShipyardSlotOwnerPacket::decode,
@@ -96,6 +112,14 @@ public class ModPacketHandler {
                 S2CEquipmentHandlerPacket::encode,
                 S2CEquipmentHandlerPacket::decode,
                 S2CEquipmentHandlerPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                CommandCenterRequestSummonPacket.class,
+                CommandCenterRequestSummonPacket::encode,
+                CommandCenterRequestSummonPacket::decode,
+                CommandCenterRequestSummonPacket::handle
         );
     }
 

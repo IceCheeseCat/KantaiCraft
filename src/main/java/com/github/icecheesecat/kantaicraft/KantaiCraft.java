@@ -1,16 +1,18 @@
 package com.github.icecheesecat.kantaicraft;
 
+import com.github.icecheesecat.kantaicraft.command.ModCommands;
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentStats;
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentTree;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
+import com.github.icecheesecat.kantaicraft.menu.commandcenter.CommandCenterScreen;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipScreen;
 import com.github.icecheesecat.kantaicraft.menu.shipyard.ShipyardScreen;
 import com.github.icecheesecat.kantaicraft.registries.*;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -65,10 +67,23 @@ public class KantaiCraft
                     () -> {
                         MenuScreens.register(ModMenu.SHIP_MENU.get(), ShipScreen::new);
                         MenuScreens.register(ModMenu.SHIPYARD_MENU.get(), ShipyardScreen::new);
+                        MenuScreens.register(ModMenu.COMMAND_CENTER_MENU.get(), CommandCenterScreen::new);
                     }
             );
         }
 
     }
+
+    @Mod.EventBusSubscriber(modid = KantaiCraft.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+    public static class CommandEvent {
+
+        @SubscribeEvent
+        public static void registerCommand(RegisterCommandsEvent event) {
+            ModCommands.register(event.getDispatcher(), event.getBuildContext());
+        }
+
+    }
+
+
 
 }

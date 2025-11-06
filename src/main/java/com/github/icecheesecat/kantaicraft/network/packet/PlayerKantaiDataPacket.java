@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.network.packet;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.capability.ClientPlayerKantaiDataCacheCapability;
 import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiData;
 import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.network.Cache.Cache;
@@ -32,7 +33,7 @@ public class PlayerKantaiDataPacket {
     public static PlayerKantaiDataPacket decode(FriendlyByteBuf buf) {
         UUID playerUUID = buf.readUUID();
         CompoundTag nbt = buf.readNbt();
-        PlayerKantaiData data = new PlayerKantaiData();
+        PlayerKantaiData data = new PlayerKantaiData(Minecraft.getInstance().player);
 
         PlayerKantaiDataPacket packet = new PlayerKantaiDataPacket(playerUUID, null);
         if (nbt != null) {
@@ -56,7 +57,14 @@ public class PlayerKantaiDataPacket {
                     var clientPlayer = Minecraft.getInstance().level.getPlayerByUUID(packet.playerUUID);
                     if (clientPlayer != null) {
                         clientPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData1 -> {
+
                             playerKantaiData1.setDataOnClient(packet.playerKantaiData);
+
+                            // prepare cache for entity
+                            clientPlayer.getCapability(ClientPlayerKantaiDataCacheCapability.TOKEN).ifPresent(cache -> {
+                                cache.prepareCache(packet.playerKantaiData);
+                            });
+
                         });
                     }
                 }

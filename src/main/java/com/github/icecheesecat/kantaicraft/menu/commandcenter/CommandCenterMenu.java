@@ -1,7 +1,10 @@
 package com.github.icecheesecat.kantaicraft.menu.commandcenter;
 
-import com.github.icecheesecat.kantaicraft.block.commandcenter.CommandCenterBlockEntity;
 import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiData;
+import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
+import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
+import com.github.icecheesecat.kantaicraft.network.packet.RequestPlayerKantaiDataPacket;
+import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import com.github.icecheesecat.kantaicraft.registries.ModMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,16 +15,18 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 
 public class CommandCenterMenu extends AbstractContainerMenu {
+    final Player player;
+    ContainerLevelAccess access;
 
-    private PlayerKantaiData playerKantaiData;
-
-    public CommandCenterMenu(int pContainerId, Inventory inventory, CommandCenterBlockEntity ccbe, ContainerLevelAccess access) {
+    public CommandCenterMenu(int pContainerId, Inventory inventory, ContainerLevelAccess access) {
         super(ModMenu.COMMAND_CENTER_MENU.get(), pContainerId);
-
+        this.player = inventory.player;
+        this.access = access;
     }
 
     public CommandCenterMenu(int containerId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(containerId, playerInv, (CommandCenterBlockEntity) Minecraft.getInstance().level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+        this(containerId, playerInv, ContainerLevelAccess.NULL);
+        ModPacketHandler.INSTANCE.sendToServer(new RequestPlayerKantaiDataPacket(this.player.getUUID()));
     }
 
     @Override
@@ -31,8 +36,6 @@ public class CommandCenterMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player pPlayer) {
-//        return pPlayer.distanceToSqr();
-        return true;
+        return AbstractContainerMenu.stillValid(access, pPlayer, ModBlock.COMMAND_CENTER.get());
     }
-
 }

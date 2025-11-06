@@ -14,6 +14,9 @@ public class EntityAttributesEvent {
     public static void registerAttributes(EntityAttributeCreationEvent event) {
 
         event.put(ModEntity.PlayerShip.DESTROYER_RO_CLASS.get(), ShipAttributes.DESTROYER_CLASS);
+        event.put(ModEntity.HostileShip.DESTROYER_RO_CLASS.get(), ShipAttributes.DESTROYER_CLASS);
+        event.put(ModEntity.PlayerShip.DESTROYER_I_CLASS.get(), ShipAttributes.DESTROYER_CLASS);
+        event.put(ModEntity.HostileShip.DESTROYER_I_CLASS.get(), ShipAttributes.DESTROYER_CLASS);
         event.put(ModEntity.PlayerShip.INAZUMA.get(), ShipAttributes.DESTROYER_CLASS);
         event.put(ModEntity.HostileShip.INAZUMA.get(), ShipAttributes.DESTROYER_CLASS);
         event.put(ModEntity.PlayerShip.IKAZUCHI.get(), ShipAttributes.DESTROYER_CLASS);
