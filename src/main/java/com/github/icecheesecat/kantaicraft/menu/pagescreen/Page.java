@@ -1,21 +1,18 @@
-package com.github.icecheesecat.kantaicraft.menu.ship;
+package com.github.icecheesecat.kantaicraft.menu.pagescreen;
 
-import com.github.icecheesecat.kantaicraft.menu.IconWithTextElement;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
-public class ScreenSection implements Renderable {
+public class Page implements Renderable {
 
     private static final int BACKGROUND = FastColor.ARGB32.color(102, 0, 0, 0);
     private boolean isShow = true;
@@ -23,8 +20,9 @@ public class ScreenSection implements Renderable {
     protected int x, y, width, height;
     private final List<ImageDisplay> imageDisplays = new ArrayList<>();
     private List<TextInstance> textInstances = new ArrayList<>();
+    public List<AbstractWidget> pageWidgets = new ArrayList<>();
 
-    public ScreenSection(Component title, int x, int y, int width, int height) {
+    public Page(Component title, int x, int y, int width, int height) {
         this.title = title;
         this.x = x;
         this.y = y;
@@ -34,6 +32,9 @@ public class ScreenSection implements Renderable {
 
     public void setShow(boolean h) {
         this.isShow = h;
+        this.pageWidgets.forEach(widget -> {
+            widget.visible = widget.active = h;
+        });
     }
 
     public boolean isShowing() {
@@ -88,11 +89,23 @@ public class ScreenSection implements Renderable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ScreenSection screenSection) {
-            return screenSection.getTitle().getString().equals(this.title.getString());
+        if (obj instanceof Page page) {
+            return page.getTitle().getString().equals(this.title.getString());
         }
 
         return false;
+    }
+
+    public void addWidget(AbstractWidget widget) {
+        this.pageWidgets.add(widget);
+    }
+
+    public void refresh() {
+        this.init();
+    }
+
+    public void init() {
+
     }
 
     public record TextInstance(int x, int y, String text, int fontColor) {

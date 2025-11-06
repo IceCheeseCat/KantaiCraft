@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.menu.ship;
+package com.github.icecheesecat.kantaicraft.menu.pagescreen;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import net.minecraft.client.Minecraft;
@@ -9,14 +9,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
-public class SectionSelector extends AbstractWidget {
+public class PageSelector extends AbstractWidget {
 
 //    private static final int BACKGROUND_SELECTED = FastColor.ARGB32.color(255, 210, 210, 210);
 //    private static final int BACKGROUND_UNSELECTED = FastColor.ARGB32.color(102, 0,0,0);
     private static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(KantaiCraft.MODID, "textures/gui/button.png");
     private static final ResourceLocation BUTTON_PRESSED_LOCATION = new ResourceLocation(KantaiCraft.MODID, "textures/gui/button_pressed.png");
     private boolean isSelected = false;
-    private ScreenSection screenSection;
+    private Page page;
     private int imageWidth;
     private int imageHeight;
     private String text;
@@ -24,16 +24,16 @@ public class SectionSelector extends AbstractWidget {
     private static final int BLACK = FastColor.ARGB32.color(255, 0, 0, 0);
     private static final int WHITE = FastColor.ARGB32.color(255, 255, 255, 255);
 
-    public SectionSelector(int pX, int pY, int pWidth, int pHeight, Component pMessage, ScreenSection screenSection) {
+    public PageSelector(int pX, int pY, int pWidth, int pHeight, Component pMessage, Page page) {
         super(pX, pY, pWidth, pHeight, pMessage);
-        this.screenSection = screenSection;
+        this.page = page;
         this.imageWidth = 64;
         this.imageHeight = 64;
     }
 
     public void setSelected(boolean s) {
         this.isSelected = s;
-        this.screenSection.setShow(s);
+        this.page.setShow(s);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class SectionSelector extends AbstractWidget {
     public void onClick(double pMouseX, double pMouseY) {
         super.onClick(pMouseX, pMouseY);
         this.setSelected(true);
-        this.screenSection.setShow(true);
+        this.page.setShow(true);
     }
 
 }

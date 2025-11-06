@@ -1,19 +1,18 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import com.github.icecheesecat.kantaicraft.menu.IconWithTextElement;
+import com.github.icecheesecat.kantaicraft.menu.pagescreen.Page;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GridSection extends ScreenSection {
+public class GridPage extends Page {
     List<GridLayout> gridLayout = new ArrayList<>();
 
-    public GridSection(Component title, int x, int y, int width, int height) {
+    public GridPage(Component title, int x, int y, int width, int height) {
         super(title, x, y, width, height);
         setShow(true);
     }
