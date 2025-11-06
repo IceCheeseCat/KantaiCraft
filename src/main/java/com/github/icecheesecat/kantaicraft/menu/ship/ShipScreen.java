@@ -4,6 +4,10 @@ import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.menu.IconWithTextElement;
+import com.github.icecheesecat.kantaicraft.menu.pagescreen.Page;
+import com.github.icecheesecat.kantaicraft.menu.pagescreen.PageButton;
+import com.github.icecheesecat.kantaicraft.menu.pagescreen.PageManager;
+import com.github.icecheesecat.kantaicraft.menu.pagescreen.SelectionWidget;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.google.common.collect.ImmutableMap;
@@ -61,8 +65,8 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     private GridLayout controlLayout;
     private GridLayout statLayout;
     private GridLayout equipmentLayout;
-    private final SectionManager sectionManager = new SectionManager();
-    private SectionSelectDisplayer sectionSelectDisplayer;
+    private final PageManager pageManager = new PageManager();
+    private PageTitleDisplayer pageTitleDisplayer;
     EquipmentHandler equipmentHandler;
     private List<SelectionWidget> tempSelectionWidgets = new ArrayList<>();
 
@@ -102,54 +106,44 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
     @Override
     protected void init() {
         initVar();
-        this.sectionManager.clear();
+        this.pageManager.clear();
         var mainSection = createMainSection();
         var equipmentSection = createEquipmentSection();
         var inventorySection = createInventorySection();
-        this.sectionManager.addMainSection(mainSection);
-        this.sectionManager.addSection(equipmentSection);
-        this.sectionManager.addSection(inventorySection);
-        this.sectionManager.check();
+        this.pageManager.addDisplayingPage(mainSection);
+        this.pageManager.addPage(equipmentSection);
+        this.pageManager.addPage(inventorySection);
+        this.pageManager.check();
 
         this.statLayout = createStatLayout();
 
         // Next section button
-        this.addRenderableWidget(new SectionButton((int) (this.width * 0.75f), SECTION_Y / 2, 16, 16, Component.empty(), NEXT_ICON, NEXT_ICON_HOVERED, sectionManager) {
-            @Override
-            public void onPress() {
-                this.sectionManager.nextSection();
-            }
-        });
+        this.addRenderableWidget(new PageButton.Next((int) (this.width * 0.75f), SECTION_Y / 2, 16, 16, Component.empty(), NEXT_ICON, NEXT_ICON_HOVERED, pageManager));
 
         // Prev section button
-        this.addRenderableWidget(new SectionButton((int) (this.width * 0.25f), SECTION_Y / 2, 16, 16, Component.empty(), PREV_ICON, PREV_ICON_HOVERED, sectionManager) {
-            @Override
-            public void onPress() {
-                this.sectionManager.prevSection();
-            }
-        });
+        this.addRenderableWidget(new PageButton.Previous((int) (this.width * 0.25f), SECTION_Y / 2, 16, 16, Component.empty(), PREV_ICON, PREV_ICON_HOVERED, pageManager));
 
-        this.sectionSelectDisplayer = new SectionSelectDisplayer(sectionManager, this.width/2, SECTION_Y/2 -3, 0, 0, 70);
-        this.addRenderableOnly(this.sectionSelectDisplayer);
+        this.pageTitleDisplayer = new PageTitleDisplayer(pageManager, this.width/2, SECTION_Y/2 -3, 0, 0, 70);
+        this.addRenderableOnly(this.pageTitleDisplayer);
 
     }
 
-    private ScreenSection createMainSection() {
+    private Page createMainSection() {
         this.controlLayout = createControlLayout();
-        GridSection gridSection = new GridSection(Component.translatable("ship_screen_main_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
-        gridSection.appendGridlayout(this.controlLayout);
-        return gridSection;
+        GridPage gridPage = new GridPage(Component.translatable("ship_screen_main_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
+        gridPage.appendGridlayout(this.controlLayout);
+        return gridPage;
     }
 
-    private ScreenSection createEquipmentSection() {
+    private Page createEquipmentSection() {
         this.equipmentLayout = createEquipmentLayout();
-        GridSection gridSection = new GridSection(Component.translatable("ship_screen_equipment_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
-        gridSection.appendGridlayout(this.equipmentLayout);
+        GridPage gridPage = new GridPage(Component.translatable("ship_screen_equipment_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
+        gridPage.appendGridlayout(this.equipmentLayout);
 
-        return gridSection;
+        return gridPage;
     }
 
-    private ScreenSection createInventorySection() {
+    private Page createInventorySection() {
         InventorySection screenSection = new InventorySection(Component.translatable("ship_screen_inventory_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT, this.menu.slots);
         int playerX = this.leftPos - 154  - 20;
         int playerY = this.topPos + 3;
@@ -158,12 +152,12 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
         int blitOffset = 0;
         int white = FastColor.ARGB32.color(255, 255, 255, 255);
 
-        ScreenSection.ImageDisplay playerInventoryDisplay = new ScreenSection.ImageDisplay(playerX, playerY, blitOffset, 154, 73, INVENTORY_SLOTS, 0.8f);
-        ScreenSection.ImageDisplay shipInventoryDisplay = new ScreenSection.ImageDisplay(shipX, shipY, blitOffset,154, 73, INVENTORY_SLOTS, 0.8f);
+        Page.ImageDisplay playerInventoryDisplay = new Page.ImageDisplay(playerX, playerY, blitOffset, 154, 73, INVENTORY_SLOTS, 0.8f);
+        Page.ImageDisplay shipInventoryDisplay = new Page.ImageDisplay(shipX, shipY, blitOffset,154, 73, INVENTORY_SLOTS, 0.8f);
         screenSection.addImageDisplay(playerInventoryDisplay);
-        screenSection.addTextInstance(new ScreenSection.TextInstance(playerX, playerY-10, "Player Inventory", white));
+        screenSection.addTextInstance(new Page.TextInstance(playerX, playerY-10, "Player Inventory", white));
         screenSection.addImageDisplay(shipInventoryDisplay);
-        screenSection.addTextInstance(new ScreenSection.TextInstance(shipX, shipY-10, "Ship Inventory", white));
+        screenSection.addTextInstance(new Page.TextInstance(shipX, shipY-10, "Ship Inventory", white));
 
         return screenSection;
     }
@@ -256,7 +250,7 @@ public class ShipScreen extends AbstractContainerScreen<ShipMenu> {
 //        this.renderBg(pGuiGraphics, partialTick, pMouseX, pMouseY);
         this.renderEntityModel(pGuiGraphics, pMouseX, pMouseY);
 //        this.renderables.forEach(renderable -> renderable.render(pGuiGraphics, pMouseX, pMouseY, partialTick));
-        sectionManager.render(pGuiGraphics, pMouseX, pMouseY, partialTick);
+        pageManager.render(pGuiGraphics, pMouseX, pMouseY, partialTick);
         renderOnControl(pGuiGraphics);
 
     }
