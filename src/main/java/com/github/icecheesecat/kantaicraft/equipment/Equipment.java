@@ -10,28 +10,32 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Equipment implements INBTSerializable<CompoundTag>, GeoAnimatable {
-
-    public static final Equipment EMPTY = new Equipment(EquipmentProperties.EMPTY);
-    protected Map<EquipmentStatType, Double> stats = new HashMap<>();
+    protected Map<EquipmentStatType, Double> stats;
     private EquipmentProperties equipmentProperties;
     private int level;
     public static final int MAX_LEVEL = 10;
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
+    private UUID uuid = UUID.randomUUID();
+    private EquipmentType equipmentType;
 
-    public Equipment() {
+    public Equipment(EquipmentType equipmentType) {
+        this(equipmentType, 0);
     }
 
-    public Equipment(Equipment equipment) {
-        this.equipmentProperties = equipment.equipmentProperties;
-        this.level= equipment.level;
-        this.stats = new HashMap<>(equipment.stats);
+    public Equipment(EquipmentType equipmentType, int level) {
+        this.equipmentType = equipmentType;
+        this.equipmentProperties = equipmentType.getEquipmentProperties();
+        this.level = level;
+        this.stats = new HashMap<>(equipmentType.getDefaultStats());
     }
 
-    public Equipment(EquipmentProperties equipmentProperties) {
-        this.equipmentProperties = equipmentProperties;
-        this.level = 0;
+    public static Equipment makeFromCompoundTag(CompoundTag compoundTag) {
+        Equipment equipment = EquipmentManager.createEmptyEquipment();
+        equipment.deserializeNBT(compoundTag);
+        return equipment;
     }
 
     public double getStat(EquipmentStatType type) {
@@ -52,11 +56,15 @@ public class Equipment implements INBTSerializable<CompoundTag>, GeoAnimatable {
     }
 
     public Component getName() {
-        return equipmentProperties.getComponentName();
+        return equipmentProperties.getName();
     }
 
     public int getLevel() {
         return level;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
     public void setLevel(int level) {
@@ -67,21 +75,18 @@ public class Equipment implements INBTSerializable<CompoundTag>, GeoAnimatable {
         this.level++;
     }
 
-    public EquipmentType getType() {
+    public EquipmentClass getEquipmentClass() {
         return this.equipmentProperties.getEquipmentType();
     }
 
-    public Equipment asCopy() {
-        return new Equipment(this);
-    }
-
-    public boolean isTypeOf(EquipmentType type) {
-        return getType() == type;
+    public boolean isTypeOf(EquipmentClass equipmentClass) {
+        return getEquipmentClass() == equipmentClass;
     }
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
+
         var entry_set = stats.entrySet().stream().toList();
         nbt.putInt("stats_size", stats.size());
         for (int i = 0; i < stats.size(); i++) {
@@ -91,6 +96,7 @@ public class Equipment implements INBTSerializable<CompoundTag>, GeoAnimatable {
 
         nbt.putInt("level", this.level);
         nbt.put("properties", this.equipmentProperties.serializeNBT());
+        nbt.putUUID("uuid", this.uuid);
 
         return nbt;
     }
@@ -109,6 +115,8 @@ public class Equipment implements INBTSerializable<CompoundTag>, GeoAnimatable {
         this.level = nbt.getInt("level");
         this.equipmentProperties = new EquipmentProperties();
         this.equipmentProperties.deserializeNBT(nbt.getCompound("properties"));
+        this.uuid = nbt.getUUID("uuid");
+        this.equipmentType = EquipmentManager.getEquipmentTypeById(this.equipmentProperties.getId());
 
     }
 
@@ -125,5 +133,19 @@ public class Equipment implements INBTSerializable<CompoundTag>, GeoAnimatable {
     @Override
     public double getTick(Object o) {
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Equipment equipment) {
+            return equipment.getId() == this.getId() && equipment.level == this.level && this.uuid.equals(equipment.getUuid());
+        }
+
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "[id=" + this.equipmentProperties.getId() + ", name=" + this.equipmentProperties.getString() + ", level=" + this.level + "]";
     }
 }

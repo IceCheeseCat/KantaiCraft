@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.equipment;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.client.EquipmentRendererCache;
 import com.github.icecheesecat.kantaicraft.model.equipment.renderer.EquipmentRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -9,15 +10,17 @@ import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EquipmentManager {
 
-    public static final Map<Integer, Equipment> ALL_EQUIPMENTS = new HashMap<>();
+    private static final Map<Integer, EquipmentType> EQUIPMENT_TYPES = new HashMap<>();
     public static final Map<Integer, ResourceLocation> EQUIPMENT_ICON_LOCATION = new HashMap<>();
     public static final Map<Integer, ModelFactory> EQUIPMENT_MODELS = new HashMap<>();
     public static final Map<Integer, RendererFactory> EQUIPMENT_RENDERERS = new HashMap<>();
     public static void init() {
+        registerEquipment(EquipmentProperties.EMPTY);
         registerEquipment(EquipmentProperties.__12cm_single_gun_mount__);
         registerEquipment(EquipmentProperties.__12cm_twin_gun_mount__);
 //        createEquipment(EquipmentProperties.__12cm_single_gun_mount__);
@@ -91,27 +94,27 @@ public class EquipmentManager {
 //        createEquipment(EquipmentProperties.__type_3_depth_charge_projector__);
 //        createEquipment(EquipmentProperties.__type_95_depth_charge__);
 //        createEquipment(EquipmentProperties.__type_2_depth_charge__);
+        EquipmentRendererCache.cacheEquipmentRenderers();
     }
 
     private static void registerEquipment(EquipmentProperties equipmentProperties) {
-        registerGeneralEquipment(equipmentProperties.getId(), equipmentProperties);
+        registerEquipmentType(equipmentProperties.getId(), equipmentProperties);
         registerEquipmentIconLocation(equipmentProperties.getId(), equipmentProperties);
         registerEquipmentModelAndRenderer(equipmentProperties.getId(), equipmentProperties);
     }
 
-    private static void registerGeneralEquipment(int id, EquipmentProperties equipmentProperties) {
-        if (ALL_EQUIPMENTS.containsKey(id)) {
-            throw new IllegalStateException("ALL EQUIPMENT has the same id equipment already!");
+    private static void registerEquipmentType(int id, EquipmentProperties equipmentProperties) {
+        if (EQUIPMENT_TYPES.containsKey(id)) {
+            throw new IllegalStateException("EQUIPMENT_TYPES has the same id equipment already!");
         }
-        ALL_EQUIPMENTS.put(id,
-                new Equipment(equipmentProperties));
+        EQUIPMENT_TYPES.put(id, new EquipmentType(equipmentProperties));
     }
 
     private static void registerEquipmentIconLocation(int id, EquipmentProperties equipmentProperties) {
         if (EQUIPMENT_ICON_LOCATION.containsKey(id)) {
             throw new IllegalStateException("EQUIPMENT_ICON_LOCATION has the same id resourceLocation already!");
         }
-        EQUIPMENT_ICON_LOCATION.put(id, new ResourceLocation(KantaiCraft.MODID, equipmentProperties.getName()));
+        EQUIPMENT_ICON_LOCATION.put(id, new ResourceLocation(KantaiCraft.MODID, equipmentProperties.getString()));
     }
 
     private static void registerEquipmentModelAndRenderer(int id, EquipmentProperties equipmentProperties) {
@@ -122,7 +125,7 @@ public class EquipmentManager {
             throw new IllegalStateException("EQUIPMENT RENDERERS has the same id resourceLocation already!");
         }
 
-        ModelFactory modelFactory = () -> new DefaultedGeoModel<Equipment>(new ResourceLocation(KantaiCraft.MODID, equipmentProperties.getName())) {
+        ModelFactory modelFactory = () -> new DefaultedGeoModel<Equipment>(new ResourceLocation(KantaiCraft.MODID, equipmentProperties.getString())) {
             @Override
             protected String subtype() {
                 return "equipment";
@@ -135,19 +138,18 @@ public class EquipmentManager {
         EQUIPMENT_RENDERERS.put(id, rendererFactory);
     }
 
-    private static Equipment getEquipment(int id) {
-        return ALL_EQUIPMENTS.getOrDefault(id, Equipment.EMPTY);
+    public static Equipment createNewEquipment(int id, int level) {
+        EquipmentType equipmentType = EQUIPMENT_TYPES.get(id);
+
+        return equipmentType.create(level);
     }
 
-    public static Equipment createNewEquipment(int id, int level) {
-        Equipment equipment = getEquipment(id);
-        if (equipment.equals(Equipment.EMPTY)) {
-            return Equipment.EMPTY;
-        }
+    public static Equipment createNewEquipment(int id) {
+        return createNewEquipment(id, 0);
+    }
 
-        Equipment e = equipment.asCopy();
-        e.setLevel(level);
-        return e;
+    public static Equipment createEmptyEquipment() {
+        return createNewEquipment(-1, 0);
     }
 
     @Nullable
@@ -169,6 +171,15 @@ public class EquipmentManager {
             return EQUIPMENT_RENDERERS.get(id).create();
         }
         return null;
+    }
+
+    public static List<EquipmentType> getAllEquipmentTypes() {
+        return EquipmentManager.EQUIPMENT_TYPES.entrySet().stream().filter(entry -> entry.getKey() != -1).map(Map.Entry::getValue).toList();
+    }
+
+    @Nullable
+    public static EquipmentType getEquipmentTypeById(int id) {
+        return EQUIPMENT_TYPES.get(id);
     }
 
     @FunctionalInterface

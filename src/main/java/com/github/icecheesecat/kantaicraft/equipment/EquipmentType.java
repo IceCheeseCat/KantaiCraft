@@ -1,24 +1,51 @@
 package com.github.icecheesecat.kantaicraft.equipment;
 
-/**
- *
- */
-public enum EquipmentType {
+import net.minecraft.network.chat.Component;
 
-    NONE,
-    SMALL_CANNON,
-    MEDIUM_CANNON,
-    LARGE_CANNON,
-    TORPEDO,
-    RADAR,
-    SEAPLANE_RECON,
-    SEAPLANE_FIGHTER,
-    AIRCRAFT_DIVE_BOMBER,
-    AIRCRAFT_TORPEDO_BOMBER,
-    AIRCRAFT_FIGHTER,
-    ANTI_SUBMARINE,
-    OTHER;
+import java.util.HashMap;
+import java.util.Map;
 
-    public static EquipmentType get(int ordinal) { return values()[ordinal]; }
+public class EquipmentType {
+    private final EquipmentProperties equipmentProperties;
+    private final Map<EquipmentStatType, Double> defaultStats;
 
+    public EquipmentType(EquipmentProperties equipmentProperties) {
+        this.equipmentProperties = equipmentProperties;
+        this.defaultStats = new HashMap<>();
+    }
+
+    public void setDefaultStats(Map<EquipmentStatType, Double> stats) {
+        this.defaultStats.clear();
+        this.defaultStats.putAll(stats);
+    }
+
+    public Equipment create() {
+        return new Equipment(this);
+    }
+
+    public Equipment create(int level) {
+
+        return new Equipment(this);
+    }
+
+    public EquipmentProperties getEquipmentProperties() {
+        return equipmentProperties;
+    }
+
+    public int getId() {
+        return equipmentProperties.getId();
+    }
+
+    public Map<EquipmentStatType, Double> getDefaultStats() {
+        return defaultStats;
+    }
+
+    public Component getName() {
+        return this.equipmentProperties.getName();
+    }
+
+    @Override
+    public String toString() {
+        return "[id=" + this.equipmentProperties.getId() + ", name=" + this.equipmentProperties.getString() +"]";
+    }
 }

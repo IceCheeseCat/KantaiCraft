@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.tickable;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
 import com.github.icecheesecat.kantaicraft.tickable.attack.CannonAttack;
 
 import javax.annotation.Nullable;
@@ -27,11 +27,11 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
         return this.set(index, ShipTickableAction.NULL);
     }
 
-    public List<ShipTickableAction> getActionsByWeaponType(EquipmentType type) {
+    public List<ShipTickableAction> getActionsByWeaponType(EquipmentClass type) {
 
         List<ShipTickableAction> ret = new ArrayList<>();
         for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
-            if (equipmentHandler.getEquipments().get(i).getType() == type) {
+            if (equipmentHandler.getEquipments().get(i).getEquipmentClass() == type) {
                 ShipTickableAction a = this.get(i);
                 ret.add(a);
             }
@@ -44,9 +44,9 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
 
         for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
             var equipment = equipmentHandler.getEquipments().get(i);
-            if (equipment.isTypeOf(EquipmentType.SMALL_CANNON) ||
-                    equipment.isTypeOf(EquipmentType.MEDIUM_CANNON) ||
-                    equipment.isTypeOf(EquipmentType.LARGE_CANNON)) {
+            if (equipment.isTypeOf(EquipmentClass.SMALL_CANNON) ||
+                    equipment.isTypeOf(EquipmentClass.MEDIUM_CANNON) ||
+                    equipment.isTypeOf(EquipmentClass.LARGE_CANNON)) {
 
                 if (!this.get(i).inCooldown()) {
                     return (CannonAttack) this.get(i);

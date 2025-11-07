@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.equipment.handler;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.ISlotCheckerEntity;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class EquipmentHandler implements INBTSerializable<CompoundTag> {
-    public static final ImmutableSet<EquipmentType> CANNON_WEAPON = ImmutableSet.of(EquipmentType.SMALL_CANNON, EquipmentType.MEDIUM_CANNON, EquipmentType.LARGE_CANNON);
-    public static final ImmutableSet<EquipmentType> ATTACK_AIRCRAFT = ImmutableSet.of(EquipmentType.AIRCRAFT_DIVE_BOMBER, EquipmentType.AIRCRAFT_TORPEDO_BOMBER);
+    public static final ImmutableSet<EquipmentClass> CANNON_WEAPON = ImmutableSet.of(EquipmentClass.SMALL_CANNON, EquipmentClass.MEDIUM_CANNON, EquipmentClass.LARGE_CANNON);
+    public static final ImmutableSet<EquipmentClass> ATTACK_AIRCRAFT = ImmutableSet.of(EquipmentClass.AIRCRAFT_DIVE_BOMBER, EquipmentClass.AIRCRAFT_TORPEDO_BOMBER);
     private NonNullList<ArmedEquipment> equipments;
     private NonNullList<Boolean> dirty;
     private int slotSize;
@@ -31,7 +31,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
         if (i >= slotSize || i < 0) {
             return EquipResult.OUT_OF_INDEX;
         }
-        else if (! slotCheckerEntity.getSlotChecker(i).contains(equipment.getType())) {
+        else if (! slotCheckerEntity.getSlotChecker(i).contains(equipment.getEquipmentClass())) {
             return EquipResult.CANNOT_EQUIP_THIS_TYPE;
         }
         else if (hasAlreadyEquippedSameBodyPart(equippedOnName)) {
