@@ -7,11 +7,14 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 
 public abstract class CustomTextureButton extends AbstractButton {
-    ResourceLocation texture;
-    ResourceLocation hoveredTexture;
+
+    private static final int DARKEN = FastColor.ARGB32.color(128, 0,0,0);
+    protected ResourceLocation texture;
+    protected ResourceLocation hoveredTexture;
 
     public CustomTextureButton(int pX, int pY, int pWidth, int pHeight, Component pMessage, ResourceLocation texture) {
         this(pX, pY, pWidth, pHeight, pMessage, texture, texture);
@@ -33,9 +36,9 @@ public abstract class CustomTextureButton extends AbstractButton {
         RenderSystem.enableDepthTest();
 //        pGuiGraphics.blitNineSliced(texture, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, 0);
         if (!isHovered) {
-            pGuiGraphics.blit(texture, this.getX(), this.getY(), 10, 0, 0, this.width, this.height, this.width, this.height);
+            pGuiGraphics.blit(texture, this.getX(), this.getY(), 0, 0, 0, this.width, this.height, this.width, this.height);
         } else {
-            pGuiGraphics.blit(hoveredTexture, this.getX(), this.getY(), 10, 0, 0, this.width, this.height, this.width, this.height);
+            pGuiGraphics.blit(hoveredTexture, this.getX(), this.getY(), 0, 0, 0, this.width, this.height, this.width, this.height);
         }
         pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         int i = getFGColor();

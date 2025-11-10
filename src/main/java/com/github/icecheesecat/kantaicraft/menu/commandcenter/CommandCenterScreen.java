@@ -1,53 +1,217 @@
 package com.github.icecheesecat.kantaicraft.menu.commandcenter;
 
-import com.eliotlash.mclib.math.functions.limit.Min;
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.ClientPlayerKantaiDataCacheCapability;
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiData;
 import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
-import com.github.icecheesecat.kantaicraft.client.ClientPlayerKantaiDataCache;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.menu.ShipSelectButton;
+import com.github.icecheesecat.kantaicraft.equipment.Equipment;
+import com.github.icecheesecat.kantaicraft.menu.ClientPlayerKantaiDataRefresh;
+import com.github.icecheesecat.kantaicraft.menu.FlipPageCounter;
+import com.github.icecheesecat.kantaicraft.menu.pagescreen.Page;
+import com.github.icecheesecat.kantaicraft.menu.pagescreen.PageScreen;
 import com.github.icecheesecat.kantaicraft.menu.ship.CustomTextureButton;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.CommandCenterRequestSummonPacket;
-import com.github.icecheesecat.kantaicraft.network.packet.RequestPlayerKantaiDataPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CommandCenterScreen extends CustomScreen<CommandCenterMenu> {
+public class CommandCenterScreen extends PageScreen<CommandCenterMenu> implements ClientPlayerKantaiDataRefresh {
 
     private static final ResourceLocation COMMAND_CENTER_BACKGROUND = new ResourceLocation(KantaiCraft.MODID, "textures/gui/command_center/command_center_background.png");
     private static final ResourceLocation NEXT_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/command_center/next_icon.png");
     private static final ResourceLocation NEXT_HOVERED_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/command_center/next_icon_hovered.png");
     private static final ResourceLocation PREV_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/command_center/prev_icon.png");
     private static final ResourceLocation PREV_ICON_HOVERED = new ResourceLocation(KantaiCraft.MODID, "textures/gui/command_center/prev_icon_hovered.png");
-    List<AbstractWidget> currentWidgets = new ArrayList<>();
-    int page = 0;
+    private static final ResourceLocation SHIP_PAGE = new ResourceLocation(KantaiCraft.MODID, "textures/gui/command_center/ship_page.png");
+    private static final ResourceLocation EQUIPMENT_PAGE = new ResourceLocation(KantaiCraft.MODID, "textures/gui/command_center/equipment_page.png");
+    private static final ResourceLocation EQUIPMENT_DISPLAY_BUTTON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/command_center/equipment_display_button.png");
+    private static final ResourceLocation EQUIPMENT_DISPLAY_HOVERED = new ResourceLocation(KantaiCraft.MODID, "textures/gui/command_center/equipment_display_button.png");
+    protected FlipPageCounter shipPageCounter = new FlipPageCounter(shipPageSize);
+    protected FlipPageCounter equipmentPageCounter = new FlipPageCounter(equipmentPageSize);
+    private static final int shipPageSize = 4;
+    private static final int equipmentPageSize = 28;
 
-    public CommandCenterScreen(CommandCenterMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
-        super(pMenu, pPlayerInventory, pTitle);
+
+    // TODO show page number
+    public CommandCenterScreen(CommandCenterMenu pMenu, Inventory pPlayerInventory, Component title) {
+        super(pMenu, pPlayerInventory, title);
         this.imageWidth = 256;
         this.imageHeight = 149;
+        this.addPage(this::createShipPage);
+        this.addPage(this::createEquipmentPage);
     }
 
     @Override
     protected void init() {
         super.init();
-        this.setupShipSelectWidgets();
-        this.setupPageButton();
+    }
+
+    protected Page createShipPage() {
+        Page page = new Page(Component.translatable("command_center_screen.ship"), this.leftPos + 16, this.topPos + 14, 224, 120) {
+            @Override
+            public void init() {
+                super.init();
+                this.addAllWidget(createShipWidgets());
+                this.addWidget(createGotoEquipmentPageButton());
+                this.addAllWidget(createFlipShipPageCountButton());
+            }
+
+
+
+        };
+
+        return page;
+    }
+
+    protected List<AbstractWidget> createShipWidgets() {
+        List<AbstractWidget> widgets = new ArrayList<>();
+
+        Minecraft.getInstance().player.getCapability(ClientPlayerKantaiDataCacheCapability.TOKEN).ifPresent(
+                clientPlayerKantaiDataCache -> {
+                    var listOfShips = clientPlayerKantaiDataCache.getListOfShips();
+                    List<UUID> kantaiDataShipUUID = this.shipPageCounter.evaluatePageElements(listOfShips.stream().map(Map.Entry::getKey).toList());
+                    List<EntityShip> toRender = this.shipPageCounter.evaluatePageElements(listOfShips.stream().map(Map.Entry::getValue).toList());
+
+                    int x = this.leftPos + 16;
+                    int y = this.topPos + 14;
+                    int widgetX = 56;
+                    int widgetY = 120;
+                    for (int i = 0; i < toRender.size(); i++) {
+                        int finalI = i;
+                        var widget = new ShipSelectButton(toRender.get(finalI), x + finalI * widgetX, y, widgetX, widgetY, getShipPreviewContent(toRender.get(finalI))) {
+                            @Override
+                            public void onPress() {
+                                sendSummonPacketToServer(kantaiDataShipUUID.get(finalI), menu.player.getOnPos());
+                                Minecraft.getInstance().player.sendSystemMessage(Component.literal("Pressed ship select"));
+                            }
+                        };
+                        widgets.add(widget);
+                    }
+                }
+        );
+
+        return widgets;
+    }
+
+    protected List<AbstractWidget> createFlipShipPageCountButton() {
+
+        List<AbstractWidget> widgets = new ArrayList<>();
+        widgets.add( new CustomTextureButton(this.leftPos + 5, this.topPos + this.imageHeight /2, 16, 16, Component.empty(), PREV_ICON, PREV_ICON_HOVERED) {
+            @Override
+            public void onPress() {
+                Minecraft.getInstance().player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
+                        playerKantaiData -> {
+                            shipPageCounter.flipToPrevPage(playerKantaiData.getShips().size());
+                        }
+                );
+                refresh();
+            }
+        });
+
+        widgets.add( new CustomTextureButton(this.leftPos + this.imageWidth - 5, this.topPos + this.imageHeight / 2, 16, 16, Component.empty(), NEXT_ICON, NEXT_HOVERED_ICON) {
+            @Override
+            public void onPress() {
+                Minecraft.getInstance().player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
+                        playerKantaiData -> {
+                            shipPageCounter.flipToNextPage(playerKantaiData.getShips().size());
+                        }
+                );
+                refresh();
+            }
+        });
+
+        return widgets;
+    }
+
+    protected Page createEquipmentPage() {
+        Page page = new Page(Component.translatable("command_center_screen.equipment"), this.leftPos + 16, this.topPos + 14, 224, 120) {
+            @Override
+            public void init() {
+                super.init();
+                this.addAllWidget(createEquipmentWidgets());
+                this.addWidget(createGotoShipPageButton());
+                this.addAllWidget(createFlipEquipmentPageButton());
+            }
+        };
+
+
+        return page;
+    }
+
+    protected List<AbstractWidget> createEquipmentWidgets() {
+        List<AbstractWidget> widgets = new ArrayList<>();
+
+        Minecraft.getInstance().player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData -> {
+
+            GridLayout gridLayout = new GridLayout(this.leftPos + 16, this.topPos + 14);
+            List<Equipment> toRender = equipmentPageCounter.evaluatePageElements(playerKantaiData.getEquipments());
+
+            boolean flag = true;
+            for (int i = 0; ; i++) {
+                for (int j = 0; j < 7 ; j++) {
+                    int index = i * 7 + j;
+                    if (index >= toRender.size()) {
+                        flag = false;
+                        break;
+                    }
+                    EquipmentDisplayWidget widget = new EquipmentDisplayWidget(0,0, 32,30, EQUIPMENT_DISPLAY_BUTTON, toRender.get(i)) {
+                        @Override
+                        public EquipmentDetailPage createPage() {
+                            return new EquipmentDetailPage(Component.translatable("equipment_detail_page"), leftPos + 16, topPos + 14, imageWidth - 32, imageHeight - 28, this.equipment);
+                        }
+                    };
+                    gridLayout.addChild(widget, i, j);
+                }
+                if (!flag) break;
+            }
+
+            gridLayout.arrangeElements();
+            gridLayout.visitWidgets(widgets::add);
+        });
+
+
+        return widgets;
+    }
+
+    protected List<AbstractWidget> createFlipEquipmentPageButton() {
+        List<AbstractWidget> widgets = new ArrayList<>();
+        widgets.add( new CustomTextureButton(this.leftPos + 5, this.topPos + this.imageHeight /2, 16, 16, Component.empty(), PREV_ICON, PREV_ICON_HOVERED) {
+            @Override
+            public void onPress() {
+                Minecraft.getInstance().player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
+                        playerKantaiData -> {
+                            equipmentPageCounter.flipToPrevPage(playerKantaiData.getEquipments().size());
+                        }
+                );
+                refresh();
+            }
+        });
+
+        widgets.add( new CustomTextureButton(this.leftPos + this.imageWidth - 5, this.topPos + this.imageHeight / 2, 16, 16, Component.empty(), NEXT_ICON, NEXT_HOVERED_ICON) {
+            @Override
+            public void onPress() {
+                Minecraft.getInstance().player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
+                        playerKantaiData -> {
+                            equipmentPageCounter.flipToNextPage(playerKantaiData.getEquipments().size());
+                        }
+                );
+                refresh();
+            }
+        });
+
+        return widgets;
     }
 
     @Override
@@ -63,97 +227,30 @@ public class CommandCenterScreen extends CustomScreen<CommandCenterMenu> {
         this.renderWithOriginalSize(COMMAND_CENTER_BACKGROUND, pGuiGraphics, imageWidth, imageHeight);
     }
 
-    protected void setupShipSelectWidgets() {
-        ModPacketHandler.INSTANCE.sendToServer(new RequestPlayerKantaiDataPacket(Minecraft.getInstance().player.getUUID()));
-        refreshPageWidget();
-    }
-
-    protected void setupPageButton() {
-        this.addRenderableWidget(new CustomTextureButton(this.leftPos + 5, this.topPos + this.imageHeight /2, 16, 16, Component.empty(), PREV_ICON, PREV_ICON_HOVERED) {
+    protected AbstractButton createGotoEquipmentPageButton() {
+        return new CustomTextureButton(this.leftPos, this.topPos, 32, 32, Component.empty(), EQUIPMENT_PAGE) {
             @Override
             public void onPress() {
-                prevPage();
-                refreshPageWidget();
+                jumpToPage(1);
             }
-        });
-
-        this.addRenderableWidget(new CustomTextureButton(this.leftPos + this.imageWidth - 5, this.topPos + this.imageHeight / 2, 16, 16, Component.empty(), NEXT_ICON, NEXT_HOVERED_ICON) {
-            @Override
-            public void onPress() {
-                nextPage();
-                refreshPageWidget();
-            }
-        });
+        };
     }
 
-    public static List<Component> getPreviewContent(EntityShip entityShip) {
+    protected AbstractButton createGotoShipPageButton() {
+        return new CustomTextureButton(this.leftPos, this.topPos, 32, 32, Component.empty(), SHIP_PAGE) {
+            @Override
+            public void onPress() {
+                jumpToPage(0);
+            }
+        };
+    }
+
+
+
+    public static List<Component> getShipPreviewContent(EntityShip entityShip) {
 
         return List.of(Component.translatable(entityShip.getName().getString()), Component.literal(String.valueOf(entityShip.getShipLevel())));
 
-    }
-
-    protected void nextPage() {
-        this.page++;
-        if (this.pageReachedEnd()) {
-            this.page = 0;
-        }
-    }
-
-    protected boolean pageReachedEnd() {
-        AtomicBoolean reached = new AtomicBoolean();
-        Minecraft.getInstance().player.getCapability(ClientPlayerKantaiDataCacheCapability.TOKEN).ifPresent(clientPlayerKantaiDataCache -> {
-            reached.set(clientPlayerKantaiDataCache.getListOfShips().size() <= this.page * 4);
-        });
-
-        return reached.get();
-    }
-
-    protected void prevPage() {
-        this.page--;
-        if (this.page < 0) {
-            Minecraft.getInstance().player.getCapability(ClientPlayerKantaiDataCacheCapability.TOKEN).ifPresent(
-                clientPlayerKantaiDataCache -> {
-                    int shipCount = clientPlayerKantaiDataCache.getListOfShips().size();
-                    this.page = shipCount == 0 ? 0 : (shipCount % 4 == 0) ? shipCount / 4 - 1 : shipCount / 4;
-                }
-            );
-        }
-    }
-
-    protected void refreshPageWidget() {
-        this.currentWidgets.forEach(this::removeWidget);
-
-        Minecraft.getInstance().player.getCapability(ClientPlayerKantaiDataCacheCapability.TOKEN).ifPresent(
-                clientPlayerKantaiDataCache -> {
-                    var listOfShips = clientPlayerKantaiDataCache.getListOfShips();
-                    var kantaiDataShipUUID = new ArrayList<UUID>();
-                    List<EntityShip> toRender = new ArrayList<>();
-                    for (int i = this.page * 4; i < listOfShips.size() && i < this.page * 4 + 4; i++) {
-                        toRender.add(listOfShips.get(i).getValue());
-                        kantaiDataShipUUID.add(listOfShips.get(i).getKey());
-                    }
-                    int x = this.leftPos + 16;
-                    int y = this.topPos + 14;
-                    int widgetX = 56;
-                    int widgetY = 120;
-                    for (int i = 0; i < toRender.size(); i++) {
-                        int finalI = i;
-                        var widget = new ShipSelectButton(toRender.get(finalI), x + finalI * widgetX, y, widgetX, widgetY, getPreviewContent(toRender.get(finalI))) {
-                            @Override
-                            public void onPress() {
-                                sendSummonPacketToServer(kantaiDataShipUUID.get(finalI), menu.player.getOnPos());
-                            }
-                        };
-                        this.currentWidgets.add(widget);
-                        this.addRenderableWidget(widget);
-                    }
-                }
-        );
-
-    }
-
-    public void refresh() {
-        this.refreshPageWidget();
     }
 
     private static void sendSummonPacketToServer(UUID summonUUID, BlockPos blockPos) {

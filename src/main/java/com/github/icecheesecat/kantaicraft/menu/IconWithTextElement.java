@@ -23,7 +23,6 @@ public class IconWithTextElement implements LayoutElement, Renderable, Updatable
     public int padding;
     public String text;
     public int textColor;
-    private boolean isShow;
     private static final int DEFAULT_FONT_PIXELS = 8;
 
     public IconWithTextElement(int x, int y, ResourceLocation icon, int padding, String text) {
@@ -79,25 +78,10 @@ public class IconWithTextElement implements LayoutElement, Renderable, Updatable
 
     @Override
     public void visitWidgets(Consumer<AbstractWidget> pConsumer) {
-//        pConsumer.accept(this);
-    }
-
-    public boolean isShow() {
-        return isShow;
-    }
-
-    public void setShow(boolean show) {
-        isShow = show;
-    }
-
-    @Override
-    public void update() {
-
     }
 
     @Override
     public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        if (!isShow) return;
         pGuiGraphics.blit(this.icon, this.x, this.y, 0, 0, 0, this.iconWidth, this.iconHeight, this.iconWidth, this.iconHeight);
         pGuiGraphics.drawString(Minecraft.getInstance().font, text, this.getX() + this.iconWidth + this.padding, this.getY() + 4, this.textColor);
     }

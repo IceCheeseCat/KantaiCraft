@@ -33,7 +33,6 @@ public class PageSelector extends AbstractWidget {
 
     public void setSelected(boolean s) {
         this.isSelected = s;
-        this.page.setShow(s);
     }
 
     @Override
@@ -77,7 +76,6 @@ public class PageSelector extends AbstractWidget {
     public void onClick(double pMouseX, double pMouseY) {
         super.onClick(pMouseX, pMouseY);
         this.setSelected(true);
-        this.page.setShow(true);
     }
 
 }

@@ -1,11 +1,8 @@
-package com.github.icecheesecat.kantaicraft.menu.ship;
+package com.github.icecheesecat.kantaicraft.menu.pagescreen;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
-import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.TogglePlayerShipPacket;
-import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;

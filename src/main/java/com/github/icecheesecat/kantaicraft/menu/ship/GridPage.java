@@ -14,22 +14,21 @@ public class GridPage extends Page {
 
     public GridPage(Component title, int x, int y, int width, int height) {
         super(title, x, y, width, height);
-        setShow(true);
     }
 
-    @Override
-    public void setShow(boolean h) {
-        gridLayout.forEach(gridLayout1 -> {
-            gridLayout1.visitWidgets(widget -> {
-                widget.visible = widget.active = h;
-            });
-            gridLayout1.visitChildren(le -> {
-                if (le instanceof IconWithTextElement iconWithTextElement) {
-                    iconWithTextElement.setShow(h);
-                }
-            });
-        });
-    }
+//    @Override
+//    public void setShow(boolean h) {
+//        gridLayout.forEach(gridLayout1 -> {
+//            gridLayout1.visitWidgets(widget -> {
+//                widget.visible = widget.active = h;
+//            });
+//            gridLayout1.visitChildren(le -> {
+//                if (le instanceof IconWithTextElement iconWithTextElement) {
+//                    iconWithTextElement.setShow(h);
+//                }
+//            });
+//        });
+//    }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {

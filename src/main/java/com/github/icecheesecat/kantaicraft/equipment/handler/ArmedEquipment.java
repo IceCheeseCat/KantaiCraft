@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.equipment.handler;
 
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -19,7 +20,7 @@ public class ArmedEquipment implements INBTSerializable<CompoundTag> {
     }
 
     public static ArmedEquipment empty() {
-        return new ArmedEquipment(Equipment.EMPTY, "");
+        return new ArmedEquipment(EquipmentManager.createEmptyEquipment(), "");
     }
 
     @Override
@@ -32,8 +33,7 @@ public class ArmedEquipment implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.equipment = new Equipment();
-        this.equipment.deserializeNBT(nbt.getCompound("equipment"));
+        this.equipment = Equipment.makeFromCompoundTag(nbt.getCompound("equipment"));
         this.equippedOnName = nbt.getString("equippedOnName");
     }
 

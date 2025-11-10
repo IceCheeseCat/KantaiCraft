@@ -52,7 +52,7 @@ public class ShipEquipmentSensor extends Sensor<EntityShip> {
         }
 
         Equipment equipment = equipmentHandler.getEquipments().get(index);
-        switch (equipment.getType()) {
+        switch (equipment.getEquipmentClass()) {
             case SMALL_CANNON -> equipmentActionHandler.set(index, new CannonAttack(entityShip, equipment));
             case NONE -> equipmentActionHandler.set(index, ShipTickableAction.NULL);
             default -> throw new RuntimeException("Unknown equipment type at " + entityShip);

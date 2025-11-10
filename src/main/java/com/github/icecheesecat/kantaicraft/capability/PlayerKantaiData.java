@@ -1,6 +1,8 @@
 package com.github.icecheesecat.kantaicraft.capability;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
+import com.github.icecheesecat.kantaicraft.equipment.Equipment;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.PlayerKantaiDataPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.PlayerKantaiDataUpdatedPacket;
@@ -21,7 +23,7 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 
     private Player player;
     protected final List<SerializedEntityShip> ships = new ArrayList<>();
-    protected final List<CompoundTag> equipments = new ArrayList<>();
+    protected final List<Equipment> equipments = new ArrayList<>();
 
     public PlayerKantaiData(Player player) {
         this.player = player;
@@ -38,7 +40,7 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 
         nbt.putInt("equipments", equipments.size());
         for (int i = 0; i < equipments.size(); i++) {
-            nbt.put("equipments." + i,  equipments.get(i));
+            nbt.put("equipments." + i,  equipments.get(i).serializeNBT());
         }
 
         return nbt;
@@ -56,7 +58,8 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         int equipments_size = nbt.getInt("equipments");
         equipments.clear();
         for (int i = 0; i < equipments_size; i++) {
-            equipments.add(i, nbt.getCompound("equipments." + i));
+            Equipment equipment = Equipment.makeFromCompoundTag(nbt.getCompound("equipments." + i));
+            equipments.add(i, equipment);
         }
 
     }
@@ -87,8 +90,8 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public void addEquipment(CompoundTag nbt) {
-        this.equipments.add(nbt);
+    public void addEquipment(Equipment equipment) {
+        this.equipments.add(equipment);
         updateToClient();
     }
 
@@ -100,7 +103,7 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         return this.ships.stream().filter(serializedEntityShip -> serializedEntityShip.getUuid().equals(uuid)).findFirst();
     }
 
-    public List<CompoundTag> getEquipments() {
+    public List<Equipment> getEquipments() {
         return equipments;
     }
 

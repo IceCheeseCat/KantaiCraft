@@ -17,12 +17,12 @@ public class ConfigEquipmentStats {
 
         // TODO data generation from json file
         ALL_EQUIPMENT_STATS.put(EquipmentProperties.EMPTY.getId(),
-                EquipmentStats.create(BUILDER, EquipmentProperties.EMPTY.getName()));
+                EquipmentStats.create(BUILDER, EquipmentProperties.EMPTY.getString()));
 
-        EquipmentManager.ALL_EQUIPMENTS.forEach((id, equipment) -> {
-            var equipmentStats = EquipmentStats.create(BUILDER, equipment.getName().getString());
-            equipmentStats.addDefaultStats(DefaultStats.ALL_DEFAULT_VALUES.get(id));
-            ALL_EQUIPMENT_STATS.put(id, equipmentStats);
+        EquipmentManager.getAllEquipmentTypes().forEach((equipmentType) -> {
+            var equipmentStats = EquipmentStats.create(BUILDER, equipmentType.getName().getString());
+            equipmentStats.addDefaultStats(DefaultStats.ALL_DEFAULT_VALUES.get(equipmentType.getId()));
+            ALL_EQUIPMENT_STATS.put(equipmentType.getId(), equipmentStats);
         });
 
         SPEC = BUILDER.build();

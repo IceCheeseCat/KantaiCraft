@@ -19,8 +19,12 @@ import net.minecraft.world.entity.EntityType;
 
 public class EntityShipCommand {
 
+    public static LiteralArgumentBuilder<CommandSourceStack> header() {
+        return Commands.literal("entityShip");
+    }
+
     public static LiteralArgumentBuilder<CommandSourceStack> createAddAllEntityShip() {
-        return Commands.literal("addAllEntityShip").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).executes((commandSourceStack) -> {
+        return Commands.literal("addAll").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).executes((commandSourceStack) -> {
             return addAllEntityShip(commandSourceStack.getSource());
         });
     }
@@ -33,7 +37,7 @@ public class EntityShipCommand {
     }
 
     public static LiteralArgumentBuilder<CommandSourceStack> createRemoveAllEntityShip() {
-        return Commands.literal("removeAllEntityShip").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).executes((commandSourceStack) -> {
+        return Commands.literal("removeAll").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).executes((commandSourceStack) -> {
             return removeAllEntityShip(commandSourceStack.getSource());
         });
     }

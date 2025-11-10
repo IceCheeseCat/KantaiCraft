@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entityship.entity;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.EntityShipDefaultEquipments;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
 import com.github.icecheesecat.kantaicraft.equipment.SlotChecker;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.google.common.collect.ImmutableSet;
@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 
 public abstract class DestroyerEntityShip extends CannonEntityShip {
 
-    private static final SlotChecker GENERAL_DESTROYER_SLOT_CHECKER = SlotChecker.create(ImmutableSet.of(EquipmentType.SMALL_CANNON, EquipmentType.RADAR));
+    private static final SlotChecker GENERAL_DESTROYER_SLOT_CHECKER = SlotChecker.create(ImmutableSet.of(EquipmentClass.SMALL_CANNON, EquipmentClass.RADAR));
 
     public DestroyerEntityShip(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, ShipClass.DESTROYER, level);

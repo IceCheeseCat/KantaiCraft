@@ -5,7 +5,7 @@ import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.animation.BlinkAnimationControl;
 import com.github.icecheesecat.kantaicraft.entityship.stance.Stance;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
 import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
@@ -16,7 +16,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -84,13 +83,13 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public static final EntityDataAccessor<Integer> DATA_FOLLOW_DISTANCE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
 
     private ShipAnimationState prevAnimationShipAnimationState;
-    protected final List<EquipmentType> equippableTypes;
+    protected final List<EquipmentClass> equippableTypes;
     private final BlinkAnimationControl blinkAnimationControl = new BlinkAnimationControl(60, 80, this.random);
     private long lastEmotionChangedTick = -1;
     private final ShipClass shipClass;
     private final EquippableSlots equippableSlots;
 
-    public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentType> equippableTypes) {
+    public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentClass> equippableTypes) {
         super(entityType, level);
         this.equippableTypes = ImmutableList.copyOf(equippableTypes);
         this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(this::defaultEquipments);
@@ -462,7 +461,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     public boolean hasAttackableEquipment() {
-        return this.equipmentHandler.getEquipments().stream().anyMatch(equipment -> this.equippableTypes.contains(equipment.getType()));
+        return this.equipmentHandler.getEquipments().stream().anyMatch(equipment -> this.equippableTypes.contains(equipment.getEquipmentClass()));
     }
 
     public ShipAnimationState getAnimationState() {

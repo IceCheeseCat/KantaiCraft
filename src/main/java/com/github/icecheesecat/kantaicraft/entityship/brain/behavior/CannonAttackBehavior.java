@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.entityship.brain.behavior;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.CannonEntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentType;
+import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
 import com.github.icecheesecat.kantaicraft.tickable.EquipmentActionHandler;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
@@ -61,7 +61,7 @@ public class CannonAttackBehavior extends Behavior<CannonEntityShip> {
         // has action handler and cannon action
         var actionHandler = cannonShip.getBrain().getMemory(ModMemoryModuleType.ACTION_HANDLER.get());
         if (actionHandler.isEmpty()) return false;
-        if (actionHandler.get().getActionsByWeaponType(EquipmentType.SMALL_CANNON).isEmpty()) return false;
+        if (actionHandler.get().getActionsByWeaponType(EquipmentClass.SMALL_CANNON).isEmpty()) return false;
 
         this.actionHandler = actionHandler.get();
         return true;

@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.menu;
+package com.github.icecheesecat.kantaicraft.menu.commandcenter;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.mojang.blaze3d.systems.RenderSystem;

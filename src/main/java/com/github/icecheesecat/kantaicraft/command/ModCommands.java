@@ -10,10 +10,13 @@ public class ModCommands {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
         dispatcher.register(Commands.literal(KantaiCraft.MODID)
-                .then(EntityShipCommand.createAddAllEntityShip())
-                .then(EntityShipCommand.createAdd(pContext))
-                .then(EntityShipCommand.createRemoveAllEntityShip())
-                .then(EntityShipCommand.createListAllEntityShip())
+                .then(EntityShipCommand.header().then(EntityShipCommand.createAddAllEntityShip()))
+                .then(EntityShipCommand.header().then(EntityShipCommand.createAdd(pContext)))
+                .then(EntityShipCommand.header().then(EntityShipCommand.createRemoveAllEntityShip()))
+                .then(EntityShipCommand.header().then(EntityShipCommand.createListAllEntityShip()))
+                .then(EquipmentCommand.header().then(EquipmentCommand.createAddAllEquipment()))
+                .then(EquipmentCommand.header().then(EquipmentCommand.createRemoveAllEquipment()))
+                .then(EquipmentCommand.header().then(EquipmentCommand.createListAllEquipment()))
         );
     }
 
