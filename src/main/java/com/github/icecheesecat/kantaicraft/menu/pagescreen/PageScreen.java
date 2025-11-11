@@ -20,7 +20,8 @@ public abstract class PageScreen<T extends AbstractContainerMenu> extends Custom
     int index = 0;
     int maxIndex = 0;
     private final List<Supplier<Page>> pageSuppliers = new ArrayList<>();
-    private List<Page> allPages = new ArrayList<>();
+    private Page currentPage;
+    private final List<Component> pageTitle = new ArrayList<>();
     private Map<HoveredCreator<?>, HoveringPage> activeHoveredCreators = new HashMap<>();
 
     public PageScreen(T pMenu, Inventory pPlayerInventory, Component title) {
@@ -33,6 +34,7 @@ public abstract class PageScreen<T extends AbstractContainerMenu> extends Custom
 
     public void addPage(int i, Supplier<Page> pageSupplier) {
         this.pageSuppliers.add(i, pageSupplier);
+        this.pageTitle.add(i, pageSupplier.get().getTitle());
         this.maxIndex++;
     }
 
@@ -71,23 +73,24 @@ public abstract class PageScreen<T extends AbstractContainerMenu> extends Custom
     }
 
     public Component getCurrentPageTitle() {
-        return this.allPages.get(index).getTitle();
+        return this.pageTitle.get(index);
     }
 
     public Component getNextPageTitle() {
-        return this.allPages.get(nextIndex()).getTitle();
+        return this.pageTitle.get(nextIndex());
     }
     public Component getPrevPageTitle() {
-        return this.allPages.get(prevIndex()).getTitle();
+        return this.pageTitle.get(prevIndex());
     }
 
     public Page getCurrentPage() {
-        return this.allPages.get(index);
+        return this.currentPage;
     }
 
     @Override
     public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
 //        this.getCurrentPage().render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+        if (this.currentPage == null) return;
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
         // handle hovered creators
         this.getCurrentPage().getPageWidgets().forEach(widget -> {
@@ -105,32 +108,29 @@ public abstract class PageScreen<T extends AbstractContainerMenu> extends Custom
     public void clear() {
 //        this.tempIndex = index;
         this.activeHoveredCreators.values().forEach(this::clearPageAndWidgetsOnScreen);
-        this.allPages.forEach(this::clearPageAndWidgetsOnScreen);
-        this.allPages.forEach(page -> page.getPageWidgets().clear());
-        this.allPages.clear();
-//        this.index = 0;
+        if (currentPage != null)
+            this.clearPageAndWidgetsOnScreen(this.getCurrentPage());
     }
 
-    int tempIndex = 0;
-    private void loadBeforeInitIndex() {
-        if (tempIndex < 0 || tempIndex >= maxIndex) {
-            this.index = 0;
-        }
-        else {
-            this.index = tempIndex;
-        }
-    }
+//    int tempIndex = 0;
+//    private void loadBeforeInitIndex() {
+//        if (tempIndex < 0 || tempIndex >= maxIndex) {
+//            this.index = 0;
+//        }
+//        else {
+//            this.index = tempIndex;
+//        }
+//    }
 
     @Override
     protected void init() {
         super.init();
         this.clear();
-        this.pageSuppliers.forEach(pageSupplier -> this.allPages.add(pageSupplier.get()));
         this.initCurrentPage();
     }
 
     private void initCurrentPage() {
-        this.getCurrentPage().init();
+        this.createPage();
         this.addPageAndWidgetsOnScreen(this.getCurrentPage());
         Map<HoveredCreator<?>, HoveringPage> n_hoveredMap = new HashMap<>();
         this.activeHoveredCreators.forEach((hoveredCreator, page) -> {
@@ -138,6 +138,10 @@ public abstract class PageScreen<T extends AbstractContainerMenu> extends Custom
         });
         this.activeHoveredCreators = n_hoveredMap;
         this.activeHoveredCreators.values().forEach(this::addRenderableWidget);
+    }
+
+    private void createPage() {
+        this.currentPage = this.pageSuppliers.get(index).get();
     }
 
     private void addPageAndWidgetsOnScreen(Page page) {

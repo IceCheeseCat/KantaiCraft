@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public abstract class Page implements Renderable, GuiEventListener, NarratableEntry {
+public class Page implements Renderable, GuiEventListener, NarratableEntry {
 
     private static final int BACKGROUND = FastColor.ARGB32.color(102, 0, 0, 0);
     private final Component title;
@@ -59,13 +59,15 @@ public abstract class Page implements Renderable, GuiEventListener, NarratableEn
             guiGraphics.blit(imageDisplay.resourceLocation, imageDisplay.x, imageDisplay.y,  imageDisplay.blitOffset, 0,  0, imageDisplay.imageWidth, imageDisplay.imageHeight, imageDisplay.textureWidth, imageDisplay.textureHeight);
             guiGraphics.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         });
-
-        // draw text
         RenderSystem.disableBlend();
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 100);
+        // draw text
         this.textInstances.forEach(instance -> {
             guiGraphics.drawString(Minecraft.getInstance().font, instance.text, instance.x, instance.y, instance.fontColor);
         });
-
+        guiGraphics.pose().popPose();
 
     }
 
@@ -114,19 +116,12 @@ public abstract class Page implements Renderable, GuiEventListener, NarratableEn
         this.pageWidgets.addAll(widgets);
     }
 
-    public void clearWidgets() {
-        this.pageWidgets.clear();
-    }
-
     public List<AbstractWidget> getPageWidgets() {
         return pageWidgets;
     }
-    public void refresh() {
-        this.init();
-    }
 
-    public void init() {
-        this.clearWidgets();
+    public void clearWidgets() {
+        this.pageWidgets.clear();
     }
 
     public record TextInstance(int x, int y, String text, int fontColor) {

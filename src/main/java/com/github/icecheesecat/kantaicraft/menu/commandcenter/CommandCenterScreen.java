@@ -20,12 +20,14 @@ import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandCenterScreen extends PageScreen<CommandCenterMenu> implements ClientPlayerKantaiDataRefresh {
 
@@ -43,8 +45,6 @@ public class CommandCenterScreen extends PageScreen<CommandCenterMenu> implement
     private static final int shipPageSize = 4;
     private static final int equipmentPageSize = 28;
 
-
-    // TODO show page number
     public CommandCenterScreen(CommandCenterMenu pMenu, Inventory pPlayerInventory, Component title) {
         super(pMenu, pPlayerInventory, title);
         this.imageWidth = 256;
@@ -59,18 +59,18 @@ public class CommandCenterScreen extends PageScreen<CommandCenterMenu> implement
     }
 
     protected Page createShipPage() {
-        Page page = new Page(Component.translatable("command_center_screen.ship"), this.leftPos + 16, this.topPos + 14, 224, 120) {
-            @Override
-            public void init() {
-                super.init();
-                this.addAllWidget(createShipWidgets());
-                this.addWidget(createGotoEquipmentPageButton());
-                this.addAllWidget(createFlipShipPageCountButton());
-            }
+        Page page = new Page(Component.translatable("command_center_screen.ship"), this.leftPos + 16, this.topPos + 14, 224, 120);
 
-
-
-        };
+        page.addAllWidget(createShipWidgets());
+        page.addWidget(createGotoEquipmentPageButton());
+        page.addAllWidget(createFlipShipPageCountButton());
+        AtomicInteger totalPageNumber = new AtomicInteger();
+        Minecraft.getInstance().player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
+                playerKantaiData -> {
+                    totalPageNumber.set(shipPageCounter.getTotalPageNumber(playerKantaiData.getShips().size()));
+                }
+        );
+        page.addTextInstance(new Page.TextInstance(this.leftPos + this.imageWidth - 30, this.topPos + this.imageHeight - 13, (this.shipPageCounter.getPageNumber() + 1) + "/" + (totalPageNumber.get() + 1), FastColor.ARGB32.color(255, 255, 255, 255)));
 
         return page;
     }
@@ -136,15 +136,18 @@ public class CommandCenterScreen extends PageScreen<CommandCenterMenu> implement
     }
 
     protected Page createEquipmentPage() {
-        Page page = new Page(Component.translatable("command_center_screen.equipment"), this.leftPos + 16, this.topPos + 14, 224, 120) {
-            @Override
-            public void init() {
-                super.init();
-                this.addAllWidget(createEquipmentWidgets());
-                this.addWidget(createGotoShipPageButton());
-                this.addAllWidget(createFlipEquipmentPageButton());
-            }
-        };
+        Page page = new Page(Component.translatable("command_center_screen.equipment"), this.leftPos + 16, this.topPos + 14, 224, 120);
+
+        page.addAllWidget(createEquipmentWidgets());
+        page.addWidget(createGotoShipPageButton());
+        page.addAllWidget(createFlipEquipmentPageButton());
+        AtomicInteger totalPageNumber = new AtomicInteger();
+        Minecraft.getInstance().player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
+                playerKantaiData -> {
+                    totalPageNumber.set(equipmentPageCounter.getTotalPageNumber(playerKantaiData.getEquipments().size()));
+                }
+        );
+        page.addTextInstance(new Page.TextInstance(this.leftPos + this.imageWidth - 30, this.topPos + this.imageHeight - 13, (this.equipmentPageCounter.getPageNumber() + 1) + "/" + (totalPageNumber.get() + 1), FastColor.ARGB32.color(255, 255, 255, 255)));
 
 
         return page;

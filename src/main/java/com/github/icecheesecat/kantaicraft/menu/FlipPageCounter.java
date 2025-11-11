@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.menu;
 
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -41,11 +42,15 @@ public class FlipPageCounter {
     }
     
     private int calculateEndPage(int elementSize) {
-        return pageNumber = elementSize == 0 ? 0 : (elementSize % pageSize == 0) ? elementSize / pageSize - 1 : elementSize / pageSize;
+        return elementSize == 0 ? 0 : (elementSize % pageSize == 0) ? elementSize / pageSize - 1 : elementSize / pageSize;
     }
 
     public int getPageNumber() {
         return pageNumber;
+    }
+
+    public int getTotalPageNumber(int elementSize) {
+        return calculateEndPage(elementSize);
     }
 
     public <T> List<T> evaluatePageElements(List<T> inputs) {

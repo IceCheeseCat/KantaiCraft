@@ -37,5 +37,6 @@ public class GridPage extends Page {
 
     public void appendGridlayout(GridLayout gridLayout) {
         this.gridLayout.add(gridLayout);
+        gridLayout.visitWidgets(this::addWidget);
     }
 }

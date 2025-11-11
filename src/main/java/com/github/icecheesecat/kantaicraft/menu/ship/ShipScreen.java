@@ -10,6 +10,7 @@ import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LayoutElement;
@@ -58,6 +59,8 @@ public class ShipScreen extends PageScreen<ShipMenu> {
 
     private final EntityShip entityShip;
     private PageTitleDisplayer pageTitleDisplayer;
+    private AbstractButton nextPageButton;
+    private AbstractButton prevPageButton;
     EquipmentHandler equipmentHandler;
     public ShipScreen(ShipMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -90,27 +93,33 @@ public class ShipScreen extends PageScreen<ShipMenu> {
 
     @Override
     protected void init() {
-        super.init();
         initVar();
+        super.init();
 
         createStatLayout();
 
         // Next section button
-        this.addRenderableWidget(new CustomTextureButton((int) (this.width * 0.75f), SECTION_Y / 2, 16, 16, Component.empty(), NEXT_ICON, NEXT_ICON_HOVERED) {
+        this.removeWidget(this.nextPageButton);
+        this.nextPageButton = new CustomTextureButton((int) (this.width * 0.75f), SECTION_Y / 2, 16, 16, Component.empty(), NEXT_ICON, NEXT_ICON_HOVERED) {
             @Override
             public void onPress() {
                 gotoNextPage();
             }
-        });
+        };
+        this.addRenderableWidget(this.nextPageButton);
 
         // Prev section button
-        this.addRenderableWidget(new CustomTextureButton((int) (this.width * 0.25f), SECTION_Y / 2, 16, 16, Component.empty(), PREV_ICON, PREV_ICON_HOVERED) {
+        this.removeWidget(this.prevPageButton);
+        this.prevPageButton = new CustomTextureButton((int) (this.width * 0.25f), SECTION_Y / 2, 16, 16, Component.empty(), PREV_ICON, PREV_ICON_HOVERED) {
             @Override
             public void onPress() {
                 gotoPrevPage();
             }
-        });
+        };
+        this.addRenderableWidget(this.prevPageButton);
 
+
+        this.renderables.remove(this.pageTitleDisplayer);
         this.pageTitleDisplayer = new PageTitleDisplayer(this.width/2, SECTION_Y/2 -3, 0, 0, 70) {
             @Override
             protected Component getCurrentPageTitle() {
@@ -246,7 +255,7 @@ public class ShipScreen extends PageScreen<ShipMenu> {
     private void renderEntityModel(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int eyeY = (int) (MODEL_Y - MODEL_SCALE );
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, -500);
+        guiGraphics.pose().translate(0, -50, -500);
         InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, MODEL_X, MODEL_Y, MODEL_SCALE, MODEL_X - mouseX, eyeY - mouseY, this.entityShip);
         guiGraphics.pose().popPose();
     }

@@ -2,6 +2,7 @@ package com.github.icecheesecat.kantaicraft.menu.commandcenter;
 
 import com.github.icecheesecat.kantaicraft.client.EquipmentRendererCache;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
+import com.github.icecheesecat.kantaicraft.menu.GuiLerp;
 import com.github.icecheesecat.kantaicraft.menu.HoveringPage;
 import com.github.icecheesecat.kantaicraft.menu.pagescreen.Page;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -23,11 +24,14 @@ public class EquipmentDetailPage extends HoveringPage {
     final GeoRenderer<Equipment> renderer;
     final Equipment equipment;
     int lastMouseX, lastMouseY;
+    float lerpAngle;
 
     public EquipmentDetailPage(Component title, int x, int y, int width, int height, Equipment equipment) {
         super(title, x, y, width, height);
         this.equipment = equipment;
         this.renderer = EquipmentRendererCache.getEquipmentRenderer(equipment.getId());
+        this.lastMouseX = x + width/ 2;
+        this.lastMouseY = y + height / 2 + 20;
     }
 
     @Override
@@ -56,23 +60,31 @@ public class EquipmentDetailPage extends HoveringPage {
         poseStack.mulPose(Axis.YP.rotation((float) Math.PI));
         poseStack.mulPose(Axis.ZP.rotation((float) Math.PI));
         poseStack.scale(80, 80, 80);
-        this.rotateModelTowardCursorWhenFocused(poseStack, mouseX, mouseY);
+        this.rotateModelTowardCursorWhenFocused(poseStack, mouseX, mouseY, partialTick);
         renderer.defaultRender(poseStack, null, guiGraphics.bufferSource(), null, null, 0, partialTick, 255);
         poseStack.popPose();
     }
 
-    protected void rotateModelTowardCursorWhenFocused(PoseStack poseStack, int mouseX, int mouseY) {
+    protected void rotateModelTowardCursorWhenFocused(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         if (this.isFocused()) {
             this.lastMouseX = mouseX;
             this.lastMouseY = mouseY;
         }
-            int centerX = this.x + this.width / 2;
-            int centerY = this.y + this.height / 2;
-            int iCenterZ = 1000;
-            Vector3f origin = new Vector3f(0, 0, 1);
-            Vector3f centerTowardCursor = new Vector3f(-(lastMouseX - centerX), (lastMouseY - centerY), iCenterZ);
-            Vector3f perp = origin.cross(centerTowardCursor);
-            poseStack.mulPose(Axis.of(perp).rotation(origin.angle(centerTowardCursor)));
+
+        int centerX = this.x + this.width / 2;
+        int centerY = (this.y + this.height / 2 + 20);
+        int iCenterZ = -100;
+        Vector3f model = new Vector3f(0, 0, iCenterZ);
+        Vector3f modelNorm = new Vector3f(0,0,-iCenterZ);
+        Vector3f cursor = new Vector3f(-(lastMouseX - centerX), (lastMouseY - centerY), 0);
+        Vector3f modelToCursor = cursor.sub(model);
+        Vector3f perp = modelNorm.cross(modelToCursor);
+        float v = Math.abs(iCenterZ / modelToCursor.length());
+        float angle = (float) Math.acos(v);
+        if (angle != 0.0d) {
+            lerpAngle = GuiLerp.lerpAngle(lerpAngle, angle,  partialTick * 0.1f);
+            poseStack.mulPose(Axis.of(perp).rotation(lerpAngle));
+        }
     }
 
     static final int FONT_COLOR = FastColor.ARGB32.color(255, 255,255, 255);
