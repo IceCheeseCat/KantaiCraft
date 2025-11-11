@@ -1,14 +1,10 @@
 package com.github.icecheesecat.kantaicraft.client;
 
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiData;
+import com.github.icecheesecat.kantaicraft.playerkantaidata.PlayerKantaiData;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.menu.commandcenter.CommandCenterScreen;
-import com.github.icecheesecat.kantaicraft.model.equipment.renderer.EquipmentRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
-import software.bernie.geckolib.renderer.GeoRenderer;
 
 import java.util.HashMap;
 import java.util.List;

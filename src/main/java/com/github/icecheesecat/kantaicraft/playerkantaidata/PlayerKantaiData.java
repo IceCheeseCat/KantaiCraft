@@ -1,23 +1,21 @@
-package com.github.icecheesecat.kantaicraft.capability;
+package com.github.icecheesecat.kantaicraft.playerkantaidata;
 
+import com.github.icecheesecat.kantaicraft.capability.SerializedEntityShip;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.PlayerKantaiDataPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.PlayerKantaiDataUpdatedPacket;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 
@@ -82,7 +80,7 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         updateToClient();
     }
 
-    public void removeShip(UUID uuid) {
+    private void removeShip(UUID uuid) {
         var optional = this.ships.stream().filter(serializedEntityShip -> serializedEntityShip.getUuid().equals(uuid)).findFirst();
         if (optional.isPresent()) {
             this.ships.remove(optional.get());
@@ -110,5 +108,15 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
     protected void updateToClient() {
         ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new PlayerKantaiDataUpdatedPacket());
     }
+
+    public void summonToLevel(ServerPlayer player, SerializedEntityShip ses, BlockPos summonLocation) {
+        EntityShip entityShip = (EntityShip) ses.getEntityType().create(player.level());
+        if (entityShip == null) return;
+        entityShip.setPos(summonLocation.getX() + 0.5f, summonLocation.getY(), summonLocation.getZ() + 0.5f);
+        entityShip.setShipOwner(player.getUUID());
+        player.level().addFreshEntity(entityShip);
+        this.removeShip(ses.getUuid());
+    }
+
 
 }

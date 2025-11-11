@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.network.Cache;
 
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiData;
+import com.github.icecheesecat.kantaicraft.playerkantaidata.PlayerKantaiData;
 
 import java.util.HashMap;
 import java.util.Map;

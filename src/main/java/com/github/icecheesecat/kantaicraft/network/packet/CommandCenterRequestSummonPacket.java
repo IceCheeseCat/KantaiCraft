@@ -1,15 +1,13 @@
 package com.github.icecheesecat.kantaicraft.network.packet;
 
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiData;
 import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.capability.SerializedEntityShip;
-import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
+import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -45,8 +43,7 @@ public class CommandCenterRequestSummonPacket {
                     playerKantaiData -> {
                         var ses = playerKantaiData.getSerializedEntityShipByUUID(packet.summonUUID);
                         if (ses.isEmpty()) return;
-                        summonEntityToLevel(ses.get(), serverPlayer.level(), packet.summonLocation);
-                        removeEntityFromPlayerKantaiData(ses.get(), serverPlayer);
+                        playerKantaiData.summonToLevel(serverPlayer, ses.get(), packet.summonLocation);
                     }
             );
 
@@ -55,17 +52,4 @@ public class CommandCenterRequestSummonPacket {
 
         ctx.get().setPacketHandled(true);
     }
-
-    private static void summonEntityToLevel(SerializedEntityShip ses, Level level, BlockPos summonLocation) {
-        var entity = ses.getEntityType().create(level);
-        entity.setPos(summonLocation.getX(), summonLocation.getY(), summonLocation.getZ());
-        level.addFreshEntity(entity);
-    }
-
-    private static void removeEntityFromPlayerKantaiData(SerializedEntityShip ses, ServerPlayer serverPlayer) {
-        serverPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
-                playerKantaiData -> playerKantaiData.removeShip(ses.getUuid())
-        );
-    }
-
 }

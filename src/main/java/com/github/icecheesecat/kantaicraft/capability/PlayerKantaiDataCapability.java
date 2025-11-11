@@ -1,5 +1,6 @@
 package com.github.icecheesecat.kantaicraft.capability;
 
+import com.github.icecheesecat.kantaicraft.playerkantaidata.PlayerKantaiData;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -7,8 +8,6 @@ import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.UUID;
 
 @AutoRegisterCapability
 public class PlayerKantaiDataCapability implements ICapabilitySerializable<CompoundTag> {

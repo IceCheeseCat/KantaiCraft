@@ -1,12 +1,9 @@
 package com.github.icecheesecat.kantaicraft.menu.commandcenter;
 
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiData;
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.RequestPlayerKantaiDataPacket;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import com.github.icecheesecat.kantaicraft.registries.ModMenu;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;

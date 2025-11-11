@@ -2,9 +2,8 @@ package com.github.icecheesecat.kantaicraft.network.packet;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.ClientPlayerKantaiDataCacheCapability;
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiData;
+import com.github.icecheesecat.kantaicraft.playerkantaidata.PlayerKantaiData;
 import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
-import com.github.icecheesecat.kantaicraft.network.Cache.Cache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
