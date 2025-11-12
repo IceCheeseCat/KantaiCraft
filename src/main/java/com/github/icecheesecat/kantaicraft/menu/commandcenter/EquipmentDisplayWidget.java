@@ -46,6 +46,7 @@ public abstract class EquipmentDisplayWidget extends HoveredCreatorWidget<Equipm
     }
 
     protected void renderEquipmentModel(GuiGraphics guiGraphics, float partialTick) {
+        if (renderer == null) return;
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
         poseStack.translate(this.getX() + 15, this.getY() + 20 + floatY, 100);
