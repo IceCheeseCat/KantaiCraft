@@ -11,7 +11,7 @@ import com.github.icecheesecat.kantaicraft.menu.pagescreen.Page;
 import com.github.icecheesecat.kantaicraft.menu.pagescreen.PageScreen;
 import com.github.icecheesecat.kantaicraft.menu.ship.CustomTextureButton;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.CommandCenterRequestSummonPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.commandcenter.CommandCenterRequestSummonPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;

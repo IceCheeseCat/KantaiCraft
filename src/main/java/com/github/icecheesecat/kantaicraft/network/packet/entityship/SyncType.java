@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.network.packet;
+package com.github.icecheesecat.kantaicraft.network.packet.entityship;
 
 public enum SyncType {
     GUARD(DataType.BOOLEAN),

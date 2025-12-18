@@ -17,10 +17,6 @@ public class ClientPlayerKantaiDataCache {
 
     public void prepareCache(PlayerKantaiData playerKantaiData) {
         this.cacheEntityShips(playerKantaiData);
-        // refresh command center screen rendered ShipSelect
-        if (Minecraft.getInstance().screen instanceof CommandCenterScreen commandCenterScreen) {
-            commandCenterScreen.refresh();
-        }
     }
 
     private void cacheEntityShips(PlayerKantaiData playerKantaiData) {

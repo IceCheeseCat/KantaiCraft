@@ -4,7 +4,7 @@ import com.github.icecheesecat.kantaicraft.block.patternblock.CoreBlockEntity;
 import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.menu.shipyard.ShipyardMenu;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.ShipyardPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.shipyard.ShipyardPacket;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import com.github.icecheesecat.kantaicraft.util.Constant;
@@ -33,7 +33,6 @@ import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.UUID;
 
 public class ShipyardBlockEntity extends CoreBlockEntity implements Container, MenuProvider {

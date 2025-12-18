@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.menu.commandcenter;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.menu.Refreshable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -10,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public abstract class CustomScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
+public abstract class CustomScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> implements Refreshable {
 
     public CustomScreen(T pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);

@@ -1,15 +1,12 @@
-package com.github.icecheesecat.kantaicraft.network.packet;
+package com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata;
 
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
 
-import java.util.UUID;
 import java.util.function.Supplier;
 
 /**

@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.exception.KantaiCraftException;
-import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
+import com.github.icecheesecat.kantaicraft.network.packet.entityship.SyncType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceLocation;

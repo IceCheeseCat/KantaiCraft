@@ -2,8 +2,7 @@ package com.github.icecheesecat.kantaicraft.menu.shipyard;
 
 import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.ShipyardSpawnEntityPacket;
-import net.minecraft.client.Minecraft;
+import com.github.icecheesecat.kantaicraft.network.packet.shipyard.ShipyardSpawnEntityPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;

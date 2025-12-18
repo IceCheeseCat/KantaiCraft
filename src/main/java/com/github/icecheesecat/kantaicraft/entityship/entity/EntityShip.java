@@ -9,7 +9,7 @@ import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
 import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.S2CEquipmentHandlerPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentHandlerPacket;
 import com.github.icecheesecat.kantaicraft.registries.*;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -393,7 +393,9 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public void syncEquipmentHandler() {
         this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
                 equipmentHandler1 -> {
-                    ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), S2CEquipmentHandlerPacket.dirtyHandlerPacket(this.getId(), equipmentHandler1));
+                    if (this.equipmentHandler.hasAnyDirty()) {
+                        ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), EquipmentHandlerPacket.dirtyHandlerPacket(this.getId(), equipmentHandler1));
+                    }
                 }
         );
     }
@@ -750,6 +752,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         }
 
         if (pHand == InteractionHand.MAIN_HAND && pPlayer instanceof ServerPlayer serverPlayer) {
+            ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), EquipmentHandlerPacket.wholeHandlerPacket(this.getId(), this.equipmentHandler));
             NetworkHooks.openScreen(serverPlayer, this, (friendlyByteBuf -> {
                 friendlyByteBuf.writeInt(this.getId());
             }));

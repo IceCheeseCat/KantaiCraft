@@ -4,14 +4,13 @@ import com.github.icecheesecat.kantaicraft.capability.SerializedEntityShip;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.PlayerKantaiDataUpdatedPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataUpdatedPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.network.PacketDistributor;
 

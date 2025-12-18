@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.network.packet;
+package com.github.icecheesecat.kantaicraft.network.packet.equipment;
 
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipScreen;
 import com.github.icecheesecat.kantaicraft.network.Cache.Cache;
@@ -12,19 +12,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class S2CEquipmentOptionsPacket {
+public class EquipmentOptionsPacket {
 
     int entityId;
     int index;
     List<Integer> validEquipmentIds;
 
-    public S2CEquipmentOptionsPacket(int entityId, int index, List<Integer> validEquipmentIds) {
+    public EquipmentOptionsPacket(int entityId, int index, List<Integer> validEquipmentIds) {
         this.entityId = entityId;
         this.index = index;
         this.validEquipmentIds = validEquipmentIds;
     }
 
-    public static void encode(S2CEquipmentOptionsPacket packet, FriendlyByteBuf buf) {
+    public static void encode(EquipmentOptionsPacket packet, FriendlyByteBuf buf) {
         buf.writeInt(packet.entityId);
         buf.writeInt(packet.index);
         buf.writeInt(packet.validEquipmentIds.size());
@@ -33,7 +33,7 @@ public class S2CEquipmentOptionsPacket {
         }
     }
 
-    public static S2CEquipmentOptionsPacket decode(FriendlyByteBuf buf) {
+    public static EquipmentOptionsPacket decode(FriendlyByteBuf buf) {
         int entityId = buf.readInt();
         int index = buf.readInt();
         int size = buf.readInt();
@@ -42,10 +42,10 @@ public class S2CEquipmentOptionsPacket {
             vei.add(buf.readInt());
         }
 
-        return new S2CEquipmentOptionsPacket(entityId, index, vei);
+        return new EquipmentOptionsPacket(entityId, index, vei);
     }
 
-    public static void handle(S2CEquipmentOptionsPacket packet, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(EquipmentOptionsPacket packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                 if (Minecraft.getInstance().screen instanceof ShipScreen screen) {

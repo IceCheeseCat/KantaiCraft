@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.network.packet;
+package com.github.icecheesecat.kantaicraft.network.packet.shipyard;
 
 import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
 import net.minecraft.core.BlockPos;

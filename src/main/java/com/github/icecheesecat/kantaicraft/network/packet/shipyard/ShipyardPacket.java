@@ -1,7 +1,7 @@
-package com.github.icecheesecat.kantaicraft.network.packet;
+package com.github.icecheesecat.kantaicraft.network.packet.shipyard;
 
 import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
-import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
+import com.github.icecheesecat.kantaicraft.network.packet.FriendlyByteBufHelper;
 import com.github.icecheesecat.kantaicraft.util.Constant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -12,8 +12,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 

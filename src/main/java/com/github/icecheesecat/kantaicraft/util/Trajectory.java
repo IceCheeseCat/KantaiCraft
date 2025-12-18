@@ -1,8 +1,7 @@
 package com.github.icecheesecat.kantaicraft.util;
 
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.ClientSetDestroyTrajectoryPacket;
-import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.trajectory.ClientSetDestroyTrajectoryPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;

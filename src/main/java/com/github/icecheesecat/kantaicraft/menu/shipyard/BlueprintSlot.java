@@ -1,11 +1,10 @@
 package com.github.icecheesecat.kantaicraft.menu.shipyard;
 
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.SetShipyardSlotOwnerPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.shipyard.SetShipyardSlotOwnerPacket;
 import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 

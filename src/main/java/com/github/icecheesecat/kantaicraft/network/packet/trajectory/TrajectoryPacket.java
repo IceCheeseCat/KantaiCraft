@@ -1,29 +1,14 @@
-package com.github.icecheesecat.kantaicraft.network.packet;
+package com.github.icecheesecat.kantaicraft.network.packet.trajectory;
 
-import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.ClientLevelTrajectoryCapability;
 import com.github.icecheesecat.kantaicraft.util.Trajectory;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.FastColor;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkEvent;
-import org.joml.Matrix4f;
 
-import java.nio.ByteBuffer;
-import java.util.*;
 import java.util.function.Supplier;
 
 public class TrajectoryPacket {

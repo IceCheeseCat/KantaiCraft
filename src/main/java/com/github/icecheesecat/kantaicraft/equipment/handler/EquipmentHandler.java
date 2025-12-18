@@ -19,8 +19,6 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     private NonNullList<Boolean> dirty;
     private int slotSize;
 
-
-
     public EquipmentHandler(int size) {
         this.slotSize = size;
         this.equipments = NonNullList.withSize(size, ArmedEquipment.empty());
@@ -78,6 +76,10 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
 
     public boolean isDirty(int index) {
         return this.dirty.get(index);
+    }
+
+    public boolean hasAnyDirty() {
+        return this.dirty.stream().anyMatch(b -> b);
     }
 
     public void setNotDirty(int index) {

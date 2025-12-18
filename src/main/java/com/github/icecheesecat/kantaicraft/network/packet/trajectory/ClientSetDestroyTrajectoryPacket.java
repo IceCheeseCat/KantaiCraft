@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.network.packet;
+package com.github.icecheesecat.kantaicraft.network.packet.trajectory;
 
 import com.github.icecheesecat.kantaicraft.capability.ClientLevelTrajectoryCapability;
 import com.github.icecheesecat.kantaicraft.util.Trajectory;

@@ -1,34 +1,18 @@
 package com.github.icecheesecat.kantaicraft.block.commandcenter;
 
 import com.github.icecheesecat.kantaicraft.block.TwoPartBlock;
-import com.github.icecheesecat.kantaicraft.block.patternblock.ComponentBlockEntity;
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.menu.commandcenter.CommandCenterMenu;
-import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.PlayerKantaiDataPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CommandCenterBlock extends TwoPartBlock {

@@ -1,7 +1,19 @@
 package com.github.icecheesecat.kantaicraft.network;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.network.packet.*;
+import com.github.icecheesecat.kantaicraft.network.packet.commandcenter.CommandCenterRequestSummonPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.entityship.TogglePlayerShipPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.equipment.RequestEquipmentOptionsPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentHandlerPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentOptionsPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataUpdatedPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.RequestPlayerKantaiDataPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.shipyard.SetShipyardSlotOwnerPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.shipyard.ShipyardPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.shipyard.ShipyardSpawnEntityPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.trajectory.ClientSetDestroyTrajectoryPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.trajectory.TrajectoryPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -44,18 +56,18 @@ public class ModPacketHandler {
 
         INSTANCE.registerMessage(
                 id++,
-                S2CEquipmentOptionsPacket.class,
-                S2CEquipmentOptionsPacket::encode,
-                S2CEquipmentOptionsPacket::decode,
-                S2CEquipmentOptionsPacket::handle
+                EquipmentOptionsPacket.class,
+                EquipmentOptionsPacket::encode,
+                EquipmentOptionsPacket::decode,
+                EquipmentOptionsPacket::handle
         );
 
         INSTANCE.registerMessage(
                 id++,
-                C2SEquipmentOptionsPacket.class,
-                C2SEquipmentOptionsPacket::encode,
-                C2SEquipmentOptionsPacket::decode,
-                C2SEquipmentOptionsPacket::handle
+                RequestEquipmentOptionsPacket.class,
+                RequestEquipmentOptionsPacket::encode,
+                RequestEquipmentOptionsPacket::decode,
+                RequestEquipmentOptionsPacket::handle
         );
 
         INSTANCE.registerMessage(
@@ -108,10 +120,10 @@ public class ModPacketHandler {
 
         INSTANCE.registerMessage(
                 id++,
-                S2CEquipmentHandlerPacket.class,
-                S2CEquipmentHandlerPacket::encode,
-                S2CEquipmentHandlerPacket::decode,
-                S2CEquipmentHandlerPacket::handle
+                EquipmentHandlerPacket.class,
+                EquipmentHandlerPacket::encode,
+                EquipmentHandlerPacket::decode,
+                EquipmentHandlerPacket::handle
         );
 
         INSTANCE.registerMessage(

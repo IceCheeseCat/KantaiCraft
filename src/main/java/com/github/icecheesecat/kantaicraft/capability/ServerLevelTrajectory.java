@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.capability;
 
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.TrajectoryPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.trajectory.TrajectoryPacket;
 import com.github.icecheesecat.kantaicraft.util.Trajectory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;

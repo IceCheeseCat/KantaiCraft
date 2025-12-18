@@ -1,19 +1,10 @@
-package com.github.icecheesecat.kantaicraft.network.packet;
+package com.github.icecheesecat.kantaicraft.network.packet.entityship;
 
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.equipment.Equipment;
-import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
-import com.github.icecheesecat.kantaicraft.menu.ship.ShipScreen;
-import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.function.Supplier;
 

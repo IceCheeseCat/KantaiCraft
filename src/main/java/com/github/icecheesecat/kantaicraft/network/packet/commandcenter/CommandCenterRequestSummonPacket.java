@@ -1,12 +1,9 @@
-package com.github.icecheesecat.kantaicraft.network.packet;
+package com.github.icecheesecat.kantaicraft.network.packet.commandcenter;
 
 import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
-import com.github.icecheesecat.kantaicraft.capability.SerializedEntityShip;
-import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.UUID;

@@ -1,19 +1,18 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.menu.IconWithTextElement;
 import com.github.icecheesecat.kantaicraft.menu.pagescreen.*;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
-import com.github.icecheesecat.kantaicraft.network.packet.SyncType;
-import com.google.common.collect.ImmutableMap;
+import com.github.icecheesecat.kantaicraft.network.packet.entityship.SyncType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.layouts.GridLayout;
-import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -41,6 +40,7 @@ public class ShipScreen extends PageScreen<ShipMenu> {
     private static final ResourceLocation PREV_ICON_HOVERED = new ResourceLocation(KantaiCraft.MODID, "textures/gui/prev_icon_hovered.png");
     private static final ResourceLocation INVENTORY_SLOTS = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen_inventory.png");
 
+    private static final int EQUIPMENT_SLOT_SIZE = 4;
 
     private static final int ENTITY_MODEL_BACKGROUND = FastColor.ARGB32.color(200, 255, 255, 255);
 
@@ -54,6 +54,14 @@ public class ShipScreen extends PageScreen<ShipMenu> {
     private int MODEL_X;
     private int MODEL_Y;
     private int MODEL_SCALE;
+    private int EQUIPMENT_SLOT_1_X;
+    private int EQUIPMENT_SLOT_1_Y;
+    private int EQUIPMENT_SLOT_2_X;
+    private int EQUIPMENT_SLOT_2_Y;
+    private int EQUIPMENT_SLOT_3_X;
+    private int EQUIPMENT_SLOT_3_Y;
+    private int EQUIPMENT_SLOT_4_X;
+    private int EQUIPMENT_SLOT_4_Y;
 
     private static final int BACKGROUND_COLOR = FastColor.ARGB32.color(102, 0, 0, 0);
 
@@ -61,13 +69,13 @@ public class ShipScreen extends PageScreen<ShipMenu> {
     private PageTitleDisplayer pageTitleDisplayer;
     private AbstractButton nextPageButton;
     private AbstractButton prevPageButton;
-    EquipmentHandler equipmentHandler;
+    private GridLayout statsLayout;
+
     public ShipScreen(ShipMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         this.entityShip = this.getMenu().getEntityShip();
         this.addPage(this::createMainPage);
         this.addPage(this::createEquipmentPage);
-//        this.addPage(this::createInventoryPage);
     }
 
     private void initVar() {
@@ -89,6 +97,15 @@ public class ShipScreen extends PageScreen<ShipMenu> {
         MODEL_Y = this.height + 40;
         MODEL_SCALE = 90;
 
+        // init equipment slot positions
+        EQUIPMENT_SLOT_1_X = (int) (this.width * 0.25f);
+        EQUIPMENT_SLOT_2_X = (int) (this.width * 0.25f);
+        EQUIPMENT_SLOT_3_X = (int) (this.width * 0.75f);
+        EQUIPMENT_SLOT_4_X = (int) (this.width * 0.75f);
+
+        EQUIPMENT_SLOT_1_Y = EQUIPMENT_SLOT_3_Y = (int) (this.height * 0.45f);
+        EQUIPMENT_SLOT_2_Y = EQUIPMENT_SLOT_4_Y = EQUIPMENT_SLOT_1_Y + 65;
+
     }
 
     @Override
@@ -96,7 +113,10 @@ public class ShipScreen extends PageScreen<ShipMenu> {
         initVar();
         super.init();
 
-        createStatLayout();
+        if (this.statsLayout != null) {
+            this.statsLayout.visitChildren(this.renderables::remove);
+        }
+        this.statsLayout = createStatLayout();
 
         // Next section button
         this.removeWidget(this.nextPageButton);
@@ -147,10 +167,10 @@ public class ShipScreen extends PageScreen<ShipMenu> {
     }
 
     private Page createEquipmentPage() {
-        GridPage gridPage = new GridPage(Component.translatable("ship_screen_equipment_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
-        gridPage.appendGridlayout(createEquipmentLayout());
+        Page page = new Page(Component.translatable("ship_screen_equipment_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
+        page.addAllWidget(createEquipmentWidgets());
 
-        return gridPage;
+        return page;
     }
 
     private Page createInventoryPage() {
@@ -190,22 +210,18 @@ public class ShipScreen extends PageScreen<ShipMenu> {
         return gridLayout;
     }
 
-    private GridLayout createEquipmentLayout() {
+    private List<AbstractWidget> createEquipmentWidgets() {
+        List<AbstractWidget> widgets = new ArrayList<>();
 
-        int x = SECTION_X;
-        int y = SECTION_Y;
-        GridLayout gridLayout = new GridLayout(x, y);
-        gridLayout.defaultCellSetting().paddingRight(4);
-        gridLayout.defaultCellSetting().paddingBottom(4);
-        int index = 0;
-//        gridLayout.addChild(new EquipmentWidget(SECTION_X, SECTION_Y, this.ship, 0), index++, 0);
-//        gridLayout.addChild(new EquipmentWidget(SECTION_X, SECTION_Y, this.ship, 1), index++, 0);
-//        gridLayout.addChild(new EquipmentWidget(SECTION_X, SECTION_Y, this.ship, 2), index++, 0);
-//        gridLayout.addChild(new EquipmentWidget(SECTION_X, SECTION_Y, this.ship, 3), index++, 0);
-        gridLayout.arrangeElements();
-        gridLayout.visitWidgets(this::addRenderableWidget);
+        this.entityShip.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(equipmentHandler -> {
 
-        return gridLayout;
+            widgets.add(0, new ArmedEquipmentWidget(EQUIPMENT_SLOT_1_X - 30, EQUIPMENT_SLOT_1_Y - 30, 60, 60, equipmentHandler.getArmedEquipment(0)));
+            widgets.add(1, new ArmedEquipmentWidget(EQUIPMENT_SLOT_2_X - 30, EQUIPMENT_SLOT_2_Y - 30, 60, 60, equipmentHandler.getArmedEquipment(1)));
+            widgets.add(2, new ArmedEquipmentWidget(EQUIPMENT_SLOT_3_X - 30, EQUIPMENT_SLOT_3_Y - 30, 60, 60, equipmentHandler.getArmedEquipment(2)));
+            widgets.add(3, new ArmedEquipmentWidget(EQUIPMENT_SLOT_4_X - 30, EQUIPMENT_SLOT_4_Y - 30, 60, 60, equipmentHandler.getArmedEquipment(3)));
+
+        });
+        return widgets;
     }
 
 

@@ -1,7 +1,8 @@
-package com.github.icecheesecat.kantaicraft.network.packet;
+package com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.ClientPlayerKantaiDataCacheCapability;
+import com.github.icecheesecat.kantaicraft.menu.Refreshable;
 import com.github.icecheesecat.kantaicraft.playerkantaidata.PlayerKantaiData;
 import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
 import net.minecraft.client.Minecraft;
@@ -63,6 +64,10 @@ public class PlayerKantaiDataPacket {
                             clientPlayer.getCapability(ClientPlayerKantaiDataCacheCapability.TOKEN).ifPresent(cache -> {
                                 cache.prepareCache(packet.playerKantaiData);
                             });
+
+                            if (Minecraft.getInstance().screen instanceof Refreshable refreshable) {
+                                refreshable.refresh();
+                            }
 
                         });
                     }

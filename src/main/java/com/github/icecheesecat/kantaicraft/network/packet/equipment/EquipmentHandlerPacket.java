@@ -1,9 +1,10 @@
-package com.github.icecheesecat.kantaicraft.network.packet;
+package com.github.icecheesecat.kantaicraft.network.packet.equipment;
 
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.handler.ArmedEquipment;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.menu.Refreshable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -15,22 +16,22 @@ import java.util.function.Supplier;
 /**
  * Update EntityShip's EquipmentHandler from server to client
  */
-public class S2CEquipmentHandlerPacket {
+public class EquipmentHandlerPacket {
 
     int entityId;
     Map<Integer, ArmedEquipment> armedEquipmentMap = new HashMap<>();
 
-    private S2CEquipmentHandlerPacket(int entityId, Map<Integer, ArmedEquipment> armedEquipmentMap) {
+    private EquipmentHandlerPacket(int entityId, Map<Integer, ArmedEquipment> armedEquipmentMap) {
         this.entityId = entityId;
         this.armedEquipmentMap = armedEquipmentMap;
     }
 
-    private S2CEquipmentHandlerPacket() {
+    private EquipmentHandlerPacket() {
 
     }
 
-    public static S2CEquipmentHandlerPacket wholeHandlerPacket(int entityId, EquipmentHandler equipmentHandler) {
-        S2CEquipmentHandlerPacket packet = new S2CEquipmentHandlerPacket();
+    public static EquipmentHandlerPacket wholeHandlerPacket(int entityId, EquipmentHandler equipmentHandler) {
+        EquipmentHandlerPacket packet = new EquipmentHandlerPacket();
         packet.entityId = entityId;
 
         for (int i = 0; i < equipmentHandler.getArmedEquipments().size(); i++) {
@@ -40,8 +41,8 @@ public class S2CEquipmentHandlerPacket {
         return packet;
     }
 
-    public static S2CEquipmentHandlerPacket partialHandlerPacket(int entityId, EquipmentHandler equipmentHandler, int... indexes) {
-        S2CEquipmentHandlerPacket packet = new S2CEquipmentHandlerPacket();
+    public static EquipmentHandlerPacket partialHandlerPacket(int entityId, EquipmentHandler equipmentHandler, int... indexes) {
+        EquipmentHandlerPacket packet = new EquipmentHandlerPacket();
         packet.entityId = entityId;
 
         for (int index : indexes) {
@@ -51,8 +52,8 @@ public class S2CEquipmentHandlerPacket {
         return packet;
     }
 
-    public static S2CEquipmentHandlerPacket dirtyHandlerPacket(int entityId, EquipmentHandler equipmentHandler) {
-        S2CEquipmentHandlerPacket packet = new S2CEquipmentHandlerPacket();
+    public static EquipmentHandlerPacket dirtyHandlerPacket(int entityId, EquipmentHandler equipmentHandler) {
+        EquipmentHandlerPacket packet = new EquipmentHandlerPacket();
         packet.entityId = entityId;
 
         for (int i = 0; i < equipmentHandler.getArmedEquipments().size(); i++) {
@@ -64,12 +65,12 @@ public class S2CEquipmentHandlerPacket {
         return packet;
     }
 
-    public static void encode(S2CEquipmentHandlerPacket packet, FriendlyByteBuf buf) {
+    public static void encode(EquipmentHandlerPacket packet, FriendlyByteBuf buf) {
         buf.writeInt(packet.entityId);
         buf.writeMap(packet.armedEquipmentMap, FriendlyByteBuf::writeInt, (fb, armed) -> fb.writeNbt(armed.serializeNBT()));
     }
 
-    public static S2CEquipmentHandlerPacket decode(FriendlyByteBuf buf) {
+    public static EquipmentHandlerPacket decode(FriendlyByteBuf buf) {
         int entityId = buf.readInt();
         var readMap = buf.readMap(FriendlyByteBuf::readInt, (fb) -> {
             var nbt = fb.readNbt(); assert nbt != null;
@@ -77,10 +78,10 @@ public class S2CEquipmentHandlerPacket {
             nArmed.deserializeNBT(nbt);
             return nArmed;
         });
-        return new S2CEquipmentHandlerPacket(entityId, readMap);
+        return new EquipmentHandlerPacket(entityId, readMap);
     }
 
-    public static void handle(S2CEquipmentHandlerPacket packet, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(EquipmentHandlerPacket packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             if (Minecraft.getInstance().level == null) return;
             if (Minecraft.getInstance().level.getEntity(packet.entityId) == null) return;
@@ -88,6 +89,10 @@ public class S2CEquipmentHandlerPacket {
                 entityShip.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(equipmentHandler -> {
                     packet.armedEquipmentMap.forEach((equipmentHandler::setOnClient));
                 });
+            }
+
+            if (Minecraft.getInstance().screen instanceof Refreshable refreshable) {
+                refreshable.refresh();
             }
         });
 

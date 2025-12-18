@@ -3,6 +3,7 @@ package com.github.icecheesecat.kantaicraft.menu.commandcenter;
 import com.github.icecheesecat.kantaicraft.client.EquipmentRendererCache;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.menu.DarkenBgWhileHovered;
+import com.github.icecheesecat.kantaicraft.menu.GuiLerp;
 import com.github.icecheesecat.kantaicraft.menu.HoveredCreatorWidget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -59,7 +60,7 @@ public abstract class EquipmentDisplayWidget extends HoveredCreatorWidget<Equipm
         floatY += floatTurn ? partialTick * floatYDelta : - partialTick * floatYDelta;
 
         poseStack.mulPose(Axis.ZP.rotation((float) Math.PI));
-        rotY += 0.01f;
+        rotY += GuiLerp.EQUIPMENT_ROTATE_SCALAR * partialTick;
         poseStack.mulPose(Axis.YP.rotation((float) Math.PI + rotY));
 //        poseStack.mulPose(Axis.ZP.rotation(rotZ+=0.05f));
         poseStack.scale(20, 20, 20);
