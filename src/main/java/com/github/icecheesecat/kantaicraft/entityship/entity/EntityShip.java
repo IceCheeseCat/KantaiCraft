@@ -79,6 +79,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public static final EntityDataAccessor<Boolean> DATA_IS_GUARDING = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Optional<UUID>> DATA_SHIP_OWNER = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.OPTIONAL_UUID);
     public static final EntityDataAccessor<Boolean> DATA_SIT_DOWN = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> DATA_WONDER_AROUND = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
 
     public static final EntityDataAccessor<Integer> DATA_FOLLOW_DISTANCE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
 
@@ -110,6 +111,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.entityData.define(DATA_SPEED_MODIFIER, 0.4f);
         this.entityData.define(DATA_FOLLOW_DISTANCE, 10);
         this.entityData.define(DATA_SIT_DOWN, false);
+        this.entityData.define(DATA_WONDER_AROUND, false);
         this.setupSyncedDataFromStance(entityData, this.random);
     }
 
@@ -196,6 +198,14 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     public void setFollowOwnerDistance(int num) {
         this.entityData.set(DATA_FOLLOW_DISTANCE, num);
+    }
+
+    public void toggleWonderAround() {
+        this.entityData.set(DATA_WONDER_AROUND, !this.canWonderAround());
+    }
+
+    public boolean canWonderAround() {
+        return this.entityData.get(DATA_WONDER_AROUND);
     }
 
     public boolean isSitDown() {

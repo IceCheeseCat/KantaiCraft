@@ -25,20 +25,21 @@ import java.util.List;
 
 public class ShipScreen extends PageScreen<ShipMenu> {
 
-    private static final ResourceLocation SHIP_SCREEN_BACKGROUND = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen_background.png");
-    private static final ResourceLocation HEART_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/heart_icon.png");
-    private static final ResourceLocation FIREPOWER_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/firepower_icon.png");
-    private static final ResourceLocation TORPEDO_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/torpedo_icon.png");
-    private static final ResourceLocation ANTIAIR_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/antiair_icon.png");
-    private static final ResourceLocation ASW_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/asw_icon.png");
-    private static final ResourceLocation GUARD_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/guard_icon.png");
-    private static final ResourceLocation MELEE_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/melee_icon.png");
-    private static final ResourceLocation SELECTED = new ResourceLocation(KantaiCraft.MODID, "textures/gui/selected.png");
-    private static final ResourceLocation NEXT_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/next_icon.png");
-    private static final ResourceLocation NEXT_ICON_HOVERED = new ResourceLocation(KantaiCraft.MODID, "textures/gui/next_icon_hovered.png");
-    private static final ResourceLocation PREV_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/prev_icon.png");
-    private static final ResourceLocation PREV_ICON_HOVERED = new ResourceLocation(KantaiCraft.MODID, "textures/gui/prev_icon_hovered.png");
-    private static final ResourceLocation INVENTORY_SLOTS = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen_inventory.png");
+    private static final ResourceLocation SHIP_SCREEN_BACKGROUND = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/ship_screen_background.png");
+    private static final ResourceLocation HEART_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/heart_icon.png");
+    private static final ResourceLocation FIREPOWER_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/firepower_icon.png");
+    private static final ResourceLocation TORPEDO_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/torpedo_icon.png");
+    private static final ResourceLocation ANTIAIR_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/antiair_icon.png");
+    private static final ResourceLocation ASW_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/asw_icon.png");
+    private static final ResourceLocation GUARD_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/guard_icon.png");
+    private static final ResourceLocation MELEE_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/melee_icon.png");
+    private static final ResourceLocation WONDER_AROUND_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/wonder_around_icon.png");
+    private static final ResourceLocation SELECTED = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/selected.png");
+    private static final ResourceLocation NEXT_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/next_icon.png");
+    private static final ResourceLocation NEXT_ICON_HOVERED = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/next_icon_hovered.png");
+    private static final ResourceLocation PREV_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/prev_icon.png");
+    private static final ResourceLocation PREV_ICON_HOVERED = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/prev_icon_hovered.png");
+    private static final ResourceLocation INVENTORY_SLOTS = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/ship_screen_inventory.png");
 
     private static final int EQUIPMENT_SLOT_SIZE = 4;
 
@@ -204,6 +205,9 @@ public class ShipScreen extends PageScreen<ShipMenu> {
                 0, indexOfCell++);
         gridLayout.addChild(new SyncedBooleanWidget(0, 0, 32, 32, this.entityShip, EntityShip.DATA_FORCE_MELEE,
                         MELEE_ICON, SELECTED, SyncType.MELEE),
+                0, indexOfCell++);
+        gridLayout.addChild(new SyncedBooleanWidget(0, 0, 32, 32, this.entityShip, EntityShip.DATA_WONDER_AROUND,
+                        WONDER_AROUND_ICON, SELECTED, SyncType.WONDER_AROUND),
                 0, indexOfCell++);
         gridLayout.arrangeElements();
 

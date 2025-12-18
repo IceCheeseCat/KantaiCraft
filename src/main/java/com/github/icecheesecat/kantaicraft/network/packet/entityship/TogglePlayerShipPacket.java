@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.network.packet.entityship;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
+import com.github.icecheesecat.kantaicraft.exception.KantaiCraftException;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkDirection;
@@ -32,7 +33,7 @@ public class TogglePlayerShipPacket {
         buf.writeEnum(packet.syncType);
         buf.writeInt(packet.entityId);
         switch (packet.syncType) {
-            case GUARD, MELEE -> buf.writeBoolean((Boolean) packet.value);
+            case GUARD, MELEE, WONDER_AROUND -> buf.writeBoolean((Boolean) packet.value);
         }
 
     }
@@ -42,11 +43,11 @@ public class TogglePlayerShipPacket {
         int entityId = buf.readInt();
 
         switch (syncType) {
-            case GUARD, MELEE -> {
+            case GUARD, MELEE, WONDER_AROUND -> {
                 return new TogglePlayerShipPacket(syncType, entityId, buf.readBoolean());
             }
             default -> {
-                return null;
+                throw new KantaiCraftException(TogglePlayerShipPacket.class, "SyncType does not implemented " + syncType);
             }
         }
 
@@ -62,6 +63,7 @@ public class TogglePlayerShipPacket {
                     switch (syncType) {
                         case GUARD -> entityShip.setGuarding((Boolean) packet.value);
                         case MELEE -> entityShip.setForceMelee((Boolean) packet.value);
+                        case WONDER_AROUND -> entityShip.toggleWonderAround();
                     }
                 }
             }

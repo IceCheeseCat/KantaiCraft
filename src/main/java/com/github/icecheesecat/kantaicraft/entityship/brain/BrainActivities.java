@@ -71,8 +71,8 @@ public class BrainActivities {
                             Pair.of(5, new FollowOwner(entityShip.getFollowOwnerDistance(), entityShip.getFollowTooCloseDistance())),
                             Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60))),
                             Pair.of(8, new RunOne<>(ImmutableList.of(
-                                    Pair.of(BehaviorBuilder.triggerIf(livingEntity -> !livingEntity.isSitDown() ,RandomStroll.stroll(entityShip.getNormalSpeedModifier())), 2),
-                                    Pair.of(BehaviorBuilder.triggerIf(livingEntity -> !livingEntity.isSitDown() ,SetWalkTargetFromLookTarget.create(entityShip.getNormalSpeedModifier(), 3)), 2),
+                                    Pair.of(BehaviorBuilder.triggerIf(livingEntity -> !livingEntity.isSitDown() && livingEntity.canWonderAround() ,RandomStroll.stroll(entityShip.getNormalSpeedModifier())), 2),
+                                    Pair.of(BehaviorBuilder.triggerIf(livingEntity -> !livingEntity.isSitDown() & livingEntity.canWonderAround(),SetWalkTargetFromLookTarget.create(entityShip.getNormalSpeedModifier(), 3)), 2),
                                     Pair.of(new RandomLookAround(UniformInt.of(150, 200), 30.0F, 0.0F, 15.0F), 2),
                                     Pair.of(new DoNothing(30, 60), 1))))
                     ),

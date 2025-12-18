@@ -2,7 +2,8 @@ package com.github.icecheesecat.kantaicraft.network.packet.entityship;
 
 public enum SyncType {
     GUARD(DataType.BOOLEAN),
-    MELEE(DataType.BOOLEAN);
+    MELEE(DataType.BOOLEAN),
+    WONDER_AROUND(DataType.BOOLEAN);
 
     final DataType dataType;
 
