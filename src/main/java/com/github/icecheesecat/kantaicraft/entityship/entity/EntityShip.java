@@ -243,6 +243,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         nbt.putBoolean("sit_down", this.isSitDown());
         nbt.put("equipmentHandler", this.equipmentHandler.serializeNBT());
         nbt.putString("entityType", this.getType().toString());
+        nbt.putBoolean("wonder_around", this.canWonderAround());
 
         return nbt;
     }
@@ -322,6 +323,9 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         }
         if (nbt.contains("equipmentHandler")) {
             this.equipmentHandler.deserializeNBT(nbt.getCompound("equipmentHandler"));
+        }
+        if (nbt.contains("wonder_around")) {
+            this.entityData.set(DATA_WONDER_AROUND, nbt.getBoolean("wonder_around"));
         }
     }
 
