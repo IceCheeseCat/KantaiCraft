@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.block.renderer;
+package com.github.icecheesecat.kantaicraft.model.block.renderer;
 
 import com.github.icecheesecat.kantaicraft.block.shipyard.ShipyardBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.patternblock.componentUtil.BlockStateProperties;
