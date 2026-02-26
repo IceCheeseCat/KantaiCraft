@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.block;
 
 import net.minecraft.util.StringRepresentable;
 
-public enum TwoBlockPart implements StringRepresentable {
+public enum TwoPart implements StringRepresentable {
     Front,
     Back;
 

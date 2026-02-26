@@ -2,13 +2,14 @@ package com.github.icecheesecat.kantaicraft.model;
 
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.block.renderer.ShipyardRenderer;
+import com.github.icecheesecat.kantaicraft.model.block.renderer.CommandCenterBlockRenderer;
 import com.github.icecheesecat.kantaicraft.model.ship.renderer.AkatsukiRenderer;
 import com.github.icecheesecat.kantaicraft.model.ship.renderer.HibikiRenderer;
 import com.github.icecheesecat.kantaicraft.model.ship.renderer.IkazuchiRenderer;
 import com.github.icecheesecat.kantaicraft.model.ship.renderer.InazumaRenderer;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import com.github.icecheesecat.kantaicraft.registries.ModEntity;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -40,7 +41,8 @@ public class ModelEvent {
 
 
         // BlockEntity
-        event.registerBlockEntityRenderer(ModBlock.SHIPYARD_BETPYE.get(), ShipyardRenderer::new);
+//        event.registerBlockEntityRenderer(ModBlock.SHIPYARD_BETPYE.get(), ShipyardRenderer::new);
+        event.registerBlockEntityRenderer(ModBlock.COMMAND_CENTER_BETYPE.get(), CommandCenterBlockRenderer::new);
     }
 
 }

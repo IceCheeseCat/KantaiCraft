@@ -15,5 +15,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
         this.simpleBlockWithItem(ModBlock.FLOOR.get(), cubeAll(ModBlock.FLOOR.get()));
         this.simpleBlockWithItem(ModBlock.CRANE.get(), cubeAll(ModBlock.CRANE.get()));
         this.simpleBlockWithItem(ModBlock.SHIPYARD_CORE.get(), cubeAll(ModBlock.SHIPYARD_CORE.get()));
+        this.simpleBlockWithItem(ModBlock.COMMAND_CENTER.get(), cubeAll(ModBlock.COMMAND_CENTER.get()));
     }
 }

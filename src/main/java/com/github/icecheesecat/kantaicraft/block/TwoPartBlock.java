@@ -8,12 +8,10 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -21,12 +19,12 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class TwoPartBlock extends HorizontalDirectionalBlock {
 
-    public static final EnumProperty<TwoBlockPart> TWO_PART = EnumProperty.create("two_block_part", TwoBlockPart.class);
+    public static final EnumProperty<TwoPart> TWO_PART = EnumProperty.create("two_block_part", TwoPart.class);
     protected static final VoxelShape BASE = Block.box(0.0d, 0.0d, 0.0d, 16.0d, 16.0d, 16.0d);
 
     public TwoPartBlock(Properties pProperties) {
         super(pProperties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(TWO_PART, TwoBlockPart.Back));
+        this.registerDefaultState(this.stateDefinition.any().setValue(TWO_PART, TwoPart.Back));
     }
 
     @Override
@@ -58,14 +56,14 @@ public abstract class TwoPartBlock extends HorizontalDirectionalBlock {
         super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
         if (pLevel.isClientSide) return;
         BlockPos blockpos = pPos.relative(pState.getValue(FACING));
-        pLevel.setBlock(blockpos, pState.setValue(TWO_PART, TwoBlockPart.Front), 3);
+        pLevel.setBlock(blockpos, pState.setValue(TWO_PART, TwoPart.Front), 3);
         pLevel.blockUpdated(pPos, Blocks.AIR);
         pState.updateNeighbourShapes(pLevel, pPos, 3);
 
     }
 
-    private static Direction getNeighbourDirection(TwoBlockPart pPart, Direction pDirection) {
-        return pPart == TwoBlockPart.Back ? pDirection : pDirection.getOpposite();
+    private static Direction getNeighbourDirection(TwoPart pPart, Direction pDirection) {
+        return pPart == TwoPart.Back ? pDirection : pDirection.getOpposite();
     }
 
     @Override
@@ -79,4 +77,14 @@ public abstract class TwoPartBlock extends HorizontalDirectionalBlock {
             return super.updateShape(pState, pFacing, pFacingState, pLevel, pPos, pNeighborPos);
         }
     }
+
+    public static DoubleBlockCombiner.BlockType getCombinedBlockType(BlockState state) {
+        return state.getValue(TwoPartBlock.TWO_PART) == TwoPart.Front ? DoubleBlockCombiner.BlockType.FIRST : DoubleBlockCombiner.BlockType.SECOND;
+    }
+
+    public static Direction getConnectedDirection(BlockState pState) {
+        Direction direction = pState.getValue(FACING);
+        return pState.getValue(TwoPartBlock.TWO_PART) == TwoPart.Front ? direction.getOpposite() : direction;
+    }
+
 }
