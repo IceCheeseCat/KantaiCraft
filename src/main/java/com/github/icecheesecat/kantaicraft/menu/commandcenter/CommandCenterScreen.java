@@ -169,7 +169,7 @@ public class CommandCenterScreen extends PageScreen<CommandCenterMenu> implement
                         flag = false;
                         break;
                     }
-                    EquipmentDisplayWidget widget = new EquipmentDisplayWidget(0,0, 32,30, EQUIPMENT_DISPLAY_BUTTON, toRender.get(i)) {
+                    EquipmentDisplayWidget widget = new EquipmentDisplayWidget(0,0, 32,30, EQUIPMENT_DISPLAY_BUTTON, toRender.get(index)) {
                         @Override
                         public EquipmentDetailPage createPage() {
                             return new EquipmentDetailPage(Component.translatable("equipment_detail_page"), leftPos + 16, topPos + 14, imageWidth - 32, imageHeight - 28, this.equipment);
