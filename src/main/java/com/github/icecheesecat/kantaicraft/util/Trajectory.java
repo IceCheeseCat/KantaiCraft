@@ -8,16 +8,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
+import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class Trajectory implements INBTSerializable<CompoundTag> {
@@ -31,19 +29,18 @@ public class Trajectory implements INBTSerializable<CompoundTag> {
     float projectileSize;
     float damage;
     boolean stopped = false;
-    @Nullable HitResult hitResult;
     public static final float SMALL_PROJECTILE_SIZE = 0.1f;
     public static final float MEDIUM_PROJECTILE_SIZE = 0.2f;
     public static final float BIG_PROJECTILE_SIZE = 0.3f;
     public static final int DESTROYER_TIME_AFTER_HIT = 100;
 
-    final @Nullable Predicate<Entity> entityPredicate;
+    final @NotNull Predicate<Entity> entityPredicate;
 
     private Trajectory() {
-        this.entityPredicate = null;
+        this.entityPredicate = (e) -> true;
     }
 
-    public Trajectory(int id, UUID gunner, Vec3 pos, Vec3 vel, Vec3 acc, float projectile_size, float damage, Predicate<Entity> entityPredicate) {
+    public Trajectory(int id, UUID gunner, Vec3 pos, Vec3 vel, Vec3 acc, float projectile_size, float damage, @NotNull Predicate<Entity> entityPredicate) {
         this.id = id;
         this.gunner = gunner;
         this.physics = new Physics(pos, vel, acc);
@@ -69,29 +66,34 @@ public class Trajectory implements INBTSerializable<CompoundTag> {
         return new Trajectory(this);
     }
 
-    public void tick(Level level) {
-        if (this.stopped) return;
-        // server side only !!!
-        if (!level.isClientSide && this.entityPredicate != null) {
-            this.hitResult = this.getHitResult(level);
-            if (this.hitResult != null && this.hitResult.getType() != HitResult.Type.MISS) {
-                this.physics.setNextPosition(this.hitResult.getLocation());
-                this.stopped = true;
-                if (this.hitResult instanceof EntityHitResult entityHitResult) {
-                    doHitTarget((ServerLevel) level);
-                }
-                // sync trajectory has hit to client
-                ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new ClientSetDestroyTrajectoryPacket(this.id, hitResult.getLocation().toVector3f(), MAX_ALIVE - alive));
-                this.setAlive(DESTROYER_TIME_AFTER_HIT);
-                return;
-            }
-        }
+    public void doHitCheck(Level level) {
+        if (isStopped()) return;
 
+        TrajectoryHitResult hitResult = this.getHitResult(level);
+        if (!hitResult.missed()) {
+            stopPhysicAfterHit(hitResult.getLocation());
+            this.stopped = true;
+            if (hitResult.type == HitResult.Type.ENTITY) {
+                doHitTarget((ServerLevel) level, hitResult.entity);
+            }
+            // sync trajectory has hit to client
+            ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new ClientSetDestroyTrajectoryPacket(this.id, hitResult.getLocation().toVector3f(), MAX_ALIVE - alive, this.physics));
+            this.setAlive(DESTROYER_TIME_AFTER_HIT);
+        }
+    }
+
+    public void stopPhysicAfterHit(Vec3 hitLocation) {
+        this.physics.setNextPosition(hitLocation);
+        this.physics.vel = Vec3.ZERO;
+        this.physics.acc = Vec3.ZERO;
+    }
+
+    public void tick() {
+        this.alive--;
+        if (this.isStopped()) return;
         this.physics.update();
         // update bounding box position
         this.boundingBox = this.boundingBox.move(this.physics.displacement());
-        this.alive--;
-//        this.print();
     }
 
 
@@ -100,42 +102,36 @@ public class Trajectory implements INBTSerializable<CompoundTag> {
     }
 
 
-    private HitResult getHitResult(Level pLevel) {
-        HitResult hitresult = pLevel.clip(new ClipContext(physics.prevPos, physics.pos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
-
-        HitResult hitresult1 = getEntityHitResult(pLevel);
-        if (hitresult1 != null) {
-            hitresult = hitresult1;
+    private TrajectoryHitResult getHitResult(Level pLevel) {
+        BlockHitResult blockHitResult = pLevel.clip(new ClipContext(physics.prevPos, physics.pos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
+        if (blockHitResult.getType() != HitResult.Type.MISS) {
+            return new TrajectoryHitResult(blockHitResult.getLocation(), blockHitResult.getBlockPos());
         }
 
-        return hitresult;
+        return getEntityHitResult(pLevel, boundingBox);
     }
 
-    @Nullable
-    private EntityHitResult getEntityHitResult(Level pLevel) {
+    @NotNull
+    private TrajectoryHitResult getEntityHitResult(Level pLevel, AABB trajectoryBox) {
 //        double d0 = Double.MAX_VALUE;
-        Entity entity = null;
-        if (this.entityPredicate == null) {
-            return null;
+
+        List<LivingEntity> entities = pLevel.getEntitiesOfClass(LivingEntity.class, trajectoryBox.inflate(5.0d), entityPredicate);
+        if (entities.isEmpty()) return TrajectoryHitResult.MISS;
+
+        List<Pair<Entity, Optional<Vec3>>> possibleHits = new ArrayList<>();
+        for (var le: entities) {
+            var optional = le.getBoundingBox().clip(physics.prevPos, physics.pos);
+            if (optional.isPresent()) {
+                possibleHits.add(new Pair<>(le, optional));
+            }
         }
-        List<LivingEntity> entities = pLevel.getEntitiesOfClass(LivingEntity.class, boundingBox, this.entityPredicate);
-        if (!entities.isEmpty()) {
-            entity = entities.get(0);
+
+        if (!possibleHits.isEmpty()) {
+            var closest = possibleHits.stream().min(Comparator.comparingDouble((a) -> a.getB().get().distanceTo(physics.prevPos)));
+            return new TrajectoryHitResult(closest.get().getB().get(), closest.get().getA());
         }
 
-        return entity == null ? null : new EntityHitResult(entity);
-    }
-
-    public boolean hasHitSomething() {
-        return this.hitResult != null && this.hitResult.getType() != HitResult.Type.MISS;
-    }
-
-    public boolean hasHitEntity() {
-        return this.hitResult != null && this.hitResult.getType() == HitResult.Type.ENTITY;
-    }
-
-    public boolean hasHitBlock() {
-        return this.hitResult != null && this.hitResult.getType() == HitResult.Type.BLOCK;
+        return TrajectoryHitResult.MISS;
     }
 
     public int getId() {
@@ -150,12 +146,20 @@ public class Trajectory implements INBTSerializable<CompoundTag> {
         return physics;
     }
 
+    public void setPhysics(Physics physics) {
+        this.physics = physics;
+    }
+
     public double getProjectileSize() {
         return this.projectileSize;
     }
 
     public AABB getBoundingBox() {
         return boundingBox;
+    }
+
+    public void setBoundingBox(AABB boundingBox) {
+        this.boundingBox = boundingBox;
     }
 
     public UUID getGunner() {
@@ -261,15 +265,12 @@ public class Trajectory implements INBTSerializable<CompoundTag> {
         return stopped;
     }
 
-    @Nullable
-    public HitResult getHitResult() {
-        return hitResult;
+    public void setStopped(boolean b) {
+        this.stopped = b;
     }
 
-    private void doHitTarget(ServerLevel serverLevel) {
-        if (!hasHitEntity()) return;
-        EntityHitResult entityHitResult = (EntityHitResult) hitResult;
-        Entity entity = entityHitResult.getEntity();
+
+    private void doHitTarget(ServerLevel serverLevel, Entity entity) {
         Entity gunnerEntity = serverLevel.getEntity(gunner);
         if (gunnerEntity == null) {
             entity.hurt(serverLevel.damageSources().mobAttack(null), damage);

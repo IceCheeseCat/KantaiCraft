@@ -22,7 +22,8 @@ public class ServerLevelTrajectory implements INBTSerializable<CompoundTag> {
 
     public void tick() {
         this.trajectories.forEach(trajectory -> {
-            trajectory.tick(this.level);
+            trajectory.doHitCheck(this.level);
+            trajectory.tick();
         });
         removeNonAliveTrajectory();
     }
