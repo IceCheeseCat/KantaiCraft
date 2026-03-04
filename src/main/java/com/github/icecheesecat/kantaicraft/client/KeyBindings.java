@@ -5,36 +5,29 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 public final class KeyBindings {
+    public static final KeyBindings INSTANCE = new KeyBindings();
+    private KeyBindings() {}
+    private static final String CATEGORY = "key.categories." + KantaiCraft.MODID;
 
-    public static final KeyMapping debugEntityRootRotation = new KeyMapping(
-            "key.debug_entity_root_rotation",
-            InputConstants.KEY_J,
-            "key.categories." + KantaiCraft.MODID
+    private static String createKeyName(String name) {
+        return "key." + KantaiCraft.MODID + "." + name;
+    }
+
+    public final KeyMapping debugEntity = new KeyMapping(
+            createKeyName("debug_entity"),
+            KeyConflictContext.IN_GAME,
+            InputConstants.getKey(InputConstants.KEY_B, -1),
+            CATEGORY
     );
 
-    @Mod.EventBusSubscriber(modid = KantaiCraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class Event {
 
-        @SubscribeEvent
-        public static void registerKeys(RegisterKeyMappingsEvent event) {
-            event.register(debugEntityRootRotation);
-        }
 
-    }
 
-    @Mod.EventBusSubscriber(modid = KantaiCraft.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
-    public static class ForgeEvent {
-
-        @SubscribeEvent
-        public static void registerKeys(TickEvent.ClientTickEvent event) {
-
-        }
-
-    }
 
 }

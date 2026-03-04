@@ -14,5 +14,8 @@
   "ship_screen_equipment_section": "Equipment",
   "ship_screen_inventory_section": "Inventory",
 
-  "creativetab.tab_0": "KantaiCraft"
+  "creativetab.tab_0": "KantaiCraft",
+
+  "key.categories.kantaicraft": "KantaiCraft",
+  "key.kantaicraft.debug_entity": "Debug Entity"
 }
