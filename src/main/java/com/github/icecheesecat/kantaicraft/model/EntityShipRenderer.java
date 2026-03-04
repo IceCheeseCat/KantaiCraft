@@ -7,11 +7,22 @@ import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.model.equipment.EquippableDetailSlots;
 import com.github.icecheesecat.kantaicraft.model.equipment.renderer.EquipmentRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import com.mojang.math.MatrixUtil;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.object.Color;
 import software.bernie.geckolib.model.GeoModel;
@@ -30,6 +41,8 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
 //    protected final ArmingDetailManager armingDetailManager;
     private EquippableDetailSlots equippableDetailSlots;
     private final Map<Integer, EquipmentRenderer> equipmentRenderersCache = new HashMap<>();
+
+    public static boolean debug = false;
 
     public EntityShipRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model, float scale, float shadowRadius, Color color) {
         super(renderManager, model);
@@ -54,6 +67,12 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         // render equipped weapon here
         this.renderBodyPartWeapon(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+        poseStack.scale(1.0f/this.scale, 1.0f/this.scale, 1.0f/this.scale);
+
+        if (debug) {
+            this.renderDebugConeSensor(entity, poseStack, bufferSource, partialTick);
+        }
+
         poseStack.popPose();
     }
 
@@ -149,6 +168,59 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
                 this.equipmentRenderersCache.put(i, renderer);
             }
         }
+    }
+
+    private static final int RED = FastColor.ARGB32.color(255, 255, 0, 0);
+    private static final int BLUE = FastColor.ARGB32.color(255, 0, 0, 255);
+
+
+    private void renderDebugConeSensor(T entity, PoseStack poseStack, @NotNull MultiBufferSource bufferSource, float partialTicks) {
+        int ray_count = 20;
+        double angle = 5.0d;
+//        Vec3 lookAngle = calculateViewVector(-entity.getXRot(), entity.yHeadRot);
+        Vec3 viewVector = entity.getViewVector(partialTicks);
+        Vec3 eyeStart = new Vec3(0, entity.getEyeHeight(), 0);
+        Vec3 eyeEnd = eyeStart.add(viewVector.multiply(10, 10, 10));
+        poseStack.pushPose();
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.debugLineStrip(5.0d));
+
+        Matrix4f matrix4f = poseStack.last().pose();
+        Matrix3f matrix3f = poseStack.last().normal();
+        float f3 = (float) FastColor.ARGB32.alpha(RED) / 255.0F;
+        float f = (float) FastColor.ARGB32.red(RED) / 255.0F;
+        float f1 = (float) FastColor.ARGB32.green(RED) / 255.0F;
+        float f2 = (float) FastColor.ARGB32.blue(RED) / 255.0F;
+        float f7 = (float) FastColor.ARGB32.alpha(BLUE) / 255.0F;
+        float f4 = (float) FastColor.ARGB32.red(BLUE) / 255.0F;
+        float f5 = (float) FastColor.ARGB32.green(BLUE) / 255.0F;
+        float f6 = (float) FastColor.ARGB32.blue(BLUE) / 255.0F;
+
+        vertexConsumer.vertex(matrix4f, (float) eyeStart.x, (float) eyeStart.y, (float) eyeStart.z).color(f, f1, f2, f3).endVertex();
+        vertexConsumer.vertex(matrix4f, (float) eyeEnd.x, (float) eyeEnd.y, (float) eyeEnd.z).color(f, f1, f2, f3).endVertex();
+
+
+        for (int i = 0; i < ray_count; i++) {
+            float deg = 360.0f/ray_count * i;
+
+            Vec3 A = viewVector.cross(new Vec3(0,1,0));
+            var q = Axis.of(A.toVector3f()).rotationDegrees(5.0f);
+            var iq = q.invert(new Quaternionf());
+            q.mul((float) viewVector.x, (float) viewVector.y, (float) viewVector.z, 0).mul(iq);
+            Vec3 lifted = new Vec3(q.x, q.y, q.z);
+
+            var q2 = Axis.of(viewVector.toVector3f()).rotationDegrees(deg);
+            var iq2 = q2.invert(new Quaternionf());
+            q2.mul((float) lifted.x, (float) lifted.y, (float) lifted.z, 0).mul(iq2);
+            Vec3 rotated = new Vec3(q2.x, q2.y, q2.z);
+
+            Vec3 rotated_end = eyeStart.add(rotated.multiply(10, 10, 10));
+            vertexConsumer.vertex(matrix4f, (float) eyeStart.x, (float) eyeStart.y, (float) eyeStart.z).color(f4, f5, f6, f7).endVertex();
+            vertexConsumer.vertex(matrix4f, (float) rotated_end.x, (float) rotated_end.y, (float) rotated_end.z).color(f4, f5, f6, f7).endVertex();
+        }
+
+
+
+        poseStack.popPose();
     }
 
 }
