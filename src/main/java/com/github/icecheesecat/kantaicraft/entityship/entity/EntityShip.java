@@ -1,21 +1,28 @@
 package com.github.icecheesecat.kantaicraft.entityship.entity;
 
 import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
-import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.animation.BlinkAnimationControl;
 import com.github.icecheesecat.kantaicraft.entityship.stance.Stance;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
+import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
 import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentHandlerPacket;
-import com.github.icecheesecat.kantaicraft.registries.*;
+import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
+import com.github.icecheesecat.kantaicraft.registries.ModEntityDataSerializer;
+import com.github.icecheesecat.kantaicraft.registries.ModItem;
+import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.google.common.collect.ImmutableList;
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -23,12 +30,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Unit;
-import net.minecraft.world.*;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -861,6 +873,58 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     private boolean isWalkingOrRunning() {
         return this.walkAnimation.isMoving() && this.walkAnimation.speed() > 0.05f;
+    }
+
+    @Override
+    protected void sendDebugPackets() {
+        if (this.level().isClientSide) return;
+
+        FriendlyByteBuf friendlybytebuf = new FriendlyByteBuf(Unpooled.buffer());
+        friendlybytebuf.writeDouble(this.position().x);
+        friendlybytebuf.writeDouble(this.position().y);
+        friendlybytebuf.writeDouble(this.position().z);
+        friendlybytebuf.writeUUID(this.uuid);
+        friendlybytebuf.writeInt(this.getId());
+        friendlybytebuf.writeUtf(this.getName().getString());
+        friendlybytebuf.writeUtf("no profession");
+        friendlybytebuf.writeInt(0);
+        friendlybytebuf.writeFloat(this.getHealth());
+        friendlybytebuf.writeFloat(this.getMaxHealth());
+        friendlybytebuf.writeUtf(this.inventory.toString());
+        friendlybytebuf.writeBoolean(false); // path
+        friendlybytebuf.writeBoolean(false);
+        friendlybytebuf.writeInt(0);
+
+        var activities = this.getBrain().getActiveActivities();
+        friendlybytebuf.writeVarInt(activities.size());
+        for (var act: activities) {
+            friendlybytebuf.writeUtf(act.getName());
+        }
+
+        var behaviors = this.getBrain().getRunningBehaviors();
+        friendlybytebuf.writeVarInt(behaviors.size());
+        for (var be: behaviors) {
+            friendlybytebuf.writeUtf(be.debugString());
+        }
+
+        var memories = this.getBrain().getMemories().entrySet();
+        var filtered_memories = memories.stream().filter((entry) -> entry.getValue().isPresent()).toList();
+        friendlybytebuf.writeVarInt(filtered_memories.size());
+        for (var mem: filtered_memories) {
+            friendlybytebuf.writeUtf(mem.getKey().toString() + " -> " + mem.getValue().get().toString());
+        }
+
+        friendlybytebuf.writeInt(0); // pois
+        friendlybytebuf.writeInt(0); // potential pois
+        friendlybytebuf.writeInt(0); // gossip
+
+        Packet<?> packet = new ClientboundCustomPayloadPacket(ClientboundCustomPayloadPacket.DEBUG_BRAIN, friendlybytebuf);
+
+        for(Player player : this.level().players()) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.connection.send(packet);
+            }
+        }
     }
 
 }
