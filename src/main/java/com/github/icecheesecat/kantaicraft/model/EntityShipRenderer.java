@@ -10,8 +10,6 @@ import com.github.icecheesecat.kantaicraft.util.AxisRotation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.mojang.math.MatrixUtil;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -22,8 +20,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.object.Color;
 import software.bernie.geckolib.model.GeoModel;
@@ -76,6 +72,7 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
 
         poseStack.popPose();
     }
+
 
     @Override
     public Color getRenderColor(T animatable, float partialTick, int packedLight) {
