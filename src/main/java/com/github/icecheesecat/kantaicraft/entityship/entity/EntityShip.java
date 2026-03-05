@@ -426,16 +426,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         return this.equipmentHandler.hasRangeAttackWeapon() && hasEnoughAmmo();
     }
 
-    public double getAttributeValue(Attribute attribute) {
-        if (this.getAttributes().hasAttribute(attribute)) {
-            return this.getAttributes().getValue(attribute);
-        }
-        else {
-//            throw new IllegalStateException(String.format("No attribute %s at %s.", attribute.getDescriptionId(), this.getClass().getCanonicalName()));
-            return Double.NEGATIVE_INFINITY;
-        }
-    }
-
     @Override
     public boolean canStandOnFluid(FluidState fluidState) {
         return fluidState.is(FluidTags.WATER);
