@@ -22,6 +22,7 @@ public class ModSensor {
     public static final RegistryObject<SensorType<ShipEquipmentSensor>> SHIP_EQUIPMENT_SENSOR = SENSOR_TYPES.register("sensor_type.ship_equipment_sensor", () -> new SensorType<>(ShipEquipmentSensor::new));
     public static final RegistryObject<SensorType<AttackTargetVisibilitySensor>> ATTACK_TARGET_VISIBILITY_SENSOR = SENSOR_TYPES.register("sensor_type.attack_target_visibility_sensor", () -> new SensorType<>(AttackTargetVisibilitySensor::new));
     public static final RegistryObject<SensorType<MobDropsSensor>> MOB_DROPS_SENSOR = SENSOR_TYPES.register("sensor_type.mob_drops_sensor", () -> new SensorType<>(MobDropsSensor::new));
+    public static final RegistryObject<SensorType<LookTowardsTargetSensor>> LOOK_TOWARDS_TARGET_SENSOR = SENSOR_TYPES.register("sensor_type.look_towards_target_sensor", () -> new SensorType<>(LookTowardsTargetSensor::new));
 
     public static boolean playerShipTargeting(Entity entity) {
         return entity instanceof Enemy || (entity instanceof EntityShip entityShip && entityShip.isHostileSide());

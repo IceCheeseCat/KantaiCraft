@@ -27,7 +27,8 @@ public class CannonShipBrain {
                 ModSensor.SHIP_EQUIPMENT_SENSOR.get(),
                 ModSensor.PLAYER_SHIP_TARGETING_SENSOR.get(),
                 ModSensor.ATTACK_TARGET_VISIBILITY_SENSOR.get(),
-                ModSensor.MOB_DROPS_SENSOR.get());
+                ModSensor.MOB_DROPS_SENSOR.get(),
+                ModSensor.LOOK_TOWARDS_TARGET_SENSOR.get());
         MEMORY_TYPES = List.of(
                 ModMemoryModuleType.IS_PLAYER_SHIP.get(),
                 ModMemoryModuleType.OWNERSHIP.get(),
@@ -49,7 +50,8 @@ public class CannonShipBrain {
                 ModMemoryModuleType.KILLED_ENTITY_DROPS.get(),
                 ModMemoryModuleType.CANT_SEE_TARGET_SINCE.get(),
                 ModMemoryModuleType.LAST_SAW_TARGET_POS.get(),
-                MemoryModuleType.GAZE_COOLDOWN_TICKS);
+                MemoryModuleType.GAZE_COOLDOWN_TICKS,
+                ModMemoryModuleType.ATTACK_TARGET_IN_SIGHT.get());
     }
 
     public static Brain<CannonEntityShip> makeBrain(CannonEntityShip cannonShip, Dynamic<?> dyn) {

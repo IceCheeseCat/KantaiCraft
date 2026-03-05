@@ -36,7 +36,6 @@ public class BrainActivities {
                         Pair.of(0, new ShipAttackTargetRemovedIfInvalid()),
                         Pair.of(0, new ReloadEquipmentActions(true)),
                         Pair.of(1, new MoveToTargetSink()),
-                        Pair.of(2, new PickUpKilledMobDrops()),
                         Pair.of(3, new LookAtTargetSink(45, 90))
                 ));
     }
@@ -52,13 +51,11 @@ public class BrainActivities {
 
     public static void initFightActivity(CannonEntityShip cannonShip, Brain<CannonEntityShip> brain) {
         brain.addActivityAndRemoveMemoriesWhenStopped(Activity.FIGHT, ImmutableList.of(
-                Pair.of(4, new CannonAttackBehavior()),
-                Pair.of(4, new ShipMeleeAttack(20)),
-                Pair.of(1, new ShipMeleeWalkToAttackTarget(1)),
-                Pair.of(1, new ShipRangeWalkToAttackTarget(1)),
-                Pair.of(0, SetEntityLookTarget.create(livingEntity -> cannonShip.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).filter(
-                        attack_target -> attack_target.is(livingEntity)
-                ).isPresent(), (float) cannonShip.getAttributeValue(ModAttribute.LOS.get())))
+                Pair.of(0, CannonShipBehaviours.setLookTargetToAttackTarget(cannonShip)),
+                Pair.of(1, new ShipMeleeWalkToAttackTarget(0)),
+                Pair.of(2, new ShipMeleeAttack(20)),
+                Pair.of(3, new ShipRangeWalkToAttackTarget(1)),
+                Pair.of(4, new CannonAttackBehavior())
         ), ImmutableSet.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT)), ImmutableSet.of());
     }
     
@@ -68,13 +65,14 @@ public class BrainActivities {
                     ImmutableList.of(
                             Pair.of(1, new OwnerHurtTarget()),
                             Pair.of(2, new GuardModeAttackTargeting()),
+                            Pair.of(3, new PickUpKilledMobDrops()),
                             Pair.of(5, new FollowOwner(entityShip.getFollowOwnerDistance(), entityShip.getFollowTooCloseDistance())),
-                            Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60))),
                             Pair.of(8, new RunOne<>(ImmutableList.of(
                                     Pair.of(BehaviorBuilder.triggerIf(livingEntity -> !livingEntity.isSitDown() && livingEntity.canWonderAround() ,RandomStroll.stroll(entityShip.getNormalSpeedModifier())), 2),
-                                    Pair.of(BehaviorBuilder.triggerIf(livingEntity -> !livingEntity.isSitDown() & livingEntity.canWonderAround(),SetWalkTargetFromLookTarget.create(entityShip.getNormalSpeedModifier(), 3)), 2),
+                                    Pair.of(BehaviorBuilder.triggerIf(livingEntity -> !livingEntity.isSitDown() & livingEntity.canWonderAround(),   SetWalkTargetFromLookTarget.create(entityShip.getNormalSpeedModifier(), 3)), 2),
                                     Pair.of(new RandomLookAround(UniformInt.of(150, 200), 30.0F, 0.0F, 15.0F), 2),
-                                    Pair.of(new DoNothing(30, 60), 1))))
+                                    Pair.of(new DoNothing(30, 60), 1)))),
+                            Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60)))
                     ),
                     ImmutableSet.of(Pair.of(ModMemoryModuleType.OUT_OF_FUEL.get(), MemoryStatus.VALUE_ABSENT))
             );

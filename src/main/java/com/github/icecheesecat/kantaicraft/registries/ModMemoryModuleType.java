@@ -35,5 +35,6 @@ public class ModMemoryModuleType {
     public static final RegistryObject<MemoryModuleType<Unit>> IS_PLAYER_SHIP = MEMORY_MODULE_TYPES.register("is_player_ship", () -> new MemoryModuleType<>(Optional.of(Codec.unit(Unit.INSTANCE))));
     public static final RegistryObject<MemoryModuleType<BlockPos>> LAST_SAW_TARGET_POS = MEMORY_MODULE_TYPES.register("last_saw_target_pos", () -> new MemoryModuleType<>(Optional.of(BlockPos.CODEC)));
     public static final RegistryObject<MemoryModuleType<Long>> CANT_SEE_TARGET_SINCE = MEMORY_MODULE_TYPES.register("cant_see_target_since", () -> new MemoryModuleType<>(Optional.empty()));
+    public static final RegistryObject<MemoryModuleType<Unit>> ATTACK_TARGET_IN_SIGHT = MEMORY_MODULE_TYPES.register("got_target_in_sight", () -> new MemoryModuleType<>(Optional.empty()));
 
 }
