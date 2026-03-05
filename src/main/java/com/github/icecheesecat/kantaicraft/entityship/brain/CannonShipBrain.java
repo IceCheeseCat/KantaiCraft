@@ -15,8 +15,8 @@ import java.util.*;
 
 public class CannonShipBrain {
 
-    private static final List<SensorType<? extends Sensor<? super CannonEntityShip>>> SENSOR_TYPES;
-    private static final List<MemoryModuleType<?>> MEMORY_TYPES;
+    public static final List<SensorType<? extends Sensor<? super CannonEntityShip>>> SENSOR_TYPES;
+    public static final List<MemoryModuleType<?>> MEMORY_TYPES;
 
     static {
         SENSOR_TYPES = List.of(
