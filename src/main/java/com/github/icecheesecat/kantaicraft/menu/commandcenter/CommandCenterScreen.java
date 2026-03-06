@@ -1,8 +1,8 @@
 package com.github.icecheesecat.kantaicraft.menu.commandcenter;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.capability.ClientPlayerKantaiDataCacheCapability;
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
+import com.github.icecheesecat.kantaicraft.capability.kantaidata.ClientPlayerKantaiDataCacheCapability;
+import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.menu.ClientPlayerKantaiDataRefresh;
@@ -40,10 +40,10 @@ public class CommandCenterScreen extends PageScreen<CommandCenterMenu> implement
     private static final ResourceLocation EQUIPMENT_PAGE = new ResourceLocation(KantaiCraft.MODID, "textures/gui/command_center/equipment_page.png");
     private static final ResourceLocation EQUIPMENT_DISPLAY_BUTTON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/command_center/equipment_display_button.png");
     private static final ResourceLocation EQUIPMENT_DISPLAY_HOVERED = new ResourceLocation(KantaiCraft.MODID, "textures/gui/command_center/equipment_display_button.png");
-    protected FlipPageCounter shipPageCounter = new FlipPageCounter(shipPageSize);
-    protected FlipPageCounter equipmentPageCounter = new FlipPageCounter(equipmentPageSize);
     private static final int shipPageSize = 4;
     private static final int equipmentPageSize = 28;
+    protected FlipPageCounter shipPageCounter = new FlipPageCounter(shipPageSize);
+    protected FlipPageCounter equipmentPageCounter = new FlipPageCounter(equipmentPageSize);
 
     public CommandCenterScreen(CommandCenterMenu pMenu, Inventory pPlayerInventory, Component title) {
         super(pMenu, pPlayerInventory, title);
@@ -51,6 +51,18 @@ public class CommandCenterScreen extends PageScreen<CommandCenterMenu> implement
         this.imageHeight = 149;
         this.addPage(this::createShipPage);
         this.addPage(this::createEquipmentPage);
+    }
+
+    public static List<Component> getShipPreviewContent(EntityShip entityShip) {
+
+        return List.of(Component.translatable(entityShip.getName().getString()), Component.literal(String.valueOf(entityShip.getShipLevel())));
+
+    }
+
+    private static void sendSummonPacketToServer(UUID summonUUID, BlockPos blockPos) {
+        Minecraft.getInstance().player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData -> {
+            ModPacketHandler.INSTANCE.sendToServer(new CommandCenterRequestSummonPacket(summonUUID, blockPos));
+        });
     }
 
     @Override
@@ -246,20 +258,6 @@ public class CommandCenterScreen extends PageScreen<CommandCenterMenu> implement
                 jumpToPage(0);
             }
         };
-    }
-
-
-
-    public static List<Component> getShipPreviewContent(EntityShip entityShip) {
-
-        return List.of(Component.translatable(entityShip.getName().getString()), Component.literal(String.valueOf(entityShip.getShipLevel())));
-
-    }
-
-    private static void sendSummonPacketToServer(UUID summonUUID, BlockPos blockPos) {
-        Minecraft.getInstance().player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData -> {
-            ModPacketHandler.INSTANCE.sendToServer(new CommandCenterRequestSummonPacket(summonUUID, blockPos));
-        });
     }
 
 }
