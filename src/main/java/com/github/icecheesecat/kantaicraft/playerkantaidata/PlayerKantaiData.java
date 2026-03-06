@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.playerkantaidata;
 
-import com.github.icecheesecat.kantaicraft.capability.SerializedEntityShip;
+import com.github.icecheesecat.kantaicraft.capability.kantaidata.SerializedEntityShip;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
@@ -14,13 +14,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 
-    private Player player;
     protected final List<SerializedEntityShip> ships = new ArrayList<>();
     protected final List<Equipment> equipments = new ArrayList<>();
+    private Player player;
 
     public PlayerKantaiData(Player player) {
         this.player = player;

@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.network.packet.trajectory;
 
-import com.github.icecheesecat.kantaicraft.capability.ClientLevelTrajectoryCapability;
+import com.github.icecheesecat.kantaicraft.capability.trajectory.ClientLevelTrajectoryCapability;
 import com.github.icecheesecat.kantaicraft.util.Trajectory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -17,10 +17,6 @@ public class TrajectoryPacket {
 
     public TrajectoryPacket(Trajectory t) {
         this.trajectory = t;
-    }
-
-    public Trajectory get() {
-        return this.trajectory;
     }
 
     public static TrajectoryPacket decode(FriendlyByteBuf buf) {
@@ -49,6 +45,10 @@ public class TrajectoryPacket {
         });
         ctx.get().setPacketHandled(true);
 
+    }
+
+    public Trajectory get() {
+        return this.trajectory;
     }
 
 //    @Mod.EventBusSubscriber(modid = KantaiCraft.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)

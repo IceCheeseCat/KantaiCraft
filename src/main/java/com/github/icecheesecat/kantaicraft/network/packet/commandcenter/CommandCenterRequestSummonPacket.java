@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.network.packet.commandcenter;
 
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
+import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

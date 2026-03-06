@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.capability;
+package com.github.icecheesecat.kantaicraft.capability.trajectory;
 
 import com.github.icecheesecat.kantaicraft.util.Trajectory;
 import net.minecraft.client.multiplayer.ClientLevel;

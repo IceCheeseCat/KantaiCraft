@@ -1,6 +1,11 @@
-package com.github.icecheesecat.kantaicraft.capability;
+package com.github.icecheesecat.kantaicraft.event;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.capability.indicateditementities.IndicatedItemEntitiesCapability;
+import com.github.icecheesecat.kantaicraft.capability.kantaidata.ClientPlayerKantaiDataCacheCapability;
+import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
+import com.github.icecheesecat.kantaicraft.capability.trajectory.ClientLevelTrajectoryCapability;
+import com.github.icecheesecat.kantaicraft.capability.trajectory.ServerLevelTrajectoryCapability;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
@@ -20,12 +25,6 @@ public class CapabilitiesEvent {
 
     @SubscribeEvent
     public static void onEntityAttachingCapability(AttachCapabilitiesEvent<Entity> event) {
-//        if (event.getObject() instanceof EntityShip ship) {
-//            if (!ship.getCapability(EquipmentHandlerCapability.TOKEN).isPresent()) {
-//                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.equipment_handler"), new EquipmentHandlerCapability(4));
-//            }
-//        }
-
         if (event.getObject() instanceof Player player) {
             if (player instanceof ServerPlayer serverPlayer) {
                 if (!serverPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
@@ -45,35 +44,29 @@ public class CapabilitiesEvent {
     @SubscribeEvent
     public static void onLevelAttachingCapability(AttachCapabilitiesEvent<Level> event) {
         Level level = event.getObject();
+        // server
         if (level instanceof ServerLevel serverLevel) {
             if (!level.getCapability(ServerLevelTrajectoryCapability.TOKEN).isPresent()) {
-                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "server_level_trajectories"), new ServerLevelTrajectoryCapability(serverLevel));
+                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "server_level_trajectories_capability"), new ServerLevelTrajectoryCapability(serverLevel));
             }
         }
+        // client
         if (level instanceof ClientLevel clientLevel) {
             if (!level.getCapability(ClientLevelTrajectoryCapability.TOKEN).isPresent()) {
-                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "client_level_trajectories"), new ClientLevelTrajectoryCapability(clientLevel));
+                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "client_level_trajectories_capability"), new ClientLevelTrajectoryCapability(clientLevel));
+            }
+            if (!level.getCapability(IndicatedItemEntitiesCapability.TOKEN).isPresent()) {
+                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "indicated_item_entities_capability"), new IndicatedItemEntitiesCapability());
             }
         }
     }
 
     @SubscribeEvent
     public static void onBlockEntityAttach(AttachCapabilitiesEvent<BlockEntity> event) {
-//        if (event.getObject() instanceof ShipyardBlockEntity shipyardBlockEntity) {
-//            if (!shipyardBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).isPresent()) {
-//                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.ship_blueprint_stack_handler"), new ShipBlueprintStackHandlerCapability(shipyardBlockEntity.processShipSize));
-//            }
-//        }
     }
 
     @SubscribeEvent
     public static void onItemStackAttach(AttachCapabilitiesEvent<ItemStack> event) {
-//        ItemStack itemStack = event.getObject();
-//        if (itemStack.is(ModItem.SHIP_BLUEPRINT.get())) {
-//            if (!itemStack.getCapability(BlueprintCapability.TOKEN).isPresent()) {
-//                event.addCapability(new ResourceLocation(KantaiCraft.MODID, "blueprint"), new BlueprintCapability());
-//            }
-//        }
     }
 
 }

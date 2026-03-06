@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.capability;
+package com.github.icecheesecat.kantaicraft.capability.equipment;
 
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import net.minecraft.core.Direction;
@@ -12,9 +12,9 @@ import org.jetbrains.annotations.Nullable;
 public class EquipmentHandlerCapability implements ICapabilitySerializable<CompoundTag> {
 
     public static final Capability<EquipmentHandler> TOKEN = CapabilityManager.get(new CapabilityToken<>(){});
+    private final int slotSize;
     private EquipmentHandler equipmentHandler = null;
     private final LazyOptional<EquipmentHandler> lazyEquipmentHandler = LazyOptional.of(this::getEquipmentHandler);
-    private final int slotSize;
 
     public EquipmentHandlerCapability(int slotSize) {
         this.slotSize = slotSize;

@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.tickable.attack;
 
-import com.github.icecheesecat.kantaicraft.capability.ServerLevelTrajectoryCapability;
+import com.github.icecheesecat.kantaicraft.capability.trajectory.ServerLevelTrajectoryCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentStatType;
@@ -17,6 +17,11 @@ public class CannonAttack extends ShipRangeAttack {
     public CannonAttack(EntityShip entityShip, Equipment cannon) {
         super(entityShip, ((int) cannon.getStat(EquipmentStatType.CANNON_COOLDOWN)));
         this.cannon = cannon;
+    }
+
+    // TODO damage calculation
+    public static float calculateDamage(Equipment equipment, EntityShip entityShip) {
+        return (float) (entityShip.getAttributeValue(ModAttribute.FIREPOWER.get()) + equipment.getStat(EquipmentStatType.FIREPOWER));
     }
 
     public void checkAndPerformCannon(LivingEntity target) {
@@ -37,11 +42,6 @@ public class CannonAttack extends ShipRangeAttack {
 
             }
         }
-    }
-
-    // TODO damage calculation
-    public static float calculateDamage(Equipment equipment, EntityShip entityShip) {
-        return (float) (entityShip.getAttributeValue(ModAttribute.FIREPOWER.get()) + equipment.getStat(EquipmentStatType.FIREPOWER));
     }
 
 //    protected void tickTrajectories() {
@@ -69,7 +69,6 @@ public class CannonAttack extends ShipRangeAttack {
 //
 //        trajectories.removeAll(invalids);
 //    }
-
 
     @Override
     public void tick() {

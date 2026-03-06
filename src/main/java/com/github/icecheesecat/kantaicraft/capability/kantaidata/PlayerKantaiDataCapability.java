@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.capability;
+package com.github.icecheesecat.kantaicraft.capability.kantaidata;
 
 import com.github.icecheesecat.kantaicraft.playerkantaidata.PlayerKantaiData;
 import net.minecraft.core.Direction;
@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 public class PlayerKantaiDataCapability implements ICapabilitySerializable<CompoundTag> {
 
     public static final Capability<PlayerKantaiData> TOKEN = CapabilityManager.get(new CapabilityToken<>(){});
-    private PlayerKantaiData playerKantaiData;
     final Player player;
+    private PlayerKantaiData playerKantaiData;
     LazyOptional<PlayerKantaiData> lazyPlayerKantaiData = LazyOptional.of(this::getPlayerKantaiData);
 
     public PlayerKantaiDataCapability(Player player) {

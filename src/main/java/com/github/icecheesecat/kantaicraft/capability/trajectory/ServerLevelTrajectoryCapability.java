@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.capability;
+package com.github.icecheesecat.kantaicraft.capability.trajectory;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -12,9 +12,9 @@ import org.jetbrains.annotations.Nullable;
 public class ServerLevelTrajectoryCapability implements ICapabilitySerializable<CompoundTag> {
 
     public static final Capability<ServerLevelTrajectory> TOKEN = CapabilityManager.get(new CapabilityToken<>(){});
+    Level level;
     private ServerLevelTrajectory serverLevelTrajectory = null;
     private final LazyOptional<ServerLevelTrajectory> levelTrajectoryLazyOptional = LazyOptional.of(this::getLevelTrajectory);
-    Level level;
 
     public ServerLevelTrajectoryCapability(Level level) {
         this.level = level;

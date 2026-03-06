@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.network.packet.equipment;
 
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
+import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.handler.ArmedEquipment;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;

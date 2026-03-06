@@ -1,13 +1,12 @@
 package com.github.icecheesecat.kantaicraft.network.packet.trajectory;
 
-import com.github.icecheesecat.kantaicraft.capability.ClientLevelTrajectory;
-import com.github.icecheesecat.kantaicraft.capability.ClientLevelTrajectoryCapability;
+import com.github.icecheesecat.kantaicraft.capability.trajectory.ClientLevelTrajectory;
+import com.github.icecheesecat.kantaicraft.capability.trajectory.ClientLevelTrajectoryCapability;
 import com.github.icecheesecat.kantaicraft.util.Physics;
 import com.github.icecheesecat.kantaicraft.util.Trajectory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
