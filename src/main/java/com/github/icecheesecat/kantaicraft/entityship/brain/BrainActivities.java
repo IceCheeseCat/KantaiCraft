@@ -18,7 +18,9 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.schedule.Activity;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 public class BrainActivities {
 
@@ -33,9 +35,10 @@ public class BrainActivities {
         brain.addActivity(Activity.CORE,
                 ImmutableList.of(
                         Pair.of(0, new CountDownCooldownTicks(MemoryModuleType.GAZE_COOLDOWN_TICKS)),
+                        Pair.of(0, new CountDownCooldownTicks(ModMemoryModuleType.PICK_UP_COOLDOWN.get())),
                         Pair.of(0, new ShipAttackTargetRemovedIfInvalid()),
                         Pair.of(0, new ReloadEquipmentActions(true)),
-                        Pair.of(1, new MoveToTargetSink()),
+                        Pair.of(0, new MoveToTargetSink()),
                         Pair.of(3, new LookAtTargetSink(45, 90))
                 ));
     }
@@ -65,7 +68,7 @@ public class BrainActivities {
                     ImmutableList.of(
                             Pair.of(1, new OwnerHurtTarget()),
                             Pair.of(2, new GuardModeAttackTargeting()),
-                            Pair.of(3, new PickUpKilledMobDrops()),
+                            Pair.of(3, new PickUpItem()),
                             Pair.of(5, new FollowOwner(entityShip.getFollowOwnerDistance(), entityShip.getFollowTooCloseDistance())),
                             Pair.of(8, new RunOne<>(ImmutableList.of(
                                     Pair.of(BehaviorBuilder.triggerIf(livingEntity -> !livingEntity.isSitDown() && livingEntity.canWonderAround() ,RandomStroll.stroll(entityShip.getNormalSpeedModifier())), 2),
