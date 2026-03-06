@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entityship.entity;
 
 import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
+import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.animation.BlinkAnimationControl;
 import com.github.icecheesecat.kantaicraft.entityship.stance.Stance;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
@@ -10,7 +10,7 @@ import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
 import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentHandlerPacket;
-import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
+import com.github.icecheesecat.kantaicraft.registries.ModActivity;
 import com.github.icecheesecat.kantaicraft.registries.ModEntityDataSerializer;
 import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
@@ -81,26 +81,47 @@ import java.util.UUID;
 public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEntity, MenuProvider, GeoEntity, Stance {
 
     public static final EntityDataAccessor<Integer> DATA_AIRCRAFT = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Float> DATA_FUEL = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Float> DATA_AMMO = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
-    public static final EntityDataAccessor<Boolean> DATA_FORCE_MELEE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<ShipAnimationState> DATA_ANIMATION_STATE = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.ANIMATION_STATE_SERIALIZER.get());
+    public static final EntityDataAccessor<Integer> DATA_FOLLOW_DISTANCE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Boolean> DATA_FORCE_MELEE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Float> DATA_FUEL = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
+    public static final EntityDataAccessor<Boolean> DATA_IS_GUARDING = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
 //    public static final EntityDataAccessor<EmotionState> DATA_EMOTION_STATE = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.EMOTION_STATE_SERIALIZER.get());
     public static final EntityDataAccessor<ShipLeveling> DATA_SHIP_LEVEL = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.SHIP_LEVEL_SERIALIZER.get());
-    public static final EntityDataAccessor<Float> DATA_SPEED_MODIFIER = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
-    public static final EntityDataAccessor<Boolean> DATA_IS_GUARDING = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Optional<UUID>> DATA_SHIP_OWNER = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.OPTIONAL_UUID);
     public static final EntityDataAccessor<Boolean> DATA_SIT_DOWN = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Float> DATA_SPEED_MODIFIER = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Boolean> DATA_WONDER_AROUND = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
-
-    public static final EntityDataAccessor<Integer> DATA_FOLLOW_DISTANCE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
-
-    private ShipAnimationState prevAnimationShipAnimationState;
+    protected static final RawAnimation WALKING_ANIMATION = RawAnimation.begin().thenLoop("walk");
+//    protected static final RawAnimation RUNNING_ANIMATION = RawAnimation.begin().thenLoop("run");
+    protected static final RawAnimation BLINK_ANIMATION = RawAnimation.begin().thenPlay("blink");
+//    protected static final RawAnimation NORMAL_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.normal");
+//    protected static final RawAnimation SHOCK_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.shock");
+//    protected static final RawAnimation SAD_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.sad");
+//    protected static final RawAnimation SERIOUS_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.serious");
+//    protected static final RawAnimation HAPPY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.happy");
+//    protected static final RawAnimation ANGRY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.angry");
+    protected static final RawAnimation BREATH_ANIMATION = RawAnimation.begin().thenLoop("breath");
+    protected static final RawAnimation DUCK_POSE_ANIMATION = RawAnimation.begin().thenPlayAndHold("duck_pose");
     protected final List<EquipmentClass> equippableTypes;
     private final BlinkAnimationControl blinkAnimationControl = new BlinkAnimationControl(60, 80, this.random);
-    private long lastEmotionChangedTick = -1;
     private final ShipClass shipClass;
     private final EquippableSlots equippableSlots;
+    /**
+     * {@link GeckoLib}
+     */
+
+    private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
+    SimpleContainer inventory = this.createShipInventory();
+    LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> new InvWrapper(inventory));
+    /**
+     * {@link EquipmentHandler}
+     */
+    EquipmentHandler equipmentHandler = new EquipmentHandler(4);
+    LazyOptional<EquipmentHandler> equipmentHandlerLazyOptional = LazyOptional.of(() -> equipmentHandler);
+    private ShipAnimationState prevAnimationShipAnimationState;
+    private long lastEmotionChangedTick = -1;
 
     public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentClass> equippableTypes) {
         super(entityType, level);
@@ -142,18 +163,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.getAttributes().assignValues(attributeMap);
     }
 
-    public void setAircraft(int value) {
-        this.entityData.set(DATA_AIRCRAFT, value);
-    }
-
-    public void setFuel(float value) {
-        this.entityData.set(DATA_FUEL, value);
-    }
-
-    public void setAmmo(float value) {
-        this.entityData.set(DATA_AMMO, value);
-    }
-
     public void useAmmo() {
         this.setAmmo(this.getAmmo() - this.getAmmoCost());
     }
@@ -168,12 +177,24 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         return this.entityData.get(DATA_AIRCRAFT);
     }
 
+    public void setAircraft(int value) {
+        this.entityData.set(DATA_AIRCRAFT, value);
+    }
+
     public float getFuel() {
         return this.entityData.get(DATA_FUEL);
     }
 
+    public void setFuel(float value) {
+        this.entityData.set(DATA_FUEL, value);
+    }
+
     public float getAmmo() {
         return this.entityData.get(DATA_AMMO);
+    }
+
+    public void setAmmo(float value) {
+        this.entityData.set(DATA_AMMO, value);
     }
 
     public boolean hasAircraft() {
@@ -204,12 +225,12 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         return this.entityData.get(DATA_FOLLOW_DISTANCE);
     }
 
-    public int getFollowTooCloseDistance() {
-        return 3;
-    }
-
     public void setFollowOwnerDistance(int num) {
         this.entityData.set(DATA_FOLLOW_DISTANCE, num);
+    }
+
+    public int getFollowTooCloseDistance() {
+        return 3;
     }
 
     public void toggleWonderAround() {
@@ -434,6 +455,34 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.entityData.set(DATA_FORCE_MELEE, canMelee);
     }
 
+
+//    public void setEmotionState(EmotionState emotionState, long lastEmotionChangedTick) {
+//        if (!emotionState.isConsistent()) {
+//            this.lastEmotionChangedTick = lastEmotionChangedTick;
+//        }
+//        this.entityData.set(DATA_EMOTION_STATE, emotionState);
+//    }
+//
+//    public EmotionState getEmotionState() {
+//        return this.entityData.get(DATA_EMOTION_STATE);
+//    }
+
+//    private void tickEmotionState(long currentTick) {
+//        if (this.getEmotionState().isConsistent()) return;
+//        if (currentTick >= this.lastEmotionChangedTick + this.getEmotionState().getDuration()) {
+//            this.setEmotionState(EmotionState.NORMAL, -1);
+//        }
+//    }
+//
+//    protected void changeEmotion() {
+//        this.getBrain().getActiveNonCoreActivity().ifPresent(activity -> {
+//                if (activity.equals(Activity.FIGHT)) {
+//                    this.setEmotionState(EmotionState.SERIOUS, this.tickCount);
+//                }
+//            }
+//        );
+//    }
+
     public boolean canRangeAttack() {
         return this.equipmentHandler.hasRangeAttackWeapon() && hasEnoughAmmo();
     }
@@ -456,7 +505,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     protected void updateActivity() {
-        this.getBrain().setActiveActivityToFirstValid(ImmutableList.of(ModActitvity.BURN_OUT_FUELS.get(), Activity.FIGHT, Activity.IDLE));
+        this.getBrain().setActiveActivityToFirstValid(ImmutableList.of(ModActivity.BURN_OUT_FUELS.get(), ModActivity.SITTING.get(), Activity.FIGHT, Activity.IDLE));
     }
 
     public void shipPickUpItem(ItemEntity itemEntity) {
@@ -495,34 +544,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.entityData.set(DATA_ANIMATION_STATE, shipAnimationState);
     }
 
-
-//    public void setEmotionState(EmotionState emotionState, long lastEmotionChangedTick) {
-//        if (!emotionState.isConsistent()) {
-//            this.lastEmotionChangedTick = lastEmotionChangedTick;
-//        }
-//        this.entityData.set(DATA_EMOTION_STATE, emotionState);
-//    }
-//
-//    public EmotionState getEmotionState() {
-//        return this.entityData.get(DATA_EMOTION_STATE);
-//    }
-
-//    private void tickEmotionState(long currentTick) {
-//        if (this.getEmotionState().isConsistent()) return;
-//        if (currentTick >= this.lastEmotionChangedTick + this.getEmotionState().getDuration()) {
-//            this.setEmotionState(EmotionState.NORMAL, -1);
-//        }
-//    }
-//
-//    protected void changeEmotion() {
-//        this.getBrain().getActiveNonCoreActivity().ifPresent(activity -> {
-//                if (activity.equals(Activity.FIGHT)) {
-//                    this.setEmotionState(EmotionState.SERIOUS, this.tickCount);
-//                }
-//            }
-//        );
-//    }
-
     public int getShipLevel() {
         return this.entityData.get(DATA_SHIP_LEVEL).getLevel();
     }
@@ -557,9 +578,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         return this.shipClass;
     }
 
-    SimpleContainer inventory = this.createShipInventory();
-    LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> new InvWrapper(inventory));
-
     protected SimpleContainer createShipInventory() {
         return this.isHostileSide() ? null : new SimpleContainer(36);
     }
@@ -567,12 +585,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public boolean hasInventory() {
         return this.inventory != null;
     }
-
-    /**
-     * {@link EquipmentHandler}
-     */
-    EquipmentHandler equipmentHandler = new EquipmentHandler(4);
-    LazyOptional<EquipmentHandler> equipmentHandlerLazyOptional = LazyOptional.of(() -> equipmentHandler);
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
@@ -644,6 +656,11 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         return this.entityData.get(DATA_SHIP_OWNER);
     }
 
+    public void setShipOwner(UUID uuid) {
+        if (this.isHostileSide()) return;
+        this.entityData.set(DATA_SHIP_OWNER, Optional.of(uuid));
+    }
+
     @Nullable
     public LivingEntity getOwnerEntity() {
         if (this.getShipOwner().isEmpty()) return null;
@@ -657,9 +674,11 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         return null;
     }
 
-    public void setShipOwner(UUID uuid) {
-        if (this.isHostileSide()) return;
-        this.entityData.set(DATA_SHIP_OWNER, Optional.of(uuid));
+    public Optional<Player> getPlayerOwner() {
+        if (this.getOwnerEntity() instanceof Player player) {
+            return Optional.of(player);
+        }
+        return Optional.empty();
     }
 
     public boolean isShipOwner(Player player) {
@@ -793,23 +812,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public boolean isPersistenceRequired() {
         return this.getType().getCategory().isPersistent();
     }
-
-    /**
-     * {@link GeckoLib}
-     */
-
-    private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
-    protected static final RawAnimation WALKING_ANIMATION = RawAnimation.begin().thenLoop("walk");
-//    protected static final RawAnimation RUNNING_ANIMATION = RawAnimation.begin().thenLoop("run");
-    protected static final RawAnimation BLINK_ANIMATION = RawAnimation.begin().thenPlay("blink");
-//    protected static final RawAnimation NORMAL_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.normal");
-//    protected static final RawAnimation SHOCK_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.shock");
-//    protected static final RawAnimation SAD_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.sad");
-//    protected static final RawAnimation SERIOUS_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.serious");
-//    protected static final RawAnimation HAPPY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.happy");
-//    protected static final RawAnimation ANGRY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.angry");
-    protected static final RawAnimation BREATH_ANIMATION = RawAnimation.begin().thenLoop("breath");
-    protected static final RawAnimation DUCK_POSE_ANIMATION = RawAnimation.begin().thenPlayAndHold("duck_pose");
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {

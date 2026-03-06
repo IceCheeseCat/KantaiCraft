@@ -7,8 +7,8 @@ import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.menu.commandcenter.CommandCenterScreen;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipScreen;
 import com.github.icecheesecat.kantaicraft.menu.shipyard.ShipyardScreen;
-import com.github.icecheesecat.kantaicraft.registries.*;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
+import com.github.icecheesecat.kantaicraft.registries.*;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -44,7 +44,7 @@ public class KantaiCraft
         ModItem.ITEMS.register(modEventBus);
         ModMenu.MENUS.register(modEventBus);
         ModAttribute.ATTRIBUTES.register(modEventBus);
-        ModActitvity.ACTIVITIES.register(modEventBus);
+        ModActivity.ACTIVITIES.register(modEventBus);
         ModMemoryModuleType.MEMORY_MODULE_TYPES.register(modEventBus);
         ModSensor.SENSOR_TYPES.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);

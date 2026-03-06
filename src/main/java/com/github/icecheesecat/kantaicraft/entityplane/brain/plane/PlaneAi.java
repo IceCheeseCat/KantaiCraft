@@ -1,10 +1,10 @@
 package com.github.icecheesecat.kantaicraft.entityplane.brain.plane;
 
-import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
-import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.entityplane.BasicEntityPlane;
 import com.github.icecheesecat.kantaicraft.entityplane.brain.plane.behavior.PlaneGlide;
 import com.github.icecheesecat.kantaicraft.entityplane.brain.plane.behavior.PlaneReturn;
+import com.github.icecheesecat.kantaicraft.registries.ModActivity;
+import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.registries.ModSensor;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -50,7 +50,7 @@ public class PlaneAi {
     }
 
     private static void initReturnActivity(BasicEntityPlane plane, Brain<BasicEntityPlane> brain) {
-        brain.addActivityWithConditions(ModActitvity.RETURN.get(),
+        brain.addActivityWithConditions(ModActivity.RETURN.get(),
                 ImmutableList.of(Pair.of(0, new PlaneReturn(plane))),
                 ImmutableSet.of(Pair.of(ModMemoryModuleType.PLANE_TIMEOUT.get(), MemoryStatus.VALUE_ABSENT)));
     }

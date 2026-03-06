@@ -1,10 +1,10 @@
 package com.github.icecheesecat.kantaicraft.entityplane.brain.plane;
 
+import com.github.icecheesecat.kantaicraft.entityplane.BasicEntityPlane;
 import com.github.icecheesecat.kantaicraft.entityplane.brain.plane.behavior.FighterPlaneAttack;
 import com.github.icecheesecat.kantaicraft.entityplane.brain.plane.behavior.PlaneFollowTarget;
-import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
-import com.github.icecheesecat.kantaicraft.entityplane.BasicEntityPlane;
 import com.github.icecheesecat.kantaicraft.entityplane.fighter.EntityFighterPlane;
+import com.github.icecheesecat.kantaicraft.registries.ModActivity;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +24,7 @@ public class FighterPlaneAi {
 
     private static void initFighterMission(BasicEntityPlane plane, Brain<BasicEntityPlane> brain) {
         brain.addActivityAndRemoveMemoryWhenStopped(
-                ModActitvity.MISSION.get(),
+                ModActivity.MISSION.get(),
                 10,
                 ImmutableList.of(new FighterPlaneAttack(),
                         new PlaneFollowTarget(plane.getPlaneAttributes().getFlySpeed(), plane.getPlaneAttributes().getTurnAcceleration()),
