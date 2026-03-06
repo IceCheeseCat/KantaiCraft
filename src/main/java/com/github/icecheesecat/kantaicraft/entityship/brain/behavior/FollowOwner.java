@@ -31,8 +31,8 @@ public class FollowOwner extends Behavior<EntityShip> {
         super(ImmutableMap.of(
                 ModMemoryModuleType.IS_PLAYER_SHIP.get(), MemoryStatus.REGISTERED,
                 MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED,
-                MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED,
-                MemoryModuleType.PATH, MemoryStatus.REGISTERED), 400);
+                MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
+                MemoryModuleType.PATH, MemoryStatus.VALUE_ABSENT), 400);
         this.closeEnough = closeEnough;
         this.tooClose = tooClose;
     }
@@ -50,7 +50,7 @@ public class FollowOwner extends Behavior<EntityShip> {
             this.teleportToOwner(pLevel, this.entityOwner.blockPosition(), pEntity);
         }
         else if (!pEntity.position().closerThan(this.entityOwner.position(), tooClose)) {
-            this.path = pEntity.getNavigation().createPath(this.entityOwner, 1);
+            this.path = pEntity.getNavigation().createPath(this.entityOwner, tooClose);
             this.submitNewPath(pEntity, this.path);
 
         }
@@ -60,6 +60,8 @@ public class FollowOwner extends Behavior<EntityShip> {
     protected void stop(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
         pEntity.getBrain().eraseMemory(MemoryModuleType.PATH);
         pEntity.getNavigation().stop();
+        pEntity.getNavigation().moveTo()
+        pEntity.getMoveControl().tick();
     }
 
     private void submitNewPath(EntityShip entityShip, Path path) {
