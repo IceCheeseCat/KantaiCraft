@@ -378,7 +378,7 @@ java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent
 [26Feb2026 19:42:53.742] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.ModLoadingContext/]: Attempted to register an empty config for type COMMON on mod kantaicraft using file name kantaicraft_equipment_tree.toml
 [26Feb2026 19:42:53.766] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.config.ConfigTracker/CONFIG]: Config file kantaicraft_equipment_stats.toml for kantaicraft tracking
 [26Feb2026 19:42:53.766] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Attempting to inject @EventBusSubscriber classes into the eventbus for kantaicraft
-[26Feb2026 19:42:53.767] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.capability.CapabilitiesEvent to FORGE
+[26Feb2026 19:42:53.767] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.event.CapabilitiesEvent to FORGE
 [26Feb2026 19:42:53.770] [modloading-worker-0/DEBUG] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Loading Network data for FML net version: FML3
 [26Feb2026 19:42:53.772] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.client.KeyBindings$Event to MOD
 [26Feb2026 19:42:53.791] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.client.KeyBindings$ForgeEvent to FORGE
@@ -390,7 +390,7 @@ java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent
 [26Feb2026 19:42:53.818] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.config.ConfigTracker/CONFIG]: Config file forge-server.toml for forge tracking
 [26Feb2026 19:42:53.818] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.ModLoadingContext/]: Attempted to register an empty config for type COMMON on mod forge
 [26Feb2026 19:42:53.835] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.event.EntityShipFeaturesEvent to FORGE
-[26Feb2026 19:42:53.844] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.event.TickLevelTrajectoryEvent to FORGE
+[26Feb2026 19:42:53.844] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.event.LevelTickEvent to FORGE
 [26Feb2026 19:42:53.847] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.KantaiCraft$CommandEvent to FORGE
 [26Feb2026 19:42:53.849] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.KantaiCraft$MenuEvent to MOD
 [26Feb2026 19:42:53.850] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.github.icecheesecat.kantaicraft.model.ModelEvent to MOD
