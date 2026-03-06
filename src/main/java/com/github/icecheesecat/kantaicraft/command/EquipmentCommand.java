@@ -1,14 +1,12 @@
 package com.github.icecheesecat.kantaicraft.command;
 
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
+import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
-import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 public class EquipmentCommand {

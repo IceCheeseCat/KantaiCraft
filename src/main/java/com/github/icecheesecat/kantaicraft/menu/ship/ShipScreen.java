@@ -1,12 +1,13 @@
 package com.github.icecheesecat.kantaicraft.menu.ship;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
+import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.menu.IconWithTextElement;
-import com.github.icecheesecat.kantaicraft.menu.pagescreen.*;
-import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
+import com.github.icecheesecat.kantaicraft.menu.pagescreen.Page;
+import com.github.icecheesecat.kantaicraft.menu.pagescreen.PageScreen;
 import com.github.icecheesecat.kantaicraft.network.packet.entityship.SyncType;
+import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
@@ -44,7 +45,8 @@ public class ShipScreen extends PageScreen<ShipMenu> {
     private static final int EQUIPMENT_SLOT_SIZE = 4;
 
     private static final int ENTITY_MODEL_BACKGROUND = FastColor.ARGB32.color(200, 255, 255, 255);
-
+    private static final int BACKGROUND_COLOR = FastColor.ARGB32.color(102, 0, 0, 0);
+    private final EntityShip entityShip;
     private int SECTION_X;
     private int SECTION_Y;
     private int STATS_Y;
@@ -63,10 +65,6 @@ public class ShipScreen extends PageScreen<ShipMenu> {
     private int EQUIPMENT_SLOT_3_Y;
     private int EQUIPMENT_SLOT_4_X;
     private int EQUIPMENT_SLOT_4_Y;
-
-    private static final int BACKGROUND_COLOR = FastColor.ARGB32.color(102, 0, 0, 0);
-
-    private final EntityShip entityShip;
     private PageTitleDisplayer pageTitleDisplayer;
     private AbstractButton nextPageButton;
     private AbstractButton prevPageButton;

@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.model;
 
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
+import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
@@ -31,15 +31,16 @@ import java.util.Map;
 
 public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntityRenderer<T> {
 
-    protected final float scale;
-    protected final Color color;
     public static final Color HOSTILE_COLOR = Color.ofRGBA(0.1f, 0.1f, 0.1f, 1.0f);
     public static final Color NORMAL_COLOR = Color.WHITE;
+    private static final int RED = FastColor.ARGB32.color(255, 255, 0, 0);
+    private static final int BLUE = FastColor.ARGB32.color(255, 0, 0, 255);
+    public static boolean debug = false;
+    protected final float scale;
+    protected final Color color;
+    private final Map<Integer, EquipmentRenderer> equipmentRenderersCache = new HashMap<>();
 //    protected final ArmingDetailManager armingDetailManager;
     private EquippableDetailSlots equippableDetailSlots;
-    private final Map<Integer, EquipmentRenderer> equipmentRenderersCache = new HashMap<>();
-
-    public static boolean debug = false;
 
     public EntityShipRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model, float scale, float shadowRadius, Color color) {
         super(renderManager, model);
@@ -57,6 +58,7 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
     public ResourceLocation getTextureLocation(T animatable) {
         return this.model.getTextureResource(animatable);
     }
+
     @Override
     public void render(@NotNull T entity, float entityYaw, float partialTick, PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
         poseStack.pushPose();
@@ -73,12 +75,10 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
         poseStack.popPose();
     }
 
-
     @Override
     public Color getRenderColor(T animatable, float partialTick, int packedLight) {
         return this.color;
     }
-
 
     protected void renderBodyPartWeapon(@NotNull T entity, float entityYaw, float partialTick, PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
 
@@ -167,10 +167,6 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
             }
         }
     }
-
-    private static final int RED = FastColor.ARGB32.color(255, 255, 0, 0);
-    private static final int BLUE = FastColor.ARGB32.color(255, 0, 0, 255);
-
 
     private void renderDebugConeSensor(T entity, PoseStack poseStack, @NotNull MultiBufferSource bufferSource, float partialTicks) {
         int ray_count = 20;

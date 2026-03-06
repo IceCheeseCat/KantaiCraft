@@ -2,10 +2,11 @@ package com.github.icecheesecat.kantaicraft.network;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.network.packet.commandcenter.CommandCenterRequestSummonPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.entityship.DropIndicationPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.entityship.TogglePlayerShipPacket;
-import com.github.icecheesecat.kantaicraft.network.packet.equipment.RequestEquipmentOptionsPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentHandlerPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentOptionsPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.equipment.RequestEquipmentOptionsPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataUpdatedPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.RequestPlayerKantaiDataPacket;
@@ -132,6 +133,14 @@ public class ModPacketHandler {
                 CommandCenterRequestSummonPacket::encode,
                 CommandCenterRequestSummonPacket::decode,
                 CommandCenterRequestSummonPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                DropIndicationPacket.class,
+                DropIndicationPacket::encode,
+                DropIndicationPacket::decode,
+                DropIndicationPacket::handle
         );
     }
 
