@@ -16,7 +16,8 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = KantaiCraft.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EntityShipFeaturesEvent {
@@ -42,11 +43,11 @@ public class EntityShipFeaturesEvent {
     private static void addItemDropsToEntityShipPickUp(EntityShip entityShip, List<ItemEntity> drops) {
         if (!entityShip.hasInventory()) return;
 
-        if (!entityShip.getBrain().hasMemoryValue(ModMemoryModuleType.KILLED_ENTITY_DROPS.get())) {
-            entityShip.getBrain().setMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get(), drops);
+        if (!entityShip.getBrain().hasMemoryValue(ModMemoryModuleType.ITEMS_TO_PICK_UP.get())) {
+            entityShip.getBrain().setMemory(ModMemoryModuleType.ITEMS_TO_PICK_UP.get(), drops);
         }
         else {
-            entityShip.getBrain().getMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get()).ifPresent(
+            entityShip.getBrain().getMemory(ModMemoryModuleType.ITEMS_TO_PICK_UP.get()).ifPresent(
                     itemEntities -> itemEntities.addAll(drops)
             );
         }

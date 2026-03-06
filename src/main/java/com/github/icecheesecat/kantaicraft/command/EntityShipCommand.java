@@ -1,17 +1,14 @@
 package com.github.icecheesecat.kantaicraft.command;
 
-import com.github.icecheesecat.kantaicraft.capability.PlayerKantaiDataCapability;
+import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

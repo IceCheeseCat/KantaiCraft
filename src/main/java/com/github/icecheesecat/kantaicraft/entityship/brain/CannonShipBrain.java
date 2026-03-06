@@ -11,12 +11,12 @@ import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
 
-import java.util.*;
+import java.util.List;
 
 public class CannonShipBrain {
 
-    public static final List<SensorType<? extends Sensor<? super CannonEntityShip>>> SENSOR_TYPES;
     public static final List<MemoryModuleType<?>> MEMORY_TYPES;
+    public static final List<SensorType<? extends Sensor<? super CannonEntityShip>>> SENSOR_TYPES;
 
     static {
         SENSOR_TYPES = List.of(
@@ -47,11 +47,13 @@ public class CannonShipBrain {
                 MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
                 MemoryModuleType.PATH,
                 MemoryModuleType.ATTACK_TARGET,
-                ModMemoryModuleType.KILLED_ENTITY_DROPS.get(),
+                ModMemoryModuleType.ITEMS_TO_PICK_UP.get(),
                 ModMemoryModuleType.CANT_SEE_TARGET_SINCE.get(),
                 ModMemoryModuleType.LAST_SAW_TARGET_POS.get(),
                 MemoryModuleType.GAZE_COOLDOWN_TICKS,
-                ModMemoryModuleType.ATTACK_TARGET_IN_SIGHT.get());
+                ModMemoryModuleType.ATTACK_TARGET_IN_SIGHT.get(),
+                ModMemoryModuleType.PICK_UP_COOLDOWN.get(),
+                ModMemoryModuleType.NEAREST_WANTED_ITEM.get());
     }
 
     public static Brain<CannonEntityShip> makeBrain(CannonEntityShip cannonShip, Dynamic<?> dyn) {

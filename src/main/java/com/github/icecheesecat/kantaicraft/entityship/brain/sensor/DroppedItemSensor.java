@@ -13,23 +13,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class MobDropsSensor extends Sensor<EntityShip> {
+public class DroppedItemSensor extends Sensor<EntityShip> {
 
-    public MobDropsSensor() {
+    public DroppedItemSensor() {
         super(1);
     }
 
     @Override
     protected void doTick(ServerLevel pLevel, EntityShip pEntity) {
-        var dropsOptional = pEntity.getBrain().getMemory(ModMemoryModuleType.KILLED_ENTITY_DROPS.get());
+        var dropsOptional = pEntity.getBrain().getMemory(ModMemoryModuleType.ITEMS_TO_PICK_UP.get());
         if (dropsOptional.isEmpty()) return;
         var itemEntities = dropsOptional.get();
         eraseRemovedItemThanSort(itemEntities, pEntity);
+        findClosestCanPickUpItem(itemEntities, pEntity);
     }
 
     @Override
     public Set<MemoryModuleType<?>> requires() {
-        return ImmutableSet.of(ModMemoryModuleType.KILLED_ENTITY_DROPS.get());
+        return ImmutableSet.of(ModMemoryModuleType.ITEMS_TO_PICK_UP.get());
     }
 
     private void eraseRemovedItemThanSort(List<ItemEntity> itemEntities, Entity owner) {
@@ -38,9 +39,11 @@ public class MobDropsSensor extends Sensor<EntityShip> {
         for (var it: itemEntities) {
             if (it.isRemoved()) {
                 removed.add(it);
+                System.out.println("removed");
             }
             else if (it.getItem().isEmpty()) {
                 removed.add(it);
+                System.out.println("is empty item");
             }
         }
 
@@ -52,4 +55,26 @@ public class MobDropsSensor extends Sensor<EntityShip> {
         });
 
     }
+
+    private void findClosestCanPickUpItem(List<ItemEntity> itemEntities, EntityShip pEntity) {
+        if (!itemEntities.isEmpty()) {
+            // check ship inventory has room for the items on the ground
+            for (var ele: itemEntities) {
+                if (pEntity.getShipInventory().canAddItem(ele.getItem()) && ele.onGround()) {
+                    var closestItem = itemEntities.get(0);
+                    pEntity.getBrain().setMemory(ModMemoryModuleType.NEAREST_WANTED_ITEM.get(), closestItem);
+                    return;
+                }
+            }
+
+            // did not find can pick up item
+            pEntity.getBrain().eraseMemory(ModMemoryModuleType.NEAREST_WANTED_ITEM.get());
+        }
+        else {
+            pEntity.getBrain().eraseMemory(ModMemoryModuleType.NEAREST_WANTED_ITEM.get());
+        }
+
+    }
+
+
 }

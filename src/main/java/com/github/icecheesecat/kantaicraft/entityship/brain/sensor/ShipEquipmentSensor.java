@@ -1,9 +1,9 @@
 package com.github.icecheesecat.kantaicraft.entityship.brain.sensor;
 
-import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
-import com.github.icecheesecat.kantaicraft.capability.EquipmentHandlerCapability;
+import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
+import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.tickable.EquipmentActionHandler;
 import com.github.icecheesecat.kantaicraft.tickable.ShipTickableAction;

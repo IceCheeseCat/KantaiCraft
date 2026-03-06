@@ -18,11 +18,11 @@ public class ModSensor {
     public static final RegistryObject<SensorType<NearestEnemyPlaneSensor>> NEAREST_ENEMY_PLANE_SENSOR = SENSOR_TYPES.register("sensor_type.nearest_enemy_plane", () -> new SensorType<>(NearestEnemyPlaneSensor::new));
     public static final RegistryObject<SensorType<TargetingNearbyVisibleEntitySensor>> HOSTILE_SHIP_TARGETING_SENSOR = SENSOR_TYPES.register("sensor_type.hostile_ship_targeting", () -> new SensorType<>(() -> new TargetingNearbyVisibleEntitySensor(ModSensor::hostileShipTargeting)));
     public static final RegistryObject<SensorType<TargetingNearbyVisibleEntitySensor>> PLAYER_SHIP_TARGETING_SENSOR = SENSOR_TYPES.register("sensor_type.player_ship_targeting", () -> new SensorType<>(() -> new TargetingNearbyVisibleEntitySensor(ModSensor::playerShipTargeting)));
-    public static final RegistryObject<SensorType<ShipResourcesSensor>> SHIP_RESOURCES_SENSOR = SENSOR_TYPES.register("sensor_type.ship_resources_sensor", () -> new SensorType<>(ShipResourcesSensor::new));
-    public static final RegistryObject<SensorType<ShipEquipmentSensor>> SHIP_EQUIPMENT_SENSOR = SENSOR_TYPES.register("sensor_type.ship_equipment_sensor", () -> new SensorType<>(ShipEquipmentSensor::new));
     public static final RegistryObject<SensorType<AttackTargetVisibilitySensor>> ATTACK_TARGET_VISIBILITY_SENSOR = SENSOR_TYPES.register("sensor_type.attack_target_visibility_sensor", () -> new SensorType<>(AttackTargetVisibilitySensor::new));
-    public static final RegistryObject<SensorType<MobDropsSensor>> MOB_DROPS_SENSOR = SENSOR_TYPES.register("sensor_type.mob_drops_sensor", () -> new SensorType<>(MobDropsSensor::new));
+    public static final RegistryObject<SensorType<DroppedItemSensor>> MOB_DROPS_SENSOR = SENSOR_TYPES.register("sensor_type.mob_drops_sensor", () -> new SensorType<>(DroppedItemSensor::new));
     public static final RegistryObject<SensorType<LookTowardsTargetSensor>> LOOK_TOWARDS_TARGET_SENSOR = SENSOR_TYPES.register("sensor_type.look_towards_target_sensor", () -> new SensorType<>(LookTowardsTargetSensor::new));
+    public static final RegistryObject<SensorType<ShipEquipmentSensor>> SHIP_EQUIPMENT_SENSOR = SENSOR_TYPES.register("sensor_type.ship_equipment_sensor", () -> new SensorType<>(ShipEquipmentSensor::new));
+    public static final RegistryObject<SensorType<ShipResourcesSensor>> SHIP_RESOURCES_SENSOR = SENSOR_TYPES.register("sensor_type.ship_resources_sensor", () -> new SensorType<>(ShipResourcesSensor::new));
 
     public static boolean playerShipTargeting(Entity entity) {
         return entity instanceof Enemy || (entity instanceof EntityShip entityShip && entityShip.isHostileSide());

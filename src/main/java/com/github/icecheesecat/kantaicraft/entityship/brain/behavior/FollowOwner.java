@@ -32,7 +32,8 @@ public class FollowOwner extends Behavior<EntityShip> {
                 ModMemoryModuleType.IS_PLAYER_SHIP.get(), MemoryStatus.REGISTERED,
                 MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED,
                 MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
-                MemoryModuleType.PATH, MemoryStatus.VALUE_ABSENT), 400);
+                MemoryModuleType.PATH, MemoryStatus.VALUE_ABSENT,
+                ModMemoryModuleType.NEAREST_WANTED_ITEM.get(), MemoryStatus.VALUE_ABSENT), 400);
         this.closeEnough = closeEnough;
         this.tooClose = tooClose;
     }
@@ -124,7 +125,7 @@ public class FollowOwner extends Behavior<EntityShip> {
 
     private boolean canTeleportTo(BlockPos pPos, Level level, EntityShip entityShip) {
         BlockPathTypes blockpathtypes = WalkNodeEvaluator.getBlockPathTypeStatic(level, pPos.mutable());
-        System.out.println(pPos);
+
         if (blockpathtypes != BlockPathTypes.WALKABLE) {
             return false;
         } else {
