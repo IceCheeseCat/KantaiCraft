@@ -60,8 +60,6 @@ public class FollowOwner extends Behavior<EntityShip> {
     protected void stop(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
         pEntity.getBrain().eraseMemory(MemoryModuleType.PATH);
         pEntity.getNavigation().stop();
-        pEntity.getNavigation().moveTo()
-        pEntity.getMoveControl().tick();
     }
 
     private void submitNewPath(EntityShip entityShip, Path path) {
