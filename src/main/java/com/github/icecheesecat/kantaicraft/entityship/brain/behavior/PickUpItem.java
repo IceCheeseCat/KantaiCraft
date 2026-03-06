@@ -43,7 +43,6 @@ public class PickUpItem extends Behavior<EntityShip> {
 
     @Override
     protected void start(@NotNull ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
-        System.out.println("pick up behaviour");
         this.isRemoved = this.stoppedByFight = this.isPickedUp = false;
         this.itemEntity = pEntity.getBrain().getMemory(ModMemoryModuleType.NEAREST_WANTED_ITEM.get()).get();
     }

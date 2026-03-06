@@ -39,11 +39,9 @@ public class DroppedItemSensor extends Sensor<EntityShip> {
         for (var it: itemEntities) {
             if (it.isRemoved()) {
                 removed.add(it);
-                System.out.println("removed");
             }
             else if (it.getItem().isEmpty()) {
                 removed.add(it);
-                System.out.println("is empty item");
             }
         }
 
