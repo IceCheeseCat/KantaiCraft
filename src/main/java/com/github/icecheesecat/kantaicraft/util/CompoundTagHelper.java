@@ -3,9 +3,12 @@ package com.github.icecheesecat.kantaicraft.util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public final class CompoundTagHelper {
 
@@ -63,5 +66,34 @@ public final class CompoundTagHelper {
         }
 
         return list;
+    }
+
+    public static <T> CompoundTag serializeList(String tagName, @NotNull List<T> objects, Function<T, CompoundTag> objectWriter) {
+        CompoundTag nbt = new CompoundTag();
+        CompoundTag nbt1 = new CompoundTag();
+        nbt1.putInt("size", objects.size());
+
+        for (int i = 0; i < objects.size(); i++) {
+            CompoundTag eTag = objectWriter.apply(objects.get(i));
+            nbt1.put("e" + i, eTag);
+        }
+        nbt.put(tagName, nbt1);
+        return nbt;
+    }
+
+    @Nullable
+    public static <T> List<T> deserializeList(CompoundTag nbt, String tagName, Function<CompoundTag, T> objectReader) {
+        if (!nbt.contains(tagName)) return null;
+
+        CompoundTag nbt1 = nbt.getCompound(tagName);
+        if (!nbt1.contains("size")) return null;
+
+        List<T> returnList = new ArrayList<>();
+        for (int i = 0; i < nbt1.getInt("size"); i++) {
+            if (!nbt1.contains("e" + i)) return null;
+            returnList.add(i, objectReader.apply(nbt1.getCompound("e" + i)));
+        }
+
+        return returnList;
     }
 }
