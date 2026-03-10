@@ -54,7 +54,8 @@ public class CannonShipBrain {
                 ModMemoryModuleType.ATTACK_TARGET_IN_SIGHT.get(),
                 ModMemoryModuleType.PICK_UP_COOLDOWN.get(),
                 ModMemoryModuleType.NEAREST_WANTED_ITEM.get(),
-                ModMemoryModuleType.IS_SITTING.get());
+                ModMemoryModuleType.IS_SITTING.get(),
+                ModMemoryModuleType.SIT_BACK_DOWN_COUNTDOWN.get());
     }
 
     public static Brain<CannonEntityShip> makeBrain(CannonEntityShip cannonShip, Dynamic<?> dyn) {

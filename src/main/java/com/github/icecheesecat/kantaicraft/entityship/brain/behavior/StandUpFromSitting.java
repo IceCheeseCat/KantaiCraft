@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entityship.brain.behavior;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
+import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.OneShot;
@@ -11,6 +12,7 @@ public abstract class StandUpFromSitting extends OneShot<EntityShip> {
         if (!pEntity.isSitDown()) return false;
         // do stand up
         pEntity.toggleSitDown();
+        pEntity.getBrain().setMemory(ModMemoryModuleType.SIT_BACK_DOWN_COUNTDOWN.get(), 50);
         return true;
     }
 

@@ -38,6 +38,7 @@ public class BrainActivities {
                         Pair.of(0, new ShipAttackTargetRemovedIfInvalid()),
                         Pair.of(0, new ReloadEquipmentActions(true)),
                         Pair.of(0, new MoveToTargetSink()),
+                        Pair.of(1, new ReturnToSitDownActivity()),
                         Pair.of(3, new LookAtTargetSink(45, 90))
                 ));
     }
