@@ -3,8 +3,7 @@ package com.github.icecheesecat.kantaicraft.entityship.brain;
 import com.github.icecheesecat.kantaicraft.entityship.brain.behavior.*;
 import com.github.icecheesecat.kantaicraft.entityship.entity.CannonEntityShip;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.registries.ModActitvity;
-import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
+import com.github.icecheesecat.kantaicraft.registries.ModActivity;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -44,7 +43,7 @@ public class BrainActivities {
     }
 
     public static void initBurnOutActivity(EntityShip cannonEntityShip, Brain<? extends EntityShip> brain) {
-        brain.addActivityWithConditions(ModActitvity.BURN_OUT_FUELS.get(),
+        brain.addActivityWithConditions(ModActivity.BURN_OUT_FUELS.get(),
                 ImmutableList.of(
                         Pair.of(0, new SoutBurnOut())
                 ),
@@ -59,7 +58,7 @@ public class BrainActivities {
                 Pair.of(2, new ShipMeleeAttack(20)),
                 Pair.of(3, new ShipRangeWalkToAttackTarget(1)),
                 Pair.of(4, new CannonAttackBehavior())
-        ), ImmutableSet.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT)), ImmutableSet.of());
+        ), ImmutableSet.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT)), ImmutableSet.of(MemoryModuleType.ATTACK_TARGET));
     }
     
     public static class PlayerShip {
@@ -71,14 +70,27 @@ public class BrainActivities {
                             Pair.of(3, new PickUpItem()),
                             Pair.of(5, new FollowOwner(entityShip.getFollowOwnerDistance(), entityShip.getFollowTooCloseDistance())),
                             Pair.of(8, new RunOne<>(ImmutableList.of(
-                                    Pair.of(BehaviorBuilder.triggerIf(livingEntity -> !livingEntity.isSitDown() && livingEntity.canWonderAround() ,RandomStroll.stroll(entityShip.getNormalSpeedModifier())), 2),
-                                    Pair.of(BehaviorBuilder.triggerIf(livingEntity -> !livingEntity.isSitDown() & livingEntity.canWonderAround(),   SetWalkTargetFromLookTarget.create(entityShip.getNormalSpeedModifier(), 3)), 2),
+                                    Pair.of(BehaviorBuilder.triggerIf(EntityShip::canWonderAround,RandomStroll.stroll(entityShip.getNormalSpeedModifier())), 2),
+                                    Pair.of(BehaviorBuilder.triggerIf(EntityShip::canWonderAround, SetWalkTargetFromLookTarget.create(entityShip.getNormalSpeedModifier(), 3)), 2),
                                     Pair.of(new RandomLookAround(UniformInt.of(150, 200), 30.0F, 0.0F, 15.0F), 2),
                                     Pair.of(new DoNothing(30, 60), 1)))),
                             Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60)))
                     ),
                     ImmutableSet.of(Pair.of(ModMemoryModuleType.OUT_OF_FUEL.get(), MemoryStatus.VALUE_ABSENT))
             );
+        }
+
+        public static void initSittingActivity(EntityShip entityShip, Brain<? extends EntityShip> brain) {
+            brain.addActivityAndRemoveMemoriesWhenStopped(ModActivity.SITTING.get(),
+                    ImmutableList.of(
+                            Pair.of(0, new StandUpFromSitting.WhenAttacked()),
+                            Pair.of(8, new RunOne<>(ImmutableList.of(
+                                    Pair.of(new RandomLookAround(UniformInt.of(150, 200), 30.0F, 0.0F, 15.0F), 2),
+                                    Pair.of(new DoNothing(30, 60), 1)))),
+                            Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60)))
+                    ),
+                    ImmutableSet.of(Pair.of(ModMemoryModuleType.IS_SITTING.get(), MemoryStatus.VALUE_PRESENT)),
+                    ImmutableSet.of());
         }
 
     }

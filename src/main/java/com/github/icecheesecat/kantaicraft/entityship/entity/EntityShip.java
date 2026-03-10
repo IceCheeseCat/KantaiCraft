@@ -247,6 +247,19 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     public void toggleSitDown() {
         this.entityData.set(DATA_SIT_DOWN, !this.isSitDown());
+        if (this.isSitDown()) {
+            this.getBrain().setMemory(ModMemoryModuleType.IS_SITTING.get(), Unit.INSTANCE);
+        }
+        else {
+            this.getBrain().eraseMemory(ModMemoryModuleType.IS_SITTING.get());
+        }
+
+        this.navigation.stop();
+        this.setTarget(null);
+        this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+        this.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+        this.getBrain().eraseMemory(MemoryModuleType.PATH);
+        this.getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
     }
 
     @Override
@@ -496,6 +509,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     protected void customServerAiStep() {
         super.customServerAiStep();
         this.getBrain().tick((ServerLevel) this.level(), this);
+        this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(this::setTarget);
         this.updateActivity();
     }
 
@@ -779,11 +793,8 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         }
 
         if (pHand == InteractionHand.MAIN_HAND && pPlayer.isShiftKeyDown()) {
-            if (!this.isSitDown())  {
-                orderedToSit();
-            }
             this.toggleSitDown();
-            return InteractionResult.SUCCESS;
+            return InteractionResult.CONSUME;
         }
 
         if (pHand == InteractionHand.MAIN_HAND && pPlayer instanceof ServerPlayer serverPlayer) {
@@ -791,16 +802,10 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             NetworkHooks.openScreen(serverPlayer, this, (friendlyByteBuf -> {
                 friendlyByteBuf.writeInt(this.getId());
             }));
-            return InteractionResult.SUCCESS;
+            return InteractionResult.CONSUME;
         }
 
         return InteractionResult.PASS;
-    }
-
-    protected void orderedToSit() {
-        this.navigation.stop();
-        this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-        this.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
     }
 
     @Override

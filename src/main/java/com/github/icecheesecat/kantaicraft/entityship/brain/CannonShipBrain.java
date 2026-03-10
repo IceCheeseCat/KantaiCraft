@@ -53,7 +53,8 @@ public class CannonShipBrain {
                 MemoryModuleType.GAZE_COOLDOWN_TICKS,
                 ModMemoryModuleType.ATTACK_TARGET_IN_SIGHT.get(),
                 ModMemoryModuleType.PICK_UP_COOLDOWN.get(),
-                ModMemoryModuleType.NEAREST_WANTED_ITEM.get());
+                ModMemoryModuleType.NEAREST_WANTED_ITEM.get(),
+                ModMemoryModuleType.IS_SITTING.get());
     }
 
     public static Brain<CannonEntityShip> makeBrain(CannonEntityShip cannonShip, Dynamic<?> dyn) {
@@ -64,6 +65,7 @@ public class CannonShipBrain {
         BrainActivities.initBurnOutActivity(cannonShip, brain);
         BrainActivities.initFightActivity(cannonShip, brain);
         BrainActivities.PlayerShip.initIdleActivity(cannonShip, brain);
+        BrainActivities.PlayerShip.initSittingActivity(cannonShip, brain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
         brain.setDefaultActivity(Activity.IDLE);
         brain.useDefaultActivity();

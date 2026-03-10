@@ -29,13 +29,19 @@ public class ShipAttackTargetRemovedIfInvalid extends Behavior<EntityShip> {
         ), Integer.MAX_VALUE);
     }
 
+    private static boolean isTiredOfTryingToReachTarget(LivingEntity pEntity, Optional<Long> pTimeSinceInvalidTarget) {
+        return pTimeSinceInvalidTarget.isPresent() && pEntity.level().getGameTime() - pTimeSinceInvalidTarget.get() > 200L;
+    }
+
     /**
      * When can see attack target update last seen pos, otherwise run to the last seen pos. <br>
      * If it hasn't seen the attack target for a while, remove the attack target.
      */
     @Override
     protected boolean canStillUse(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
-        LivingEntity target = pEntity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get();
+        var optional = pEntity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET);
+        if (optional.isEmpty()) return false;
+        LivingEntity target = optional.get();
 
         boolean canAttack = pEntity.canAttack(target);
         boolean targetAlive = target.isAlive();
@@ -73,10 +79,6 @@ public class ShipAttackTargetRemovedIfInvalid extends Behavior<EntityShip> {
 
     private boolean isTriedOfTryingToFindBackTarget(LivingEntity entity, long timeInvalid) {
         return entity.level().getGameTime() - timeInvalid > CANT_SEE_DURATION;
-    }
-
-    private static boolean isTiredOfTryingToReachTarget(LivingEntity pEntity, Optional<Long> pTimeSinceInvalidTarget) {
-        return pTimeSinceInvalidTarget.isPresent() && pEntity.level().getGameTime() - pTimeSinceInvalidTarget.get() > 200L;
     }
 
 }
