@@ -805,6 +805,20 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             return InteractionResult.FAIL;
         }
 
+        var resultSit = playerInteractToSitDown(pPlayer, pHand);
+        if (resultSit != InteractionResult.FAIL) {
+            return resultSit;
+        }
+
+        var resultMenu = playerInteractToOpenMenu(pPlayer, pHand);
+        if (resultMenu != InteractionResult.FAIL) {
+            return resultMenu;
+        }
+
+        return InteractionResult.PASS;
+    }
+
+    protected InteractionResult playerInteractToSitDown(Player pPlayer, InteractionHand pHand) {
         if (pHand == InteractionHand.MAIN_HAND && pPlayer.isShiftKeyDown()) {
             if (this.hasFuel()) {
                 this.toggleSitDown();
@@ -814,7 +828,10 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
                 return InteractionResult.FAIL;
             }
         }
+        return InteractionResult.FAIL;
+    }
 
+    protected InteractionResult playerInteractToOpenMenu(Player pPlayer, InteractionHand pHand) {
         if (pHand == InteractionHand.MAIN_HAND && pPlayer instanceof ServerPlayer serverPlayer) {
             ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), EquipmentHandlerPacket.wholeHandlerPacket(this.getId(), this.equipmentHandler));
             NetworkHooks.openScreen(serverPlayer, this, (friendlyByteBuf -> {
@@ -822,8 +839,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             }));
             return InteractionResult.SUCCESS;
         }
-
-        return InteractionResult.PASS;
+        return InteractionResult.FAIL;
     }
 
     @Override
