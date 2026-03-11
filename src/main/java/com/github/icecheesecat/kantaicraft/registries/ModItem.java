@@ -22,6 +22,22 @@ public class ModItem
 			}
 	, new Item.Properties()));
 
+	public static final RegistryObject<Item> INAZUMA_SPAWN_EGG_2 = ITEMS.register("inazuma_with_no_fuel", () -> new ShipSpawnEgg(ModEntity.PlayerShip.INAZUMA, FastColor.ABGR32.red(128), FastColor.ABGR32.green(128),
+			(ship, player) -> {
+				ship.setShipOwner(player.getUUID());
+				ship.setFuel(1.0f);
+				ship.setAmmo(100.0f);
+			}
+	, new Item.Properties()));
+
+	public static final RegistryObject<Item> AKATSUKI_SPAWN_EGG = ITEMS.register("akatsuki_with_no_fuel", () -> new ShipSpawnEgg(ModEntity.PlayerShip.AKATSUKI, FastColor.ABGR32.red(128), FastColor.ABGR32.green(128),
+			(ship, player) -> {
+				ship.setShipOwner(player.getUUID());
+				ship.setFuel(1.0f);
+				ship.setAmmo(100.0f);
+			}
+	, new Item.Properties()));
+
 	public static final RegistryObject<Item> HOSTILE_INAZUMA_SPAWN_EGG = ITEMS.register("hostile_inazuma", () -> new ShipSpawnEgg(ModEntity.HostileShip.INAZUMA, FastColor.ABGR32.red(128), FastColor.ABGR32.green(128),
 			(ship, player) -> {
 			}

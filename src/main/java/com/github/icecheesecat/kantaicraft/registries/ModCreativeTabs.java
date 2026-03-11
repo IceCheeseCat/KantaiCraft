@@ -16,6 +16,8 @@ public class ModCreativeTabs {
             .icon(Items.ACACIA_DOOR::getDefaultInstance)
             .displayItems((parameters, output) -> {
                 output.accept(ModItem.INAZUMA_SPAWN_EGG.get());
+                output.accept(ModItem.INAZUMA_SPAWN_EGG_2.get());
+                output.accept(ModItem.AKATSUKI_SPAWN_EGG.get());
                 output.accept(ModItem.HOSTILE_INAZUMA_SPAWN_EGG.get());
                 output.accept(ModBlock.FLOOR.get());
                 output.accept(ModBlock.COMMAND_CENTER.get());

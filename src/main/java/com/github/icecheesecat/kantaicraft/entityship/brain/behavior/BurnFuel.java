@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.behavior.Behavior;
 
 public class BurnFuel extends Behavior<EntityShip> {
 
-    private static final long TIME_PERIOD = 200L;
+    private static final long TIME_PERIOD = 20L;
 
     public BurnFuel() {
         super(ImmutableMap.of());
@@ -23,8 +23,8 @@ public class BurnFuel extends Behavior<EntityShip> {
     @Override
     protected void tick(ServerLevel serverLevel, EntityShip entityShip, long gametime) {
         if (gametime % TIME_PERIOD == 0) {
-            entityShip.setFuel(entityShip.getFuel() - 0.1f); // 1 second minus 0.1 bucket
-            System.out.println(entityShip + ", " + entityShip.getFuel());
+            entityShip.setFuel(entityShip.getFuel() - 0.1f); // 1 second minus 0.1
+//            System.out.println(entityShip + ", " + entityShip.getFuel());
         }
     }
 
@@ -35,7 +35,7 @@ public class BurnFuel extends Behavior<EntityShip> {
 
     @Override
     protected boolean canStillUse(ServerLevel pLevel, EntityShip pEntity, long pGameTime) {
-        return true;
+        return pEntity.hasFuel();
     }
 
     @Override
@@ -47,4 +47,5 @@ public class BurnFuel extends Behavior<EntityShip> {
     protected boolean timedOut(long pGameTime) {
         return false;
     }
+
 }

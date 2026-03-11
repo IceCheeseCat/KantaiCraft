@@ -33,13 +33,14 @@ public class BrainActivities {
     public static void initCoreActivity(Brain<? extends EntityShip> brain) {
         brain.addActivity(Activity.CORE,
                 ImmutableList.of(
-                        Pair.of(0, new CountDownCooldownTicks(MemoryModuleType.GAZE_COOLDOWN_TICKS)),
-                        Pair.of(0, new CountDownCooldownTicks(ModMemoryModuleType.PICK_UP_COOLDOWN.get())),
-                        Pair.of(0, new ShipAttackTargetRemovedIfInvalid()),
-                        Pair.of(0, new ReloadEquipmentActions(true)),
-                        Pair.of(0, new MoveToTargetSink()),
-                        Pair.of(1, new ReturnToSitDownActivity()),
-                        Pair.of(3, new LookAtTargetSink(45, 90))
+                        Pair.of(0, new BurnFuel()),
+                        Pair.of(1, new CountDownCooldownTicks(MemoryModuleType.GAZE_COOLDOWN_TICKS)),
+                        Pair.of(2, new CountDownCooldownTicks(ModMemoryModuleType.PICK_UP_COOLDOWN.get())),
+                        Pair.of(3, new ShipAttackTargetRemovedIfInvalid()),
+                        Pair.of(4, new ReloadEquipmentActions(true)),
+                        Pair.of(5, new MoveToTargetSink()),
+                        Pair.of(6, new ReturnToSitDownActivity()),
+                        Pair.of(7, new LookAtTargetSink(45, 90))
                 ));
     }
 

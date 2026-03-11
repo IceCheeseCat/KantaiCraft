@@ -105,6 +105,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 //    protected static final RawAnimation ANGRY_EXPRESSION = RawAnimation.begin().thenPlayAndHold("facial.angry");
     protected static final RawAnimation BREATH_ANIMATION = RawAnimation.begin().thenLoop("breath");
     protected static final RawAnimation DUCK_POSE_ANIMATION = RawAnimation.begin().thenPlayAndHold("duck_pose");
+    protected static final RawAnimation BURN_OUT_ANIMATION = RawAnimation.begin().thenLoop("burn_out");
     protected final List<EquipmentClass> equippableTypes;
     private final BlinkAnimationControl blinkAnimationControl = new BlinkAnimationControl(60, 80, this.random);
     private final ShipClass shipClass;
@@ -794,7 +795,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     @Override
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
         if (pPlayer.level().isClientSide) {
-            return InteractionResult.PASS;
+            return InteractionResult.SUCCESS;
         }
         if (this.isHostileSide()) {
             return InteractionResult.PASS;
@@ -805,8 +806,13 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         }
 
         if (pHand == InteractionHand.MAIN_HAND && pPlayer.isShiftKeyDown()) {
-            this.toggleSitDown();
-            return InteractionResult.CONSUME;
+            if (this.hasFuel()) {
+                this.toggleSitDown();
+                return InteractionResult.SUCCESS;
+            }
+            else {
+                return InteractionResult.FAIL;
+            }
         }
 
         if (pHand == InteractionHand.MAIN_HAND && pPlayer instanceof ServerPlayer serverPlayer) {
@@ -814,7 +820,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             NetworkHooks.openScreen(serverPlayer, this, (friendlyByteBuf -> {
                 friendlyByteBuf.writeInt(this.getId());
             }));
-            return InteractionResult.CONSUME;
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;
@@ -841,6 +847,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         controllers.add(new AnimationController<>(this, "blink", 5, this::blinkAnimationController));
         controllers.add(new AnimationController<>(this, "idle", 5, this::idleAnimationController));
         controllers.add(new AnimationController<>(this, "sit", 5, this::sitAnimationController));
+        controllers.add(new AnimationController<>(this, "burn_out", 5, this::burnOutAnimationController));
     }
 
     protected <E extends EntityShip> PlayState moveAnimationController(final AnimationState<E> event) {
@@ -871,11 +878,11 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             event.getController().forceAnimationReset();
             event.getController().setAnimation(BLINK_ANIMATION);
         }
-        return PlayState.CONTINUE;
+        return PlayState.STOP;
     }
 
     protected <E extends EntityShip> PlayState idleAnimationController(final AnimationState<E> event) {
-        if (this.getBrain().getActiveNonCoreActivity().isPresent() && this.getBrain().getActiveNonCoreActivity().get() == Activity.IDLE && !isWalkingOrRunning()) { // BUG : walking animation cannot play with breath animation (because they use same part of the body?)
+        if (this.getBrain().getActiveNonCoreActivity().isPresent() && this.getBrain().getActiveNonCoreActivity().get() == Activity.IDLE && hasFuel()) { // BUG : walking animation cannot play with breath animation (because they use same part of the body?)
             return event.setAndContinue(BREATH_ANIMATION);
         }
 
@@ -883,10 +890,18 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     protected <E extends EntityShip> PlayState sitAnimationController(final AnimationState<E> event) {
-        if (this.isSitDown()) {
+        if (this.isSitDown() && this.hasFuel()) {
             return event.setAndContinue(DUCK_POSE_ANIMATION);
         }
         event.getController().forceAnimationReset();
+        return PlayState.STOP;
+    }
+
+    protected <E extends EntityShip> PlayState burnOutAnimationController(final AnimationState<E> event) {
+        if (this.hasNoFuel()) {
+            return event.setAndContinue(BURN_OUT_ANIMATION);
+        }
+
         return PlayState.STOP;
     }
 
