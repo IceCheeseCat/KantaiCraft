@@ -355,8 +355,8 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         if (nbt.contains("inventory")) {
             this.loadInventory(nbt.getCompound("inventory"));
         }
-        if (nbt.contains("basicentityship.isguarding")) {
-            this.entityData.set(DATA_IS_GUARDING, nbt.getBoolean("basicentityship.isguarding"));
+        if (nbt.contains("isguarding")) {
+            this.entityData.set(DATA_IS_GUARDING, nbt.getBoolean("isguarding"));
         }
         if (nbt.contains("shipowner")) {
             this.entityData.set(DATA_SHIP_OWNER, Optional.of(nbt.getUUID("shipowner")));
