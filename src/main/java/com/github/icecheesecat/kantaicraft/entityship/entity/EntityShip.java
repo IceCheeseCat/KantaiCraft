@@ -800,6 +800,10 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             return InteractionResult.PASS;
         }
 
+        if (!this.isShipOwner(pPlayer)) {
+            return InteractionResult.FAIL;
+        }
+
         if (pHand == InteractionHand.MAIN_HAND && pPlayer.isShiftKeyDown()) {
             this.toggleSitDown();
             return InteractionResult.CONSUME;
