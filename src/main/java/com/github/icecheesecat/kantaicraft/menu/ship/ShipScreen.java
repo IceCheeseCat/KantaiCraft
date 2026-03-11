@@ -35,6 +35,7 @@ public class ShipScreen extends PageScreen<ShipMenu> {
     private static final ResourceLocation GUARD_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/guard_icon.png");
     private static final ResourceLocation MELEE_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/melee_icon.png");
     private static final ResourceLocation WONDER_AROUND_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/wonder_around_icon.png");
+    private static final ResourceLocation SHOULD_PICK_UP_ITEM_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/should_pick_up_item_icon.png");
     private static final ResourceLocation SELECTED = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/selected.png");
     private static final ResourceLocation NEXT_ICON = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/next_icon.png");
     private static final ResourceLocation NEXT_ICON_HOVERED = new ResourceLocation(KantaiCraft.MODID, "textures/gui/ship_screen/next_icon_hovered.png");
@@ -206,6 +207,9 @@ public class ShipScreen extends PageScreen<ShipMenu> {
                 0, indexOfCell++);
         gridLayout.addChild(new SyncedBooleanWidget(0, 0, 32, 32, this.entityShip, EntityShip.DATA_WONDER_AROUND,
                         WONDER_AROUND_ICON, SELECTED, SyncType.WONDER_AROUND),
+                0, indexOfCell++);
+        gridLayout.addChild(new SyncedBooleanWidget(0, 0, 32, 32, this.entityShip, EntityShip.DATA_SHOULD_PICK_UP_ITEM,
+                        SHOULD_PICK_UP_ITEM_ICON, SELECTED, SyncType.SHOULD_PICK_UP_ITEM),
                 0, indexOfCell++);
         gridLayout.arrangeElements();
 

@@ -102,7 +102,7 @@ public class PickUpItem extends Behavior<EntityShip> {
 
     @Override
     protected boolean checkExtraStartConditions(@NotNull ServerLevel pLevel, EntityShip pOwner) {
-        return pOwner.hasInventory();
+        return pOwner.hasInventory() && pOwner.shouldPickUpItem();
     }
 
 }

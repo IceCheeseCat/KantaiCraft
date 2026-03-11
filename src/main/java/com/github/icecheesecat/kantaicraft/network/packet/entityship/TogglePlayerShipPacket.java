@@ -32,8 +32,9 @@ public class TogglePlayerShipPacket {
     public static void encode(TogglePlayerShipPacket packet, FriendlyByteBuf buf) {
         buf.writeEnum(packet.syncType);
         buf.writeInt(packet.entityId);
-        switch (packet.syncType) {
-            case GUARD, MELEE, WONDER_AROUND -> buf.writeBoolean((Boolean) packet.value);
+        switch (packet.syncType.dataType) {
+            case BOOLEAN -> buf.writeBoolean((Boolean) packet.value);
+            case INTEGER -> buf.writeVarInt((Integer) packet.value);
         }
 
     }
@@ -42,9 +43,12 @@ public class TogglePlayerShipPacket {
         SyncType syncType = buf.readEnum(SyncType.class);
         int entityId = buf.readInt();
 
-        switch (syncType) {
-            case GUARD, MELEE, WONDER_AROUND -> {
+        switch (syncType.dataType) {
+            case BOOLEAN -> {
                 return new TogglePlayerShipPacket(syncType, entityId, buf.readBoolean());
+            }
+            case INTEGER -> {
+                return new TogglePlayerShipPacket(syncType, entityId, buf.readVarInt());
             }
             default -> {
                 throw new KantaiCraftException(TogglePlayerShipPacket.class, "SyncType does not implemented " + syncType);
@@ -64,6 +68,7 @@ public class TogglePlayerShipPacket {
                         case GUARD -> entityShip.setGuarding((Boolean) packet.value);
                         case MELEE -> entityShip.setForceMelee((Boolean) packet.value);
                         case WONDER_AROUND -> entityShip.toggleWonderAround();
+                        case SHOULD_PICK_UP_ITEM -> entityShip.setShouldPickUpItem((Boolean) packet.value);
                     }
                 }
             }

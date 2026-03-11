@@ -90,6 +90,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 //    public static final EntityDataAccessor<EmotionState> DATA_EMOTION_STATE = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.EMOTION_STATE_SERIALIZER.get());
     public static final EntityDataAccessor<ShipLeveling> DATA_SHIP_LEVEL = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.SHIP_LEVEL_SERIALIZER.get());
     public static final EntityDataAccessor<Optional<UUID>> DATA_SHIP_OWNER = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.OPTIONAL_UUID);
+    public static final EntityDataAccessor<Boolean> DATA_SHOULD_PICK_UP_ITEM = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> DATA_SIT_DOWN = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Float> DATA_SPEED_MODIFIER = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Boolean> DATA_WONDER_AROUND = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
@@ -243,6 +244,13 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     public boolean isSitDown() {
         return this.entityData.get(DATA_SIT_DOWN);
+    }
+    public boolean shouldPickUpItem() {
+        return this.entityData.get(DATA_SHOULD_PICK_UP_ITEM);
+    }
+
+    public void setShouldPickUpItem(boolean b) {
+        this.entityData.set(DATA_SHOULD_PICK_UP_ITEM, b);
     }
 
     public void toggleSitDown() {

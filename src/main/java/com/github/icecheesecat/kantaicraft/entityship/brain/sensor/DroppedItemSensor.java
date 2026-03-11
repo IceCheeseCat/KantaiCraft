@@ -21,6 +21,10 @@ public class DroppedItemSensor extends Sensor<EntityShip> {
 
     @Override
     protected void doTick(ServerLevel pLevel, EntityShip pEntity) {
+        if (!pEntity.shouldPickUpItem()) {
+            pEntity.getBrain().eraseMemory(ModMemoryModuleType.NEAREST_WANTED_ITEM.get());
+            return;
+        }
         var dropsOptional = pEntity.getBrain().getMemory(ModMemoryModuleType.ITEMS_TO_PICK_UP.get());
         if (dropsOptional.isEmpty()) return;
         var itemEntities = dropsOptional.get();

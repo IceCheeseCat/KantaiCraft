@@ -21,14 +21,8 @@ public class ReturnToSitDownActivity extends ActivityReturnCountdown {
 
     private static boolean pauseCondition(ServerLevel serverLevel, LivingEntity livingEntity, long gameTime) {
         var brain = livingEntity.getBrain();
-        boolean hasItems = false;
-        if (livingEntity.getBrain().hasMemoryValue(ModMemoryModuleType.ITEMS_TO_PICK_UP.get())) {
-            if (!livingEntity.getBrain().getMemory(ModMemoryModuleType.ITEMS_TO_PICK_UP.get()).get().isEmpty()) {
-                hasItems = true;
-            }
-        }
 
-        return brain.hasMemoryValue(MemoryModuleType.ATTACK_TARGET) || brain.hasMemoryValue(ModMemoryModuleType.NEAREST_WANTED_ITEM.get()) || hasItems;
+        return brain.hasMemoryValue(MemoryModuleType.ATTACK_TARGET) || brain.hasMemoryValue(ModMemoryModuleType.NEAREST_WANTED_ITEM.get());
     }
     private static boolean resetCondition(ServerLevel serverLevel, LivingEntity livingEntity, long gameTime) {
         return false;

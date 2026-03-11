@@ -15,6 +15,7 @@ public interface HostileStance extends Stance {
         entityData.define(EntityShip.DATA_FUEL, Float.MAX_VALUE);
         entityData.define(EntityShip.DATA_AMMO, Float.MAX_VALUE);
         entityData.define(EntityShip.DATA_SHIP_LEVEL, ShipLeveling.createRandom(random));
+        entityData.define(EntityShip.DATA_SHOULD_PICK_UP_ITEM, false);
     }
 
     @Override

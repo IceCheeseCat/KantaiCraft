@@ -15,6 +15,7 @@ public interface PlayerStance extends Stance {
         entityData.define(EntityShip.DATA_FUEL, 100.0f);
         entityData.define(EntityShip.DATA_AMMO, 0.0f);
         entityData.define(EntityShip.DATA_SHIP_LEVEL, ShipLeveling.levelZero());
+        entityData.define(EntityShip.DATA_SHOULD_PICK_UP_ITEM, true);
     }
 
     @Override
