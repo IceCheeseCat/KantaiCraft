@@ -3,6 +3,7 @@ package com.github.icecheesecat.kantaicraft.network;
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.network.packet.commandcenter.CommandCenterRequestSummonPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.entityship.DropIndicationPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.entityship.LavaFuelPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.entityship.TogglePlayerShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentHandlerPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentOptionsPacket;
@@ -141,6 +142,14 @@ public class ModPacketHandler {
                 DropIndicationPacket::encode,
                 DropIndicationPacket::decode,
                 DropIndicationPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                LavaFuelPacket.class,
+                LavaFuelPacket::encode,
+                LavaFuelPacket::decode,
+                LavaFuelPacket::handle
         );
     }
 

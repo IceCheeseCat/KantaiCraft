@@ -161,7 +161,7 @@ public class ShipScreen extends PageScreen<ShipMenu> {
     }
 
     private Page createMainPage() {
-        GridPage gridPage = new GridPage(Component.translatable("ship_screen_main_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
+        MainPage gridPage = new MainPage(entityShip, Component.translatable("ship_screen_main_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
         gridPage.appendGridlayout(createControlLayout());
         return gridPage;
     }

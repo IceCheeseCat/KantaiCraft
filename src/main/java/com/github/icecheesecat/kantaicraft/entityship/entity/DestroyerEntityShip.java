@@ -38,4 +38,14 @@ public abstract class DestroyerEntityShip extends CannonEntityShip {
     protected EquippableSlots defineEquippableSlots() {
         return new EquippableSlots(EntityShipDefaultEquipments.equipment_1, EntityShipDefaultEquipments.equipment_2, EntityShipDefaultEquipments.equipment_3, EntityShipDefaultEquipments.equipment_4);
     }
+
+    @Override
+    protected int defineFuelTankSize() {
+        return 64000;
+    }
+
+    @Override
+    public int getFuelUsage() {
+        return 10;
+    }
 }

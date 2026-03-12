@@ -51,20 +51,23 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullConsumer;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.GeckoLib;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -85,7 +88,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public static final EntityDataAccessor<ShipAnimationState> DATA_ANIMATION_STATE = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.ANIMATION_STATE_SERIALIZER.get());
     public static final EntityDataAccessor<Integer> DATA_FOLLOW_DISTANCE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Boolean> DATA_FORCE_MELEE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<Float> DATA_FUEL = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Boolean> DATA_IS_GUARDING = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
 //    public static final EntityDataAccessor<EmotionState> DATA_EMOTION_STATE = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.EMOTION_STATE_SERIALIZER.get());
     public static final EntityDataAccessor<ShipLeveling> DATA_SHIP_LEVEL = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.SHIP_LEVEL_SERIALIZER.get());
@@ -110,18 +112,12 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     private final BlinkAnimationControl blinkAnimationControl = new BlinkAnimationControl(60, 80, this.random);
     private final ShipClass shipClass;
     private final EquippableSlots equippableSlots;
-    /**
-     * {@link GeckoLib}
-     */
-
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
+    private final LavaFuelCapability lavaFuelCapability;
     SimpleContainer inventory = this.createShipInventory();
     LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> new InvWrapper(inventory));
-    /**
-     * {@link EquipmentHandler}
-     */
     EquipmentHandler equipmentHandler = new EquipmentHandler(4);
-    LazyOptional<EquipmentHandler> equipmentHandlerLazyOptional = LazyOptional.of(() -> equipmentHandler);
+    LazyOptional<EquipmentHandler> lazyEquipmentHandler = LazyOptional.of(() -> equipmentHandler);
     private ShipAnimationState prevAnimationShipAnimationState;
     private long lastEmotionChangedTick = -1;
 
@@ -132,6 +128,12 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.prevAnimationShipAnimationState = ShipAnimationState.IDLE;
         this.shipClass = shipClass;
         this.equippableSlots = this.defineEquippableSlots();
+        this.lavaFuelCapability = new LavaFuelCapability(this.defineFuelTankSize()) {
+            @Override
+            int getId() {
+                return EntityShip.this.getId();
+            }
+        };
     }
 
     @Override
@@ -183,12 +185,12 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.entityData.set(DATA_AIRCRAFT, value);
     }
 
-    public float getFuel() {
-        return this.entityData.get(DATA_FUEL);
+    public int getFuel() {
+        return this.lavaFuelCapability.getFluidTank().getFluidAmount();
     }
 
-    public void setFuel(float value) {
-        this.entityData.set(DATA_FUEL, value);
+    public int addFuel(FluidStack fluidStack, IFluidHandler.FluidAction action) {
+        return this.lavaFuelCapability.getFluidTank().fill(fluidStack, action);
     }
 
     public float getAmmo() {
@@ -204,11 +206,30 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     public boolean hasFuel() {
-        return this.entityData.get(DATA_FUEL) > 0.0f;
+        return this.lavaFuelCapability.getFluidTank().getFluidAmount() != 0;
     }
 
     public boolean hasNoFuel() {
         return !this.hasFuel();
+    }
+
+    protected abstract int defineFuelTankSize();
+    public abstract int getFuelUsage();
+
+    /**
+     * @param amount fuel consume amount (lava)
+     * @return whether successfully burned fuel or out of fuel
+     */
+    public boolean burnFuel(int amount) {
+        FluidStack simAmount = this.lavaFuelCapability.getFluidTank().drain(amount, IFluidHandler.FluidAction.SIMULATE);
+        if (simAmount.getAmount() == amount) {
+            this.lavaFuelCapability.getFluidTank().drain(amount, IFluidHandler.FluidAction.EXECUTE);
+            return true;
+        }
+        else {
+            this.lavaFuelCapability.getFluidTank().drain(simAmount, IFluidHandler.FluidAction.EXECUTE);
+            return false;
+        }
     }
 
     public boolean notEnoughAmmo() {
@@ -281,7 +302,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("forcemelee", this.entityData.get(DATA_FORCE_MELEE));
         nbt.putInt("data_aircraft", this.entityData.get(DATA_AIRCRAFT));
-        nbt.putFloat("data_fuel", this.entityData.get(DATA_FUEL));
         nbt.putFloat("data_ammo", this.entityData.get(DATA_AMMO));
         nbt.putInt("animation_state", this.entityData.get(DATA_ANIMATION_STATE).ordinal());
         nbt.putInt("previous_animation_state", this.prevAnimationShipAnimationState.ordinal());
@@ -299,6 +319,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         nbt.put("equipmentHandler", this.equipmentHandler.serializeNBT());
         nbt.putString("entityType", this.getType().toString());
         nbt.putBoolean("wonder_around", this.canWonderAround());
+        nbt.put("lava_fuel", this.lavaFuelCapability.serializeNBT());
 
         return nbt;
     }
@@ -336,9 +357,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         }
         if (nbt.contains("data_aircraft")) {
             this.entityData.set(DATA_AIRCRAFT, nbt.getInt("data_aircraft"));
-        }
-        if (nbt.contains("data_fuel")) {
-            this.entityData.set(DATA_FUEL, nbt.getFloat("data_fuel"));
         }
         if (nbt.contains("data_ammo")) {
             this.entityData.set(DATA_AMMO, nbt.getFloat("data_ammo"));
@@ -382,6 +400,9 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         if (nbt.contains("wonder_around")) {
             this.entityData.set(DATA_WONDER_AROUND, nbt.getBoolean("wonder_around"));
         }
+        if (nbt.contains("lava_fuel")) {
+            this.lavaFuelCapability.deserializeNBT(nbt.getCompound("lava_fuel"));
+        }
     }
 
     protected void loadInventory(CompoundTag nbt) {
@@ -416,29 +437,9 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             }
 
             syncEquipmentHandler();
-            printServerDebug();
-        }
-        else {
-            // client side
-            printClientDebug();
-        }
-    }
 
-    private void printServerDebug() {
-//            this.getBrain().getActiveNonCoreActivity().ifPresent(System.out::println);
-//            System.out.println("walk target: ");
-//            this.getBrain().getMemory(MemoryModuleType.WALK_TARGET).ifPresent(System.out::println);
-//            System.out.println("attack target: ");
-//            this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(System.out::println);
-//            System.out.println("path: ");
-//            this.getBrain().getMemory(MemoryModuleType.PATH).ifPresent(System.out::println);
-//            System.out.println("look target: ");
-//            this.getBrain().getMemory(MemoryModuleType.LOOK_TARGET).ifPresent(System.out::println);
-    }
+        }
 
-    private void printClientDebug() {
-//        System.out.println("id: " + this.getId());
-//        this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(System.out::println);
     }
 
     protected boolean continueAnimationState() {
@@ -615,7 +616,10 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             return lazyItemHandler.cast();
         }
         if (capability == EquipmentHandlerCapability.TOKEN) {
-            return  equipmentHandlerLazyOptional.cast();
+            return lazyEquipmentHandler.cast();
+        }
+        if (capability == ForgeCapabilities.FLUID_HANDLER) {
+            return lavaFuelCapability.getCapability(capability, facing);
         }
 
         return super.getCapability(capability, facing);
@@ -625,7 +629,8 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public void invalidateCaps() {
         super.invalidateCaps();
         lazyItemHandler.invalidate();
-        equipmentHandlerLazyOptional.invalidate();
+        lazyEquipmentHandler.invalidate();
+        lavaFuelCapability.getLazyFluidHandler().invalidate();
     }
 
     public void equipmentHandlerConsumer(NonNullConsumer<EquipmentHandler> consumer) {
@@ -810,6 +815,11 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             return resultSit;
         }
 
+        var resultLavaOrTankInHand = playerInteractToRefill(pPlayer, pHand);
+        if (resultLavaOrTankInHand != InteractionResult.FAIL) {
+            return resultLavaOrTankInHand;
+        }
+
         var resultMenu = playerInteractToOpenMenu(pPlayer, pHand);
         if (resultMenu != InteractionResult.FAIL) {
             return resultMenu;
@@ -841,6 +851,49 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         }
         return InteractionResult.FAIL;
     }
+
+    protected InteractionResult playerInteractToRefill(Player pPlayer, InteractionHand pHand) {
+        if (pHand == InteractionHand.MAIN_HAND && pPlayer instanceof ServerPlayer serverPlayer) {
+            if (pPlayer.getItemInHand(InteractionHand.MAIN_HAND).is(Items.LAVA_BUCKET)) {
+                // try to add one bucket of lava to fuel tank
+                this.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(
+                        tank -> {
+                            int fluidAmountForOneBucket = 1000;
+                            int canFillAmount = tank.fill(new FluidStack(Fluids.LAVA, fluidAmountForOneBucket), IFluidHandler.FluidAction.SIMULATE);
+                            if (canFillAmount == fluidAmountForOneBucket) {
+                                tank.fill(new FluidStack(Fluids.LAVA, fluidAmountForOneBucket), IFluidHandler.FluidAction.EXECUTE);
+                                if (!((ServerPlayer) pPlayer).gameMode.isCreative()) {
+                                    pPlayer.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.BUCKET));
+                                }
+                            }
+                        }
+                );
+
+                return InteractionResult.SUCCESS;
+            }
+            else if (pPlayer.getItemInHand(InteractionHand.MAIN_HAND).getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()) {
+                pPlayer.getItemInHand(InteractionHand.MAIN_HAND).getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(
+                        tankInHand -> {
+                            for (int i = 0; i < tankInHand.getTanks(); i++) {
+                                var fluidInTank = tankInHand.getFluidInTank(i);
+                                if (fluidInTank.getFluid() == Fluids.LAVA) {
+
+                                    int couldFillAmount = this.lavaFuelCapability.getFluidTank().fill(new FluidStack(Fluids.LAVA, 1000), IFluidHandler.FluidAction.SIMULATE);
+                                    var drainedFluid = tankInHand.drain(couldFillAmount, IFluidHandler.FluidAction.EXECUTE);
+                                    this.lavaFuelCapability.getFluidTank().fill(drainedFluid, IFluidHandler.FluidAction.EXECUTE);
+
+                                }
+                            }
+                        }
+                );
+
+                return InteractionResult.SUCCESS;
+            }
+        }
+
+        return InteractionResult.FAIL;
+    }
+
 
     @Override
     public boolean fireImmune() {
@@ -977,4 +1030,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         }
     }
 
+    public LavaFuelCapability getLavaFuelCapability() {
+        return lavaFuelCapability;
+    }
 }
