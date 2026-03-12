@@ -1,41 +1,31 @@
 package com.github.icecheesecat.kantaicraft.menu.pagescreen;
 
-import com.github.icecheesecat.kantaicraft.menu.HoveredCreator;
-import com.github.icecheesecat.kantaicraft.menu.HoveredCreatorWidget;
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.navigation.FocusNavigationEvent;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class Page implements Renderable, GuiEventListener, NarratableEntry {
 
     private static final int BACKGROUND = FastColor.ARGB32.color(102, 0, 0, 0);
     private final Component title;
-    protected int x, y, width, height;
     private final List<ImageDisplay> imageDisplays = new ArrayList<>();
+    protected int x, y, width, height;
+    boolean focused = false;
     private List<TextInstance> textInstances = new ArrayList<>();
     private List<AbstractWidget> pageWidgets = new ArrayList<>();
+    private List<GridLayout> gridLayout = new ArrayList<>();
 
     public Page(Component title, int x, int y, int width, int height) {
         this.title = title;
@@ -83,18 +73,6 @@ public class Page implements Renderable, GuiEventListener, NarratableEntry {
         this.textInstances.add(textInstance);
     }
 
-    public record ImageDisplay(int x, int y, int blitOffset, int imageWidth, int imageHeight, int textureWidth, int textureHeight, ResourceLocation resourceLocation, float alpha) {
-        public ImageDisplay(int x, int y, int imageWidth, int imageHeight, ResourceLocation resourceLocation) {
-            this(x, y, 0, imageWidth, imageHeight, 256, 256, resourceLocation, 1.0f);
-        }
-        public ImageDisplay(int x, int y, int imageWidth, int imageHeight, ResourceLocation resourceLocation, float alpha) {
-            this(x, y, 0, imageWidth, imageHeight, 256, 256, resourceLocation, alpha);
-        }
-        public ImageDisplay(int x, int y, int blitOffset, int imageWidth, int imageHeight, ResourceLocation resourceLocation, float alpha) {
-            this(x, y, blitOffset, imageWidth, imageHeight, 256, 256, resourceLocation, alpha);
-        }
-    }
-
     public void addImageDisplay(ImageDisplay imageDisplay) {
         this.imageDisplays.add(imageDisplay);
     }
@@ -124,19 +102,14 @@ public class Page implements Renderable, GuiEventListener, NarratableEntry {
         this.pageWidgets.clear();
     }
 
-    public record TextInstance(int x, int y, String text, int fontColor) {
+    @Override
+    public boolean isFocused() {
+        return this.focused;
     }
-
-    boolean focused = false;
 
     @Override
     public void setFocused(boolean pFocused) {
         this.focused = pFocused;
-    }
-
-    @Override
-    public boolean isFocused() {
-        return this.focused;
     }
 
     @Override
@@ -146,6 +119,26 @@ public class Page implements Renderable, GuiEventListener, NarratableEntry {
     @Override
     public NarrationPriority narrationPriority() {
         return NarrationPriority.NONE;
+    }
+
+    public void appendGridlayout(GridLayout gridLayout) {
+        this.gridLayout.add(gridLayout);
+        gridLayout.visitWidgets(this::addWidget);
+    }
+
+    public record ImageDisplay(int x, int y, int blitOffset, int imageWidth, int imageHeight, int textureWidth, int textureHeight, ResourceLocation resourceLocation, float alpha) {
+        public ImageDisplay(int x, int y, int imageWidth, int imageHeight, ResourceLocation resourceLocation) {
+            this(x, y, 0, imageWidth, imageHeight, 256, 256, resourceLocation, 1.0f);
+        }
+        public ImageDisplay(int x, int y, int imageWidth, int imageHeight, ResourceLocation resourceLocation, float alpha) {
+            this(x, y, 0, imageWidth, imageHeight, 256, 256, resourceLocation, alpha);
+        }
+        public ImageDisplay(int x, int y, int blitOffset, int imageWidth, int imageHeight, ResourceLocation resourceLocation, float alpha) {
+            this(x, y, blitOffset, imageWidth, imageHeight, 256, 256, resourceLocation, alpha);
+        }
+    }
+
+    public record TextInstance(int x, int y, String text, int fontColor) {
     }
 
 }
