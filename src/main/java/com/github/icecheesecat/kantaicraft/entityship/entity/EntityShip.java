@@ -410,10 +410,8 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
         for(int i = 0; i < listtag.size(); ++i) {
             CompoundTag compoundtag = listtag.getCompound(i);
-            int j = compoundtag.getByte("Slot") & 255;
-            if (j >= 2 && j < this.inventory.getContainerSize()) {
-                this.inventory.setItem(j, ItemStack.of(compoundtag));
-            }
+            byte j = compoundtag.getByte("Slot");
+            this.inventory.setItem(j, ItemStack.of(compoundtag));
         }
     }
 
