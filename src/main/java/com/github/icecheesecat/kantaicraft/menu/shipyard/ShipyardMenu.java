@@ -8,19 +8,19 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.SlotItemHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShipyardMenu extends AbstractContainerMenu {
+    List<BlueprintSlot> blueprintSlots = new ArrayList<>();
     private Container shipyardContainer;
     private ShipyardBlockEntity shipyardBlockEntity;
     private ContainerLevelAccess access;
-    List<BlueprintSlot> blueprintSlots = new ArrayList<>();
 
     // server side
     public ShipyardMenu(int pContainerId, Inventory inventory, ShipyardBlockEntity shipyardBlockEntity, ContainerLevelAccess access) {
@@ -96,7 +96,7 @@ public class ShipyardMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player pPlayer) {
-        return AbstractContainerMenu.stillValid(this.access, pPlayer, ModBlock.SHIPYARD_CORE.get());
+        return AbstractContainerMenu.stillValid(this.access, pPlayer, ModBlock.SHIPYARD.get());
     }
 
     public ShipyardBlockEntity getShipyardBlockEntity() {

@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.block.shipyard;
 
-import com.github.icecheesecat.kantaicraft.block.patternblock.CoreBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.facilities.FacilityCoreBlockEntity;
 import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.menu.shipyard.ShipyardMenu;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
@@ -22,7 +22,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -35,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class ShipyardBlockEntity extends CoreBlockEntity implements Container, MenuProvider {
+public class ShipyardBlockEntity extends FacilityCoreBlockEntity implements Container, MenuProvider {
 
     public final int processShipSize;
     protected int[] processTime;
@@ -44,9 +43,10 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements Container, M
     protected NonNullList<ItemStack> blueprintItems;
     protected NonNullList<ItemStack> prevBlueprintItems;
     protected NonNullList<UUID> owners;
+    LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> new ItemStackHandler(blueprintItems));
 
     public ShipyardBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(ModBlock.SHIPYARD_BETPYE.get(), pPos, pBlockState);
+        super(ModBlock.SHIPYARD_BETYPE.get(), pPos, pBlockState);
         this.processShipSize = 4;
         this.processTime = new int[this.processShipSize];
         this.maxProcessTime = new int[this.processShipSize];
@@ -58,9 +58,9 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements Container, M
         owners = NonNullList.withSize(4, Constant.uuidEmpty);
     }
 
-    public static <T extends BlockEntity> void tick(Level level, BlockPos blockPos, BlockState state, ShipyardBlockEntity shipyardBlockEntity) {
+    public static void tick(Level level, BlockPos blockPos, BlockState state, ShipyardBlockEntity shipyardBlockEntity) {
         if (level.isClientSide) return;
-        if (!shipyardBlockEntity.canUse()) return;
+        if (!shipyardBlockEntity.isTickable()) return;
 
         for (int i = 0; i < shipyardBlockEntity.processShipSize; i++) {
             ItemStack prev = shipyardBlockEntity.prevBlueprintItems.get(i);
@@ -79,13 +79,13 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements Container, M
         // update items to tick processes
         shipyardBlockEntity.tickAllProcesses();
 
-        for (int i = 0; i < shipyardBlockEntity.processShipSize; i++) {
-            System.out.print(shipyardBlockEntity.blueprintItems.get(i) + ": ");
-            System.out.print(shipyardBlockEntity.processTime[i] + ", ");
-            System.out.print(shipyardBlockEntity.maxProcessTime[i]);
-            System.out.println();
-        }
-        System.out.println();
+//        for (int i = 0; i < shipyardBlockEntity.processShipSize; i++) {
+//            System.out.print(shipyardBlockEntity.blueprintItems.get(i) + ": ");
+//            System.out.print(shipyardBlockEntity.processTime[i] + ", ");
+//            System.out.print(shipyardBlockEntity.maxProcessTime[i]);
+//            System.out.println();
+//        }
+//        System.out.println();
 
         // copy all items to previous
         for (int i = 0; i < shipyardBlockEntity.processShipSize; i++) {
@@ -173,16 +173,6 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements Container, M
         return new ShipyardMenu(pContainerId, pPlayerInventory, this, ContainerLevelAccess.create(pPlayer.level(), this.getBlockPos()));
     }
 
-    @Override
-    protected void saveAdditional(CompoundTag nbt) {
-       super.saveAdditional(nbt);
-        nbt.putIntArray("process_time", this.processTime);
-        nbt.putIntArray("total_process_time", this.maxProcessTime);
-        nbt.put("blueprint_items", this.saveAllItems());
-        nbt.put("previous_blueprint_items", this.savePreviousAllItems());
-        nbt.put("owners", saveOwners());
-    }
-
     private CompoundTag saveAllItems() {
         CompoundTag nbt = new CompoundTag();
         ContainerHelper.saveAllItems(nbt, this.blueprintItems);
@@ -205,8 +195,18 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements Container, M
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    public @NotNull CompoundTag saveExtraData() {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putIntArray("process_time", this.processTime);
+        nbt.putIntArray("total_process_time", this.maxProcessTime);
+        nbt.put("blueprint_items", this.saveAllItems());
+        nbt.put("previous_blueprint_items", this.savePreviousAllItems());
+        nbt.put("owners", saveOwners());
+        return nbt;
+    }
+
+    @Override
+    public void loadExtraData(@NotNull CompoundTag nbt) {
         this.processTime = nbt.getIntArray("process_time");
         this.maxProcessTime = nbt.getIntArray("total_process_time");
         ContainerHelper.loadAllItems(nbt.getCompound("blueprint_items"), this.blueprintItems);
@@ -271,8 +271,6 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements Container, M
         this.setChanged();
     }
 
-
-
     private void startProcess(int index, int maxProcessTime) {
         this.maxProcessTime[index] = maxProcessTime;
         this.processTime[index] = 0;
@@ -303,8 +301,6 @@ public class ShipyardBlockEntity extends CoreBlockEntity implements Container, M
         this.blueprintItems.clear();
         setChanged();
     }
-
-    LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> new ItemStackHandler(blueprintItems));
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {

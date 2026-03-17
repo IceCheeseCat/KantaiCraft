@@ -12,9 +12,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        this.simpleBlockWithItem(ModBlock.FLOOR.get(), cubeAll(ModBlock.FLOOR.get()));
-        this.simpleBlockWithItem(ModBlock.CRANE.get(), cubeAll(ModBlock.CRANE.get()));
-        this.simpleBlockWithItem(ModBlock.SHIPYARD_CORE.get(), cubeAll(ModBlock.SHIPYARD_CORE.get()));
         this.simpleBlockWithItem(ModBlock.COMMAND_CENTER.get(), cubeAll(ModBlock.COMMAND_CENTER.get()));
+        this.simpleBlockWithItem(ModBlock.FACILITY.get(), cubeAll(ModBlock.FACILITY.get()));
+        this.simpleBlockWithItem(ModBlock.SHIPYARD.get(), cubeAll(ModBlock.SHIPYARD.get()));
+        this.simpleBlockWithItem(ModBlock.FUEL_STATION.get(), cubeAll(ModBlock.FUEL_STATION.get()));
     }
 }

@@ -21,7 +21,7 @@ public class PortBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new PortBlockEntity(pPos, pState);
+        return null;
     }
 
     @Override

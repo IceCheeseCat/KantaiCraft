@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "kantaicraft:block/fuel_station_block"
+    }
+  }
+}

@@ -44,8 +44,6 @@ public class ModItem
 			(ship, player) -> {
 			}
 	, new Item.Properties()));
-
-
 	public static final RegistryObject<Item> SHIP_BLUEPRINT = ITEMS.register("ship_blueprint", () -> new BlueprintItem(new Item.Properties().stacksTo(1)));
 
 	//	//spawn egg

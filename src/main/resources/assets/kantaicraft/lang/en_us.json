@@ -3,7 +3,8 @@
   "entity.kantaicraft.destroyer_i_class": "Destroyer I Class",
 
   "item.kantaicraft.debug_faction_changer": "Faction Changer",
-  "block.kantaicraft.floor_block": "Floor Block",
+
+  "block.kantaicraft.facility_block": "Facility Block",
 
   "cannon_equipment.12cm_single_gun_mount": "12 cm Single Gun Mount",
   "cannon_equipment.12cm_twin_gun_mount": "12 cm Twin Gun Mount",

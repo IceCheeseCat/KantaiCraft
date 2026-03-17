@@ -1031,4 +1031,8 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public LavaFuelCapability getLavaFuelCapability() {
         return lavaFuelCapability;
     }
+
+    public boolean lavaFuelIsFull() {
+        return this.lavaFuelCapability.getFluidTank().getFluidAmount() == this.lavaFuelCapability.getFluidTank().getCapacity();
+    }
 }
