@@ -51,20 +51,19 @@ public class FuelStationRenderer extends GeoBlockRenderer<FuelStationBlockEntity
             }
         }
 
-        super.defaultRender(poseStack, animatable, bufferSource, renderType, buffer, yaw, partialTick, packedLight);
+
+        if (animatable.getLevel() != null) {
+            int i = 0;
+
+            super.defaultRender(poseStack, animatable, bufferSource, renderType, buffer, yaw, partialTick, packedLight);
+        }
+        else {
+            super.defaultRender(poseStack, animatable, bufferSource, renderType, buffer, yaw, partialTick, packedLight);
+        }
+
+//        super.defaultRender(poseStack, animatable, bufferSource, renderType, buffer, yaw, partialTick, packedLight);
 
         poseStack.popPose();
-//        if (animatable.getLevel() != null) {
-//            int i = 0;
-//            DoubleBlockCombiner.NeighborCombineResult<? extends BlockEntity> neighborcombineresult = DoubleBlockCombiner.combineWithNeigbour(ModBlock.COMMAND_CENTER_BETYPE.get(), TwoPartBlock::getCombinedBlockType, TwoPartBlock::getConnectedDirection, HorizontalDirectionalBlock.FACING, blockstate, animatable.getLevel(), animatable.getBlockPos(), (p_112202_, p_112203_) -> {
-//                return false;
-//            });
-//            i = neighborcombineresult.apply(new BrightnessCombiner<>()).get(packedLight);
-//            super.defaultRender(poseStack, animatable, bufferSource, renderType, buffer, yaw, partialTick, i);
-//        }
-//        else {
-//            super.defaultRender(poseStack, animatable, bufferSource, renderType, buffer, yaw, partialTick, packedLight);
-//        }
     }
 
 }

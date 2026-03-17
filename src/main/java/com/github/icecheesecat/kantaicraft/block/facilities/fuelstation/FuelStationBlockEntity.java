@@ -3,6 +3,8 @@ package com.github.icecheesecat.kantaicraft.block.facilities.fuelstation;
 import com.github.icecheesecat.kantaicraft.block.facilities.FacilityCoreBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.facilities.pattern.FindPatternResult;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
+import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
+import com.github.icecheesecat.kantaicraft.network.packet.fuelstation.FuelStationPacket;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,6 +20,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
@@ -89,14 +92,14 @@ public class FuelStationBlockEntity extends FacilityCoreBlockEntity implements G
     public @NotNull CompoundTag saveExtraData() {
         CompoundTag nbt = new CompoundTag();
         nbt = lavaTank.writeToNBT(nbt);
-        nbt.putInt("state", this.state.ordinal());
+//        nbt.putInt("state", this.state.ordinal());
         return nbt;
     }
 
     @Override
     public void loadExtraData(@NotNull CompoundTag nbt) {
         this.lavaTank.readFromNBT(nbt);
-        this.state = State.values()[nbt.getInt("state")];
+//        this.state = State.values()[nbt.getInt("state")];
         createFindArea();
     }
 
@@ -134,6 +137,14 @@ public class FuelStationBlockEntity extends FacilityCoreBlockEntity implements G
         FluidStack drainedFluid = this.lavaTank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
         this.entityShip.getLavaFuelCapability().getFluidTank().fill(drainedFluid, IFluidHandler.FluidAction.EXECUTE);
         this.setChanged();
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     public void evaluateState() {
@@ -181,7 +192,7 @@ public class FuelStationBlockEntity extends FacilityCoreBlockEntity implements G
         }
 
         if (orign != this.state) {
-            this.setChanged();
+            ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new FuelStationPacket(this));
         }
     }
 

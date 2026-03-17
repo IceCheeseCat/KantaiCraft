@@ -8,6 +8,7 @@ import com.github.icecheesecat.kantaicraft.network.packet.entityship.TogglePlaye
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentHandlerPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentOptionsPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.RequestEquipmentOptionsPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.fuelstation.FuelStationPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataUpdatedPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.RequestPlayerKantaiDataPacket;
@@ -151,6 +152,15 @@ public class ModPacketHandler {
                 LavaFuelPacket::decode,
                 LavaFuelPacket::handle
         );
+
+        INSTANCE.registerMessage(
+                id++,
+                FuelStationPacket.class,
+                FuelStationPacket::encode,
+                FuelStationPacket::decode,
+                FuelStationPacket::handle
+        );
+
     }
 
 }

@@ -30,8 +30,8 @@ public class ModBlock {
 //    public static final RegistryObject<Block> FLOOR = registerBlock("floor_block", () -> new ComponentBlock(BlockBehaviour.Properties.copy(Blocks.STONE)));
 //    public static final RegistryObject<Block> CRANE = registerBlock("crane_block", () -> new ComponentBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
     public static final RegistryObject<Block> COMMAND_CENTER = registerGeoBlock("command_center_block", () -> new CommandCenterBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).noOcclusion()), CommandCenterBlockItem::new);
-    public static final RegistryObject<Block>  FACILITY = registerBlock("facility_block", () -> new FacilityBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).noOcclusion()));
-    public static final RegistryObject<Block> FUEL_STATION = registerBlock("fuel_station_block", () -> new FuelStationBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
+    public static final RegistryObject<Block>  FACILITY = registerBlock("facility_block", () -> new FacilityBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).noOcclusion().emissiveRendering((pState, pLevel, pPos) -> true)));
+    public static final RegistryObject<Block> FUEL_STATION = registerBlock("fuel_station_block", () -> new FuelStationBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).emissiveRendering((pState, pLevel, pPos) -> true)));
 //    public static final RegistryObject<Block> PORT = registerBlock("port", () -> new PortBlock(BlockBehaviour.Properties.copy(Blocks.STONE)));
     public static final RegistryObject<Block> SHIPYARD = registerBlock("shipyard_block", () -> new ShipyardBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
 
