@@ -22,6 +22,7 @@ public abstract class TwoPartBlock extends HorizontalDirectionalBlock {
     public static final EnumProperty<TwoPart> TWO_PART = EnumProperty.create("two_block_part", TwoPart.class);
     protected static final VoxelShape BASE = Block.box(0.0d, 0.0d, 0.0d, 16.0d, 16.0d, 16.0d);
 
+
     public TwoPartBlock(Properties pProperties) {
         super(pProperties);
         this.registerDefaultState(this.stateDefinition.any().setValue(TWO_PART, TwoPart.Back));
@@ -39,7 +40,7 @@ public abstract class TwoPartBlock extends HorizontalDirectionalBlock {
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return BASE;
+       return BASE;
     }
 
     @Override
