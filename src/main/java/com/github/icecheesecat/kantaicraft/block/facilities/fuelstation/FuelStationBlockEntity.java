@@ -3,8 +3,6 @@ package com.github.icecheesecat.kantaicraft.block.facilities.fuelstation;
 import com.github.icecheesecat.kantaicraft.block.facilities.FacilityCoreBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.facilities.pattern.FindPatternResult;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.fuelstation.FuelStationPacket;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,7 +18,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
@@ -34,7 +31,16 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class FuelStationBlockEntity extends FacilityCoreBlockEntity implements GeoBlockEntity {
 
-    private final FluidTank lavaTank = new FluidTank(FluidType.BUCKET_VOLUME * 100);
+    private final FluidTank lavaTank = new FluidTank(FluidType.BUCKET_VOLUME * 100) {
+        @Override
+        protected void onContentsChanged() {
+            super.onContentsChanged();
+            setChanged();
+            if (!level.isClientSide) {
+                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            }
+        }
+    };
     private final LazyOptional<FluidTank> lazyFluidTank = LazyOptional.of(() -> lavaTank);
     private State state = State.IDLE;
     private int fullCountdown = 0;
@@ -92,21 +98,21 @@ public class FuelStationBlockEntity extends FacilityCoreBlockEntity implements G
     public @NotNull CompoundTag saveExtraData() {
         CompoundTag nbt = new CompoundTag();
         nbt = lavaTank.writeToNBT(nbt);
-//        nbt.putInt("state", this.state.ordinal());
+        nbt.putInt("state", this.state.ordinal());
         return nbt;
     }
 
     @Override
     public void loadExtraData(@NotNull CompoundTag nbt) {
         this.lavaTank.readFromNBT(nbt);
-//        this.state = State.values()[nbt.getInt("state")];
+        this.state = State.values()[nbt.getInt("state")];
         createFindArea();
     }
 
     protected void findNearbyEntity() {
         if (entityShip == null) {
             //find
-            var list = level.getEntitiesOfClass(EntityShip.class, findArea, EntityShip::isPlayerShip);
+            var list = level.getEntitiesOfClass(EntityShip.class, findArea.inflate(0.5d), EntityShip::isPlayerShip);
             this.entityShip = list.isEmpty() ? null : list.get(0);
             this.fullCountdown = 0;
         }
@@ -192,7 +198,7 @@ public class FuelStationBlockEntity extends FacilityCoreBlockEntity implements G
         }
 
         if (orign != this.state) {
-            ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new FuelStationPacket(this));
+            this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
         }
     }
 
