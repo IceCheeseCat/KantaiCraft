@@ -39,9 +39,7 @@ public class KantaiCraft
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
         ModEntity.ENTITY_TYPES.register(modEventBus);
-        ModItem.ITEMS.register(modEventBus);
         ModMenu.MENUS.register(modEventBus);
         ModAttribute.ATTRIBUTES.register(modEventBus);
         ModActivity.ACTIVITIES.register(modEventBus);
@@ -49,8 +47,10 @@ public class KantaiCraft
         ModSensor.SENSOR_TYPES.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         ModPacketHandler.registerMessages();
+        ModItem.ITEMS.register(modEventBus);
         ModBlock.BLOCKS.register(modEventBus);
         ModBlock.BLOCK_ENTITIES.register(modEventBus);
+        ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
         ModEntityDataSerializer.ENTITY_DATA_SERIALIZERS.register(modEventBus);
         EquipmentManager.init();
 
