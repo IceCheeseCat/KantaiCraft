@@ -3,6 +3,7 @@ package com.github.icecheesecat.kantaicraft.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -11,7 +12,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -60,6 +60,23 @@ public abstract class TwoPartBlock extends HorizontalDirectionalBlock {
         pLevel.blockUpdated(pPos, Blocks.AIR);
         pState.updateNeighbourShapes(pLevel, pPos, 3);
 
+    }
+
+    @Override
+    public void playerWillDestroy(Level pLevel, BlockPos pPos, BlockState pState, Player pPlayer) {
+        if (!pLevel.isClientSide && pPlayer.isCreative()) {
+            TwoPart twoPart = pState.getValue(TWO_PART);
+            if (twoPart == TwoPart.Back) {
+                BlockPos blockpos = pPos.relative(getNeighbourDirection(twoPart, pState.getValue(FACING)));
+                BlockState blockstate = pLevel.getBlockState(blockpos);
+                if (blockstate.is(this) && blockstate.getValue(TWO_PART) == TwoPart.Front) {
+                    pLevel.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
+                    pLevel.levelEvent(pPlayer, 2001, blockpos, Block.getId(blockstate));
+                }
+            }
+        }
+
+        super.playerWillDestroy(pLevel, pPos, pState, pPlayer);
     }
 
     private static Direction getNeighbourDirection(TwoPart pPart, Direction pDirection) {
