@@ -63,7 +63,7 @@ public class FacilityPattern {
 
         for (var patternRotation: this.allPossiblePatterns) {
             var result = patternRotation.tryFindPattern(level, blockPos);
-            if (result.isSuccess()) {
+            if (result.isSuccess() && result.getCore() != null) {
                 BlockPos start = blockPos.offset(patternRotation.offsetNodes[0][0][0].getOffset());
                 BlockPos end = blockPos.offset(patternRotation.offsetNodes[patternRotation.length - 1][patternRotation.height - 1][patternRotation.width - 1].getOffset());
                 result.setStartAndEnd(start, end);

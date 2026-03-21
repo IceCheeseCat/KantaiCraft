@@ -49,6 +49,13 @@ public class FindPatternResult {
     public void merge(FindPatternResult other) {
         this.blockPoses.addAll(other.blockPoses);
         this.code = this.code.or(other.code);
+        if (this.core != null && other.core != null) {
+            this.code = ResultCode.MORE_THAN_TWO_CORES;
+        } else {
+            if (other.core != null) {
+                this.core = other.core;
+            }
+        }
     }
 
     public List<BlockPos> getBlockPoses() {

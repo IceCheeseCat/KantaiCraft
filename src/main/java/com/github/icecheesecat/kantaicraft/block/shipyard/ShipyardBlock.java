@@ -1,7 +1,6 @@
 package com.github.icecheesecat.kantaicraft.block.shipyard;
 
 import com.github.icecheesecat.kantaicraft.block.facilities.FacilityCoreBlock;
-import com.github.icecheesecat.kantaicraft.block.facilities.FacilityPatterns;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -16,18 +15,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class ShipyardBlock extends FacilityCoreBlock {
 
-    public ShipyardBlock(Properties pProperties) {
-        super(FacilityPatterns.SHIPYARD, pProperties);
+    public ShipyardBlock() {
+        super();
     }
 
     @Override
     protected void rightClickActivity(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
 
-    }
-
-    @Override
-    protected <T extends BlockEntity> BlockEntityType<T> getBlockEntityType() {
-        return (BlockEntityType<T>) ModBlock.SHIPYARD_BETYPE.get();
     }
 
     @Override

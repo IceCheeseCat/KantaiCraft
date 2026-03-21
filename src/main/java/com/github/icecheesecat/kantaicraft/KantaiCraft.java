@@ -1,5 +1,6 @@
 package com.github.icecheesecat.kantaicraft;
 
+import com.github.icecheesecat.kantaicraft.block.facilities.FacilityPatterns;
 import com.github.icecheesecat.kantaicraft.command.ModCommands;
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentStats;
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentTree;
@@ -50,6 +51,7 @@ public class KantaiCraft
         ModItem.ITEMS.register(modEventBus);
         ModBlock.BLOCKS.register(modEventBus);
         ModBlock.BLOCK_ENTITIES.register(modEventBus);
+        FacilityPatterns.PATTERN_GETTERS.register(modEventBus);
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
         ModEntityDataSerializer.ENTITY_DATA_SERIALIZERS.register(modEventBus);
         EquipmentManager.init();

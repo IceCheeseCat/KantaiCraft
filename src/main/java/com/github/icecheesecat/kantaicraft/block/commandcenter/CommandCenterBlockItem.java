@@ -1,11 +1,8 @@
 package com.github.icecheesecat.kantaicraft.block.commandcenter;
 
+import com.github.icecheesecat.kantaicraft.item.BlockItem;
 import com.github.icecheesecat.kantaicraft.model.block.model.CommandCenterBlockModel;
-import com.github.icecheesecat.kantaicraft.model.block.renderer.CommandCenterBlockItemRenderer;
-import com.github.icecheesecat.kantaicraft.model.block.renderer.CommandCenterBlockRenderer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import software.bernie.geckolib.animatable.GeoItem;
@@ -14,8 +11,6 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animatable.instance.SingletonAnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.function.Consumer;
 

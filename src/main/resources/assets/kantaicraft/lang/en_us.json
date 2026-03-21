@@ -1,10 +1,14 @@
 {
   "entity.kantaicraft.destroyer_ro_class": "Destroyer Ro Class",
   "entity.kantaicraft.destroyer_i_class": "Destroyer I Class",
-
-  "item.kantaicraft.debug_faction_changer": "Faction Changer",
+  "entity.kantaicraft.inazuma": "Inazuma",
+  "entity.kantaicraft.ikazuchi": "Ikazuchi",
+  "entity.kantaicraft.akatsuki": "Akatsuki",
+  "entity.kantaicraft.hibiki": "Hibiki",
 
   "block.kantaicraft.facility_block": "Facility Block",
+  "block.kantaicraft.fuel_station_block": "Fuel Station Block",
+  "block.kantaicraft.shipyard_block": "Shipyard Block",
 
   "cannon_equipment.12cm_single_gun_mount": "12 cm Single Gun Mount",
   "cannon_equipment.12cm_twin_gun_mount": "12 cm Twin Gun Mount",
@@ -17,6 +21,5 @@
 
   "creativetab.tab_0": "KantaiCraft",
 
-  "key.categories.kantaicraft": "KantaiCraft",
-  "key.kantaicraft.debug_entity": "Debug Entity"
+  "key.categories.kantaicraft": "KantaiCraft"
 }

@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.block.facilities;
 
 import com.github.icecheesecat.kantaicraft.block.BlockStateProperties;
+import com.github.icecheesecat.kantaicraft.block.facilities.pattern.FacilityPattern;
 import com.github.icecheesecat.kantaicraft.block.facilities.pattern.FindPatternResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,9 +11,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.PushReaction;
@@ -22,16 +25,37 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * TODO fix lava breaking it (nah i will not fix this, since getCollisionShape is the same method as fluid colliding check method)
+ */
 
 public class FacilityBlock extends Block implements EntityBlock {
 
-    public FacilityBlock(Properties pProperties) {
-        super(pProperties);
+    private List<FacilityPattern> ALL_PATTERNS;
+
+    public FacilityBlock() {
+        super(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)
+                .dynamicShape()
+                .requiresCorrectToolForDrops()
+                .strength(5.0f, 6.0f)
+                .isValidSpawn(((pState, pLevel, pPos, pValue) -> false))
+                .pushReaction(PushReaction.BLOCK));
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(BlockStateProperties.IS_FACILITY_CORE, false)
                 .setValue(BlockStateProperties.WORKING_FACILITY, false)
                 .setValue(BlockStateProperties.FACILITY_FACING, Direction.EAST));
+    }
+
+    private void createPatterns() {
+        if (ALL_PATTERNS == null) {
+            ALL_PATTERNS = new ArrayList<>();
+            FacilityPatterns.PATTERN_GETTERS.getEntries().forEach(getterRegistryObject -> {
+                ALL_PATTERNS.add(getterRegistryObject.get().get());
+            });
+        }
     }
 
     @Override
@@ -61,6 +85,24 @@ public class FacilityBlock extends Block implements EntityBlock {
         return null;
     }
 
+    @Override
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
+        if (pLevel.isClientSide) return;
+        this.createPatterns();
+
+        this.ALL_PATTERNS.forEach(facilityPattern -> {
+            FindPatternResult result = facilityPattern.findPattern(pLevel, pPos);
+            if (result.isSuccess() && allFacilityBlocksCanWork(pLevel, result.getBlockPoses())) {
+                System.out.println(result.getDirection());
+                onPlaceLinkFacilityBlocks(pLevel, result);
+            }
+        });
+
+    }
+
+    private boolean allFacilityBlocksCanWork(Level level, List<BlockPos> blocks) {
+        return blocks.stream().noneMatch(pos -> level.getBlockState(pos).getValue(BlockStateProperties.WORKING_FACILITY));
+    }
 
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
@@ -90,7 +132,7 @@ public class FacilityBlock extends Block implements EntityBlock {
         super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
     }
 
-    protected void onRemoveUnlinkFacilityBlockAndBreakBlock(Level pLevel, BlockPos pPos){
+    protected void onRemoveUnlinkFacilityBlockAndBreakBlock(Level pLevel, BlockPos pPos) {
         BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
         if (blockEntity instanceof FacilityCoreBlockEntity coreEntity) {
             breakAndDropAllFacilityBlocks(pLevel, coreEntity.getLinkedFacilityBlocks());
@@ -114,7 +156,8 @@ public class FacilityBlock extends Block implements EntityBlock {
         if (!result.isSuccess()) return;
 
         result.getBlockPoses().forEach(pos -> {
-            BlockState blockState1 = level.getBlockState(pos).setValue(BlockStateProperties.WORKING_FACILITY, true)
+            BlockState blockState1 = level.getBlockState(pos)
+                    .setValue(BlockStateProperties.WORKING_FACILITY, true)
                     .setValue(BlockStateProperties.FACILITY_FACING, result.getDirection());
             if (pos == result.getCore()) {
                 blockState1 = blockState1.setValue(BlockStateProperties.IS_FACILITY_CORE, true);
@@ -131,13 +174,8 @@ public class FacilityBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public @Nullable PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.BLOCK;
-    }
-
-    @Override
     public RenderShape getRenderShape(BlockState pState) {
-        return isWorkingFacility(pState) ? RenderShape.ENTITYBLOCK_ANIMATED : RenderShape.MODEL;
+        return isWorkingFacility(pState) ? isFacilityCoreBlock(pState) ? RenderShape.ENTITYBLOCK_ANIMATED : RenderShape.INVISIBLE : RenderShape.MODEL;
     }
 
     @Nullable
@@ -152,6 +190,16 @@ public class FacilityBlock extends Block implements EntityBlock {
             return Shapes.empty();
         }
 
+        return pState.getShape(pLevel, pPos);
+    }
+
+    @Override
+    public VoxelShape getOcclusionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
+        if (pState.getValue(BlockStateProperties.WORKING_FACILITY)) {
+            return Shapes.empty();
+        }
+
         return Shapes.block();
     }
+
 }

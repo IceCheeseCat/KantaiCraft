@@ -1,7 +1,6 @@
 package com.github.icecheesecat.kantaicraft.block.facilities.fuelstation;
 
 import com.github.icecheesecat.kantaicraft.block.facilities.FacilityCoreBlock;
-import com.github.icecheesecat.kantaicraft.block.facilities.FacilityPatterns;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import com.github.icecheesecat.kantaicraft.util.ItemReplenishBlockTank;
 import net.minecraft.core.BlockPos;
@@ -18,8 +17,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class FuelStationBlock extends FacilityCoreBlock implements ItemReplenishBlockTank {
-    public FuelStationBlock(Properties pProperties) {
-        super(FacilityPatterns.FUEL_STATION, pProperties);
+    public FuelStationBlock() {
+        super();
     }
 
     @Override
@@ -31,11 +30,6 @@ public class FuelStationBlock extends FacilityCoreBlock implements ItemReplenish
         }
     }
 
-    @Override
-    protected <T extends BlockEntity> BlockEntityType<T> getBlockEntityType() {
-        return (BlockEntityType<T>) ModBlock.FUEL_STATION_BETYPE.get();
-    }
-
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
@@ -45,7 +39,7 @@ public class FuelStationBlock extends FacilityCoreBlock implements ItemReplenish
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return createTickerHelper(pBlockEntityType, this.getBlockEntityType(), FuelStationBlockEntity::tick);
+        return createTickerHelper(pBlockEntityType, ModBlock.FUEL_STATION_BETYPE.get(), FuelStationBlockEntity::tick);
     }
 
     @Override

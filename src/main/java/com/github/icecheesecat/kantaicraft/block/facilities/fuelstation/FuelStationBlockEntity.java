@@ -112,13 +112,16 @@ public class FuelStationBlockEntity extends FacilityCoreBlockEntity implements G
     protected void findNearbyEntity() {
         if (entityShip == null) {
             //find
-            var list = level.getEntitiesOfClass(EntityShip.class, findArea.inflate(0.5d), EntityShip::isPlayerShip);
+            var list = level.getEntitiesOfClass(EntityShip.class, findArea, EntityShip::isPlayerShip);
             this.entityShip = list.isEmpty() ? null : list.get(0);
             this.fullCountdown = 0;
         }
         else {
-            // out of range
-            if (!this.entityShip.getBoundingBox().intersects(findArea)) {
+            if (this.entityShip.isRemoved()) {
+                this.entityShip = null;
+            }
+            // leaved find area
+            else if (!this.findArea.intersects(this.entityShip.getBoundingBox())) {
                 this.entityShip = null;
             }
         }
@@ -163,7 +166,7 @@ public class FuelStationBlockEntity extends FacilityCoreBlockEntity implements G
                 }
             }
             case WORKING -> {
-                if (this.entityShip == null) {
+                if (this.entityShip == null || this.entityShip.isRemoved()) {
                     this.state = State.IDLE;
                 }
                 else if (this.lavaTank.isEmpty()) {
@@ -188,11 +191,11 @@ public class FuelStationBlockEntity extends FacilityCoreBlockEntity implements G
                 else if (this.lavaTank.isEmpty()) {
                     this.state = State.STATION_TANK_EMPTY;
                 }
-                else if (this.fullCountdown <= 0) {
-                    this.state = State.IDLE;
-                }
                 else if (this.entityShip.lavaFuelIsFull()) {
                     this.fullCountdown = FULL_COUNTDOWN;
+                }
+                else if (this.fullCountdown <= 0) {
+                    this.state = State.IDLE;
                 }
             }
         }
@@ -210,6 +213,10 @@ public class FuelStationBlockEntity extends FacilityCoreBlockEntity implements G
         blockEntity.evaluateState();
         blockEntity.tickFacility();
 
+    }
+
+    public FluidTank getLavaTank() {
+        return lavaTank;
     }
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);

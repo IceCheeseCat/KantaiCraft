@@ -52,8 +52,9 @@ public class PatternRotation {
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < height; j++) {
                 for (int k = 0; k < width; k++) {
-                    var result = traverseNodes(new boolean[length][height][width], level, blockPos, i, j, k);
-                    if (result.isSuccess()) {
+                    BlockPos shifted = blockPos.subtract(offsetNodes[i][j][k].getOffset());
+                    var result = traverseNodes(new boolean[length][height][width], level, shifted, i, j, k);
+                    if (result.isSuccess() && result.getCore() != null) {
                         return result;
                     }
                 }
