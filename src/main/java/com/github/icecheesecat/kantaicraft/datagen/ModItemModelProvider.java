@@ -14,14 +14,11 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     public ModItemModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper) {
         super(output, modid, existingFileHelper);
-//        this.modelName = modelName;
     }
 
     @Override
     protected void registerModels() {
-//        simpleItem(ModItem.TwelveCMSmallGunMount);
-//        simpleItem(ModItem.INAZUMA_SPAWN_EGG);
-//        simpleItem(ModItem.HOSTILE_INAZUMA_SPAWN_EGG);
+        this.simpleItem(ModItem.SHIP_BLUEPRINT);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

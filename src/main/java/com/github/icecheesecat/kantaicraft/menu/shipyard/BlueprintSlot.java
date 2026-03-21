@@ -20,8 +20,7 @@ public class BlueprintSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack pStack) {
-        if (!pStack.is(ModItem.SHIP_BLUEPRINT.get())) return false;
-        return super.mayPlace(pStack);
+        return pStack.is(ModItem.SHIP_BLUEPRINT.get()) && pStack.hasTag();
     }
 
     @Override
