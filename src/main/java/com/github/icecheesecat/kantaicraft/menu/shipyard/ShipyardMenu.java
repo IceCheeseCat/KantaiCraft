@@ -47,7 +47,7 @@ public class ShipyardMenu extends AbstractContainerMenu {
         // Shipyard blueprint item slots
         int bpX = 26;
         int bpY = 12;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < this.shipyardBlockEntity.processShipSize; i++) {
             var blueprintSlot = new BlueprintSlot(this.shipyardContainer, i, i, bpX, bpY + 23 * i, this.shipyardBlockEntity.getBlockPos());
             this.addSlot(blueprintSlot);
             this.blueprintSlots.add(blueprintSlot);
@@ -70,7 +70,7 @@ public class ShipyardMenu extends AbstractContainerMenu {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (pIndex < 36) {
-                if (!this.moveItemStackTo(itemstack1, 36, 40, false)) {
+                if (!this.moveItemStackTo(itemstack1, 36, 36 + this.shipyardBlockEntity.processShipSize, false)) {
                     return ItemStack.EMPTY;
                 }
             } else if (!this.moveItemStackTo(itemstack1, 0, 36, false)) {

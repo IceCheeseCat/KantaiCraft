@@ -31,15 +31,18 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.UUID;
 
-public class ShipyardBlockEntity extends FacilityCoreBlockEntity implements Container, MenuProvider {
+public class ShipyardBlockEntity extends FacilityCoreBlockEntity implements Container, MenuProvider, GeoBlockEntity {
 
     public final int processShipSize;
     protected int[] processTime;
     protected int[] maxProcessTime;
-//    protected NonNullList<Blueprint> builtShip;
     protected NonNullList<ItemStack> blueprintItems;
     protected NonNullList<ItemStack> prevBlueprintItems;
     protected NonNullList<UUID> owners;
@@ -47,15 +50,15 @@ public class ShipyardBlockEntity extends FacilityCoreBlockEntity implements Cont
 
     public ShipyardBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlock.SHIPYARD_BETYPE.get(), pPos, pBlockState);
-        this.processShipSize = 4;
+        this.processShipSize = 1; // constant size
         this.processTime = new int[this.processShipSize];
         this.maxProcessTime = new int[this.processShipSize];
         for (int i = 0; i < processShipSize; i++) {
             this.processTime[i] = this.maxProcessTime[i] = -1;
         }
-        blueprintItems = NonNullList.withSize(4, ItemStack.EMPTY);
-        prevBlueprintItems = NonNullList.withSize(4, ItemStack.EMPTY);
-        owners = NonNullList.withSize(4, Constant.uuidEmpty);
+        blueprintItems = NonNullList.withSize(this.processShipSize, ItemStack.EMPTY);
+        prevBlueprintItems = NonNullList.withSize(this.processShipSize, ItemStack.EMPTY);
+        owners = NonNullList.withSize(this.processShipSize, Constant.uuidEmpty);
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState state, ShipyardBlockEntity shipyardBlockEntity) {
@@ -326,4 +329,15 @@ public class ShipyardBlockEntity extends FacilityCoreBlockEntity implements Cont
         return Blueprint.createFromTag(this.getItem(i).getTag());
     }
 
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
+    }
 }
