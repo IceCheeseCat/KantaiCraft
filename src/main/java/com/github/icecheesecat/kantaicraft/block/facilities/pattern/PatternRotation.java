@@ -1,5 +1,6 @@
 package com.github.icecheesecat.kantaicraft.block.facilities.pattern;
 
+import com.github.icecheesecat.kantaicraft.block.BlockStateProperties;
 import com.github.icecheesecat.kantaicraft.block.facilities.FacilityCoreBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -76,6 +77,9 @@ public class PatternRotation {
         visit[i][j][k] = true;
         BlockPos offsetPos = this.offsetNodes[i][j][k].getOffset();
         BlockPos offseted = origin.offset(offsetPos);
+        if (level.getBlockState(offseted).hasProperty(BlockStateProperties.WORKING_FACILITY) && level.getBlockState(offseted).getValue(BlockStateProperties.WORKING_FACILITY)) {
+            return FindPatternResult.fail();
+        }
         if (!level.getBlockState(offseted).is(node.getBlock())) {
             return FindPatternResult.fail();
         }
