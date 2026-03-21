@@ -46,25 +46,15 @@ public class FuelStationRenderer extends GeoBlockRenderer<FuelStationBlockEntity
 
         poseStack.rotateAround(Axis.YN.rotation((float) (angle / 180.0f * Math.PI)), 0.5f, 0, 0.5f);
         if (animatable.getLevel() != null) {
-            int i = 0;
-
             super.defaultRender(poseStack, animatable, bufferSource, renderType, buffer, yaw, partialTick, packedLight);
-        }
-        else {
-            super.defaultRender(poseStack, animatable, bufferSource, renderType, buffer, yaw, partialTick, packedLight);
+            renderLavaTank(poseStack, animatable, bufferSource, packedLight);
         }
 
-        poseStack.pushPose();
-        renderLavaTank(poseStack, animatable, bufferSource, packedLight);
-
-        poseStack.popPose();
         poseStack.popPose();
     }
 
     private void renderLavaTank(PoseStack poseStack, FuelStationBlockEntity animatable, MultiBufferSource bufferSource, int packedLight) {
 
-        var lavaPos = new Vector3f(4.5f/16.0f, 1.0f/16.0f,0.01f);
-        poseStack.translate(lavaPos.x, lavaPos.y, lavaPos.z);
 
         // TODO render lava
         var fluidStack = animatable.getLavaTank().getFluid();
@@ -74,6 +64,11 @@ public class FuelStationRenderer extends GeoBlockRenderer<FuelStationBlockEntity
         IClientFluidTypeExtensions fluidTypeExtensions = IClientFluidTypeExtensions.of(fluidState);
         var stillSprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidTypeExtensions.getStillTexture());
         if (stillSprite == null) return;
+
+        poseStack.pushPose();
+
+        var lavaPos = new Vector3f(4.5f/16.0f, 1.0f/16.0f,0.01f);
+        poseStack.translate(lavaPos.x, lavaPos.y, lavaPos.z);
 
         int tintColor = fluidTypeExtensions.getTintColor(fluidStack);
 
@@ -110,6 +105,7 @@ public class FuelStationRenderer extends GeoBlockRenderer<FuelStationBlockEntity
         drawQuads(consumer, poseStack.last().pose(), normal, 0, 0, 0, width, height, 0, tintColor, stillSprite.getU0(), stillSprite.getV0(), stillSprite.getU1(), stillSprite.getV1(), packedLight);
         poseStack.popPose();
 
+        poseStack.popPose();
     }
 
 
