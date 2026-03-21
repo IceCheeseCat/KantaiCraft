@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft;
 
-import com.github.icecheesecat.kantaicraft.block.facilities.FacilityPatterns;
+import com.github.icecheesecat.kantaicraft.block.facilities.pattern.FacilityPatterns;
 import com.github.icecheesecat.kantaicraft.command.ModCommands;
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentStats;
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentTree;

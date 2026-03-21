@@ -1,7 +1,8 @@
-package com.github.icecheesecat.kantaicraft.block.facilities;
+package com.github.icecheesecat.kantaicraft.block.facilities.pattern;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.block.facilities.pattern.FacilityPattern;
+import com.github.icecheesecat.kantaicraft.block.facilities.FacilityBlock;
+import com.github.icecheesecat.kantaicraft.block.facilities.FacilityCoreBlock;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

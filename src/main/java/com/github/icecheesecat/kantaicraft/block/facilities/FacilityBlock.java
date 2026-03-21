@@ -2,6 +2,7 @@ package com.github.icecheesecat.kantaicraft.block.facilities;
 
 import com.github.icecheesecat.kantaicraft.block.BlockStateProperties;
 import com.github.icecheesecat.kantaicraft.block.facilities.pattern.FacilityPattern;
+import com.github.icecheesecat.kantaicraft.block.facilities.pattern.FacilityPatterns;
 import com.github.icecheesecat.kantaicraft.block.facilities.pattern.FindPatternResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
