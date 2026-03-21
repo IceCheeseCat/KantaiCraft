@@ -6,9 +6,12 @@
   "entity.kantaicraft.akatsuki": "Akatsuki",
   "entity.kantaicraft.hibiki": "Hibiki",
 
+  "item.kantaicraft.ship_blueprint": "Ship Blueprint",
+
   "block.kantaicraft.facility_block": "Facility Block",
-  "block.kantaicraft.fuel_station_block": "Fuel Station Block",
-  "block.kantaicraft.shipyard_block": "Shipyard Block",
+  "block.kantaicraft.fuel_station_block": "Fuel Station",
+  "block.kantaicraft.shipyard_block": "Shipyard",
+  "block.kantaicraft.command_center_block": "Command Center",
 
   "cannon_equipment.12cm_single_gun_mount": "12 cm Single Gun Mount",
   "cannon_equipment.12cm_twin_gun_mount": "12 cm Twin Gun Mount",
