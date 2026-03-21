@@ -32,8 +32,13 @@ import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.UUID;
@@ -330,14 +335,44 @@ public class ShipyardBlockEntity extends FacilityCoreBlockEntity implements Cont
     }
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-
-    }
+    private final RawAnimation working0 = RawAnimation.begin().thenLoop("working_crane_0");
+    private final RawAnimation working1 = RawAnimation.begin().thenLoop("working_crane_1");
+    private final RawAnimation idle = RawAnimation.begin().thenPlayAndHold("idle");
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.cache;
     }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<GeoAnimatable>(this, "idle", this::hideResourceAnimation));
+        controllers.add(new AnimationController<GeoAnimatable>(this, "working0", this::working0Animation));
+        controllers.add(new AnimationController<GeoAnimatable>(this, "working1", this::working1Animation));
+    }
+
+    private PlayState working0Animation(AnimationState<GeoAnimatable> animationState) {
+        if (this.hasProcess(0)) {
+            return animationState.setAndContinue(working0);
+        }
+
+        return PlayState.STOP;
+    }
+
+    private PlayState working1Animation(AnimationState<GeoAnimatable> animationState) {
+        if (this.hasProcess(0)) {
+            return animationState.setAndContinue(working1);
+        }
+
+        return PlayState.STOP;
+    }
+
+    private PlayState hideResourceAnimation(AnimationState<GeoAnimatable> animationState) {
+        if (!this.hasProcess(0)) {
+            return animationState.setAndContinue(idle);
+        }
+
+        return PlayState.STOP;
+    }
+
 }

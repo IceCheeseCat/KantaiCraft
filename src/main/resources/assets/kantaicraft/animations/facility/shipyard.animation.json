@@ -48,7 +48,7 @@
 		},
 		"working_crane_1": {
 			"loop": true,
-			"animation_length": 457.0417,
+			"animation_length": 22.5,
 			"bones": {
 				"resource2": {
 					"position": {
