@@ -9,9 +9,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.client.extensions.IForgeBlockAndTintGetter;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
-import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animatable.instance.SingletonAnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -19,11 +17,10 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class CommandCenterBlockEntity extends BlockEntity implements GeoBlockEntity {
 
-    protected static final RawAnimation IDLE_ANIMATION = RawAnimation.begin().thenLoop("idle");
+    protected static final RawAnimation QUILL_ANIMATION = RawAnimation.begin().thenPlay("quill");
     private final AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
 
     public CommandCenterBlockEntity(BlockPos pPos, BlockState pBlockState) {
@@ -36,7 +33,12 @@ public class CommandCenterBlockEntity extends BlockEntity implements GeoBlockEnt
     }
 
     protected <E extends CommandCenterBlockEntity> PlayState idleAnimation(final AnimationState<E> state) {
-        return state.setAndContinue(IDLE_ANIMATION);
+        if (this.level.getGameTime() % 60 == 0) {
+            state.setAnimation(QUILL_ANIMATION);
+            state.getController().forceAnimationReset();
+        }
+
+        return PlayState.CONTINUE;
     }
 
     @Override
