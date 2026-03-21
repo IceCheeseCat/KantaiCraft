@@ -23,7 +23,7 @@ import software.bernie.geckolib.renderer.GeoBlockRenderer;
 
 public class FuelStationRenderer extends GeoBlockRenderer<FuelStationBlockEntity> {
     public FuelStationRenderer(BlockEntityRendererProvider.Context context) {
-        super(new FuelStationModel<>(context));
+        super(new FuelStationModel(context));
     }
 
     @Override
