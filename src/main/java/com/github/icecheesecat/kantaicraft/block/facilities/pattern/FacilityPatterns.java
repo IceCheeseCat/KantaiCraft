@@ -27,7 +27,7 @@ public class FacilityPatterns {
 
     public static final DeferredRegister<FacilityPattern.Getter> PATTERN_GETTERS = DeferredRegister.create(new ResourceLocation(KantaiCraft.MODID, "facility_getters"), KantaiCraft.MODID);
     public static final Supplier<IForgeRegistry<FacilityPattern.Getter>> REGISTRY = PATTERN_GETTERS.makeRegistry(RegistryBuilder::new);
-    public static final RegistryObject<FacilityPattern.Getter> FUEL_STATION = PATTERN_GETTERS.register("fsp", () -> FUEL_STATION_PATTERN);
-    public static final RegistryObject<FacilityPattern.Getter> SHIPYARD = PATTERN_GETTERS.register("sp", () -> SHIPYARD_PATTERN);
+    public static final RegistryObject<FacilityPattern.Getter> FUEL_STATION = PATTERN_GETTERS.register("fuel_station", () -> FUEL_STATION_PATTERN);
+    public static final RegistryObject<FacilityPattern.Getter> SHIPYARD = PATTERN_GETTERS.register("shipyard", () -> SHIPYARD_PATTERN);
 
 }
