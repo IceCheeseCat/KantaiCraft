@@ -2,6 +2,8 @@ package com.github.icecheesecat.kantaicraft.block.facilities;
 
 import com.github.icecheesecat.kantaicraft.block.BlockStateProperties;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -16,20 +18,22 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public abstract class FacilityCoreBlock extends FacilityBlock {
     public FacilityCoreBlock() {
         super();
     }
 
-    public static InteractionResult openMenu(Level pLevel, BlockPos blockPos, Player pPlayer, BlockState pState) {
+    public static InteractionResult openMenu(Level pLevel, BlockPos blockPos, Player pPlayer, BlockState pState, Consumer<FriendlyByteBuf> bufferWriter) {
         if (isWorkingFacility(pState)) {
             BlockPos corePos = getFacilityCoreBlockPos(pLevel, blockPos);
             MenuProvider menuProvider = (MenuProvider) pLevel.getBlockEntity(corePos);
             if (menuProvider != null) {
-                pPlayer.openMenu(menuProvider);
+                NetworkHooks.openScreen((ServerPlayer) pPlayer, menuProvider, bufferWriter);
             }
             return InteractionResult.SUCCESS;
         }

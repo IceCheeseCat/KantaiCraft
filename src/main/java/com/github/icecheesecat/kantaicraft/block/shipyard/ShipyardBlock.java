@@ -21,7 +21,7 @@ public class ShipyardBlock extends FacilityCoreBlock {
 
     @Override
     protected void rightClickActivity(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-
+        openMenu(pLevel, pPos, pPlayer, pState, buf -> buf.writeBlockPos(pPos));
     }
 
     @Override
