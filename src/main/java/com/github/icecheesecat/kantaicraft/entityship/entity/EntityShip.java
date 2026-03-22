@@ -945,7 +945,8 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             event.getController().forceAnimationReset();
             event.getController().setAnimation(BLINK_ANIMATION);
         }
-        return PlayState.STOP;
+
+        return PlayState.CONTINUE;
     }
 
     protected <E extends EntityShip> PlayState idleAnimationController(final AnimationState<E> event) {
