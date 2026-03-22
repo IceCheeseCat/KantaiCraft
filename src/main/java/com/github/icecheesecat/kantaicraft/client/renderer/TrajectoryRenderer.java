@@ -20,25 +20,14 @@ public class TrajectoryRenderer {
 
     public static void renderCannonShellBoundingBox(PoseStack poseStack, VertexConsumer vertexConsumer, Vec3 flyingDirection, AABB boundingBox) {
         Vec3 cameraPosition = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-        // rotate the bounding box rendering to match shell flying direction
-//        Vector3f cross = UP.cross(flyingDirection).toVector3f();
-//        double angle = Math.acos(UP.dot(flyingDirection) / (UP.length() * flyingDirection.length()));
-//        var angleAxis = new AxisAngle4d(angle, cross.normalize());
-
         poseStack.pushPose();
         poseStack.translate(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
-//        poseStack.mulPose(new Quaternionf(angleAxis));
-
         LevelRenderer.renderLineBox(poseStack, vertexConsumer, boundingBox, 1.0f, 1.0f, 1.0f, 1.0f);
         poseStack.popPose();
     }
 
     private static void renderPartOfArc(PoseStack poseStack, VertexConsumer vertexConsumer, Vec3 prePos, Vec3 pos, int color) {
         Vec3 cameraPosition = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-//        Vec3 tangent = pos.subtract(prePos);
-//        Vector3f cross = UP.cross(tangent).toVector3f();
-//        double angle = Math.acos(UP.dot(tangent) / (UP.length() * tangent.length()));
-//        var angleAxis = new AxisAngle4d(angle, cross.normalize());
 
         float f3 = (float) FastColor.ARGB32.alpha(color) / 255.0F;
         float f = (float) FastColor.ARGB32.red(color) / 255.0F;
