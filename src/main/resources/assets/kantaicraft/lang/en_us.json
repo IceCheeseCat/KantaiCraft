@@ -18,9 +18,9 @@
   "cannon_equipment.12cm_twin_gun_mount_model_b_kai_2": "12 cm Twin Gun Mount Model B Kai II",
   "equipment.empty": "",
 
-  "ship_screen_main_section": "Main",
-  "ship_screen_equipment_section": "Equipment",
-  "ship_screen_inventory_section": "Inventory",
+  "ship_screen_main_page": "Main",
+  "ship_screen_equipment_page": "Equipment",
+  "ship_screen_inventory_page": "Inventory",
 
   "creativetab.tab_0": "KantaiCraft",
 

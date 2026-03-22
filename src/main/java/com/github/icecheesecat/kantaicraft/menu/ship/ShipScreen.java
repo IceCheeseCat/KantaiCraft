@@ -118,7 +118,7 @@ public class ShipScreen extends PageScreen<ShipMenu> {
         }
         this.statsLayout = createStatLayout();
 
-        // Next section button
+        // Next page button
         this.removeWidget(this.nextPageButton);
         this.nextPageButton = new CustomTextureButton((int) (this.width * 0.75f), SECTION_Y / 2, 16, 16, Component.empty(), NEXT_ICON, NEXT_ICON_HOVERED) {
             @Override
@@ -128,7 +128,7 @@ public class ShipScreen extends PageScreen<ShipMenu> {
         };
         this.addRenderableWidget(this.nextPageButton);
 
-        // Prev section button
+        // Prev page button
         this.removeWidget(this.prevPageButton);
         this.prevPageButton = new CustomTextureButton((int) (this.width * 0.25f), SECTION_Y / 2, 16, 16, Component.empty(), PREV_ICON, PREV_ICON_HOVERED) {
             @Override
@@ -161,24 +161,26 @@ public class ShipScreen extends PageScreen<ShipMenu> {
     }
 
     private Page createMainPage() {
-        MainPage gridPage = new MainPage(entityShip, Component.translatable("ship_screen_main_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
+        MainPage gridPage = new MainPage(entityShip, Component.translatable("ship_screen_main_page"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
         gridPage.appendGridlayout(createControlLayout());
         return gridPage;
     }
 
     private Page createEquipmentPage() {
-        Page page = new Page(Component.translatable("ship_screen_equipment_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
+        Page page = new Page(Component.translatable("ship_screen_equipment_page"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
         page.addAllWidget(createEquipmentWidgets());
 
         return page;
     }
 
     private Page createInventoryPage() {
-        InventoryPage screenSection = new InventoryPage(Component.translatable("ship_screen_inventory_section"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT, this.menu.slots);
-        int playerX = this.leftPos - 154  - 20;
-        int playerY = this.topPos + 3;
-        int shipX = this.leftPos + 18;
-        int shipY = this.topPos + 3;
+        InventoryPage screenSection = new InventoryPage(Component.translatable("ship_screen_inventory_page"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
+        int posX = 4;
+        int posY = 87;
+        int playerTitleX = posX;
+        int playerTitleY = posY + 20;
+        int shipX = posX;
+        int shipY = posY + 78 + 10;
         int blitOffset = 0;
         int white = FastColor.ARGB32.color(255, 255, 255, 255);
 
