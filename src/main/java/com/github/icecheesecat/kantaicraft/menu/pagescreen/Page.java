@@ -136,6 +136,7 @@ public class Page implements Renderable, GuiEventListener, NarratableEntry {
         public ImageDisplay(int x, int y, int blitOffset, int imageWidth, int imageHeight, ResourceLocation resourceLocation, float alpha) {
             this(x, y, blitOffset, imageWidth, imageHeight, 256, 256, resourceLocation, alpha);
         }
+
     }
 
     public record TextInstance(int x, int y, String text, int fontColor) {

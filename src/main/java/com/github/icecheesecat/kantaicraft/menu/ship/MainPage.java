@@ -3,6 +3,7 @@ package com.github.icecheesecat.kantaicraft.menu.ship;
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.menu.pagescreen.Page;
+import com.github.icecheesecat.kantaicraft.util.RenderingColor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
@@ -44,6 +45,11 @@ public class MainPage extends Page {
                 int max = tank.getTankCapacity(0);
 
                 blitPercentage(guiGraphics,  (float) amount / (float) max, x + 1, y + 1, 29, 126, fluidSprite);
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(x + 1, y+height, 0);
+                guiGraphics.pose().scale(0.5f, 0.5f, 0.5f);
+                guiGraphics.drawString(Minecraft.getInstance().font, amount + "/" + max, 0, 0, RenderingColor.WHITE);
+                guiGraphics.pose().popPose();
             }
         });
     }

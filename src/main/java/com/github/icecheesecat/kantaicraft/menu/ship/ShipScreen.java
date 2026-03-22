@@ -186,7 +186,7 @@ public class ShipScreen extends PageScreen<ShipMenu> {
     }
 
     private Page createInventoryPage() {
-        InventoryPage screenSection = new InventoryPage(Component.translatable("ship_screen_inventory_page"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
+        InventoryPage page = new InventoryPage(Component.translatable("ship_screen_inventory_page"), SECTION_X, SECTION_Y, SECTION_WIDTH, SECTION_HEIGHT);
         int posX = 4;
         int posY = 87;
         int playerTitleX = posX;
@@ -198,12 +198,12 @@ public class ShipScreen extends PageScreen<ShipMenu> {
 
         Page.ImageDisplay playerInventory = new Page.ImageDisplay(posX, posY, blitOffset, 256, 144,256, 144, INVENTORY_SLOTS, 1.0f);
         Page.ImageDisplay shipInventory = new Page.ImageDisplay(shipX, shipY, blitOffset, 256, 144,256, 144, INVENTORY_SLOTS, 1.0f);
-        screenSection.addImageDisplay(playerInventory);
-        screenSection.addImageDisplay(shipInventory);
+        page.addImageDisplay(playerInventory);
+        page.addImageDisplay(shipInventory);
 //        screenSection.addTextInstance(new Page.TextInstance(posX + 5, posY + 70, "Player Inventory", white));
 //        screenSection.addTextInstance(new Page.TextInstance(this.width - 80, posY + 70, "Ship Inventory", white));
 
-        return screenSection;
+        return page;
     }
 
     private GridLayout createControlLayout() {
