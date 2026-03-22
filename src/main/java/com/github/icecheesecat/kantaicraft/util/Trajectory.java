@@ -8,13 +8,15 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import oshi.util.tuples.Pair;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -103,12 +105,17 @@ public class Trajectory implements INBTSerializable<CompoundTag> {
 
 
     private TrajectoryHitResult getHitResult(Level pLevel) {
+        var entityHitResult = getEntityHitResult(pLevel, boundingBox);
+        if (!entityHitResult.missed()) {
+            return new TrajectoryHitResult(entityHitResult.getLocation(), entityHitResult.entity);
+        }
+
         BlockHitResult blockHitResult = pLevel.clip(new ClipContext(physics.prevPos, physics.pos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
         if (blockHitResult.getType() != HitResult.Type.MISS) {
             return new TrajectoryHitResult(blockHitResult.getLocation(), blockHitResult.getBlockPos());
         }
 
-        return getEntityHitResult(pLevel, boundingBox);
+        return TrajectoryHitResult.MISS;
     }
 
     @NotNull
