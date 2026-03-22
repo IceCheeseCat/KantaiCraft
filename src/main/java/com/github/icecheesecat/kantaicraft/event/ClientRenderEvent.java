@@ -44,7 +44,9 @@ public class ClientRenderEvent {
             level.getCapability(ClientLevelTrajectoryCapability.TOKEN).ifPresent(
                     clientLevelTrajectory -> {
                         clientLevelTrajectory.getTrajectories().forEach(trajectory -> {
-                            TrajectoryRenderer.renderCannonShellBoundingBox(poseStack, vertexConsumer, trajectory.getPhysics().getVel(), trajectory.getBoundingBox());
+                            if (EntityShipRenderer.debug) {
+                                TrajectoryRenderer.renderCannonShellBoundingBox(poseStack, vertexConsumer, trajectory.getPhysics().getVel(), trajectory.getBoundingBox());
+                            }
                             TrajectoryRenderer.renderArcOfTrajectory(clientLevelTrajectory.getPointsOfArc(trajectory.getId()), poseStack, vertexConsumer);
                         });
                     }
