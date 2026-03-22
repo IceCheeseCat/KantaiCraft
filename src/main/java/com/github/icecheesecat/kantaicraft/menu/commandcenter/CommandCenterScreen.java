@@ -53,6 +53,12 @@ public class CommandCenterScreen extends PageScreen<CommandCenterMenu> implement
         this.addPage(this::createEquipmentPage);
     }
 
+    @Override
+    protected void initVar() {
+        this.leftPos = (this.width - this.imageWidth) / 2;
+        this.topPos = (this.height - this.imageHeight) / 2;
+    }
+
     public static List<Component> getShipPreviewContent(EntityShip entityShip) {
 
         return List.of(Component.translatable(entityShip.getName().getString()), Component.literal(String.valueOf(entityShip.getShipLevel())));
@@ -63,11 +69,6 @@ public class CommandCenterScreen extends PageScreen<CommandCenterMenu> implement
         Minecraft.getInstance().player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData -> {
             ModPacketHandler.INSTANCE.sendToServer(new CommandCenterRequestSummonPacket(summonUUID, blockPos));
         });
-    }
-
-    @Override
-    protected void init() {
-        super.init();
     }
 
     protected Page createShipPage() {

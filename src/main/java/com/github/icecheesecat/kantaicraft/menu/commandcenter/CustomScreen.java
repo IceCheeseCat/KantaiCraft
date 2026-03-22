@@ -1,10 +1,8 @@
 package com.github.icecheesecat.kantaicraft.menu.commandcenter;
 
-import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.menu.Refreshable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -17,9 +15,11 @@ public abstract class CustomScreen<T extends AbstractContainerMenu> extends Abst
         super(pMenu, pPlayerInventory, pTitle);
     }
 
+    protected abstract void initVar();
+
+    @Override
     protected void init() {
-        this.leftPos = (this.width - this.imageWidth) / 2;
-        this.topPos = (this.height - this.imageHeight) / 2;
+        this.initVar();
     }
 
     protected final void renderWithOriginalSize(ResourceLocation resourceLocation, GuiGraphics guiGraphics, int imageWidth, int imageHeight) {
