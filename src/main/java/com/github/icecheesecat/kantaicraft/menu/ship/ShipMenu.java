@@ -30,35 +30,33 @@ public class ShipMenu extends AbstractContainerMenu implements IContainerFactory
         this.shipInventory = entityShip.getShipInventory();
 
         // player inventory
-        int playerX = - 154  - 19;
-        int playerY = 0;
-        int slotSize = 17;
-        int playerHotbarY = playerY + slotSize * 3 + 8;
-        for(int l = 0; l < 3; ++l) {
-            for(int j1 = 0; j1 < 9; ++j1) {
-                this.addSlot(new ToggleSlot(this.playerInventory, j1 + (l + 1) * 9, playerX + j1 * slotSize, playerY + l * slotSize + 4));
-            }
+        int playerX = 5;
+        int playerY = 70;
+        int slotWidth = 18;
+
+        for (int i = 9; i < 36; i++) {
+            int row = i / 9;
+            int col = i % 9;
+            this.addSlot(new ToggleSlot(this.playerInventory, i, playerX + col * slotWidth, playerY + row * slotWidth));
         }
 
-        for(int i1 = 0; i1 < 9; ++i1) {
-            this.addSlot(new ToggleSlot(this.playerInventory, i1, playerX + i1 * slotSize, playerHotbarY));
+        playerY += 72;
+        for (int i = 0; i < 9; i++) {
+            int row = i / 9;
+            int col = i % 9;
+            this.addSlot(new ToggleSlot(this.playerInventory, i, playerX + col * slotWidth, playerY + row * slotWidth));
         }
-
-
 
         // ship inventory
-        int shipX = 19;
-        int shipY = 0;
-        int shipHotbarY = shipY + slotSize * 3 + 8;
-        for(int l = 0; l < 3; ++l) {
-            for(int j1 = 0; j1 < 9; ++j1) {
-                this.addSlot(new ToggleSlot(this.shipInventory, j1 + (l + 1) * 9, shipX + j1 * slotSize, shipY + l * slotSize + 4));
-            }
+        int shipX = 5;
+        int shipY = playerY + 34;
+        int shipInvSize = this.shipInventory.getContainerSize();
+        for (int i = 0; i < shipInvSize; i++) {
+            int row = i / 9;
+            int col = i % 9;
+            this.addSlot(new ToggleSlot(this.shipInventory, i, shipX + col * slotWidth, shipY + row * slotWidth));
         }
 
-        for(int i1 = 0; i1 < 9; ++i1) {
-            this.addSlot(new ToggleSlot(this.shipInventory, i1, shipX + i1 * slotSize, shipHotbarY));
-        }
     }
 
     // client

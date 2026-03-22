@@ -4,6 +4,7 @@ import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.menu.IconWithTextElement;
+import com.github.icecheesecat.kantaicraft.menu.ToggleSlot;
 import com.github.icecheesecat.kantaicraft.menu.pagescreen.Page;
 import com.github.icecheesecat.kantaicraft.menu.pagescreen.PageScreen;
 import com.github.icecheesecat.kantaicraft.network.packet.entityship.SyncType;
@@ -76,9 +77,10 @@ public class ShipScreen extends PageScreen<ShipMenu> {
         this.entityShip = this.getMenu().getEntityShip();
         this.addPage(this::createMainPage);
         this.addPage(this::createEquipmentPage);
+        this.addPage(this::createInventoryPage);
     }
 
-    private void initVar() {
+    protected void initVar() {
         this.imageWidth = 256;
         this.imageHeight = 144;
         this.width = Minecraft.getInstance().screen.width;
@@ -110,7 +112,6 @@ public class ShipScreen extends PageScreen<ShipMenu> {
 
     @Override
     protected void init() {
-        initVar();
         super.init();
 
         if (this.statsLayout != null) {
@@ -157,7 +158,18 @@ public class ShipScreen extends PageScreen<ShipMenu> {
             }
         };
         this.addRenderableOnly(this.pageTitleDisplayer);
+        
+        if (this.getCurrentPage().getTitle().equals(Component.translatable("ship_screen_inventory_page"))) {
+            this.menu.slots.forEach(slot -> ((ToggleSlot) slot).setActive(true));
+        }
+        else {
+            this.menu.slots.forEach(slot -> ((ToggleSlot) slot).setActive(false));
+        }
 
+        if (this.getCurrentPage() instanceof InventoryPage) {
+            MODEL_X = (int) (this.width * 0.75);
+            MODEL_Y = this.height + 40;
+        }
     }
 
     private Page createMainPage() {
@@ -184,12 +196,12 @@ public class ShipScreen extends PageScreen<ShipMenu> {
         int blitOffset = 0;
         int white = FastColor.ARGB32.color(255, 255, 255, 255);
 
-        Page.ImageDisplay playerInventoryDisplay = new Page.ImageDisplay(playerX, playerY, blitOffset, 154, 73, INVENTORY_SLOTS, 0.8f);
-        Page.ImageDisplay shipInventoryDisplay = new Page.ImageDisplay(shipX, shipY, blitOffset,154, 73, INVENTORY_SLOTS, 0.8f);
-        screenSection.addImageDisplay(playerInventoryDisplay);
-        screenSection.addTextInstance(new Page.TextInstance(playerX, playerY-10, "Player Inventory", white));
-        screenSection.addImageDisplay(shipInventoryDisplay);
-        screenSection.addTextInstance(new Page.TextInstance(shipX, shipY-10, "Ship Inventory", white));
+        Page.ImageDisplay playerInventory = new Page.ImageDisplay(posX, posY, blitOffset, 256, 144,256, 144, INVENTORY_SLOTS, 1.0f);
+        Page.ImageDisplay shipInventory = new Page.ImageDisplay(shipX, shipY, blitOffset, 256, 144,256, 144, INVENTORY_SLOTS, 1.0f);
+        screenSection.addImageDisplay(playerInventory);
+        screenSection.addImageDisplay(shipInventory);
+//        screenSection.addTextInstance(new Page.TextInstance(posX + 5, posY + 70, "Player Inventory", white));
+//        screenSection.addTextInstance(new Page.TextInstance(this.width - 80, posY + 70, "Ship Inventory", white));
 
         return screenSection;
     }
