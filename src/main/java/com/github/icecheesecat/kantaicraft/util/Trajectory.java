@@ -219,15 +219,10 @@ public class Trajectory implements INBTSerializable<CompoundTag> {
             return null;
         }
 
+        Vec3 flat = new Vec3(b.x - a.x, 0, b.z - a.z).normalize();
+        Vec3 fireDirectionVec = flat.add(0, Math.tan(theta),0).normalize();
 
-        Vec3 atob = b.subtract(a);
-        Vec3 normal = new Vec3(0, 1, 0);
-        Vec3 project = atob.subtract(normal.scale(atob.dot(normal)/normal.length()/normal.length()));
-
-        Vec3 np = normal.scale(Math.tan(theta));
-        Vec3 desire = project.normalize().add(np).normalize().scale(v);
-
-        return desire;
+        return fireDirectionVec.scale(v);
     }
 
     @Override
