@@ -1,8 +1,7 @@
 package com.github.icecheesecat.kantaicraft.client;
 
-import com.github.icecheesecat.kantaicraft.playerkantaidata.PlayerKantaiData;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.menu.commandcenter.CommandCenterScreen;
+import com.github.icecheesecat.kantaicraft.playerkantaidata.PlayerKantaiData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 
@@ -21,7 +20,7 @@ public class ClientPlayerKantaiDataCache {
 
     private void cacheEntityShips(PlayerKantaiData playerKantaiData) {
         entitiesCache.entrySet().removeIf((entry) -> {
-            boolean none = playerKantaiData.getShips().stream().noneMatch(serializeEntityShip -> serializeEntityShip.getUuid().equals(entry.getKey()));
+            boolean none = playerKantaiData.getInDockShips().stream().noneMatch(serializeEntityShip -> serializeEntityShip.getUuid().equals(entry.getKey()));
             if (none) {
                 entry.getValue().discard();
                 return true;
@@ -29,10 +28,13 @@ public class ClientPlayerKantaiDataCache {
             return false;
         });
 
-        playerKantaiData.getShips().forEach(serializeEntityShip -> {
+        playerKantaiData.getInDockShips().forEach(serializeEntityShip -> {
             if (!entitiesCache.containsKey(serializeEntityShip.getUuid())) {
                 if (Minecraft.getInstance().level != null) {
-                    entitiesCache.put(serializeEntityShip.getUuid(), (EntityShip) serializeEntityShip.getEntityType().create(Minecraft.getInstance().level));
+                    if (serializeEntityShip.getEntityType().create(Minecraft.getInstance().level) instanceof EntityShip entityShip) {
+                        entityShip.setNoAnimation();
+                        entitiesCache.put(serializeEntityShip.getUuid(), entityShip);
+                    }
                 }
             }
         });

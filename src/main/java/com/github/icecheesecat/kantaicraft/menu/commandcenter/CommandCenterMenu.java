@@ -1,7 +1,5 @@
 package com.github.icecheesecat.kantaicraft.menu.commandcenter;
 
-import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.RequestPlayerKantaiDataPacket;
 import com.github.icecheesecat.kantaicraft.registries.ModBlock;
 import com.github.icecheesecat.kantaicraft.registries.ModMenu;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,7 +21,6 @@ public class CommandCenterMenu extends AbstractContainerMenu {
 
     public CommandCenterMenu(int containerId, Inventory playerInv, FriendlyByteBuf extraData) {
         this(containerId, playerInv, ContainerLevelAccess.NULL);
-        ModPacketHandler.INSTANCE.sendToServer(new RequestPlayerKantaiDataPacket(this.player.getUUID()));
     }
 
     @Override
