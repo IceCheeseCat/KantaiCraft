@@ -73,9 +73,11 @@ public class FacilityBlock extends Block implements EntityBlock {
     }
 
     public static @Nullable BlockPos getFacilityCoreBlockPos(Level level, BlockPos blockPos) {
-        if (!level.getBlockState(blockPos).getValue(BlockStateProperties.WORKING_FACILITY)) return null;
-        if (level.getBlockState(blockPos).getValue(BlockStateProperties.IS_FACILITY_CORE)) return blockPos;
-        return level.getBlockEntity(blockPos) instanceof FacilityBlockEntity facilityBlockEntity ? facilityBlockEntity.getCorePos() : null;
+        if (level.getBlockEntity(blockPos) instanceof FacilityBlockEntity facilityBlockEntity) {
+            if (facilityBlockEntity.isFacilityRemoved()) return null;
+            else return facilityBlockEntity.getCorePos();
+        }
+        return null;
     }
 
     public static @Nullable BlockEntity getCoreBlockEntity(Level level, BlockPos blockPos) {
@@ -128,30 +130,17 @@ public class FacilityBlock extends Block implements EntityBlock {
 
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
-        onRemoveUnlinkFacilityBlockAndBreakBlock(pLevel, pPos);
+        if (pState.hasProperty(BlockStateProperties.WORKING_FACILITY)) {
+            if (pState.getValue(BlockStateProperties.WORKING_FACILITY) && !pState.getValue(BlockStateProperties.IS_FACILITY_CORE)) {
+                BlockPos corePos = getFacilityCoreBlockPos(pLevel, pPos);
+                if (corePos != null) {
+                    pLevel.destroyBlock(corePos, true);
+                }
+            }
+        }
 
         super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
     }
-
-    protected void onRemoveUnlinkFacilityBlockAndBreakBlock(Level pLevel, BlockPos pPos) {
-        BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-        if (blockEntity instanceof FacilityCoreBlockEntity coreEntity) {
-            breakAndDropAllFacilityBlocks(pLevel, coreEntity.getLinkedFacilityBlocks());
-        }
-        else if (blockEntity instanceof FacilityBlockEntity facilityBlockEntity) {
-            FacilityCoreBlockEntity be = facilityBlockEntity.getCoreBlockEntity();
-            if (be != null) {
-                breakAndDropAllFacilityBlocks(pLevel, be.getLinkedFacilityBlocks());
-            }
-        }
-    }
-
-    private void breakAndDropAllFacilityBlocks(Level level, List<BlockPos> blockPoses) {
-        for (var pos: blockPoses) {
-            level.destroyBlock(pos, true);
-        }
-    }
-
 
     protected void onPlaceLinkFacilityBlocks(Level level, FindPatternResult result) {
         if (!result.isSuccess()) return;

@@ -19,7 +19,9 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -49,11 +51,13 @@ public abstract class FacilityCoreBlock extends FacilityBlock {
     @Override
     public List<ItemStack> getDrops(BlockState pState, LootParams.Builder pParams) {
         var drops = super.getDrops(pState, pParams);
-        BlockEntity blockentity = (BlockEntity)pParams.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        for (ItemStack drop : drops) {
-            if (drop.is(this.asItem())) {
-                BlockItem.setBlockEntityData(drop, blockentity.getType(), blockentity.saveWithoutMetadata());
-                break;
+        BlockEntity blockentity = (BlockEntity) pParams.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+        if (blockentity instanceof FacilityCoreBlockEntity facilityCoreBlockEntity && pState.getValue(BlockStateProperties.WORKING_FACILITY)) {
+            for (ItemStack drop : drops) {
+                if (drop.is(this.asItem())) {
+                    BlockItem.setBlockEntityData(drop, blockentity.getType(), facilityCoreBlockEntity.saveExtraData());
+                    break;
+                }
             }
         }
 
@@ -78,5 +82,39 @@ public abstract class FacilityCoreBlock extends FacilityBlock {
     }
 
     protected abstract void rightClickActivity(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit);
+
+    @Override
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
+        if (pState.getValue(BlockStateProperties.WORKING_FACILITY)) {
+            var linked = unlinkFacilities(pLevel, pPos);
+            if (linked != null) {
+                for (var pos: linked) {
+                    pLevel.destroyBlock(pos, true);
+                }
+            }
+        }
+
+        super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
+    }
+
+    @Nullable
+    protected List<BlockPos> unlinkFacilities(Level level, BlockPos blockPos) {
+
+        if (level.getBlockEntity(blockPos) instanceof FacilityCoreBlockEntity facilityCoreBlockEntity) {
+
+            var linked = new ArrayList<>(facilityCoreBlockEntity.getLinkedFacilityBlocks());
+            if (linked.isEmpty()) return null;
+
+            for (var pos: linked) {
+                if (level.getBlockEntity(pos) instanceof FacilityBlockEntity facilityBlockEntity) {
+                    facilityBlockEntity.onRemove();
+                }
+            }
+
+            return linked;
+        }
+
+        return null;
+    }
 
 }

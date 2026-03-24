@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class FacilityBlockEntity extends BlockEntity {
+    private boolean facilityRemoved = false;
     private BlockPos corePos = new BlockPos(0, -100, 0);
     public FacilityBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlock.FACILITY_BETYPE.get(), pPos, pBlockState);
@@ -43,5 +44,14 @@ public class FacilityBlockEntity extends BlockEntity {
         if (pTag.contains("core_pos")) {
             this.corePos = CompoundTagHelper.readBlockPos(pTag.getCompound("core_pos"));
         }
+    }
+
+    public void onRemove() {
+        this.facilityRemoved = true;
+        this.corePos = BlockPos.ZERO;
+    }
+
+    public boolean isFacilityRemoved() {
+        return this.facilityRemoved;
     }
 }

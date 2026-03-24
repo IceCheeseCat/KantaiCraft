@@ -38,6 +38,14 @@ public abstract class FacilityCoreBlockEntity extends FacilityBlockEntity {
     }
 
     @Override
+    public void onRemove() {
+        super.onRemove();
+        this.linkedFacilityBlocks.clear();
+        this.start = BlockPos.ZERO;
+        this.end = BlockPos.ZERO;
+    }
+
+    @Override
     protected final void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
         if (linkedFacilityBlocks != null) {
