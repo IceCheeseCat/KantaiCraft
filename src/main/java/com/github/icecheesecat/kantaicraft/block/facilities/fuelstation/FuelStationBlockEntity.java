@@ -60,7 +60,13 @@ public class FuelStationBlockEntity extends FacilityCoreBlockEntity implements G
 
     public void createFindArea() {
         if (this.start != null && this.end != null) {
-            this.findArea = new AABB(this.start, this.end);
+            this.findArea = new AABB(start, start.offset(1,1,1));
+            for (var pos: this.getLinkedFacilityBlocks()) {
+                var aabb = new AABB(pos, pos.offset(1,1,1));
+                this.findArea = this.findArea.minmax(aabb);
+            }
+
+//            this.findArea = new AABB(this.start, this.end.offset(1, 1, 1));
         }
     }
 
@@ -85,10 +91,10 @@ public class FuelStationBlockEntity extends FacilityCoreBlockEntity implements G
     }
 
     public Component getWorkingStatus() {
-        String statusString = this.state.name() + " lava :" + this.lavaTank.getFluidAmount();
+        String statusString = this.state.name() + " lava :" + this.lavaTank.getFluidAmount() + "/" + this.lavaTank.getCapacity();
 
         if (entityShip != null) {
-            statusString += this.entityShip.getName().getString();
+            statusString += " " + this.entityShip.getName().getString();
         }
 
         return Component.translatable(statusString);
