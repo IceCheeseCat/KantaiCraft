@@ -96,7 +96,6 @@ public class FacilityBlock extends Block implements EntityBlock {
         this.ALL_PATTERNS.forEach(facilityPattern -> {
             FindPatternResult result = facilityPattern.findPattern(pLevel, pPos);
             if (result.isSuccess() && allFacilityBlocksCanWork(pLevel, result.getBlockPoses())) {
-                System.out.println(result.getDirection());
                 onPlaceLinkFacilityBlocks(pLevel, result);
             }
         });
