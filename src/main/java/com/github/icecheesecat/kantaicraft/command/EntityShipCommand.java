@@ -56,7 +56,7 @@ public class EntityShipCommand {
                 playerKantaiData -> {
                     ModEntity.getAllPlayerShips().forEach(
                             entityType -> {
-                                playerKantaiData.addShip(entityType, (ServerLevel) player.level());
+                                playerKantaiData.addShipInDock(entityType, (ServerLevel) player.level());
                                 source.sendSuccess(() -> Component.literal("Added " + entityType + " to PlayerKantaiData"), true);
                             }
                     );
@@ -78,7 +78,7 @@ public class EntityShipCommand {
                 playerKantaiData -> {
                         EntityType<?> entityType = pType.value();
 
-                        playerKantaiData.addShip(entityType, (ServerLevel) player.level());
+                        playerKantaiData.addShipInDock(entityType, (ServerLevel) player.level());
                         source.sendSuccess(() -> Component.literal("Added " + entityType + " to PlayerKantaiData"), true);
                 }
         );

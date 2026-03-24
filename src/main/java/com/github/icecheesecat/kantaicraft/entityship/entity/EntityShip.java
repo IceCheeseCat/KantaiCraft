@@ -2,6 +2,7 @@ package com.github.icecheesecat.kantaicraft.entityship.entity;
 
 import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
+import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.entityship.animation.BlinkAnimationControl;
 import com.github.icecheesecat.kantaicraft.entityship.stance.Stance;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
@@ -686,6 +687,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public void setShipOwner(UUID uuid) {
         if (this.isHostileSide()) return;
         this.entityData.set(DATA_SHIP_OWNER, Optional.of(uuid));
+        addPlayerShipToPlayerKantaiData();
     }
 
     @Nullable
@@ -728,48 +730,21 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (!super.hurt(pSource, pAmount)) {
-            return false;
-        }
-
-        if (pSource.getEntity() != null && pSource.getEntity().is(this)) {
-            return false;
-        }
-
-        if (pSource.getEntity() instanceof LivingEntity livingEntity) {
-            // damage from shipowner
-            if (livingEntity instanceof Player player && this.isShipOwner(player)) {
-                return true;
+        if (pSource.is(DamageTypes.PLAYER_ATTACK)) {
+            if (this.isShipOwner((Player) pSource.getEntity())) {
+                return super.hurt(pSource, pAmount);
             }
-
-            this.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, livingEntity);
+            else {
+                return super.hurt(pSource, 0.0f);
+            }
         }
 
-        return true;
+        return super.hurt(pSource, pAmount);
     }
 
     @Override
     public boolean isInvulnerableTo(DamageSource pSource) {
         return pSource.is(DamageTypes.FALL) || super.isInvulnerableTo(pSource);
-    }
-
-    /**
-     * Only {@link EntityShip} has the full damage output on entity
-     */
-    @Override
-    protected void actuallyHurt(DamageSource pDamageSource, float pDamageAmount) {
-        if (pDamageSource.is(DamageTypes.GENERIC_KILL)) {
-            super.actuallyHurt(pDamageSource, pDamageAmount);
-        }
-        else if (pDamageSource.getEntity() instanceof EntityShip entityShip) {
-            super.actuallyHurt(pDamageSource, pDamageAmount);
-        }
-        else if (pDamageSource.is(DamageTypes.PLAYER_ATTACK) && isShipOwner((Player) pDamageSource.getEntity())) {
-            super.actuallyHurt(pDamageSource, pDamageAmount);
-        }
-        else {
-            super.actuallyHurt(pDamageSource, 1.0f);
-        }
     }
 
     @Override
@@ -1041,5 +1016,35 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     public boolean lavaFuelIsFull() {
         return this.lavaFuelCapability.getFluidTank().getFluidAmount() == this.lavaFuelCapability.getFluidTank().getCapacity();
+    }
+
+    @Override
+    public void onAddedToWorld() {
+        super.onAddedToWorld();
+        addPlayerShipToPlayerKantaiData();
+    }
+
+    private void addPlayerShipToPlayerKantaiData() {
+        if (this.isPlayerShip()) {
+            this.getPlayerOwner().ifPresent(player -> {
+                player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData -> {
+                    playerKantaiData.addShipOnDuty(this);
+                    System.out.println(playerKantaiData.debugString());
+                });;
+            });
+        }
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        super.onRemovedFromWorld();
+        if (this.isPlayerShip()) {
+            this.getPlayerOwner().ifPresent(player -> {
+                player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData -> {
+                    playerKantaiData.removeShipOnDuty(this.getUUID());
+                    System.out.println(playerKantaiData.debugString());
+                });
+            });
+        }
     }
 }

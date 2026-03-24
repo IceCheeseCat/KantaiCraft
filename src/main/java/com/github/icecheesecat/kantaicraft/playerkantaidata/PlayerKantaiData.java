@@ -45,13 +45,13 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
 
-        inDockShips.clear();
         onDutyShips.clear();
+        inDockShips.clear();
         equipments.clear();
 
-        CompoundTagHelper.deserializeList(nbt, "onDutyShips", SerializedLivingEntity::createFromNbt);
-        CompoundTagHelper.deserializeList(nbt, "inDockShips", SerializedLivingEntity::createFromNbt);
-        CompoundTagHelper.deserializeList(nbt, "equipments", Equipment::makeFromCompoundTag);
+        onDutyShips.addAll(CompoundTagHelper.deserializeList(nbt, "onDutyShips", SerializedLivingEntity::createFromNbt));
+        inDockShips.addAll(CompoundTagHelper.deserializeList(nbt, "inDockShips", SerializedLivingEntity::createFromNbt));
+        equipments.addAll(CompoundTagHelper.deserializeList(nbt, "equipments", Equipment::makeFromCompoundTag));
 
     }
 
@@ -64,21 +64,34 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         this.equipments.addAll(data.equipments);
     }
 
-    public void addShip(EntityShip entityShip) {
+    public void addShipInDock(EntityShip entityShip) {
         this.inDockShips.add(new SerializedLivingEntity(entityShip));
         updateToClient();
     }
 
-    public void addShip(EntityType<?> entityType, ServerLevel serverLevel) {
+    public void addShipInDock(EntityType<?> entityType, ServerLevel serverLevel) {
         var entityShip = (EntityShip) entityType.create(serverLevel);
-        this.addShip(entityShip);
+        this.addShipInDock(entityShip);
         updateToClient();
     }
 
-    private void removeShip(UUID uuid) {
+    public void addShipOnDuty(EntityShip entityShip) {
+        this.onDutyShips.add(new SerializedLivingEntity(entityShip));
+        updateToClient();
+    }
+
+    private void removeShipInDock(UUID uuid) {
         var optional = this.inDockShips.stream().filter(serializedLivingEntity -> serializedLivingEntity.getUuid().equals(uuid)).findFirst();
         if (optional.isPresent()) {
             this.inDockShips.remove(optional.get());
+            updateToClient();
+        }
+    }
+
+    public void removeShipOnDuty(UUID uuid) {
+        var optional = this.onDutyShips.stream().filter(serializedLivingEntity -> serializedLivingEntity.getUuid().equals(uuid)).findFirst();
+        if (optional.isPresent()) {
+            this.onDutyShips.remove(optional.get());
             updateToClient();
         }
     }
@@ -114,7 +127,29 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         entityShip.setPos(summonLocation.getX() + 0.5f, summonLocation.getY(), summonLocation.getZ() + 0.5f);
         entityShip.setShipOwner(player.getUUID());
         player.level().addFreshEntity(entityShip);
-        this.removeShip(ses.getUuid());
+        this.removeShipInDock(ses.getUuid());
+    }
+
+    public String debugString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("On duty ships: ").append("\n");
+        for (int i = 0; i < this.onDutyShips.size(); i++) {
+            stringBuilder.append("  ").append(i).append(" -> ").append(this.onDutyShips.get(i)).append("\n");
+        }
+
+        stringBuilder.append("In dock ships: ").append("\n");
+        for (int i = 0; i < this.inDockShips.size(); i++) {
+            stringBuilder.append("  ").append(i).append(" -> ").append(this.inDockShips.get(i)).append("\n");
+        }
+
+        stringBuilder.append("Equipments: ").append("\n");
+        for (int i = 0; i < this.equipments.size(); i++) {
+            stringBuilder.append("  ").append(i).append(" -> ").append(this.equipments.get(i)).append("\n");
+        }
+
+        return stringBuilder.toString();
+
     }
 
 

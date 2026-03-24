@@ -34,7 +34,7 @@ public class SerializedLivingEntity implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
-        nbt.putString("entityType", this.entityType.toString());
+        nbt.putString("entityType", EntityType.getKey(this.entityType).toString());
         nbt.putUUID("uuid", this.uuid);
         nbt.put("entityTag", this.entityTag);
 
@@ -60,5 +60,10 @@ public class SerializedLivingEntity implements INBTSerializable<CompoundTag> {
 
     public CompoundTag getEntityTag() {
         return entityTag;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + this.entityType.toString() + ", " + this.uuid + "]";
     }
 }
