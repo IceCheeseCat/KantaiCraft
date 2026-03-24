@@ -299,6 +299,10 @@ public class ShipyardBlockEntity extends FacilityCoreBlockEntity implements Cont
         return (float) this.processTime[i] / this.maxProcessTime[i];
     }
 
+    public boolean isProcessDone(int i) {
+        return this.getProcessAt(i) == this.getMaxProcessAt(i);
+    }
+
     @Override
     public boolean stillValid(Player pPlayer) {
         return Container.stillValidBlockEntity(this, pPlayer);
@@ -331,6 +335,9 @@ public class ShipyardBlockEntity extends FacilityCoreBlockEntity implements Cont
     }
 
     public Blueprint getBlueprintAt(int i) {
+        if (this.getItem(i).isEmpty()) {
+            return Blueprint.createEmpty();
+        }
         return Blueprint.createFromTag(this.getItem(i).getTag());
     }
 

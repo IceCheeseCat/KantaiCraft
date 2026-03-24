@@ -46,7 +46,7 @@ public class ShipyardMenu extends AbstractContainerMenu {
 
         // Shipyard blueprint item slots
         int bpX = 26;
-        int bpY = 12;
+        int bpY = 45;
         for (int i = 0; i < this.shipyardBlockEntity.processShipSize; i++) {
             var blueprintSlot = new BlueprintSlot(this.shipyardContainer, i, i, bpX, bpY + 23 * i, this.shipyardBlockEntity.getBlockPos());
             this.addSlot(blueprintSlot);

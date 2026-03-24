@@ -120,6 +120,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     LazyOptional<EquipmentHandler> lazyEquipmentHandler = LazyOptional.of(() -> equipmentHandler);
     private ShipAnimationState prevAnimationShipAnimationState;
     private long lastEmotionChangedTick = -1;
+    private boolean noAnimation = false;
 
     public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentClass> equippableTypes) {
         super(entityType, level);
@@ -966,11 +967,16 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     protected <E extends EntityShip> PlayState burnOutAnimationController(final AnimationState<E> event) {
+        if (noAnimation) return PlayState.STOP;
         if (this.hasNoFuel()) {
             return event.setAndContinue(BURN_OUT_ANIMATION);
         }
 
         return PlayState.STOP;
+    }
+
+    public void setNoAnimation() {
+        this.noAnimation = true;
     }
 
     private boolean isWalkingOrRunning() {
