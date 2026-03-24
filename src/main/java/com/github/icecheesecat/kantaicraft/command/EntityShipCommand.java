@@ -96,8 +96,8 @@ public class EntityShipCommand {
 
         player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
                 playerKantaiData -> {
-                    playerKantaiData.getShips().forEach(serializedEntityShip -> source.sendSuccess(() -> Component.literal("Removed " + serializedEntityShip.getEntityType() + " from PlayerKantaiData"), true));
-                    playerKantaiData.getShips().clear();
+                    playerKantaiData.getInDockShips().forEach(serializedEntityShip -> source.sendSuccess(() -> Component.literal("Removed " + serializedEntityShip.getEntityType() + " from PlayerKantaiData"), true));
+                    playerKantaiData.getInDockShips().clear();
                 }
         );
 
@@ -115,8 +115,8 @@ public class EntityShipCommand {
         player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
                 playerKantaiData -> {
                     String string = "";
-                    for (int i = 0; i < playerKantaiData.getShips().size(); i++) {
-                        string = string.concat(i + " : " + playerKantaiData.getShips().get(i).getEntityType().toString() + "\n");
+                    for (int i = 0; i < playerKantaiData.getInDockShips().size(); i++) {
+                        string = string.concat(i + " : " + playerKantaiData.getInDockShips().get(i).getEntityType().toString() + "\n");
                     }
 
                     source.sendSystemMessage(Component.literal(string));

@@ -10,8 +10,6 @@ import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentOpt
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.RequestEquipmentOptionsPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.fuelstation.FuelStationPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataPacket;
-import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataUpdatedPacket;
-import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.RequestPlayerKantaiDataPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.shipyard.SetShipyardSlotOwnerPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.shipyard.ShipyardPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.shipyard.ShipyardSpawnEntityPacket;
@@ -95,22 +93,6 @@ public class ModPacketHandler {
                 PlayerKantaiDataPacket::encode,
                 PlayerKantaiDataPacket::decode,
                 PlayerKantaiDataPacket::handle
-        );
-
-        INSTANCE.registerMessage(
-                id++,
-                RequestPlayerKantaiDataPacket.class,
-                RequestPlayerKantaiDataPacket::encode,
-                RequestPlayerKantaiDataPacket::decode,
-                RequestPlayerKantaiDataPacket::handle
-        );
-
-        INSTANCE.registerMessage(
-                id++,
-                PlayerKantaiDataUpdatedPacket.class,
-                PlayerKantaiDataUpdatedPacket::encode,
-                PlayerKantaiDataUpdatedPacket::decode,
-                PlayerKantaiDataUpdatedPacket::handle
         );
 
         INSTANCE.registerMessage(

@@ -1,10 +1,11 @@
 package com.github.icecheesecat.kantaicraft.playerkantaidata;
 
-import com.github.icecheesecat.kantaicraft.capability.kantaidata.SerializedEntityShip;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
-import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataUpdatedPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataPacket;
+import com.github.icecheesecat.kantaicraft.util.CompoundTagHelper;
+import com.github.icecheesecat.kantaicraft.util.SerializedLivingEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -21,7 +22,8 @@ import java.util.UUID;
 
 public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 
-    protected final List<SerializedEntityShip> ships = new ArrayList<>();
+    protected final List<SerializedLivingEntity> inDockShips = new ArrayList<>();
+    protected final List<SerializedLivingEntity> onDutyShips = new ArrayList<>();
     protected final List<Equipment> equipments = new ArrayList<>();
     private Player player;
 
@@ -33,15 +35,9 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
 
-        nbt.putInt("ships", ships.size());
-        for (int i = 0; i < ships.size(); i++) {
-            nbt.put("ships." + i,  ships.get(i).serializeNBT());
-        }
-
-        nbt.putInt("equipments", equipments.size());
-        for (int i = 0; i < equipments.size(); i++) {
-            nbt.put("equipments." + i,  equipments.get(i).serializeNBT());
-        }
+        CompoundTagHelper.serializeList(nbt, "onDutyShips", this.onDutyShips, (SerializedLivingEntity::serializeNBT));
+        CompoundTagHelper.serializeList(nbt, "inDockShips", this.inDockShips, (SerializedLivingEntity::serializeNBT));
+        CompoundTagHelper.serializeList(nbt, "equipments", this.equipments, (Equipment::serializeNBT));
 
         return nbt;
     }
@@ -49,30 +45,27 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
 
-        int ships_size = nbt.getInt("ships");
-        ships.clear();
-        for (int i = 0; i < ships_size; i++) {
-            ships.add(i, SerializedEntityShip.createFromNbt(nbt.getCompound("ships." + i)));
-        }
-
-        int equipments_size = nbt.getInt("equipments");
+        inDockShips.clear();
+        onDutyShips.clear();
         equipments.clear();
-        for (int i = 0; i < equipments_size; i++) {
-            Equipment equipment = Equipment.makeFromCompoundTag(nbt.getCompound("equipments." + i));
-            equipments.add(i, equipment);
-        }
+
+        CompoundTagHelper.deserializeList(nbt, "onDutyShips", SerializedLivingEntity::createFromNbt);
+        CompoundTagHelper.deserializeList(nbt, "inDockShips", SerializedLivingEntity::createFromNbt);
+        CompoundTagHelper.deserializeList(nbt, "equipments", Equipment::makeFromCompoundTag);
 
     }
 
-    public void setDataOnClient(PlayerKantaiData data) {
-        this.ships.clear();
+    public void setData(PlayerKantaiData data) {
+        this.inDockShips.clear();
+        this.onDutyShips.clear();
         this.equipments.clear();
-        this.ships.addAll(data.ships);
+        this.inDockShips.addAll(data.inDockShips);
+        this.onDutyShips.addAll(data.inDockShips);
         this.equipments.addAll(data.equipments);
     }
 
     public void addShip(EntityShip entityShip) {
-        this.ships.add(new SerializedEntityShip(entityShip));
+        this.inDockShips.add(new SerializedLivingEntity(entityShip));
         updateToClient();
     }
 
@@ -83,9 +76,9 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
     }
 
     private void removeShip(UUID uuid) {
-        var optional = this.ships.stream().filter(serializedEntityShip -> serializedEntityShip.getUuid().equals(uuid)).findFirst();
+        var optional = this.inDockShips.stream().filter(serializedLivingEntity -> serializedLivingEntity.getUuid().equals(uuid)).findFirst();
         if (optional.isPresent()) {
-            this.ships.remove(optional.get());
+            this.inDockShips.remove(optional.get());
             updateToClient();
         }
     }
@@ -95,23 +88,27 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         updateToClient();
     }
 
-    public List<SerializedEntityShip> getShips() {
-        return ships;
+    public List<SerializedLivingEntity> getInDockShips() {
+        return inDockShips;
     }
 
-    public Optional<SerializedEntityShip> getSerializedEntityShipByUUID(UUID uuid) {
-        return this.ships.stream().filter(serializedEntityShip -> serializedEntityShip.getUuid().equals(uuid)).findFirst();
+    public Optional<SerializedLivingEntity> getSerializedEntityShipByUUID(UUID uuid) {
+        return this.inDockShips.stream().filter(serializedLivingEntity -> serializedLivingEntity.getUuid().equals(uuid)).findFirst();
     }
 
     public List<Equipment> getEquipments() {
         return equipments;
     }
 
-    protected void updateToClient() {
-        ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new PlayerKantaiDataUpdatedPacket());
+    public Player getPlayer() {
+        return player;
     }
 
-    public void summonToLevel(ServerPlayer player, SerializedEntityShip ses, BlockPos summonLocation) {
+    protected void updateToClient() {
+        ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new PlayerKantaiDataPacket(player.getId(), this));
+    }
+
+    public void summonToLevel(ServerPlayer player, SerializedLivingEntity ses, BlockPos summonLocation) {
         EntityShip entityShip = (EntityShip) ses.getEntityType().create(player.level());
         if (entityShip == null) return;
         entityShip.setPos(summonLocation.getX() + 0.5f, summonLocation.getY(), summonLocation.getZ() + 0.5f);
