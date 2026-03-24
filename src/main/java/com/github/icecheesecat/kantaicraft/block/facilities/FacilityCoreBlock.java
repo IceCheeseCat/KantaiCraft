@@ -55,7 +55,7 @@ public abstract class FacilityCoreBlock extends FacilityBlock {
         if (blockentity instanceof FacilityCoreBlockEntity facilityCoreBlockEntity && pState.getValue(BlockStateProperties.WORKING_FACILITY)) {
             for (ItemStack drop : drops) {
                 if (drop.is(this.asItem())) {
-                    BlockItem.setBlockEntityData(drop, blockentity.getType(), facilityCoreBlockEntity.saveExtraData());
+                    BlockItem.setBlockEntityData(drop, blockentity.getType(), facilityCoreBlockEntity.saveWithoutMetadata());
                     break;
                 }
             }
