@@ -1,7 +1,8 @@
 package com.github.icecheesecat.kantaicraft.network;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.network.packet.commandcenter.CommandCenterRequestSummonPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.commandcenter.DispatchEntityShipPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.commandcenter.RetrieveEntityShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.entityship.DropIndicationPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.entityship.LavaFuelPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.entityship.TogglePlayerShipPacket;
@@ -10,7 +11,6 @@ import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentOpt
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.RequestEquipmentOptionsPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.fuelstation.FuelStationPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataPacket;
-import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.RetrieveEntityShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.shipyard.SetShipyardSlotOwnerPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.shipyard.ShipyardPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.shipyard.ShipyardSpawnEntityPacket;
@@ -123,10 +123,10 @@ public class ModPacketHandler {
 
         INSTANCE.registerMessage(
                 id++,
-                CommandCenterRequestSummonPacket.class,
-                CommandCenterRequestSummonPacket::encode,
-                CommandCenterRequestSummonPacket::decode,
-                CommandCenterRequestSummonPacket::handle
+                DispatchEntityShipPacket.class,
+                DispatchEntityShipPacket::encode,
+                DispatchEntityShipPacket::decode,
+                DispatchEntityShipPacket::handle
         );
 
         INSTANCE.registerMessage(
