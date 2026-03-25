@@ -2,7 +2,6 @@ package com.github.icecheesecat.kantaicraft.event;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.indicateditementities.IndicatedItemEntitiesCapability;
-import com.github.icecheesecat.kantaicraft.capability.kantaidata.ClientPlayerKantaiDataCacheCapability;
 import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.capability.trajectory.ClientLevelTrajectoryCapability;
 import com.github.icecheesecat.kantaicraft.capability.trajectory.ServerLevelTrajectoryCapability;
@@ -34,7 +33,6 @@ public class CapabilitiesEvent {
             if (player instanceof LocalPlayer localPlayer) {
                 if (!localPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
                     event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.player_kantai_data"), new PlayerKantaiDataCapability(localPlayer));
-                    event.addCapability(new ResourceLocation(KantaiCraft.MODID, "capability.client_player_kantai_data_cache"), new ClientPlayerKantaiDataCacheCapability());
                 }
             }
 
