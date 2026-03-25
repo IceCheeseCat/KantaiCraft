@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata;
+package com.github.icecheesecat.kantaicraft.network.packet.commandcenter;
 
 import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
