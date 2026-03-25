@@ -10,6 +10,7 @@ import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentOpt
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.RequestEquipmentOptionsPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.fuelstation.FuelStationPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.RetrieveEntityShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.shipyard.SetShipyardSlotOwnerPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.shipyard.ShipyardPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.shipyard.ShipyardSpawnEntityPacket;
@@ -95,6 +96,15 @@ public class ModPacketHandler {
                 PlayerKantaiDataPacket::handle
         );
 
+
+        INSTANCE.registerMessage(
+                id++,
+                PlayerKantaiDataPacket.Request.class,
+                PlayerKantaiDataPacket.Request::encode,
+                PlayerKantaiDataPacket.Request::decode,
+                PlayerKantaiDataPacket.Request::handle
+        );
+
         INSTANCE.registerMessage(
                 id++,
                 SetShipyardSlotOwnerPacket.class,
@@ -141,6 +151,14 @@ public class ModPacketHandler {
                 FuelStationPacket::encode,
                 FuelStationPacket::decode,
                 FuelStationPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                RetrieveEntityShipPacket.class,
+                RetrieveEntityShipPacket::encode,
+                RetrieveEntityShipPacket::decode,
+                RetrieveEntityShipPacket::handle
         );
 
     }
