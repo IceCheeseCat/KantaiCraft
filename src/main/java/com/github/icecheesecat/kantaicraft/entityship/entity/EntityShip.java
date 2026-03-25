@@ -1027,7 +1027,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             this.getPlayerOwner().ifPresent(player -> {
                 player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData -> {
                     playerKantaiData.addShipOnDuty(this);
-                    System.out.println(playerKantaiData.debugString());
+//                    System.out.println(playerKantaiData.debugString());
                 });;
             });
         }
@@ -1040,7 +1040,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             this.getPlayerOwner().ifPresent(player -> {
                 player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData -> {
                     playerKantaiData.removeShipOnDuty(this.getUUID());
-                    System.out.println(playerKantaiData.debugString());
+//                    System.out.println(playerKantaiData.debugString());
                 });
             });
         }
