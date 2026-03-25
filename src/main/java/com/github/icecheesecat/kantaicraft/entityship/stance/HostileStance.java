@@ -4,6 +4,7 @@ import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.entityship.entity.ShipLeveling;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -41,4 +42,6 @@ public interface HostileStance extends Stance {
     default boolean isNeutralSide() {
         return false;
     }
+
+    EntityType<?> getPlayerSideEntityType();
 }
