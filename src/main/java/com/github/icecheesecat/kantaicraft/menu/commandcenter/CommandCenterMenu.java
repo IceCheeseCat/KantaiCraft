@@ -21,6 +21,7 @@ public class CommandCenterMenu extends AbstractContainerMenu {
 
     public CommandCenterMenu(int containerId, Inventory playerInv, FriendlyByteBuf extraData) {
         this(containerId, playerInv, ContainerLevelAccess.NULL);
+//        ModPacketHandler.INSTANCE.sendToServer(new PlayerKantaiDataPacket.Request(this.player.getId()));
     }
 
     @Override

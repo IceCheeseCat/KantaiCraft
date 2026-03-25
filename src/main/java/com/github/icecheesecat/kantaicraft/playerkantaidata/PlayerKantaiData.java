@@ -60,7 +60,7 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         this.onDutyShips.clear();
         this.equipments.clear();
         this.inDockShips.addAll(data.inDockShips);
-        this.onDutyShips.addAll(data.inDockShips);
+        this.onDutyShips.addAll(data.onDutyShips);
         this.equipments.addAll(data.equipments);
     }
 
@@ -103,6 +103,10 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 
     public List<SerializedLivingEntity> getInDockShips() {
         return inDockShips;
+    }
+
+    public List<SerializedLivingEntity> getOnDutyShips() {
+        return onDutyShips;
     }
 
     public Optional<SerializedLivingEntity> getSerializedEntityShipByUUID(UUID uuid) {

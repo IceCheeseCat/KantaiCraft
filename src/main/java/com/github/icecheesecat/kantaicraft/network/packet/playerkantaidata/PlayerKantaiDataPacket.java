@@ -3,6 +3,7 @@ package com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata;
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.menu.Refreshable;
+import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.playerkantaidata.PlayerKantaiData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.function.Supplier;
 
@@ -77,5 +79,33 @@ public class PlayerKantaiDataPacket {
         ctx.get().setPacketHandled(true);
     }
 
+    public static class Request {
+
+        int playerId;
+        public Request(int playerId) {
+            this.playerId = playerId;
+        }
+
+        public static void encode(Request packet, FriendlyByteBuf buf) {
+            buf.writeInt(packet.playerId);
+        }
+
+        public static Request decode(FriendlyByteBuf buf) {
+            return new Request(buf.readInt());
+        }
+
+        public static void handle(Request packet, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+                if (ctx.get().getSender().level().getEntity(packet.playerId) instanceof Player player) {
+                    player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(pkd -> {
+                        ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new PlayerKantaiDataPacket(packet.playerId, pkd));
+                    });
+                }
+
+            });
+            ctx.get().setPacketHandled(true);
+        }
+
+    }
 
 }
