@@ -2,7 +2,6 @@ package com.github.icecheesecat.kantaicraft.entityship.entity;
 
 import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
-import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.entityship.animation.BlinkAnimationControl;
 import com.github.icecheesecat.kantaicraft.entityship.stance.HostileStance;
 import com.github.icecheesecat.kantaicraft.entityship.stance.Stance;
@@ -696,7 +695,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public void setShipOwner(UUID uuid) {
         if (this.isHostileSide()) return;
         this.entityData.set(DATA_SHIP_OWNER, Optional.of(uuid));
-        addPlayerShipToPlayerKantaiData();
     }
 
     @Nullable
@@ -1030,36 +1028,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     public boolean lavaFuelIsFull() {
         return this.lavaFuelCapability.getFluidTank().getFluidAmount() == this.lavaFuelCapability.getFluidTank().getCapacity();
-    }
-
-    @Override
-    public void onAddedToWorld() {
-        super.onAddedToWorld();
-        addPlayerShipToPlayerKantaiData();
-    }
-
-    private void addPlayerShipToPlayerKantaiData() {
-        if (this.isPlayerShip()) {
-            this.getPlayerOwner().ifPresent(player -> {
-                player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData -> {
-                    playerKantaiData.addShipOnDuty(this);
-//                    System.out.println(playerKantaiData.debugString());
-                });;
-            });
-        }
-    }
-
-    @Override
-    public void onRemovedFromWorld() {
-        super.onRemovedFromWorld();
-        if (this.isPlayerShip()) {
-            this.getPlayerOwner().ifPresent(player -> {
-                player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData -> {
-                    playerKantaiData.removeShipOnDuty(this.getUUID());
-//                    System.out.println(playerKantaiData.debugString());
-                });
-            });
-        }
     }
 
     public static void handleRetrieveFromLevel(ServerLevel serverLevel, UUID uuid, PlayerKantaiData playerKantaiData) {
