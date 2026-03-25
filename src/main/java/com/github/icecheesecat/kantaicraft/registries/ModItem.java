@@ -42,6 +42,7 @@ public class ModItem
 
 	public static final RegistryObject<Item> HOSTILE_INAZUMA_SPAWN_EGG = ITEMS.register("hostile_inazuma", () -> new ShipSpawnEgg(ModEntity.HostileShip.INAZUMA, FastColor.ABGR32.red(128), FastColor.ABGR32.green(128),
 			(ship, player) -> {
+				ship.setHealth(8.0f);
 			}
 	, new Item.Properties()));
 	public static final RegistryObject<Item> SHIP_BLUEPRINT = ITEMS.register("ship_blueprint", () -> new BlueprintItem(new Item.Properties().stacksTo(1)));
