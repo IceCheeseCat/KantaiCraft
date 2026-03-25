@@ -2,14 +2,11 @@ package com.github.icecheesecat.kantaicraft.path;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.util.RandomPos;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.pathfinder.*;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ShipPathFinder extends PathFinder {
     private NodeEvaluator nodeEvaluator;

@@ -1,6 +1,5 @@
 package com.github.icecheesecat.kantaicraft.common;
 
-import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
