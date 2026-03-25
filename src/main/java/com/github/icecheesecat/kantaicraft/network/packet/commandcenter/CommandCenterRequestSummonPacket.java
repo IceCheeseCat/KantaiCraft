@@ -1,6 +1,8 @@
 package com.github.icecheesecat.kantaicraft.network.packet.commandcenter;
 
 import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
+import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
+import com.github.icecheesecat.kantaicraft.util.SerializedLivingEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,9 +40,10 @@ public class CommandCenterRequestSummonPacket {
             ServerPlayer serverPlayer = ctx.get().getSender();
             serverPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
                     playerKantaiData -> {
-                        var ses = playerKantaiData.getSerializedEntityShipByUUID(packet.summonUUID);
-                        if (ses.isEmpty()) return;
-                        playerKantaiData.summonToLevel(serverPlayer, ses.get(), packet.summonLocation);
+                        var optional = playerKantaiData.removeShipInDock(packet.summonUUID);
+                        if (optional.isPresent()) {
+                            summonToLevel(serverPlayer, optional.get(), packet.summonLocation);
+                        }
                     }
             );
 
@@ -49,4 +52,13 @@ public class CommandCenterRequestSummonPacket {
 
         ctx.get().setPacketHandled(true);
     }
+
+    public static void summonToLevel(ServerPlayer player, SerializedLivingEntity ses, BlockPos summonLocation) {
+        EntityShip entityShip = (EntityShip) ses.getEntityType().create(player.level());
+        if (entityShip == null) return;
+        entityShip.load(ses.getEntityTag());
+        entityShip.setPos(summonLocation.getX() + 0.5f, summonLocation.getY(), summonLocation.getZ() + 0.5f);
+        player.level().addFreshEntity(entityShip);
+    }
+
 }

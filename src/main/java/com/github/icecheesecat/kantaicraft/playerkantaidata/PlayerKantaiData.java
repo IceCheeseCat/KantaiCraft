@@ -6,10 +6,8 @@ import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataPacket;
 import com.github.icecheesecat.kantaicraft.util.CompoundTagHelper;
 import com.github.icecheesecat.kantaicraft.util.SerializedLivingEntity;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -80,20 +78,26 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         updateToClient();
     }
 
-    private void removeShipInDock(UUID uuid) {
+    public Optional<SerializedLivingEntity> removeShipInDock(UUID uuid) {
         var optional = this.inDockShips.stream().filter(serializedLivingEntity -> serializedLivingEntity.getUuid().equals(uuid)).findFirst();
         if (optional.isPresent()) {
             this.inDockShips.remove(optional.get());
             updateToClient();
+            return optional;
         }
+
+        return Optional.empty();
     }
 
-    public void removeShipOnDuty(UUID uuid) {
+    public Optional<SerializedLivingEntity> removeShipOnDuty(UUID uuid) {
         var optional = this.onDutyShips.stream().filter(serializedLivingEntity -> serializedLivingEntity.getUuid().equals(uuid)).findFirst();
         if (optional.isPresent()) {
             this.onDutyShips.remove(optional.get());
             updateToClient();
+            return optional;
         }
+
+        return Optional.empty();
     }
 
     public void addEquipment(Equipment equipment) {
@@ -109,10 +113,6 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         return onDutyShips;
     }
 
-    public Optional<SerializedLivingEntity> getSerializedEntityShipByUUID(UUID uuid) {
-        return this.inDockShips.stream().filter(serializedLivingEntity -> serializedLivingEntity.getUuid().equals(uuid)).findFirst();
-    }
-
     public List<Equipment> getEquipments() {
         return equipments;
     }
@@ -121,17 +121,8 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         return player;
     }
 
-    protected void updateToClient() {
-        ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new PlayerKantaiDataPacket(player.getId(), this));
-    }
-
-    public void summonToLevel(ServerPlayer player, SerializedLivingEntity ses, BlockPos summonLocation) {
-        EntityShip entityShip = (EntityShip) ses.getEntityType().create(player.level());
-        if (entityShip == null) return;
-        entityShip.setPos(summonLocation.getX() + 0.5f, summonLocation.getY(), summonLocation.getZ() + 0.5f);
-        entityShip.setShipOwner(player.getUUID());
-        player.level().addFreshEntity(entityShip);
-        this.removeShipInDock(ses.getUuid());
+    public void updateToClient() {
+        ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new PlayerKantaiDataPacket(player.getId(), this));
     }
 
     public String debugString() {
@@ -155,6 +146,5 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         return stringBuilder.toString();
 
     }
-
 
 }
