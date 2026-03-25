@@ -4,6 +4,7 @@ import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.entityship.animation.BlinkAnimationControl;
+import com.github.icecheesecat.kantaicraft.entityship.stance.HostileStance;
 import com.github.icecheesecat.kantaicraft.entityship.stance.Stance;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
@@ -55,6 +56,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -76,9 +78,7 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEntity, MenuProvider, GeoEntity, Stance {
 
@@ -206,7 +206,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     public boolean hasFuel() {
-        return this.lavaFuelCapability.getFluidTank().getFluidAmount() != 0;
+        return this.lavaFuelCapability.getFluidTank().getFluidAmount() > 0;
     }
 
     public boolean hasNoFuel() {
@@ -582,8 +582,11 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     // save blueprint to itemstack nbt
     public Blueprint makeBlueprint() {
-        return isHostileSide() ? Blueprint.createWithLevelZero(this) :
-                Blueprint.create(this);
+        if (this instanceof HostileStance hostileStance) {
+            return Blueprint.createWithLevelZero(this, hostileStance);
+        }
+
+        return Blueprint.create(this);
     }
 
     public abstract Rarity getRarity();
@@ -642,11 +645,15 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     @Override
     protected void dropCustomDeathLoot(DamageSource pSource, int pLooting, boolean pRecentlyHit) {
         super.dropCustomDeathLoot(pSource, pLooting, pRecentlyHit);
+        Collection<ItemEntity> drops = new ArrayList<>();
+
         // drop a blueprint of this ship
         ItemStack itemStack = new ItemStack(ModItem.SHIP_BLUEPRINT.get());
         itemStack.setTag(this.makeBlueprint().serializeNBT());
         ItemEntity blueprintEntity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), itemStack);
-        level().addFreshEntity(blueprintEntity);
+        if (level().addFreshEntity(blueprintEntity)) {
+            drops.add(blueprintEntity);
+        }
 
         // drop all item in ship's inventory
         if (hasInventory()) {
@@ -654,9 +661,13 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
                 ItemStack stack = this.inventory.getItem(i);
                 if (stack.isEmpty()) continue;
                 ItemEntity itemEntity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), stack);
-                level().addFreshEntity(itemEntity);
+                if (level().addFreshEntity(itemEntity)) {
+                    drops.add(blueprintEntity);
+                }
             }
         }
+
+        ForgeHooks.onLivingDrops(this, pSource, drops, 0, true);
 
     }
 
@@ -772,7 +783,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     @Override
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
         if (pPlayer.level().isClientSide) {
-            return InteractionResult.SUCCESS;
+            return InteractionResult.PASS;
         }
         if (this.isHostileSide()) {
             return InteractionResult.PASS;
@@ -971,7 +982,12 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         friendlybytebuf.writeInt(0);
         friendlybytebuf.writeFloat(this.getHealth());
         friendlybytebuf.writeFloat(this.getMaxHealth());
-        friendlybytebuf.writeUtf(this.inventory.toString());
+        if (this.inventory == null) {
+            friendlybytebuf.writeUtf("");
+        }
+        else {
+            friendlybytebuf.writeUtf(this.inventory.toString());
+        }
         friendlybytebuf.writeBoolean(false); // path
         friendlybytebuf.writeBoolean(false);
         friendlybytebuf.writeInt(0);
