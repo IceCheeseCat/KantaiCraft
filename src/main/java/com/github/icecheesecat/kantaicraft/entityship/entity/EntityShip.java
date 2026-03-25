@@ -11,6 +11,7 @@ import com.github.icecheesecat.kantaicraft.menu.ship.ShipMenu;
 import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentHandlerPacket;
+import com.github.icecheesecat.kantaicraft.playerkantaidata.PlayerKantaiData;
 import com.github.icecheesecat.kantaicraft.registries.ModActivity;
 import com.github.icecheesecat.kantaicraft.registries.ModEntityDataSerializer;
 import com.github.icecheesecat.kantaicraft.registries.ModItem;
@@ -37,10 +38,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -1045,6 +1043,13 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
                     System.out.println(playerKantaiData.debugString());
                 });
             });
+        }
+    }
+
+    public static void handleRetrieveFromLevel(ServerLevel serverLevel, UUID uuid, PlayerKantaiData playerKantaiData) {
+        if (serverLevel.getEntity(uuid) instanceof EntityShip entityShip) {
+            playerKantaiData.addShipInDock(entityShip);
+            entityShip.remove(Entity.RemovalReason.DISCARDED);
         }
     }
 }
