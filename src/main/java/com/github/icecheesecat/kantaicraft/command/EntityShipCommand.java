@@ -33,9 +33,14 @@ public class EntityShipCommand {
         }));
     }
 
-    public static LiteralArgumentBuilder<CommandSourceStack> createRemoveAllEntityShip() {
-        return Commands.literal("removeAll").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).executes((commandSourceStack) -> {
-            return removeAllEntityShip(commandSourceStack.getSource());
+    public static LiteralArgumentBuilder<CommandSourceStack> createRemoveAllInDock() {
+        return Commands.literal("removeAllInDock").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).executes((commandSourceStack) -> {
+            return removeAllInDock(commandSourceStack.getSource());
+        });
+    }
+    public static LiteralArgumentBuilder<CommandSourceStack> createRemoveAllOnDuty() {
+        return Commands.literal("removeAllOnDuty").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).executes((commandSourceStack) -> {
+            return removeAllOnDuty(commandSourceStack.getSource());
         });
     }
 
@@ -87,7 +92,7 @@ public class EntityShipCommand {
 
     }
 
-    private static int removeAllEntityShip(CommandSourceStack source) throws CommandSyntaxException {
+    private static int removeAllInDock(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayer();
         if (!player.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
             source.sendFailure(Component.literal("Player has no PlayerKantaiData capability"));
@@ -96,8 +101,30 @@ public class EntityShipCommand {
 
         player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
                 playerKantaiData -> {
-                    playerKantaiData.getInDockShips().forEach(serializedEntityShip -> source.sendSuccess(() -> Component.literal("Removed " + serializedEntityShip.getEntityType() + " from PlayerKantaiData"), true));
+                    playerKantaiData.getInDockShips().forEach(serializedEntityShip -> source.sendSuccess(() -> Component.literal("Removed " + serializedEntityShip.getEntityType() + " from in dock"), true));
                     playerKantaiData.getInDockShips().clear();
+                    playerKantaiData.updateToClient();
+                }
+        );
+
+        return 1;
+
+    }
+
+    private static int removeAllOnDuty(CommandSourceStack source) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayer();
+        if (!player.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
+            source.sendFailure(Component.literal("Player has no PlayerKantaiData capability"));
+            return -1;
+        }
+
+        player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
+                playerKantaiData -> {
+                    playerKantaiData.getOnDutyShips().forEach(serializedLivingEntity -> {
+                        source.sendSuccess(() -> Component.literal("Removed " + serializedLivingEntity.getEntityType() + " from on duty"), true);
+                    });
+                    playerKantaiData.getOnDutyShips().clear();
+                    playerKantaiData.updateToClient();
                 }
         );
 
@@ -126,5 +153,7 @@ public class EntityShipCommand {
         return 1;
 
     }
+
+
 
 }
