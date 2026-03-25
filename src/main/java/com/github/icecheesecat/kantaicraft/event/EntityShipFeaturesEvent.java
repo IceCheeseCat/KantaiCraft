@@ -29,11 +29,11 @@ public class EntityShipFeaturesEvent {
     @SubscribeEvent
     public static void onLivingDeathDrops(LivingDropsEvent event) {
 
-        if (event.getEntity() instanceof Mob mob) {
-            if (mob.getTarget() instanceof EntityShip entityShip) {
-                addItemDropsToEntityShipPickUp(entityShip, new ArrayList<>(event.getDrops()));
-            }
+        // drop mob is mad at entityShip
+        if (event.getEntity() instanceof Mob mob && mob.getTarget() instanceof EntityShip entityShip) {
+            addItemDropsToEntityShipPickUp(entityShip, new ArrayList<>(event.getDrops()));
         }
+        // killed by entityShip
         else if (event.getSource().getEntity() instanceof EntityShip entityShip) {
             addItemDropsToEntityShipPickUp(entityShip, new ArrayList<>(event.getDrops()));
         }
