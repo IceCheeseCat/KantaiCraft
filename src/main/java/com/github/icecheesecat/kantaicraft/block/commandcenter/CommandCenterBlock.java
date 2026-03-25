@@ -6,6 +6,7 @@ import com.github.icecheesecat.kantaicraft.menu.commandcenter.CommandCenterMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -23,6 +24,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class CommandCenterBlock extends TwoPartBlock implements EntityBlock {
@@ -82,7 +84,8 @@ public class CommandCenterBlock extends TwoPartBlock implements EntityBlock {
             return InteractionResult.SUCCESS;
         }
 
-        pPlayer.openMenu(this.getMenuProvider(pState, pLevel, pPos));
+//        pPlayer.openMenu(this.getMenuProvider(pState, pLevel, pPos));
+        NetworkHooks.openScreen((ServerPlayer) pPlayer, this.getMenuProvider(pState, pLevel, pPos), (buf -> buf.writeBlockPos(findBestDispatchLocation(pState, pLevel, pPos))));
         return InteractionResult.CONSUME;
     }
 
@@ -90,8 +93,39 @@ public class CommandCenterBlock extends TwoPartBlock implements EntityBlock {
     @Override
     public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
         return new SimpleMenuProvider((id, inventory, player) ->
-            new CommandCenterMenu(id, inventory, ContainerLevelAccess.create(player.level(), pPos))
+            new CommandCenterMenu(id, inventory, ContainerLevelAccess.create(player.level(), pPos), findBestDispatchLocation(pState, pLevel, pPos))
         , MENU_TITLE);
+    }
+
+    private BlockPos findBestDispatchLocation(BlockState pState, Level pLevel, BlockPos pPos) {
+        BlockPos startPos = pPos;
+        Direction direction = pState.getValue(FACING);
+        for (var offset : Direction.values()) {
+            if (offset == Direction.UP || offset == Direction.DOWN) continue;
+            BlockPos checkPos = startPos.relative(offset);
+            if (pLevel.getBlockState(checkPos).hasProperty(TWO_PART)) {
+                BlockPos startPos1 = checkPos;
+                for (var offset1 : Direction.values()) {
+                    if (offset1 == Direction.UP || offset1 == Direction.DOWN) continue;
+                    BlockPos checkPos1 = startPos1.relative(offset1);
+                    if (checkPos1.equals(startPos)) continue; // prevent fallback
+                    if (isTwoBlocksAir(checkPos1, pLevel)) {
+                        return checkPos1;
+                    }
+                }
+            }
+
+            if (isTwoBlocksAir(checkPos, pLevel)) {
+                return checkPos;
+            }
+
+        }
+
+        return pPos.relative(Direction.UP); //
+    }
+
+    private boolean isTwoBlocksAir(BlockPos blockPos, Level level) {
+        return level.getBlockState(blockPos).isAir() && level.getBlockState(blockPos.relative(Direction.UP)).isAir();
     }
 
     @Override
