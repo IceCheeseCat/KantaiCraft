@@ -38,11 +38,6 @@ public class EntityShipCommand {
             return removeAllInDock(commandSourceStack.getSource());
         });
     }
-    public static LiteralArgumentBuilder<CommandSourceStack> createRemoveAllOnDuty() {
-        return Commands.literal("removeAllOnDuty").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).executes((commandSourceStack) -> {
-            return removeAllOnDuty(commandSourceStack.getSource());
-        });
-    }
 
     public static LiteralArgumentBuilder<CommandSourceStack> createListAllEntityShip() {
         return Commands.literal("listAll").requires(commandSourceStack -> commandSourceStack.hasPermission(0)).executes((commandSourceStack) -> {
@@ -103,27 +98,6 @@ public class EntityShipCommand {
                 playerKantaiData -> {
                     playerKantaiData.getInDockShips().forEach(serializedEntityShip -> source.sendSuccess(() -> Component.literal("Removed " + serializedEntityShip.getEntityType() + " from in dock"), true));
                     playerKantaiData.getInDockShips().clear();
-                    playerKantaiData.updateToClient();
-                }
-        );
-
-        return 1;
-
-    }
-
-    private static int removeAllOnDuty(CommandSourceStack source) throws CommandSyntaxException {
-        ServerPlayer player = source.getPlayer();
-        if (!player.getCapability(PlayerKantaiDataCapability.TOKEN).isPresent()) {
-            source.sendFailure(Component.literal("Player has no PlayerKantaiData capability"));
-            return -1;
-        }
-
-        player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
-                playerKantaiData -> {
-                    playerKantaiData.getOnDutyShips().forEach(serializedLivingEntity -> {
-                        source.sendSuccess(() -> Component.literal("Removed " + serializedLivingEntity.getEntityType() + " from on duty"), true);
-                    });
-                    playerKantaiData.getOnDutyShips().clear();
                     playerKantaiData.updateToClient();
                 }
         );

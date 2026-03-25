@@ -2,6 +2,7 @@ package com.github.icecheesecat.kantaicraft.network;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.network.packet.commandcenter.DispatchEntityShipPacket;
+import com.github.icecheesecat.kantaicraft.network.packet.commandcenter.NearbyOwnedShipsPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.commandcenter.RetrieveEntityShipPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.entityship.DropIndicationPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.entityship.LavaFuelPacket;
@@ -159,6 +160,22 @@ public class ModPacketHandler {
                 RetrieveEntityShipPacket::encode,
                 RetrieveEntityShipPacket::decode,
                 RetrieveEntityShipPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                NearbyOwnedShipsPacket.class,
+                NearbyOwnedShipsPacket::encode,
+                NearbyOwnedShipsPacket::decode,
+                NearbyOwnedShipsPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                id++,
+                NearbyOwnedShipsPacket.Request.class,
+                NearbyOwnedShipsPacket.Request::encode,
+                NearbyOwnedShipsPacket.Request::decode,
+                NearbyOwnedShipsPacket.Request::handle
         );
 
     }

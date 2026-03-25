@@ -36,4 +36,5 @@ public class CommandCenterMenu extends AbstractContainerMenu {
     public boolean stillValid(Player pPlayer) {
         return AbstractContainerMenu.stillValid(access, pPlayer, ModBlock.COMMAND_CENTER.get());
     }
+
 }

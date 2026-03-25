@@ -13,7 +13,6 @@ public class ModCommands {
                 .then(EntityShipCommand.header().then(EntityShipCommand.createAddAllEntityShip()))
                 .then(EntityShipCommand.header().then(EntityShipCommand.createAdd(pContext)))
                 .then(EntityShipCommand.header().then(EntityShipCommand.createRemoveAllInDock()))
-                .then(EntityShipCommand.header().then(EntityShipCommand.createRemoveAllOnDuty()))
                 .then(EntityShipCommand.header().then(EntityShipCommand.createListAllEntityShip()))
                 .then(EquipmentCommand.header().then(EquipmentCommand.createAddAllEquipment()))
                 .then(EquipmentCommand.header().then(EquipmentCommand.createRemoveAllEquipment()))

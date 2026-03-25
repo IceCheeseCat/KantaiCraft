@@ -77,4 +77,9 @@ public class ShipLeveling implements INBTSerializable<CompoundTag> {
         int r = (int) (50 * randomSource.nextFloat());
         return new ShipLeveling(r, 0);
     }
+
+    @Override
+    public String toString() {
+        return "Lv: " + this.level;
+    }
 }
