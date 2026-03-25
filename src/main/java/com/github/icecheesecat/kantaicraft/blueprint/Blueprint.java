@@ -3,6 +3,7 @@ package com.github.icecheesecat.kantaicraft.blueprint;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.entityship.entity.ShipClass;
 import com.github.icecheesecat.kantaicraft.entityship.entity.ShipLeveling;
+import com.github.icecheesecat.kantaicraft.entityship.stance.HostileStance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Rarity;
@@ -64,7 +65,14 @@ public class Blueprint implements INBTSerializable<CompoundTag> {
 
     public static Blueprint createWithLevelZero(EntityShip entityShip) {
         var blueprint = create(entityShip);
-        blueprint.setShipLevel(ShipLeveling.levelZero());
+        blueprint.setShipLeveling(ShipLeveling.levelZero());
+        return blueprint;
+    }
+
+    public static Blueprint createWithLevelZero(EntityShip entityShip, HostileStance hostileStance) {
+        var blueprint = create(entityShip);
+        blueprint.setEntityType(EntityType.getKey(hostileStance.getPlayerSideEntityType()).toString());
+        blueprint.setShipLeveling(ShipLeveling.levelZero());
         return blueprint;
     }
 
@@ -87,7 +95,7 @@ public class Blueprint implements INBTSerializable<CompoundTag> {
         return shipLeveling;
     }
 
-    public void setShipLevel(ShipLeveling shipLeveling) {
+    public void setShipLeveling(ShipLeveling shipLeveling) {
         this.shipLeveling = shipLeveling;
     }
 
@@ -95,8 +103,8 @@ public class Blueprint implements INBTSerializable<CompoundTag> {
         return shipLeveling;
     }
 
-    public void setShipLeveling(ShipLeveling shipLeveling) {
-        this.shipLeveling = shipLeveling;
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 
     public ShipClass getShipClass() {
