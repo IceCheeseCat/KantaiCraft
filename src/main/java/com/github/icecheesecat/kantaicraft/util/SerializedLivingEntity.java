@@ -66,4 +66,12 @@ public class SerializedLivingEntity implements INBTSerializable<CompoundTag> {
     public String toString() {
         return "[" + this.entityType.toString() + ", " + this.uuid + "]";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SerializedLivingEntity serializedLivingEntity) {
+            return serializedLivingEntity.uuid.compareTo(this.uuid) == 0 && this.entityType.getDescription().equals(serializedLivingEntity.entityType.getDescription());
+        }
+        return false;
+    }
 }
