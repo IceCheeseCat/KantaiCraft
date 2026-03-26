@@ -8,15 +8,15 @@ import net.minecraftforge.common.util.INBTSerializable;
 public class ArmedEquipment implements INBTSerializable<CompoundTag> {
 
     Equipment equipment;
-    String equippedOnName;
+    String equippableBoneName;
 
     public ArmedEquipment() {
 
     }
 
-    public ArmedEquipment(Equipment equipment, String equippedOnName) {
+    public ArmedEquipment(Equipment equipment, String equippableBoneName) {
         this.equipment = equipment;
-        this.equippedOnName = equippedOnName;
+        this.equippableBoneName = equippableBoneName;
     }
 
     public static ArmedEquipment empty() {
@@ -27,21 +27,21 @@ public class ArmedEquipment implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
         nbt.put("equipment", this.equipment.serializeNBT());
-        nbt.putString("equippedOnName", this.equippedOnName);
+        nbt.putString("equippedOnName", this.equippableBoneName);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.equipment = Equipment.makeFromCompoundTag(nbt.getCompound("equipment"));
-        this.equippedOnName = nbt.getString("equippedOnName");
+        this.equippableBoneName = nbt.getString("equippedOnName");
     }
 
     public Equipment getEquipment() {
         return equipment;
     }
 
-    public String getEquippedOnName() {
-        return equippedOnName;
+    public String getEquippableBoneName() {
+        return equippableBoneName;
     }
 }

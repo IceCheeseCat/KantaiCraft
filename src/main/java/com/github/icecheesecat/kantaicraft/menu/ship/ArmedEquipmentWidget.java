@@ -13,7 +13,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import software.bernie.geckolib.renderer.GeoRenderer;
@@ -26,7 +25,7 @@ public class ArmedEquipmentWidget extends SimpleWidget {
     private static float rotate = 0.0f;
 
     public ArmedEquipmentWidget(int pX, int pY, int pWidth, int pHeight, ArmedEquipment armedEquipment) {
-        super(pX, pY, pWidth, pHeight, Component.literal(armedEquipment.getEquippedOnName()));
+        super(pX, pY, pWidth, pHeight, Component.literal(armedEquipment.getEquippableBoneName()));
         this.armedEquipment = armedEquipment;
         this.renderer = EquipmentRendererCache.getEquipmentRenderer(armedEquipment.getEquipment().getId());
         this.setTooltip(Tooltip.create(this.armedEquipment.getEquipment().getName()));

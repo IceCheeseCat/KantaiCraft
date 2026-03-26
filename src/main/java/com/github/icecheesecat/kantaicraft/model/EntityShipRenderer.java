@@ -102,7 +102,7 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
 
                         var equipment = equipmentHandler.getEquipment(i);
                         var armedEquipment = equipmentHandler.getArmedEquipment(i);
-                        var boneOptional = this.getGeoModel().getBone(armedEquipment.getEquippedOnName());
+                        var boneOptional = this.getGeoModel().getBone(armedEquipment.getEquippableBoneName());
                         if (boneOptional.isPresent()) {
 //                            poseStack.scale(100, 100, 100);
 //                            poseStack.mulPoseMatrix(boneOptional.get().getWorldSpaceMatrix());

@@ -40,7 +40,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     }
 
     public boolean hasAlreadyEquippedSameBodyPart(String equippedOnName) {
-        return this.equipments.stream().anyMatch(armedEquipment -> armedEquipment.equippedOnName.equals(equippedOnName));
+        return this.equipments.stream().anyMatch(armedEquipment -> armedEquipment.equippableBoneName.equals(equippedOnName));
     }
 
     /**
@@ -65,7 +65,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     }
 
     public Equipment setEquipment(int i, ArmedEquipment armedEquipment, ISlotCheckerEntity slotCheckerEntity) {
-        return this.setEquipment(i, armedEquipment.equippedOnName, armedEquipment.getEquipment(), slotCheckerEntity);
+        return this.setEquipment(i, armedEquipment.equippableBoneName, armedEquipment.getEquipment(), slotCheckerEntity);
     }
 
     public void setOnClient(int i, ArmedEquipment equipment) {
@@ -99,7 +99,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     }
 
     public boolean sameAsBodyPartName(int index, GeoBone bone) {
-        return this.equipments.get(index).equippedOnName.equals(bone.getName());
+        return this.equipments.get(index).equippableBoneName.equals(bone.getName());
     }
 
     public boolean hasRangeAttackWeapon() {
@@ -139,7 +139,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     public String toString() {
         String string = "";
         for (int i = 0; i < this.slotSize; i++) {
-            string += i + "[ equipment: " + this.equipments.get(i).getEquipment() + " bodyPart = " + this.equipments.get(i).equippedOnName + "]\n";
+            string += i + "[ equipment: " + this.equipments.get(i).getEquipment() + " bodyPart = " + this.equipments.get(i).equippableBoneName + "]\n";
         }
         string += "\n";
         return string;
