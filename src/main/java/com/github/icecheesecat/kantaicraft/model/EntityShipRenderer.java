@@ -2,9 +2,9 @@ package com.github.icecheesecat.kantaicraft.model;
 
 import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.entity.features.SyncModelPositions;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
-import com.github.icecheesecat.kantaicraft.model.equipment.EquippableDetailSlots;
 import com.github.icecheesecat.kantaicraft.model.equipment.renderer.EquipmentRenderer;
 import com.github.icecheesecat.kantaicraft.util.AxisRotation;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.object.Color;
 import software.bernie.geckolib.model.GeoModel;
@@ -39,20 +40,13 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
     protected final float scale;
     protected final Color color;
     private final Map<Integer, EquipmentRenderer> equipmentRenderersCache = new HashMap<>();
-//    protected final ArmingDetailManager armingDetailManager;
-    private EquippableDetailSlots equippableDetailSlots;
 
     public EntityShipRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model, float scale, float shadowRadius, Color color) {
         super(renderManager, model);
         this.scale = scale;
         this.shadowRadius = shadowRadius;
         this.color = color;
-        this.equippableDetailSlots = this.defineDetailSlots();
-//        this.armingDetailManager = new ArmingDetailManager();
-//        this.armingDetailManager.setupBodyPartPosition(model.getBakedModel(model.getModelResource(null)), defineBodyPartOffsetToWeapon());
     }
-
-    protected abstract EquippableDetailSlots defineDetailSlots();
 
     @Override
     public ResourceLocation getTextureLocation(T animatable) {
@@ -107,7 +101,10 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
 //                            poseStack.scale(100, 100, 100);
 //                            poseStack.mulPoseMatrix(boneOptional.get().getWorldSpaceMatrix());
 //                            poseStack.mulPoseMatrix(boneOptional.get().getLocalSpaceMatrix());
-                            poseStack.translate(boneOptional.get().getLocalPosition().x, boneOptional.get().getLocalPosition().y, boneOptional.get().getLocalPosition().z);
+                            Vector3f localPosition = new Vector3f((float) boneOptional.get().getLocalPosition().x, (float) boneOptional.get().getLocalPosition().y, (float) boneOptional.get().getLocalPosition().z);
+                            syncModelPosToServer(entity, i, new SyncModelPositions.ModelPos(equipment.getId(), localPosition));
+
+                            poseStack.translate(localPosition.x, localPosition.y, localPosition.z);
                             this.entityRotation(entity, poseStack, partialTick);
                             RenderUtils.rotateMatrixAroundBone(poseStack, boneOptional.get());
                             RenderUtils.rotateMatrixAroundBone(poseStack, boneOptional.get().getParent());
@@ -122,6 +119,10 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
                 }
         );
 
+    }
+
+    private void syncModelPosToServer(EntityShip entityShip, int index, SyncModelPositions.ModelPos modelPos) {
+        entityShip.setModelPos(index, modelPos);
     }
 
     protected void entityRotation(@NotNull T livingEntity, PoseStack poseStack, float partialTick) {
