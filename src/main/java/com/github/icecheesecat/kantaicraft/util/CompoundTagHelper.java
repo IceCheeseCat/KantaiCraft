@@ -1,12 +1,15 @@
 package com.github.icecheesecat.kantaicraft.util;
 
+import com.github.icecheesecat.kantaicraft.exception.KantaiCraftException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public final class CompoundTagHelper {
@@ -94,5 +97,41 @@ public final class CompoundTagHelper {
         }
 
         return returnList;
+    }
+
+    public static <T, U> void serializeMap(CompoundTag nbt, String tagName, @NotNull Map<T, U> mapObject, Function<T, CompoundTag> keyWriter, Function<U, CompoundTag> valueWriter) {
+
+        CompoundTag nbt1 = new CompoundTag();
+        nbt1.putInt("size", mapObject.entrySet().size());
+
+        int i = 0;
+        for (var entry: mapObject.entrySet()) {
+            nbt1.put("key" + i, keyWriter.apply(entry.getKey()));
+            nbt1.put("value" + i, valueWriter.apply(entry.getValue()));
+        }
+
+        nbt.put(tagName, nbt1);
+
+    }
+
+    @NotNull
+    public static <T, U> HashMap<T, U> deserializeMap(CompoundTag nbt, String tagName, Function<CompoundTag, T> keyReader, Function<CompoundTag, U> valueReader) {
+        if (!nbt.contains(tagName)) return new HashMap<>();
+
+        CompoundTag nbt1 = nbt.getCompound(tagName);
+        if (!nbt1.contains("size")) return new HashMap<>();
+
+        HashMap<T,U> map = new HashMap<>();
+        for (int i = 0; i < nbt1.getInt("size"); i++) {
+            if (nbt.contains("key" + i) && nbt.contains("value" + i)) {
+                map.put(keyReader.apply(nbt1.getCompound("key" + i)),
+                        valueReader.apply(nbt1.getCompound("value" + i)));
+            }
+            else {
+                throw new KantaiCraftException(CompoundTagHelper.class, " map deserializing error");
+            }
+        }
+
+        return map;
     }
 }
