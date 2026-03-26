@@ -57,5 +57,5 @@ public abstract class LavaFuelCapability implements ICapabilitySerializable<Comp
         return FLUID_TANK;
     }
 
-    abstract int getId();
+    protected abstract int getId();
 }

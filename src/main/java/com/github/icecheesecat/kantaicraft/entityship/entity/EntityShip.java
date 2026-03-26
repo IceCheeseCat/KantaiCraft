@@ -133,7 +133,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.equippableSlots = this.defineEquippableSlots();
         this.lavaFuelCapability = new LavaFuelCapability(this.defineFuelTankSize()) {
             @Override
-            int getId() {
+            protected int getId() {
                 return EntityShip.this.getId();
             }
         };
