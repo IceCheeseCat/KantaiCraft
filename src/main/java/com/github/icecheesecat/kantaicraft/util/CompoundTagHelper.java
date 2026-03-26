@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,30 @@ public final class CompoundTagHelper {
         }
         
         return new Vec3(x, y, z);
+    }
+
+    public static CompoundTag writeVector3f(Vector3f vector3f) {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putFloat("x", vector3f.x);
+        nbt.putFloat("y", vector3f.y);
+        nbt.putFloat("z", vector3f.z);
+
+        return nbt;
+    }
+
+    public static Vector3f readVector3f(CompoundTag nbt) {
+        float x = 0, y = 0, z = 0;
+        if (nbt.contains("x")) {
+            x = nbt.getFloat("x");
+        }
+        if (nbt.contains("y")) {
+            y = nbt.getFloat("y");
+        }
+        if (nbt.contains("z")) {
+            z = nbt.getFloat("z");
+        }
+
+        return new Vector3f(x, y, z);
     }
 
     public static CompoundTag writeBlockPos(BlockPos blockPos) {
@@ -134,4 +159,5 @@ public final class CompoundTagHelper {
 
         return map;
     }
+
 }
