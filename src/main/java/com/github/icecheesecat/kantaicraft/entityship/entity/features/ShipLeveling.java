@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.entityship.entity;
+package com.github.icecheesecat.kantaicraft.entityship.entity.features;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;

@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.entityship.entity;
+package com.github.icecheesecat.kantaicraft.entityship.entity.features;
 
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.entityship.LavaFuelPacket;

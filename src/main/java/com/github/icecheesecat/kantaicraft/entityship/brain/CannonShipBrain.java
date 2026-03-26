@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entityship.brain;
 
-import com.github.icecheesecat.kantaicraft.entityship.entity.CannonEntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.CannonEntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
 import com.github.icecheesecat.kantaicraft.registries.ModSensor;
 import com.google.common.collect.ImmutableSet;

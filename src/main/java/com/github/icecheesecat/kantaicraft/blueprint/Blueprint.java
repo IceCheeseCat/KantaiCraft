@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.blueprint;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.github.icecheesecat.kantaicraft.entityship.entity.ShipClass;
-import com.github.icecheesecat.kantaicraft.entityship.entity.ShipLeveling;
+import com.github.icecheesecat.kantaicraft.entityship.entity.features.ShipLeveling;
 import com.github.icecheesecat.kantaicraft.entityship.stance.HostileStance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;

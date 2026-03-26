@@ -1,6 +1,6 @@
 package com.github.icecheesecat.kantaicraft.model.ship.renderer;
 
-import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.Ikazuchi;
+import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer.Ikazuchi;
 import com.github.icecheesecat.kantaicraft.model.EntityShipRenderer;
 import com.github.icecheesecat.kantaicraft.model.equipment.ClientEquippableSlotDetails;
 import com.github.icecheesecat.kantaicraft.model.equipment.EquippableDetailSlots;

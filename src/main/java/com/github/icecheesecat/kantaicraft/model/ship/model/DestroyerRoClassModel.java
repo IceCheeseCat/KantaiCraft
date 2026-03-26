@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.model.ship.model;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.DestroyerRoClass;
+import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer.DestroyerRoClass;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;

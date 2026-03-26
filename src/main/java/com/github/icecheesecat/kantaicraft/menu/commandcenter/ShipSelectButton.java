@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.menu.commandcenter;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.entityship.entity.ShipLeveling;
+import com.github.icecheesecat.kantaicraft.entityship.entity.features.ShipLeveling;
 import com.github.icecheesecat.kantaicraft.model.EntityShipRenderer;
 import com.github.icecheesecat.kantaicraft.util.SerializedLivingEntity;
 import com.mojang.blaze3d.systems.RenderSystem;

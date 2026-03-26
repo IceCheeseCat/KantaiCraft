@@ -1,9 +1,8 @@
 package com.github.icecheesecat.kantaicraft.entityship.brain;
 
-import com.github.icecheesecat.kantaicraft.entityship.entity.CannonEntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.CannonEntityShip;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.ai.behavior.OneShot;
 import net.minecraft.world.entity.ai.behavior.SetEntityLookTarget;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;

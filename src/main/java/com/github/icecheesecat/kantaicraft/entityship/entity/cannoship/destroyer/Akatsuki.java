@@ -1,6 +1,6 @@
-package com.github.icecheesecat.kantaicraft.entityship.entity.destroyer;
+package com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer;
 
-import com.github.icecheesecat.kantaicraft.entityship.entity.DestroyerEntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.DestroyerEntityShip;
 import com.github.icecheesecat.kantaicraft.entityship.stance.HostileStance;
 import com.github.icecheesecat.kantaicraft.entityship.stance.PlayerStance;
 import com.github.icecheesecat.kantaicraft.registries.ModEntity;

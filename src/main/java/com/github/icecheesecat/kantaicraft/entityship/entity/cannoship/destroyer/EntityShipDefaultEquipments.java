@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.entityship.entity.destroyer;
+package com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer;
 
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.equipment.handler.ArmedEquipment;

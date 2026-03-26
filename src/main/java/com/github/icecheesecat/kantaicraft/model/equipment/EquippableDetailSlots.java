@@ -1,10 +1,6 @@
 package com.github.icecheesecat.kantaicraft.model.equipment;
 
-import com.github.icecheesecat.kantaicraft.entityship.entity.EquippableSlots;
-import com.github.icecheesecat.kantaicraft.util.CompoundTagHelper;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.INBTSerializable;
+import com.github.icecheesecat.kantaicraft.entityship.entity.features.EquippableSlots;
 import org.joml.Vector3d;
 
 import java.util.HashMap;

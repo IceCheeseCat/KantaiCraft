@@ -1,7 +1,9 @@
-package com.github.icecheesecat.kantaicraft.entityship.entity;
+package com.github.icecheesecat.kantaicraft.entityship.entity.cannoship;
 
 import com.github.icecheesecat.kantaicraft.entityship.brain.CannonShipBrain;
 import com.github.icecheesecat.kantaicraft.entityship.brain.HostileCannonShipBrain;
+import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
+import com.github.icecheesecat.kantaicraft.entityship.entity.ShipClass;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Dynamic;

@@ -1,9 +1,9 @@
 package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entityship.entity.ShipLeveling;
-import com.github.icecheesecat.kantaicraft.entityship.entity.ShipAnimationState;
-import com.github.icecheesecat.kantaicraft.entityship.entity.EmotionState;
+import com.github.icecheesecat.kantaicraft.entityship.entity.features.EmotionState;
+import com.github.icecheesecat.kantaicraft.entityship.entity.features.ShipAnimationState;
+import com.github.icecheesecat.kantaicraft.entityship.entity.features.ShipLeveling;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraftforge.registries.DeferredRegister;

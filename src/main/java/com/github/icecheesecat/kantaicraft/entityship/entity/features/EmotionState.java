@@ -1,4 +1,4 @@
-package com.github.icecheesecat.kantaicraft.entityship.entity;
+package com.github.icecheesecat.kantaicraft.entityship.entity.features;
 
 
 /**

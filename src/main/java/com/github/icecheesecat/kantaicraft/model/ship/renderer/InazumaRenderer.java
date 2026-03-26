@@ -1,14 +1,11 @@
 package com.github.icecheesecat.kantaicraft.model.ship.renderer;
 
-import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.Inazuma;
+import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer.Inazuma;
 import com.github.icecheesecat.kantaicraft.model.EntityShipRenderer;
 import com.github.icecheesecat.kantaicraft.model.equipment.ClientEquippableSlotDetails;
 import com.github.icecheesecat.kantaicraft.model.equipment.EquippableDetailSlots;
 import com.github.icecheesecat.kantaicraft.model.ship.model.InazumaModel;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.core.object.Color;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 

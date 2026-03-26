@@ -1,6 +1,8 @@
-package com.github.icecheesecat.kantaicraft.entityship.entity;
+package com.github.icecheesecat.kantaicraft.entityship.entity.cannoship;
 
-import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.EntityShipDefaultEquipments;
+import com.github.icecheesecat.kantaicraft.entityship.entity.ShipClass;
+import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer.EntityShipDefaultEquipments;
+import com.github.icecheesecat.kantaicraft.entityship.entity.features.EquippableSlots;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
 import com.github.icecheesecat.kantaicraft.equipment.SlotChecker;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;

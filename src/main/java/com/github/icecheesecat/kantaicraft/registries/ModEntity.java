@@ -1,11 +1,10 @@
 package com.github.icecheesecat.kantaicraft.registries;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.*;
-import com.github.icecheesecat.kantaicraft.entityship.entity.destroyer.DestroyerIClass;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
+import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer.Akatsuki;
+import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer.Hibiki;
+import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer.Ikazuchi;
+import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer.Inazuma;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
