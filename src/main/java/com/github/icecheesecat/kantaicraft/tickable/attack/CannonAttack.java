@@ -27,16 +27,15 @@ public class CannonAttack extends ShipRangeAttack {
     public void checkAndPerformCannon(LivingEntity target) {
         if (!this.inCooldown()) {
             if (target != null && target.isAlive()) {
-                LivingEntity ship = this.entityShip;
-                Vec3 initPos = new Vec3(ship.getX(), ship.getEyeY(), ship.getZ()); // TODO change to cannon model fire spot
+                Vec3 initPos = new Vec3(this.entityShip.getEquipmentPosition(this.cannon.getEquipmentClass())).add(this.entityShip.position());
 
                 double canon_vel = cannon.getStat(EquipmentStatType.CANNON_MISSILE_VELOCITY);
                 Vec3 hitSpot = target.getBoundingBox().getCenter();
                 Vec3 fireVec = Trajectory.calFireVec(initPos, hitSpot, GRAVITY, canon_vel);
                 if (fireVec != null) {
-                    int id = ship.getRandom().nextInt();
+                    int id = this.entityShip.getRandom().nextInt();
                     Trajectory newTrajectory = new Trajectory(id, this.entityShip.getUUID(), initPos, fireVec, GRAVITY, Trajectory.SMALL_PROJECTILE_SIZE, calculateDamage(this.cannon, this.entityShip), (entity -> this.entityShip.canAttack((LivingEntity) entity)));
-                    addTrajectoryToLevel((ServerLevel) ship.level(), newTrajectory);
+                    addTrajectoryToLevel((ServerLevel) this.entityShip.level(), newTrajectory);
                     this.resetCooldown();
                 }
 

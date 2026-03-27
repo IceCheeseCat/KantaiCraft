@@ -78,7 +78,7 @@ public class BrainActivities {
                                     Pair.of(new DoNothing(30, 60), 1)))),
                             Pair.of(10, SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60)))
                     ),
-                    ImmutableSet.of(Pair.of(ModMemoryModuleType.OUT_OF_FUEL.get(), MemoryStatus.VALUE_ABSENT))
+                    ImmutableSet.of(Pair.of(ModMemoryModuleType.OUT_OF_FUEL.get(), MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT))
             );
         }
 

@@ -24,7 +24,6 @@ public class CannonShipBrain {
                 SensorType.NEAREST_PLAYERS,
                 SensorType.IS_IN_WATER,
                 ModSensor.SHIP_RESOURCES_SENSOR.get(),
-                ModSensor.SHIP_EQUIPMENT_SENSOR.get(),
                 ModSensor.PLAYER_SHIP_TARGETING_SENSOR.get(),
                 ModSensor.ATTACK_TARGET_VISIBILITY_SENSOR.get(),
                 ModSensor.MOB_DROPS_SENSOR.get(),

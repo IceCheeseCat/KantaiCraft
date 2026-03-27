@@ -28,6 +28,7 @@ public class CannonAttackBehavior extends Behavior<CannonEntityShip> {
     protected void start(ServerLevel pLevel, CannonEntityShip pEntity, long pGameTime) {
         this.target = pEntity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get();
         pEntity.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(this.target, true));
+        pEntity.triggerAnim("cannon_fire", "cannon_fire");
     }
 
     @Override
@@ -41,6 +42,7 @@ public class CannonAttackBehavior extends Behavior<CannonEntityShip> {
     @Override
     protected void stop(ServerLevel pLevel, CannonEntityShip pEntity, long pGameTime) {
         this.actionHandler = null;
+        pEntity.stopTriggeredAnimation("cannon_fire", "cannon_fire");
     }
 
     @Override
