@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 public abstract class Inazuma extends DestroyerEntityShip {
 
     public Inazuma(EntityType<? extends PathfinderMob> entityType, Level level) {
-        super(entityType, level);
+        super(entityType, level, "inazuma");
     }
 
     @Override

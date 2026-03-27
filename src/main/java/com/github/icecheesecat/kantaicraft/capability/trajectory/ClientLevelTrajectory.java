@@ -1,7 +1,7 @@
 package com.github.icecheesecat.kantaicraft.capability.trajectory;
 
 import com.github.icecheesecat.kantaicraft.util.Trajectory;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public class ClientLevelTrajectory extends ServerLevelTrajectory {
 
     public final Map<Integer,List<Vec3>> trajectories_arc_poses;
 
-    public ClientLevelTrajectory(ClientLevel clientLevel) {
+    public ClientLevelTrajectory(Level clientLevel) {
         super(clientLevel);
         this.trajectories_arc_poses = new HashMap<>();
     }

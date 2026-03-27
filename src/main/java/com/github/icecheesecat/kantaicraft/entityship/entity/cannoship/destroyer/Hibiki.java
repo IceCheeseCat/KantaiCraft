@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 
 public abstract class Hibiki extends DestroyerEntityShip {
     public Hibiki(EntityType<? extends PathfinderMob> entityType, Level level) {
-        super(entityType, level);
+        super(entityType, level, "hibiki");
     }
 
     @Override

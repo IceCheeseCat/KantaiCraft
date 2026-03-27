@@ -16,13 +16,12 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     public static final ImmutableSet<EquipmentClass> CANNON_WEAPON = ImmutableSet.of(EquipmentClass.SMALL_CANNON, EquipmentClass.MEDIUM_CANNON, EquipmentClass.LARGE_CANNON);
     public static final ImmutableSet<EquipmentClass> ATTACK_AIRCRAFT = ImmutableSet.of(EquipmentClass.AIRCRAFT_DIVE_BOMBER, EquipmentClass.AIRCRAFT_TORPEDO_BOMBER);
     private NonNullList<ArmedEquipment> equipments;
-    private NonNullList<Boolean> dirty;
+    private boolean dirty = true;
     private int slotSize;
 
     public EquipmentHandler(int size) {
         this.slotSize = size;
         this.equipments = NonNullList.withSize(size, ArmedEquipment.empty());
-        this.dirty = NonNullList.withSize(size, true);
     }
 
     protected EquipResult tryApplyAtSlot(int i, String equippedOnName, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
@@ -44,19 +43,14 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     }
 
     /**
-     *
-     * @param i
-     * @param equippedOnName
-     * @param equipment
-     * @param slotCheckerEntity
-     * @return Equipment -> returns back the equipment that was equipped before set.
+     * @return Equipment -> return the equipment that was equipped before set.
      */
     public Equipment setEquipment(int i, String equippedOnName, Equipment equipment, ISlotCheckerEntity slotCheckerEntity) {
 
         return switch (tryApplyAtSlot(i, equippedOnName, equipment, slotCheckerEntity)) {
             case SUCCESS -> {
                 Equipment r = this.equipments.set(i, new ArmedEquipment(equipment, equippedOnName)).getEquipment();
-                this.dirty.set(i, true);
+                this.dirty = true;
 
                 yield r;
             }
@@ -70,20 +64,7 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
 
     public void setOnClient(int i, ArmedEquipment equipment) {
         this.equipments.set(i, equipment);
-        this.dirty.set(i, true);
-    }
-
-
-    public boolean isDirty(int index) {
-        return this.dirty.get(index);
-    }
-
-    public boolean hasAnyDirty() {
-        return this.dirty.stream().anyMatch(b -> b);
-    }
-
-    public void setNotDirty(int index) {
-        this.dirty.set(index, false);
+        this.dirty = true;
     }
 
     public Equipment getEquipment(int index) {
@@ -105,6 +86,14 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
     public boolean hasRangeAttackWeapon() {
         return this.equipments.stream().anyMatch(equipment -> CANNON_WEAPON.stream().anyMatch(equipment.getEquipment()::isTypeOf)) ||
         this.equipments.stream().anyMatch(equipment -> ATTACK_AIRCRAFT.stream().anyMatch(equipment.getEquipment()::isTypeOf));
+    }
+
+    public boolean isDirty() {
+        return this.dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 
     @Override

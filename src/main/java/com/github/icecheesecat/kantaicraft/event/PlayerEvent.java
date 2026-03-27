@@ -4,7 +4,7 @@ import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata.PlayerKantaiDataPacket;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,7 +16,7 @@ public class PlayerEvent {
     @SubscribeEvent
     public static void onPlayerJoinedClientLevel(EntityJoinLevelEvent event) {
         if (!event.getEntity().level().isClientSide) return;
-        if (event.getEntity() instanceof LocalPlayer player) {
+        if (event.getEntity() instanceof Player player) {
             // Request to broadcast data from server to all clients
             event.getEntity().getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(
                     playerKantaiData -> {

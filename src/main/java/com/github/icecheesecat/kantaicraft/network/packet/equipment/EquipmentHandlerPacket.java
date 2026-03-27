@@ -52,19 +52,6 @@ public class EquipmentHandlerPacket {
         return packet;
     }
 
-    public static EquipmentHandlerPacket dirtyHandlerPacket(int entityId, EquipmentHandler equipmentHandler) {
-        EquipmentHandlerPacket packet = new EquipmentHandlerPacket();
-        packet.entityId = entityId;
-
-        for (int i = 0; i < equipmentHandler.getArmedEquipments().size(); i++) {
-            if (equipmentHandler.isDirty(i)) {
-                packet.armedEquipmentMap.put(i, equipmentHandler.getArmedEquipment(i));
-            }
-        }
-
-        return packet;
-    }
-
     public static void encode(EquipmentHandlerPacket packet, FriendlyByteBuf buf) {
         buf.writeInt(packet.entityId);
         buf.writeMap(packet.armedEquipmentMap, FriendlyByteBuf::writeInt, (fb, armed) -> fb.writeNbt(armed.serializeNBT()));

@@ -21,7 +21,7 @@ public class CannonAttackBehavior extends Behavior<CannonEntityShip> {
         super(ImmutableMap.of(
                 MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT,
                 ModMemoryModuleType.ACTION_HANDLER.get(), MemoryStatus.VALUE_PRESENT,
-                ModMemoryModuleType.ATTACK_TARGET_IN_SIGHT.get(), MemoryStatus.VALUE_PRESENT));
+                ModMemoryModuleType.ATTACK_TARGET_IN_SIGHT.get(), MemoryStatus.VALUE_PRESENT), 1000);
     }
 
     @Override

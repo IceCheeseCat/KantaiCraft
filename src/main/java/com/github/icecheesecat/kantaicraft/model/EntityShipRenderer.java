@@ -2,7 +2,6 @@ package com.github.icecheesecat.kantaicraft.model;
 
 import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.entityship.entity.features.SyncModelPositions;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
 import com.github.icecheesecat.kantaicraft.model.equipment.renderer.EquipmentRenderer;
@@ -102,7 +101,6 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
 //                            poseStack.mulPoseMatrix(boneOptional.get().getWorldSpaceMatrix());
 //                            poseStack.mulPoseMatrix(boneOptional.get().getLocalSpaceMatrix());
                             Vector3f localPosition = new Vector3f((float) boneOptional.get().getLocalPosition().x, (float) boneOptional.get().getLocalPosition().y, (float) boneOptional.get().getLocalPosition().z);
-                            syncModelPosToServer(entity, i, new SyncModelPositions.ModelPos(equipment.getId(), localPosition));
 
                             poseStack.translate(localPosition.x, localPosition.y, localPosition.z);
                             this.entityRotation(entity, poseStack, partialTick);
@@ -119,10 +117,6 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
                 }
         );
 
-    }
-
-    private void syncModelPosToServer(EntityShip entityShip, int index, SyncModelPositions.ModelPos modelPos) {
-        entityShip.setModelPos(index, modelPos);
     }
 
     protected void entityRotation(@NotNull T livingEntity, PoseStack poseStack, float partialTick) {
@@ -159,8 +153,9 @@ public abstract class EntityShipRenderer<T extends EntityShip> extends GeoEntity
     }
 
     public void cachingBakedModels(EquipmentHandler equipmentHandler) {
+        if (!equipmentHandler.isDirty()) return;
         for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
-            if (equipmentHandler.isDirty(i)) {
+            if (equipmentHandler.isDirty()) {
                 EquipmentRenderer renderer = (EquipmentRenderer) EquipmentManager.createEquipmentRenderer(equipmentHandler.getEquipment(i).getId());
                 assert renderer != null;
 

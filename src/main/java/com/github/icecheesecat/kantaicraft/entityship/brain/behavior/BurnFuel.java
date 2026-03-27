@@ -18,6 +18,7 @@ public class BurnFuel extends Behavior<EntityShip> {
     @Override
     protected void start(ServerLevel serverLevel, EntityShip entityShip, long gametime) {
         entityShip.getBrain().eraseMemory(ModMemoryModuleType.OUT_OF_FUEL.get());
+        entityShip.stopTriggeredAnimation("burn_out", "burn_out");
     }
 
     @Override
@@ -30,6 +31,7 @@ public class BurnFuel extends Behavior<EntityShip> {
     @Override
     protected void stop(ServerLevel serverLevel, EntityShip entityShip, long gametime) {
         entityShip.getBrain().setMemory(ModMemoryModuleType.OUT_OF_FUEL.get(), Unit.INSTANCE);
+        entityShip.triggerAnim("burn_out", "burn_out");
     }
 
     @Override

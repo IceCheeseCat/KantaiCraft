@@ -46,8 +46,8 @@ public class ClientRenderEvent {
                         clientLevelTrajectory.getTrajectories().forEach(trajectory -> {
                             if (EntityShipRenderer.debug) {
                                 TrajectoryRenderer.renderCannonShellBoundingBox(poseStack, vertexConsumer, trajectory.getPhysics().getVel(), trajectory.getBoundingBox());
+                                TrajectoryRenderer.renderArcOfTrajectory(clientLevelTrajectory.getPointsOfArc(trajectory.getId()), poseStack, vertexConsumer);
                             }
-                            TrajectoryRenderer.renderArcOfTrajectory(clientLevelTrajectory.getPointsOfArc(trajectory.getId()), poseStack, vertexConsumer);
                         });
                     }
             );

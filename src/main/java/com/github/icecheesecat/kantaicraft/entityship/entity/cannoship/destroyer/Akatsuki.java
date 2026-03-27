@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 
 public abstract class Akatsuki extends DestroyerEntityShip {
     public Akatsuki(EntityType<? extends PathfinderMob> entityType, Level level) {
-        super(entityType, level);
+        super(entityType, level, "akatsuki");
     }
 
     @Override
@@ -30,8 +30,8 @@ public abstract class Akatsuki extends DestroyerEntityShip {
     protected void defaultEquipments(EquipmentHandler equipmentHandler) {
         equipmentHandler.setEquipment(0, "equipment_1", EquipmentManager.createNewEquipment(101), this);
         equipmentHandler.setEquipment(1, "equipment_2", EquipmentManager.createNewEquipment(102), this);
-        equipmentHandler.setEquipment(2, "equipment_3", EquipmentManager.createNewEquipment(103), this);
-        equipmentHandler.setEquipment(3, "equipment_4", EquipmentManager.createNewEquipment(104), this);
+        equipmentHandler.setEquipment(2, "equipment_3", EquipmentManager.createNewEquipment(101), this);
+        equipmentHandler.setEquipment(3, "equipment_4", EquipmentManager.createNewEquipment(102), this);
     }
 
     public static class PlayerSide extends Akatsuki implements PlayerStance {

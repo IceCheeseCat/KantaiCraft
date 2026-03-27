@@ -18,8 +18,8 @@ public abstract class CannonEntityShip extends EntityShip {
 
     public static final List<EquipmentClass> EQUITABLE_TYPES = ImmutableList.of(EquipmentClass.SMALL_CANNON);
 
-    public CannonEntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level) {
-        super(entityType, shipClass, level, EQUITABLE_TYPES);
+    public CannonEntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, String name) {
+        super(entityType, shipClass, level, EQUITABLE_TYPES, name);
     }
 
     @Override
@@ -27,4 +27,6 @@ public abstract class CannonEntityShip extends EntityShip {
         return !this.isHostileSide() ? CannonShipBrain.makeBrain(this, pDynamic) :
             HostileCannonShipBrain.makeBrain(this, pDynamic);
     }
+
+
 }

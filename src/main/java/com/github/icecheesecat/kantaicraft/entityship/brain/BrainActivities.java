@@ -47,7 +47,6 @@ public class BrainActivities {
     public static void initBurnOutActivity(EntityShip cannonEntityShip, Brain<? extends EntityShip> brain) {
         brain.addActivityWithConditions(ModActivity.BURN_OUT_FUELS.get(),
                 ImmutableList.of(
-                        Pair.of(0, new SoutBurnOut())
                 ),
                 ImmutableSet.of(Pair.of(ModMemoryModuleType.OUT_OF_FUEL.get(), MemoryStatus.VALUE_PRESENT))
         );

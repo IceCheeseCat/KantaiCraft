@@ -1,8 +1,10 @@
 package com.github.icecheesecat.kantaicraft.tickable;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.equipment.Equipment;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
+import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
+import com.github.icecheesecat.kantaicraft.exception.KantaiCraftException;
 import com.github.icecheesecat.kantaicraft.tickable.attack.CannonAttack;
 
 import javax.annotation.Nullable;
@@ -18,8 +20,16 @@ public class EquipmentActionHandler extends ArrayList<ShipTickableAction> {
         this.entityShip = entityShip;
         this.equipmentHandler = equipmentHandler;
         for (int i = 0; i < equipmentHandler.getSlotSize(); i++) {
-            this.add(ShipTickableAction.NULL);
+            this.add(evaluateAction(entityShip, equipmentHandler.getEquipment(i)));
         }
+    }
+
+    public ShipTickableAction evaluateAction(EntityShip entityShip, Equipment equipment) {
+        return switch (equipment.getEquipmentClass()) {
+            case SMALL_CANNON -> new CannonAttack(entityShip, equipment);
+            case NONE -> ShipTickableAction.NULL;
+            default -> throw new KantaiCraftException(this.getClass(), "not implemented ship action");
+        };
     }
 
     @Override

@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 public abstract class Ikazuchi extends DestroyerEntityShip {
 
     public Ikazuchi(EntityType<? extends PathfinderMob> entityType, Level level) {
-        super(entityType, level);
+        super(entityType, level, "ikazuchi");
     }
 
     @Override

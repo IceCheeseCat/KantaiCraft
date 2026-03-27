@@ -1,8 +1,8 @@
 package com.github.icecheesecat.kantaicraft.capability.trajectory;
 
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
@@ -12,11 +12,11 @@ import org.jetbrains.annotations.Nullable;
 public class ClientLevelTrajectoryCapability implements ICapabilitySerializable<CompoundTag> {
 
     public static final Capability<ClientLevelTrajectory> TOKEN = CapabilityManager.get(new CapabilityToken<>(){});
-    ClientLevel level;
+    Level level;
     private ClientLevelTrajectory clientLevelTrajectory = null;
     private final LazyOptional<ClientLevelTrajectory> clientLevelTrajectoryLazyOptional = LazyOptional.of(this::getClientLevelTrajectory);
 
-    public ClientLevelTrajectoryCapability(ClientLevel level) {
+    public ClientLevelTrajectoryCapability(Level level) {
         this.level = level;
     }
 

@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.model.ship.renderer;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer.Hibiki;
 import com.github.icecheesecat.kantaicraft.model.EntityShipRenderer;
-import com.github.icecheesecat.kantaicraft.model.ship.model.HibikiModel;
+import com.github.icecheesecat.kantaicraft.model.ship.model.destroyer.HibikiModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.core.object.Color;
 

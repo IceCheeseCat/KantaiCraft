@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 public abstract class DestroyerRoClass extends DestroyerEntityShip {
 
 	public DestroyerRoClass(EntityType<? extends PathfinderMob> entityType, Level level) {
-		super(entityType, level);
+		super(entityType, level, "destroyer_ro_class");
 	}
 
 	@Override

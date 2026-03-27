@@ -2,7 +2,7 @@ package com.github.icecheesecat.kantaicraft.model.ship.renderer;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer.Ikazuchi;
 import com.github.icecheesecat.kantaicraft.model.EntityShipRenderer;
-import com.github.icecheesecat.kantaicraft.model.ship.model.IkazuchiModel;
+import com.github.icecheesecat.kantaicraft.model.ship.model.destroyer.IkazuchiModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.core.object.Color;
 

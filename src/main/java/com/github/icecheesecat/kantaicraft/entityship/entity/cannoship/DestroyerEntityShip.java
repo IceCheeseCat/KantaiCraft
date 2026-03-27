@@ -2,7 +2,6 @@ package com.github.icecheesecat.kantaicraft.entityship.entity.cannoship;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.ShipClass;
 import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer.EntityShipDefaultEquipments;
-import com.github.icecheesecat.kantaicraft.entityship.entity.features.EquippableSlots;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
 import com.github.icecheesecat.kantaicraft.equipment.SlotChecker;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
@@ -15,8 +14,8 @@ public abstract class DestroyerEntityShip extends CannonEntityShip {
 
     private static final SlotChecker GENERAL_DESTROYER_SLOT_CHECKER = SlotChecker.create(ImmutableSet.of(EquipmentClass.SMALL_CANNON, EquipmentClass.RADAR));
 
-    public DestroyerEntityShip(EntityType<? extends PathfinderMob> entityType, Level level) {
-        super(entityType, ShipClass.DESTROYER, level);
+    public DestroyerEntityShip(EntityType<? extends PathfinderMob> entityType, Level level, String name) {
+        super(entityType, ShipClass.DESTROYER, level, name);
     }
 
     @Override
@@ -37,11 +36,6 @@ public abstract class DestroyerEntityShip extends CannonEntityShip {
     }
 
     @Override
-    protected EquippableSlots defineEquippableSlots() {
-        return new EquippableSlots(EntityShipDefaultEquipments.equipment_1, EntityShipDefaultEquipments.equipment_2, EntityShipDefaultEquipments.equipment_3, EntityShipDefaultEquipments.equipment_4);
-    }
-
-    @Override
     protected int defineFuelTankSize() {
         return 64000;
     }
@@ -50,4 +44,5 @@ public abstract class DestroyerEntityShip extends CannonEntityShip {
     public int getFuelUsage() {
         return 10;
     }
+
 }

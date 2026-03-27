@@ -87,8 +87,10 @@ public class FollowOwner extends Behavior<EntityShip> {
         if (this.entityOwner == null) return false;
         boolean isTooClose = pEntity.distanceTo(this.entityOwner) < this.tooClose;
         boolean finishedPathing = pEntity.getNavigation().isDone();
+        boolean hasAttackTarget = pEntity.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET);
+        boolean hasWantedItem = pEntity.getBrain().hasMemoryValue(ModMemoryModuleType.NEAREST_WANTED_ITEM.get());
 
-        return !isTooClose || !finishedPathing;
+        return (!isTooClose || !finishedPathing) && !hasAttackTarget && !hasWantedItem;
     }
 
     /**

@@ -3,7 +3,6 @@ package com.github.icecheesecat.kantaicraft.entityship.entity;
 import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.animation.BlinkAnimationControl;
-import com.github.icecheesecat.kantaicraft.entityship.entity.features.EquippableSlots;
 import com.github.icecheesecat.kantaicraft.entityship.entity.features.LavaFuelCapability;
 import com.github.icecheesecat.kantaicraft.entityship.entity.features.ShipAnimationState;
 import com.github.icecheesecat.kantaicraft.entityship.entity.features.ShipLeveling;
@@ -20,9 +19,9 @@ import com.github.icecheesecat.kantaicraft.registries.ModActivity;
 import com.github.icecheesecat.kantaicraft.registries.ModEntityDataSerializer;
 import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
+import com.github.icecheesecat.kantaicraft.tickable.EquipmentActionHandler;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -110,10 +109,10 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     protected static final RawAnimation BREATH_ANIMATION = RawAnimation.begin().thenLoop("breath");
     protected static final RawAnimation DUCK_POSE_ANIMATION = RawAnimation.begin().thenPlayAndHold("duck_pose");
     protected static final RawAnimation BURN_OUT_ANIMATION = RawAnimation.begin().thenLoop("burn_out");
+    protected static final RawAnimation CANNON_FIRE_ANIMATION = RawAnimation.begin().thenPlayAndHold("cannon_fire");
     protected final List<EquipmentClass> equippableTypes;
     private final BlinkAnimationControl blinkAnimationControl = new BlinkAnimationControl(60, 80, this.random);
     private final ShipClass shipClass;
-    private final EquippableSlots equippableSlots;
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
     private final LavaFuelCapability lavaFuelCapability;
     SimpleContainer inventory = this.createShipInventory();
@@ -123,14 +122,16 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     private ShipAnimationState prevAnimationShipAnimationState;
     private long lastEmotionChangedTick = -1;
     private boolean noAnimation = false;
+    private final int equipmentCount = 4;
+    private final String name;
 
-    public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentClass> equippableTypes) {
+    public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentClass> equippableTypes, String name) {
         super(entityType, level);
         this.equippableTypes = ImmutableList.copyOf(equippableTypes);
+        this.name = name;
         this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(this::defaultEquipments);
         this.prevAnimationShipAnimationState = ShipAnimationState.IDLE;
         this.shipClass = shipClass;
-        this.equippableSlots = this.defineEquippableSlots();
         this.lavaFuelCapability = new LavaFuelCapability(this.defineFuelTankSize()) {
             @Override
             protected int getId() {
@@ -155,15 +156,12 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.setupSyncedDataFromStance(entityData, this.random);
     }
 
-    protected abstract EquippableSlots defineEquippableSlots();
-
     protected abstract void defaultEquipments(EquipmentHandler equipmentHandler);
 
     @Override
     protected PathNavigation createNavigation(Level pLevel) {
         return new ShipPathNavigation(this, pLevel);
     }
-
     public void addShipAttributes(AttributeSupplier sup) {
         AttributeMap attributeMap = new AttributeMap(sup);
 
@@ -298,11 +296,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
-        nbt.put("playerKantaiData", saveAsPlayerKantaiDataTag());
-    }
-
-    public CompoundTag saveAsPlayerKantaiDataTag() {
-        CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("forcemelee", this.entityData.get(DATA_FORCE_MELEE));
         nbt.putInt("data_aircraft", this.entityData.get(DATA_AIRCRAFT));
         nbt.putFloat("data_ammo", this.entityData.get(DATA_AMMO));
@@ -323,8 +316,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         nbt.putString("entityType", this.getType().toString());
         nbt.putBoolean("wonder_around", this.canWonderAround());
         nbt.put("lava_fuel", this.lavaFuelCapability.serializeNBT());
-
-        return nbt;
+        nbt.putBoolean("should_pick_up_item", this.shouldPickUpItem());
     }
 
     protected CompoundTag saveInventory() {
@@ -350,11 +342,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
 
-        this.loadPlayerKantaiDataTag(nbt.getCompound("playerKantaiData"));
-
-    }
-
-    public void loadPlayerKantaiDataTag(CompoundTag nbt) {
         if (nbt.contains("forcemelee")) {
             this.entityData.set(DATA_FORCE_MELEE, nbt.getBoolean("forcemelee"));
         }
@@ -406,6 +393,10 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         if (nbt.contains("lava_fuel")) {
             this.lavaFuelCapability.deserializeNBT(nbt.getCompound("lava_fuel"));
         }
+        if (nbt.contains("should_pick_up_item")) {
+            this.setShouldPickUpItem(nbt.getBoolean("should_pick_up_item"));
+        }
+
     }
 
     protected void loadInventory(CompoundTag nbt) {
@@ -437,10 +428,18 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
                 }
             }
 
-            syncEquipmentHandler();
+            tickEquipmentHandler();
 
         }
 
+    }
+
+    public void tickEquipmentHandler() {
+        if (this.equipmentHandler != null && this.equipmentHandler.isDirty()) {
+            ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), EquipmentHandlerPacket.wholeHandlerPacket(this.getId(), this.equipmentHandler));
+            this.getBrain().setMemory(ModMemoryModuleType.ACTION_HANDLER.get(), new EquipmentActionHandler(this, equipmentHandler));
+            this.equipmentHandler.setDirty(false);
+        }
     }
 
     protected boolean continueAnimationState() {
@@ -453,22 +452,6 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
                 yield false;
             }
         };
-    }
-
-    @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
-
-        super.onSyncedDataUpdated(pKey);
-    }
-
-    public void syncEquipmentHandler() {
-        this.getCapability(EquipmentHandlerCapability.TOKEN).ifPresent(
-                equipmentHandler1 -> {
-                    if (this.equipmentHandler.hasAnyDirty()) {
-                        ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), EquipmentHandlerPacket.dirtyHandlerPacket(this.getId(), equipmentHandler1));
-                    }
-                }
-        );
     }
 
     public boolean forceMelee() {
@@ -704,7 +687,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     @Nullable
     public LivingEntity getOwnerEntity() {
         if (this.getShipOwner().isEmpty()) return null;
-        if (this.level() instanceof ClientLevel clientLevel) {
+        if (this.level().isClientSide) {
             return null; // TODO request from client to get Entity id
         }
         else if (this.level() instanceof ServerLevel serverLevel) {
@@ -785,10 +768,10 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     @Override
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
         if (pPlayer.level().isClientSide) {
-            return InteractionResult.PASS;
+            return InteractionResult.SUCCESS;
         }
         if (this.isHostileSide()) {
-            return InteractionResult.PASS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!this.isShipOwner(pPlayer)) {
@@ -901,7 +884,8 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         controllers.add(new AnimationController<>(this, "blink", 5, this::blinkAnimationController));
         controllers.add(new AnimationController<>(this, "idle", 5, this::idleAnimationController));
         controllers.add(new AnimationController<>(this, "sit", 5, this::sitAnimationController));
-        controllers.add(new AnimationController<>(this, "burn_out", 5, this::burnOutAnimationController));
+        controllers.add(new AnimationController<>(this, "burn_out", 0, this::burnOutAnimationController).triggerableAnim("burn_out", BURN_OUT_ANIMATION).receiveTriggeredAnimations());
+        controllers.add(new AnimationController<>(this, "cannon_fire", 0, this::cannonFireAnimation).triggerableAnim("cannon_fire", CANNON_FIRE_ANIMATION).receiveTriggeredAnimations());
     }
 
     protected <E extends EntityShip> PlayState moveAnimationController(final AnimationState<E> event) {
@@ -954,8 +938,19 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     protected <E extends EntityShip> PlayState burnOutAnimationController(final AnimationState<E> event) {
         if (noAnimation) return PlayState.STOP;
-        if (this.hasNoFuel()) {
+        if (event.getController().isPlayingTriggeredAnimation()) {
             return event.setAndContinue(BURN_OUT_ANIMATION);
+        }
+        else if (hasNoFuel()) {
+            return event.setAndContinue(BURN_OUT_ANIMATION);
+        }
+
+        return PlayState.STOP;
+    }
+
+    protected <E extends EntityShip> PlayState cannonFireAnimation(final AnimationState<E> state) {
+        if (state.getController().isPlayingTriggeredAnimation()) {
+            return state.setAndContinue(state.getController().getTriggeredAnimation());
         }
 
         return PlayState.STOP;
@@ -1040,4 +1035,5 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             entityShip.remove(Entity.RemovalReason.DISCARDED);
         }
     }
+
 }

@@ -24,7 +24,6 @@ public class HostileCannonShipBrain {
                 SensorType.NEAREST_PLAYERS,
                 SensorType.IS_IN_WATER,
                 ModSensor.SHIP_RESOURCES_SENSOR.get(),
-                ModSensor.SHIP_EQUIPMENT_SENSOR.get(),
                 ModSensor.HOSTILE_SHIP_TARGETING_SENSOR.get(),
                 ModSensor.ATTACK_TARGET_VISIBILITY_SENSOR.get());
         MEMORY_TYPES = List.of(

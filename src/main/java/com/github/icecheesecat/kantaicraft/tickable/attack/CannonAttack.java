@@ -27,7 +27,8 @@ public class CannonAttack extends ShipRangeAttack {
     public void checkAndPerformCannon(LivingEntity target) {
         if (!this.inCooldown()) {
             if (target != null && target.isAlive()) {
-                Vec3 initPos = new Vec3(this.entityShip.getEquipmentPosition(this.cannon.getEquipmentClass())).add(this.entityShip.position());
+
+                Vec3 initPos = this.entityShip.getEyePosition();
 
                 double canon_vel = cannon.getStat(EquipmentStatType.CANNON_MISSILE_VELOCITY);
                 Vec3 hitSpot = target.getBoundingBox().getCenter();

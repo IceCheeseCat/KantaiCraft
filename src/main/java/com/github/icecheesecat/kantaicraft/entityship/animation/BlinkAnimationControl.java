@@ -1,10 +1,7 @@
 package com.github.icecheesecat.kantaicraft.entityship.animation;
 
 import net.minecraft.util.RandomSource;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class BlinkAnimationControl implements AnimationControl {
 
     private long nextBlinkTime;
