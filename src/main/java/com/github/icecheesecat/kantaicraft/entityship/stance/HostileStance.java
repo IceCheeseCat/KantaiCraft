@@ -1,7 +1,6 @@
 package com.github.icecheesecat.kantaicraft.entityship.stance;
 
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
-import com.github.icecheesecat.kantaicraft.entityship.entity.features.ShipLeveling;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
@@ -14,7 +13,6 @@ public interface HostileStance extends Stance {
     default void setupSyncedDataFromStance(SynchedEntityData entityData, RandomSource random) {
         entityData.define(EntityShip.DATA_AIRCRAFT, Integer.MAX_VALUE);
         entityData.define(EntityShip.DATA_AMMO, Float.MAX_VALUE);
-        entityData.define(EntityShip.DATA_SHIP_LEVELING, ShipLeveling.createRandom(random));
         entityData.define(EntityShip.DATA_SHOULD_PICK_UP_ITEM, false);
     }
 

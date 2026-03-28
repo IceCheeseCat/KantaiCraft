@@ -1,9 +1,5 @@
 package com.github.icecheesecat.kantaicraft.container;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
-
 import com.github.icecheesecat.kantaicraft.entityship.entity.EntityShip;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
@@ -17,6 +13,10 @@ import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Not Used
@@ -146,7 +146,7 @@ public class ShipContainer implements Container, StackedContentsCompatible {
 
     @Override
     public boolean canPlaceItem(int pIndex, ItemStack pStack) {
-        return pIndex < (this.entityShip.getShipLevel() / upgradeLevel) * upgradeSize + 9;
+        return pIndex < (this.entityShip.getLevel() / upgradeLevel) * upgradeSize + 9;
     }
 
     /**

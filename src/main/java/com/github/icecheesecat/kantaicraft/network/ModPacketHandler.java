@@ -177,7 +177,6 @@ public class ModPacketHandler {
                 NearbyOwnedShipsPacket.Request::decode,
                 NearbyOwnedShipsPacket.Request::handle
         );
-
     }
 
 }

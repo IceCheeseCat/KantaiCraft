@@ -9,6 +9,7 @@ public class ShipLeveling implements INBTSerializable<CompoundTag> {
     private int level = 0;
     private int exp;
     public static final int BASE_REQUIRED = 10;
+    private boolean dirty = true;
 
     private ShipLeveling(int shipLevel, int exp) {
         this.level = shipLevel;
@@ -19,20 +20,23 @@ public class ShipLeveling implements INBTSerializable<CompoundTag> {
          return new ShipLeveling(0, 0);
     }
 
-    public void addExp(int gainedExp) {
+    /**
+     *
+     * @param gainedExp
+     * @return incremented levels from exp
+     */
+    public int addExp(int gainedExp) {
+        if (gainedExp <= 0) return 0;
+        int levelIncremented = 0;
         this.exp += gainedExp;
         while (this.exp >= levelUpRequiredExp() && this.level <= MAX_LEVEL) {
             this.exp %= levelUpRequiredExp();
-            this.levelUp();
+            levelIncremented++;
         }
-    }
 
-    private void levelUp(int count) {
-        this.level += count;
-    }
-
-    private void levelUp() {
-        this.levelUp(1);
+        this.level += levelIncremented;
+        makeDirty();
+        return levelIncremented;
     }
 
     private int levelUpRequiredExp() {
@@ -49,10 +53,24 @@ public class ShipLeveling implements INBTSerializable<CompoundTag> {
 
     public void setLevel(int level) {
         this.level = level;
+        makeDirty();
     }
 
     public void setExp(int exp) {
         this.exp = exp;
+        makeDirty();
+    }
+
+    public boolean isDirty() {
+        return this.dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    private void makeDirty() {
+        this.dirty = true;
     }
 
     @Override

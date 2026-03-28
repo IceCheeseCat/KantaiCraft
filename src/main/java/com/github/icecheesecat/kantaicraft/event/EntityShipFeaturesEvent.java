@@ -81,13 +81,10 @@ public class EntityShipFeaturesEvent {
     public static void onEntityShipGetsKill(LivingDeathEvent event) {
         if (event.getEntity().level().isClientSide) return;
         if (event.getSource().getEntity() instanceof EntityShip entityShip) {
-            int prevLevel = entityShip.getShipLevel();
-            entityShip.getShipLeveling().addExp(event.getEntity().getExperienceReward());
-            int level = entityShip.getShipLevel();
-            entityShip.addStatisticByLevelGrowth(level - prevLevel);
+            entityShip.addExp(event.getEntity().getExperienceReward());
 
-            System.out.println("exp:" + entityShip.getShipLeveling().getExp());
-            System.out.println("level:" + entityShip.getShipLeveling().getLevel());
+            System.out.println("exp:" + entityShip.getExp());
+            System.out.println("level:" + entityShip.getLevel());
         }
     }
 

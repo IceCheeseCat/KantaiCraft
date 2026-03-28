@@ -1,7 +1,9 @@
 package com.github.icecheesecat.kantaicraft.entityship.entity.cannoship;
 
+import com.github.icecheesecat.kantaicraft.entityship.attribute.shipAttributes.ShipAttributes;
 import com.github.icecheesecat.kantaicraft.entityship.entity.ShipClass;
 import com.github.icecheesecat.kantaicraft.entityship.entity.cannoship.destroyer.EntityShipDefaultEquipments;
+import com.github.icecheesecat.kantaicraft.entityship.entity.features.AttributeGrowth;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
 import com.github.icecheesecat.kantaicraft.equipment.SlotChecker;
 import com.github.icecheesecat.kantaicraft.equipment.handler.EquipmentHandler;
@@ -43,5 +45,10 @@ public abstract class DestroyerEntityShip extends CannonEntityShip {
     @Override
     protected int defineFuelUsage() {
         return 10;
+    }
+
+    @Override
+    protected AttributeGrowth defineGrowth() {
+        return ShipAttributes.Destroyer.GROWTH;
     }
 }

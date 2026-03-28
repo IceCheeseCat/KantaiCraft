@@ -3,9 +3,7 @@ package com.github.icecheesecat.kantaicraft.entityship.entity;
 import com.github.icecheesecat.kantaicraft.blueprint.Blueprint;
 import com.github.icecheesecat.kantaicraft.capability.equipment.EquipmentHandlerCapability;
 import com.github.icecheesecat.kantaicraft.entityship.animation.BlinkAnimationControl;
-import com.github.icecheesecat.kantaicraft.entityship.entity.features.LavaFuelCapability;
-import com.github.icecheesecat.kantaicraft.entityship.entity.features.ShipAnimationState;
-import com.github.icecheesecat.kantaicraft.entityship.entity.features.ShipLeveling;
+import com.github.icecheesecat.kantaicraft.entityship.entity.features.*;
 import com.github.icecheesecat.kantaicraft.entityship.stance.HostileStance;
 import com.github.icecheesecat.kantaicraft.entityship.stance.Stance;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentClass;
@@ -46,8 +44,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -94,12 +90,12 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public static final EntityDataAccessor<Boolean> DATA_FORCE_MELEE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> DATA_IS_GUARDING = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
 //    public static final EntityDataAccessor<EmotionState> DATA_EMOTION_STATE = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.EMOTION_STATE_SERIALIZER.get());
-    public static final EntityDataAccessor<ShipLeveling> DATA_SHIP_LEVEL = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.SHIP_LEVEL_SERIALIZER.get());
     public static final EntityDataAccessor<Optional<UUID>> DATA_SHIP_OWNER = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.OPTIONAL_UUID);
     public static final EntityDataAccessor<Boolean> DATA_SHOULD_PICK_UP_ITEM = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> DATA_SIT_DOWN = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Float> DATA_SPEED_MODIFIER = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Boolean> DATA_WONDER_AROUND = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<ShipLeveling> DATA_SHIP_LEVELING = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.SHIP_LEVEL_SERIALIZER.get());
     protected static final RawAnimation WALKING_ANIMATION = RawAnimation.begin().thenLoop("walk");
 //    protected static final RawAnimation RUNNING_ANIMATION = RawAnimation.begin().thenLoop("run");
     protected static final RawAnimation BLINK_ANIMATION = RawAnimation.begin().thenPlay("blink");
@@ -127,6 +123,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     private boolean noAnimation = false;
     private final int equipmentCount = 4;
     private final String name;
+    private final LevelingModifier levelingModifier;
 
     public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentClass> equippableTypes, String name) {
         super(entityType, level);
@@ -141,6 +138,8 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
                 return EntityShip.this.getId();
             }
         };
+
+        this.levelingModifier = new LevelingModifier(this::getAttributes, this::getShipLeveling, this.defineGrowth());
     }
 
     @Override
@@ -156,19 +155,17 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.entityData.define(DATA_FOLLOW_DISTANCE, 10);
         this.entityData.define(DATA_SIT_DOWN, false);
         this.entityData.define(DATA_WONDER_AROUND, false);
+        this.entityData.define(DATA_SHIP_LEVELING, ShipLeveling.levelZero());
         this.setupSyncedDataFromStance(entityData, this.random);
     }
+
+    protected abstract AttributeGrowth defineGrowth();
 
     protected abstract void defaultEquipments(EquipmentHandler equipmentHandler);
 
     @Override
     protected PathNavigation createNavigation(Level pLevel) {
         return new ShipPathNavigation(this, pLevel);
-    }
-    public void addShipAttributes(AttributeSupplier sup) {
-        AttributeMap attributeMap = new AttributeMap(sup);
-
-        this.getAttributes().assignValues(attributeMap);
     }
 
     public void useAmmo() {
@@ -325,18 +322,18 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
-        nbt.putBoolean("forcemelee", this.entityData.get(DATA_FORCE_MELEE));
+        nbt.putBoolean("force_melee", this.entityData.get(DATA_FORCE_MELEE));
         nbt.putInt("data_aircraft", this.entityData.get(DATA_AIRCRAFT));
         nbt.putFloat("data_ammo", this.entityData.get(DATA_AMMO));
         nbt.putInt("animation_state", this.entityData.get(DATA_ANIMATION_STATE).ordinal());
         nbt.putInt("previous_animation_state", this.prevAnimationShipAnimationState.ordinal());
 //        nbt.putInt("emotion_state", this.entityData.get(DATA_EMOTION_STATE).ordinal());
         nbt.putLong("last_emotion_changed_tick", this.lastEmotionChangedTick);
-        nbt.put("shiplevel", this.entityData.get(DATA_SHIP_LEVEL).serializeNBT());
-        nbt.putFloat("speedmodifier", this.getNormalSpeedModifier());
+        nbt.put("ship_leveling", this.entityData.get(DATA_SHIP_LEVELING).serializeNBT());
+        nbt.putFloat("speed_modifier", this.getNormalSpeedModifier());
         if (this.getShipInventory() != null)
             nbt.put("inventory", this.saveInventory());
-        nbt.putBoolean("isguarding", this.entityData.get(DATA_IS_GUARDING));
+        nbt.putBoolean("is_guarding", this.entityData.get(DATA_IS_GUARDING));
         this.entityData.get(DATA_SHIP_OWNER).ifPresent(uuid ->
                 nbt.putUUID("shipowner", uuid));
         nbt.putInt("follow_distance", this.getFollowOwnerDistance());
@@ -393,8 +390,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             this.lastEmotionChangedTick = nbt.getLong("last_emotion_changed_tick");
         }
         if (nbt.contains("ship_leveling")) {
-            ShipLeveling shipLeveling = ShipLeveling.levelZero();
-            shipLeveling.deserializeNBT((CompoundTag) nbt.get("ship_leveling"));
+            ShipLeveling shipLeveling = ShipLeveling.create(nbt.getCompound("ship_leveling"));
             this.entityData.set(DATA_SHIP_LEVELING, shipLeveling);
         }
         if (nbt.contains("speed_modifier")) {
@@ -460,9 +456,16 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             }
 
             tickEquipmentHandler();
-
+            updateShipLeveling();
         }
 
+    }
+
+    private void updateShipLeveling() {
+        if (this.getShipLeveling().isDirty()) {
+            this.getShipLeveling().setDirty(false);
+            this.entityData.set(DATA_SHIP_LEVELING, this.getShipLeveling());
+        }
     }
 
     public void tickEquipmentHandler() {
@@ -583,7 +586,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.entityData.set(DATA_ANIMATION_STATE, shipAnimationState);
     }
 
-    public int getShipLevel() {
+    public int getLevel() {
         return this.entityData.get(DATA_SHIP_LEVELING).getLevel();
     }
 
@@ -591,7 +594,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         return this.entityData.get(DATA_SHIP_LEVELING);
     }
 
-    public int getShipExp() {
+    public int getExp() {
         return this.entityData.get(DATA_SHIP_LEVELING).getExp();
     }
 
@@ -1065,6 +1068,14 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             playerKantaiData.addShipInDock(entityShip);
             entityShip.remove(RemovalReason.DISCARDED);
         }
+    }
+
+    public void setLevel(int level) {
+        this.levelingModifier.setLevel(level);
+    }
+
+    public void addExp(int exp) {
+        this.levelingModifier.addExp(exp);
     }
 
 }

@@ -1,8 +1,8 @@
 package com.github.icecheesecat.kantaicraft.entityship;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
-import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import com.github.icecheesecat.kantaicraft.entityship.attribute.shipAttributes.ShipAttributes;
+import com.github.icecheesecat.kantaicraft.registries.ModEntity;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -13,18 +13,18 @@ public class EntityAttributesEvent {
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
 
-//        event.put(ModEntity.PlayerShip.DESTROYER_RO_CLASS.get(), ShipAttributes.DESTROYER_CLASS);
-//        event.put(ModEntity.HostileShip.DESTROYER_RO_CLASS.get(), ShipAttributes.DESTROYER_CLASS);
-//        event.put(ModEntity.PlayerShip.DESTROYER_I_CLASS.get(), ShipAttributes.DESTROYER_CLASS);
-//        event.put(ModEntity.HostileShip.DESTROYER_I_CLASS.get(), ShipAttributes.DESTROYER_CLASS);
-        event.put(ModEntity.PlayerShip.INAZUMA.get(), ShipAttributes.DESTROYER_CLASS);
-        event.put(ModEntity.HostileShip.INAZUMA.get(), ShipAttributes.DESTROYER_CLASS);
-        event.put(ModEntity.PlayerShip.IKAZUCHI.get(), ShipAttributes.DESTROYER_CLASS);
-        event.put(ModEntity.HostileShip.IKAZUCHI.get(), ShipAttributes.DESTROYER_CLASS);
-        event.put(ModEntity.PlayerShip.HIBIKI.get(), ShipAttributes.DESTROYER_CLASS);
-        event.put(ModEntity.HostileShip.HIBIKI.get(), ShipAttributes.DESTROYER_CLASS);
-        event.put(ModEntity.PlayerShip.AKATSUKI.get(), ShipAttributes.DESTROYER_CLASS);
-        event.put(ModEntity.HostileShip.AKATSUKI.get(), ShipAttributes.DESTROYER_CLASS);
+//        event.put(ModEntity.PlayerShip.DESTROYER_RO_CLASS.get(), ShipAttributes.Destroyer.DEFAULT);
+//        event.put(ModEntity.HostileShip.DESTROYER_RO_CLASS.get(), ShipAttributes.Destroyer.DEFAULT);
+//        event.put(ModEntity.PlayerShip.DESTROYER_I_CLASS.get(), ShipAttributes.Destroyer.DEFAULT);
+//        event.put(ModEntity.HostileShip.DESTROYER_I_CLASS.get(), ShipAttributes.Destroyer.DEFAULT);
+        event.put(ModEntity.PlayerShip.INAZUMA.get(), ShipAttributes.Destroyer.DEFAULT);
+        event.put(ModEntity.HostileShip.INAZUMA.get(), ShipAttributes.Destroyer.DEFAULT);
+        event.put(ModEntity.PlayerShip.IKAZUCHI.get(), ShipAttributes.Destroyer.DEFAULT);
+        event.put(ModEntity.HostileShip.IKAZUCHI.get(), ShipAttributes.Destroyer.DEFAULT);
+        event.put(ModEntity.PlayerShip.HIBIKI.get(), ShipAttributes.Destroyer.DEFAULT);
+        event.put(ModEntity.HostileShip.HIBIKI.get(), ShipAttributes.Destroyer.DEFAULT);
+        event.put(ModEntity.PlayerShip.AKATSUKI.get(), ShipAttributes.Destroyer.DEFAULT);
+        event.put(ModEntity.HostileShip.AKATSUKI.get(), ShipAttributes.Destroyer.DEFAULT);
 
     }
 
