@@ -39,7 +39,7 @@ public abstract class ShipSelectButton extends AbstractButton {
             this.entityShip.heal(10.0f);
             this.entityShipRenderer = (EntityShipRenderer<EntityShip>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(this.entityShip);
         }
-        this.texts = List.of(Component.translatable(serializedLivingEntity.getEntityType().getDescriptionId()), Component.literal(ShipLeveling.create(serializedLivingEntity.getEntityTag().getCompound("shipLevel")).toString()));
+        this.texts = List.of(Component.translatable(serializedLivingEntity.getEntityType().getDescriptionId()), Component.literal(ShipLeveling.create(serializedLivingEntity.getEntityTag().getCompound("ship_leveling")).toString()));
     }
 
     @Override

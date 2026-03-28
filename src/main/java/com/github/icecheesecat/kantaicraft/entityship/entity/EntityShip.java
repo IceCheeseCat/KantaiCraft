@@ -371,8 +371,8 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
 
-        if (nbt.contains("forcemelee")) {
-            this.entityData.set(DATA_FORCE_MELEE, nbt.getBoolean("forcemelee"));
+        if (nbt.contains("force_melee")) {
+            this.entityData.set(DATA_FORCE_MELEE, nbt.getBoolean("force_melee"));
         }
         if (nbt.contains("data_aircraft")) {
             this.entityData.set(DATA_AIRCRAFT, nbt.getInt("data_aircraft"));
@@ -392,17 +392,19 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         if (nbt.contains("last_emotion_changed_tick")) {
             this.lastEmotionChangedTick = nbt.getLong("last_emotion_changed_tick");
         }
-        if (nbt.contains("shiplevel")) {
-            this.entityData.get(DATA_SHIP_LEVEL).deserializeNBT((CompoundTag) nbt.get("shiplevel"));
+        if (nbt.contains("ship_leveling")) {
+            ShipLeveling shipLeveling = ShipLeveling.levelZero();
+            shipLeveling.deserializeNBT((CompoundTag) nbt.get("ship_leveling"));
+            this.entityData.set(DATA_SHIP_LEVELING, shipLeveling);
         }
-        if (nbt.contains("speedmodifier")) {
-            this.entityData.set(DATA_SPEED_MODIFIER, nbt.getFloat("speedmodifier"));
+        if (nbt.contains("speed_modifier")) {
+            this.entityData.set(DATA_SPEED_MODIFIER, nbt.getFloat("speed_modifier"));
         }
         if (nbt.contains("inventory")) {
             this.loadInventory(nbt.getCompound("inventory"));
         }
-        if (nbt.contains("isguarding")) {
-            this.entityData.set(DATA_IS_GUARDING, nbt.getBoolean("isguarding"));
+        if (nbt.contains("is_guarding")) {
+            this.entityData.set(DATA_IS_GUARDING, nbt.getBoolean("is_guarding"));
         }
         if (nbt.contains("shipowner")) {
             this.entityData.set(DATA_SHIP_OWNER, Optional.of(nbt.getUUID("shipowner")));
@@ -582,15 +584,15 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     public int getShipLevel() {
-        return this.entityData.get(DATA_SHIP_LEVEL).getLevel();
+        return this.entityData.get(DATA_SHIP_LEVELING).getLevel();
     }
 
     public ShipLeveling getShipLeveling() {
-        return this.entityData.get(DATA_SHIP_LEVEL);
+        return this.entityData.get(DATA_SHIP_LEVELING);
     }
 
     public int getShipExp() {
-        return this.entityData.get(DATA_SHIP_LEVEL).getExp();
+        return this.entityData.get(DATA_SHIP_LEVELING).getExp();
     }
 
     public abstract int getProcessTime();
