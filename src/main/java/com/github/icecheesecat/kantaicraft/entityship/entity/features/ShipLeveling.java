@@ -10,7 +10,7 @@ public class ShipLeveling implements INBTSerializable<CompoundTag> {
     private int exp;
     public static final int BASE_REQUIRED = 10;
 
-    public ShipLeveling(int shipLevel, int exp) {
+    private ShipLeveling(int shipLevel, int exp) {
         this.level = shipLevel;
         this.exp = exp;
     }
@@ -19,17 +19,20 @@ public class ShipLeveling implements INBTSerializable<CompoundTag> {
          return new ShipLeveling(0, 0);
     }
 
-    // TODO could improve the levelup check algorithm
     public void addExp(int gainedExp) {
         this.exp += gainedExp;
         while (this.exp >= levelUpRequiredExp() && this.level <= MAX_LEVEL) {
             this.exp %= levelUpRequiredExp();
-            this.level++;
+            this.levelUp();
         }
     }
 
-    public void addLevel(int shipLevel) {
-        this.level += shipLevel;
+    private void levelUp(int count) {
+        this.level += count;
+    }
+
+    private void levelUp() {
+        this.levelUp(1);
     }
 
     private int levelUpRequiredExp() {

@@ -13,7 +13,7 @@ public interface NeutralStance extends Stance {
     default void setupSyncedDataFromStance(SynchedEntityData entityData, RandomSource random) {
         entityData.define(EntityShip.DATA_AIRCRAFT, 0);
         entityData.define(EntityShip.DATA_AMMO, 0.0f);
-        entityData.define(EntityShip.DATA_SHIP_LEVEL, ShipLeveling.createRandom(random));
+        entityData.define(EntityShip.DATA_SHIP_LEVELING, ShipLeveling.createRandom(random));
     }
 
     @Override

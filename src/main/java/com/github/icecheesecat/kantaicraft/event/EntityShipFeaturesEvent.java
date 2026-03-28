@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -76,5 +77,18 @@ public class EntityShipFeaturesEvent {
         }
     }
 
+    @SubscribeEvent
+    public static void onEntityShipGetsKill(LivingDeathEvent event) {
+        if (event.getEntity().level().isClientSide) return;
+        if (event.getSource().getEntity() instanceof EntityShip entityShip) {
+            int prevLevel = entityShip.getShipLevel();
+            entityShip.getShipLeveling().addExp(event.getEntity().getExperienceReward());
+            int level = entityShip.getShipLevel();
+            entityShip.addStatisticByLevelGrowth(level - prevLevel);
+
+            System.out.println("exp:" + entityShip.getShipLeveling().getExp());
+            System.out.println("level:" + entityShip.getShipLeveling().getLevel());
+        }
+    }
 
 }
