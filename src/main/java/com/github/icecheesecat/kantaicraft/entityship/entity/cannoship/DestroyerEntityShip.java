@@ -41,8 +41,7 @@ public abstract class DestroyerEntityShip extends CannonEntityShip {
     }
 
     @Override
-    public int getFuelUsage() {
+    protected int defineFuelUsage() {
         return 10;
     }
-
 }

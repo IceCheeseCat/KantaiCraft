@@ -41,7 +41,10 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -215,7 +218,33 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     protected abstract int defineFuelTankSize();
-    public abstract int getFuelUsage();
+
+    /**
+     * @return fuel usage based on current activity
+     */
+    public int getFuelUsage() {
+        var optional = this.getBrain().getActiveNonCoreActivity();
+        if (optional.isEmpty()) {
+            return this.defineFuelUsage();
+        }
+
+        Activity activity = optional.get();
+        float scalar;
+        switch (activity.getName()) {
+            case "idle" -> scalar = 0.2f;
+            case "sitting" -> scalar = 0.1f;
+            case "fight" -> scalar = 1.5f;
+            case "burn_out_fuels" -> scalar = 0.0f;
+            default -> scalar = 1.0f;
+        }
+
+        return (int) (this.defineFuelUsage() * scalar);
+    }
+
+    /**
+     * @return defines fuel usage amount per tick
+     */
+    protected abstract int defineFuelUsage();
 
     /**
      * @param amount fuel consume amount (lava)
@@ -1032,7 +1061,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     public static void handleRetrieveFromLevel(ServerLevel serverLevel, UUID uuid, PlayerKantaiData playerKantaiData) {
         if (serverLevel.getEntity(uuid) instanceof EntityShip entityShip) {
             playerKantaiData.addShipInDock(entityShip);
-            entityShip.remove(Entity.RemovalReason.DISCARDED);
+            entityShip.remove(RemovalReason.DISCARDED);
         }
     }
 
