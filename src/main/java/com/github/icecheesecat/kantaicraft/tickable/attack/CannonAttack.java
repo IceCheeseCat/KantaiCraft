@@ -37,6 +37,7 @@ public class CannonAttack extends ShipRangeAttack {
                     int id = this.entityShip.getRandom().nextInt();
                     Trajectory newTrajectory = new Trajectory(id, this.entityShip.getUUID(), initPos, fireVec, GRAVITY, Trajectory.SMALL_PROJECTILE_SIZE, calculateDamage(this.cannon, this.entityShip), (entity -> this.entityShip.canAttack((LivingEntity) entity)));
                     addTrajectoryToLevel((ServerLevel) this.entityShip.level(), newTrajectory);
+                    entityShip.useAmmo();
                     this.resetCooldown();
                 }
 

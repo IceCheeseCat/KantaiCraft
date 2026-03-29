@@ -83,9 +83,8 @@ public class EquipmentHandler implements INBTSerializable<CompoundTag> {
         return this.equipments.get(index).equippableBoneName.equals(bone.getName());
     }
 
-    public boolean hasRangeAttackWeapon() {
-        return this.equipments.stream().anyMatch(equipment -> CANNON_WEAPON.stream().anyMatch(equipment.getEquipment()::isTypeOf)) ||
-        this.equipments.stream().anyMatch(equipment -> ATTACK_AIRCRAFT.stream().anyMatch(equipment.getEquipment()::isTypeOf));
+    public boolean hasWeaponType(EquipmentClass equipmentClass) {
+        return this.equipments.stream().anyMatch(equipment -> equipment.getEquipment().isTypeOf(equipmentClass));
     }
 
     public boolean isDirty() {

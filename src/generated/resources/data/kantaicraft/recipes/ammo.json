@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:iron_ingot"
+    },
+    "G": {
+      "item": "minecraft:gunpowder"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#G#",
+    " # "
+  ],
+  "result": {
+    "count": 16,
+    "item": "kantaicraft:ammo"
+  },
+  "show_notification": true
+}

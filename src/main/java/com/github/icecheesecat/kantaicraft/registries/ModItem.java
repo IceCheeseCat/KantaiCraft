@@ -21,7 +21,7 @@ public class ModItem
 			(ship, player) -> {
 				ship.setShipOwner(player.getUUID());
 				ship.addFuel(new FluidStack(Fluids.LAVA, 64000), IFluidHandler.FluidAction.EXECUTE);
-				ship.setAmmo(100.0f);
+//				ship.setAmmo(100.0f);
 			}
 	, new Item.Properties()));
 
@@ -46,5 +46,5 @@ public class ModItem
 			}
 	, new Item.Properties()));
 	public static final RegistryObject<Item> SHIP_BLUEPRINT = ITEMS.register("ship_blueprint", () -> new BlueprintItem(new Item.Properties().stacksTo(1)));
-	
+	public static final RegistryObject<Item> AMMO = ITEMS.register("ammo", () -> new Item(new Item.Properties()));
 }

@@ -19,6 +19,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         this.simpleItem(ModItem.SHIP_BLUEPRINT);
+        this.simpleItem(ModItem.AMMO);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

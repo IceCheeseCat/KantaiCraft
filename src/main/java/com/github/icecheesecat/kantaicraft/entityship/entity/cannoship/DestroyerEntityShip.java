@@ -51,4 +51,10 @@ public abstract class DestroyerEntityShip extends CannonEntityShip {
     protected AttributeGrowth defineGrowth() {
         return ShipAttributes.Destroyer.GROWTH;
     }
+
+    @Override
+    public boolean canRangeAttack() {
+        return this.equipmentHandler.hasWeaponType(EquipmentClass.SMALL_CANNON) && this.hasEnoughAmmo();
+    }
+
 }

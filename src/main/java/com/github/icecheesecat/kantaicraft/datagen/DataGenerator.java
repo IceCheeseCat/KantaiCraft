@@ -30,7 +30,7 @@ public class DataGenerator {
         gen.addProvider(event.includeServer(), (DataProvider.Factory<LootTableProvider>) DataGenerator::createBlockLootTableProvider);
         gen.addProvider(event.includeServer(), new ModBlockTagsProvider(output, lookUpProvider, efh));
 //        gen.addProvider(event.includeServer(), new CannonDataProvider(output, KantaiCraft.MODID, EquipmentDataProvider.SMALL_CANNON_FOLDER,efh));
-
+        gen.addProvider(event.includeServer(), new ModRecipeProvider(output));
     }
 
     private static LootTableProvider createBlockLootTableProvider(PackOutput packOutput) {

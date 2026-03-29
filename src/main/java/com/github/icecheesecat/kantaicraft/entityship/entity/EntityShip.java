@@ -458,7 +458,9 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             }
 
             tickEquipmentHandler();
+            updateShipLeveling();
             getAmmoFromInventory();
+            System.out.println("ammo:" + this.getAmmo());
         }
 
     }
