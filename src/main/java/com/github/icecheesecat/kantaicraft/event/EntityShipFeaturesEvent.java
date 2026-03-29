@@ -82,9 +82,6 @@ public class EntityShipFeaturesEvent {
         if (event.getEntity().level().isClientSide) return;
         if (event.getSource().getEntity() instanceof EntityShip entityShip) {
             entityShip.addExp(event.getEntity().getExperienceReward());
-
-            System.out.println("exp:" + entityShip.getExp());
-            System.out.println("level:" + entityShip.getLevel());
         }
     }
 

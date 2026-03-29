@@ -19,11 +19,13 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ShipScreen extends PageScreen<ShipMenu> {
 
@@ -251,11 +253,11 @@ public class ShipScreen extends PageScreen<ShipMenu> {
         gridLayout.defaultCellSetting().padding(0);
 
         int index = 0;
-        gridLayout.addChild(new IconWithTextElement(0, 0, HEART_ICON, 4, String.valueOf(this.entityShip.getHealth())), 0, index++);
-        gridLayout.addChild(new IconWithTextElement(0, 0, FIREPOWER_ICON, 4, String.valueOf(this.entityShip.getAttributeValue(ModAttribute.FIREPOWER.get()))), 0, index++);
-        gridLayout.addChild(new IconWithTextElement(0, 0, TORPEDO_ICON, 4, String.valueOf(this.entityShip.getAttributeValue(ModAttribute.TORPEDO.get()))), 0, index++);
-        gridLayout.addChild(new IconWithTextElement(0, 0, ANTIAIR_ICON, 4, String.valueOf(this.entityShip.getAttributeValue(ModAttribute.ANTIAIR.get()))), 0, index++);
-        gridLayout.addChild(new IconWithTextElement(0, 0, ASW_ICON, 4, String.valueOf(this.entityShip.getAttributeValue(ModAttribute.ASW.get()))), 0, index++);
+        gridLayout.addChild(new IconWithTextElement(0, 0, HEART_ICON, 4, () -> String.valueOf(roundDoubleToFirstDecimal(this.entityShip.getHealth()))), 0, index++);
+        gridLayout.addChild(new IconWithTextElement(0, 0, FIREPOWER_ICON, 4, attributeToString(ModAttribute.FIREPOWER.get())), 0, index++);
+        gridLayout.addChild(new IconWithTextElement(0, 0, TORPEDO_ICON, 4, attributeToString(ModAttribute.TORPEDO.get())), 0, index++);
+        gridLayout.addChild(new IconWithTextElement(0, 0, ANTIAIR_ICON, 4, attributeToString(ModAttribute.ANTIAIR.get())), 0, index++);
+        gridLayout.addChild(new IconWithTextElement(0, 0, ASW_ICON, 4, attributeToString(ModAttribute.ASW.get())), 0, index++);
         gridLayout.arrangeElements();
 
         int gridWidth = gridLayout.getWidth();
@@ -266,6 +268,14 @@ public class ShipScreen extends PageScreen<ShipMenu> {
 
         return gridLayout;
 
+    }
+
+    private double roundDoubleToFirstDecimal(double value) {
+        return Math.round(value * 10.0d) / 10.0d;
+    }
+
+    private Supplier<String> attributeToString(Attribute attribute) {
+        return () -> String.valueOf(roundDoubleToFirstDecimal(this.entityShip.getAttributeValue(attribute)));
     }
 
     @Override
