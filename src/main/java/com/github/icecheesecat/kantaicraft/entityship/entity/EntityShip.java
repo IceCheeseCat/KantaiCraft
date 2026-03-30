@@ -137,7 +137,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             }
         };
 
-        this.levelingModifier = new LevelingModifier(this::getAttributes, this::getShipLeveling, this.defineGrowth());
+        this.levelingModifier = new LevelingModifier(this::getAttributes, this::getShipLeveling, this.defineGrowth(), this.getEntityData());
     }
 
     @Override
@@ -393,7 +393,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         }
         if (nbt.contains("ship_leveling")) {
             ShipLeveling shipLeveling = ShipLeveling.create(nbt.getCompound("ship_leveling"));
-            this.entityData.set(DATA_SHIP_LEVELING, shipLeveling);
+            this.entityData.set(DATA_SHIP_LEVELING, shipLeveling, true);
         }
         if (nbt.contains("speed_modifier")) {
             this.entityData.set(DATA_SPEED_MODIFIER, nbt.getFloat("speed_modifier"));
@@ -458,18 +458,9 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             }
 
             tickEquipmentHandler();
-            updateShipLeveling();
             getAmmoFromInventory();
-            System.out.println("ammo:" + this.getAmmo());
         }
 
-    }
-
-    private void updateShipLeveling() {
-        if (this.getShipLeveling().isDirty()) {
-            this.getShipLeveling().setDirty(false);
-            this.entityData.set(DATA_SHIP_LEVELING, this.getShipLeveling());
-        }
     }
 
     public void tickEquipmentHandler() {
