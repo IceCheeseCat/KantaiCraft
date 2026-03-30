@@ -23,7 +23,7 @@ public class LevelingModifier {
     public void addExp(int exp) {
         int levelIncremented = this.shipLeveling.get().addExp(exp);
         addStatisticByLevelGrowth(levelIncremented);
-        this.entityData.set(EntityShip.DATA_SHIP_LEVELING, this.shipLeveling.get(), true);
+        update();
     }
 
     private void addStatisticByLevelGrowth(int level) {
@@ -38,6 +38,16 @@ public class LevelingModifier {
     public void setLevel(int level) {
         int levelChanges = this.shipLeveling.get().setLevel(level);
         this.addStatisticByLevelGrowth(levelChanges);
+        update();
+    }
+
+    public void setExp(int exp) {
+        int levelChanges = this.shipLeveling.get().setExp(exp);
+        this.addStatisticByLevelGrowth(levelChanges);
+        update();
+    }
+
+    private void update() {
         this.entityData.set(EntityShip.DATA_SHIP_LEVELING, this.shipLeveling.get(), true);
     }
 

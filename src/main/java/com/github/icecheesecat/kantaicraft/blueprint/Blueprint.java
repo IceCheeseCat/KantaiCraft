@@ -16,63 +16,72 @@ public class Blueprint implements INBTSerializable<CompoundTag> {
     public static final Blueprint EMPTY = createEmpty();
     int processTime;
     Rarity rarity;
+    String entityType;
+    CompoundTag savedData;
     ShipLeveling shipLeveling;
     ShipClass shipClass;
-    String entityType;
+    boolean isEmpty = false;
 
-    protected Blueprint(int processTime, Rarity rarity, ShipLeveling shipLeveling, ShipClass shipClass, String entityType) {
-        this.processTime = processTime;
-        this.rarity = rarity;
-        this.shipLeveling = shipLeveling;
-        this.shipClass = shipClass;
-        this.entityType = entityType;
+    private Blueprint(boolean isEmpty) {
+        this.isEmpty = isEmpty;
+    }
+
+    protected Blueprint(EntityShip entityShip) {
+        this.processTime = entityShip.getProcessTime();
+        this.rarity = entityShip.getRarity();
+        this.entityType = entityShip.getEncodeId();
+        this.savedData = new CompoundTag();
+        this.shipLeveling = entityShip.getShipLeveling();
+        this.shipClass = entityShip.getShipClass();
+        entityShip.addAdditionalSaveData(this.savedData);
     }
 
     public static Blueprint createEmpty() {
-        return new Blueprint(-1, Rarity.COMMON, ShipLeveling.levelZero(), ShipClass.NONE, "");
+        return new Blueprint(true);
     }
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
+        nbt.putBoolean("isempty", this.isEmpty);
+        if (isEmpty) return nbt;
         nbt.putInt("processtime", processTime);
         nbt.putInt("rarity", rarity.ordinal());
-        nbt.put("shiplevel", shipLeveling.serializeNBT());
-        nbt.putInt("shipclass", shipClass.ordinal());
         nbt.putString("entitytype", this.entityType);
+        nbt.put("saveddata", this.savedData);
+        nbt.put("shipleveling", this.shipLeveling.serializeNBT());
+        nbt.putInt("shipclass", this.shipClass.ordinal());
 
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
+        this.isEmpty = nbt.getBoolean("isempty");
+        if (isEmpty) return;
         this.processTime = nbt.getInt("processtime");
         this.rarity = Rarity.values()[nbt.getInt("rarity")];
-        this.shipLeveling = ShipLeveling.create(nbt.getCompound("shiplevel"));
-        this.shipClass = ShipClass.get(nbt.getInt("shipclass"));
         this.entityType = nbt.getString("entitytype");
+        this.savedData = nbt.getCompound("saveddata");
+        this.shipLeveling = ShipLeveling.create(nbt.getCompound("shipleveling"));
+        this.shipClass = ShipClass.values()[nbt.getInt("shipclass")];
     }
 
     public static Blueprint createFromTag(CompoundTag nbt) {
-        Blueprint blueprint = createEmpty();
+        Blueprint blueprint = new Blueprint(false);
         blueprint.deserializeNBT(nbt);
         return blueprint;
     }
 
     public static Blueprint create(EntityShip entityShip) {
-        return new Blueprint(entityShip.getProcessTime(), entityShip.getRarity(), entityShip.getShipLeveling(), entityShip.getShipClass(), entityShip.getEncodeId());
-    }
-
-    public static Blueprint createWithLevelZero(EntityShip entityShip) {
-        var blueprint = create(entityShip);
-        blueprint.setShipLeveling(ShipLeveling.levelZero());
-        return blueprint;
+        return new Blueprint(entityShip);
     }
 
     public static Blueprint createWithLevelZero(EntityShip entityShip, HostileStance hostileStance) {
+        entityShip.setLevel(0);
+        entityShip.setExp(0);
         var blueprint = create(entityShip);
         blueprint.setEntityType(EntityType.getKey(hostileStance.getPlayerSideEntityType()).toString());
-        blueprint.setShipLeveling(ShipLeveling.levelZero());
         return blueprint;
     }
 
@@ -83,28 +92,12 @@ public class Blueprint implements INBTSerializable<CompoundTag> {
         return rarity;
     }
 
-    public void setProcessTime(int processTime) {
-        this.processTime = processTime;
-    }
-
-    public void setRarity(Rarity rarity) {
-        this.rarity = rarity;
+    private void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 
     public ShipLeveling getShipLevel() {
         return shipLeveling;
-    }
-
-    public void setShipLeveling(ShipLeveling shipLeveling) {
-        this.shipLeveling = shipLeveling;
-    }
-
-    public ShipLeveling getShipLeveling() {
-        return shipLeveling;
-    }
-
-    public void setEntityType(String entityType) {
-        this.entityType = entityType;
     }
 
     public ShipClass getShipClass() {
@@ -115,11 +108,17 @@ public class Blueprint implements INBTSerializable<CompoundTag> {
         this.shipClass = shipClass;
     }
 
+    public CompoundTag getSavedData() {
+        return this.savedData;
+    }
+
     public boolean isEmpty() {
-        return this.processTime == -1;
+        return this.isEmpty;
     }
 
     public Optional<EntityType<?>> getEntityType() {
         return EntityType.byString(this.entityType);
     }
+
+
 }

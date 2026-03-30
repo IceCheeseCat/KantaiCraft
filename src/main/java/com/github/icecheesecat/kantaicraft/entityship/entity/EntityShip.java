@@ -1067,6 +1067,10 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.levelingModifier.setLevel(level);
     }
 
+    public void setExp(int exp) {
+        this.levelingModifier.setExp(exp);
+    }
+
     public void addExp(int exp) {
         this.levelingModifier.addExp(exp);
     }

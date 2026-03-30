@@ -72,7 +72,8 @@ public class ShipyardSpawnEntityPacket {
             var entityType = entityTypeOptional.get();
             EntityShip entityShip = (EntityShip) entityType.spawn((ServerLevel) serverPlayer.level(), shipyardBlockEntity.getBlockPos().above(), MobSpawnType.SPAWN_EGG);
             if (entityShip != null) {
-                entityShip.setShipOwner(shipyardBlockEntity.getOwners().get(index));
+                entityShip.readAdditionalSaveData(blueprint.getSavedData());
+                entityShip.setHealth(entityShip.getMaxHealth());
             }
         }
 
