@@ -13,10 +13,7 @@ import com.github.icecheesecat.kantaicraft.navigation.ShipPathNavigation;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.network.packet.equipment.EquipmentHandlerPacket;
 import com.github.icecheesecat.kantaicraft.playerkantaidata.PlayerKantaiData;
-import com.github.icecheesecat.kantaicraft.registries.ModActivity;
-import com.github.icecheesecat.kantaicraft.registries.ModEntityDataSerializer;
-import com.github.icecheesecat.kantaicraft.registries.ModItem;
-import com.github.icecheesecat.kantaicraft.registries.ModMemoryModuleType;
+import com.github.icecheesecat.kantaicraft.registries.*;
 import com.github.icecheesecat.kantaicraft.tickable.EquipmentActionHandler;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.Unpooled;
@@ -116,7 +113,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     private final LavaFuelCapability lavaFuelCapability;
     SimpleContainer inventory = this.createShipInventory();
     LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> new InvWrapper(inventory));
-    EquipmentHandler equipmentHandler = new EquipmentHandler(4);
+    protected EquipmentHandler equipmentHandler = new EquipmentHandler(4);
     LazyOptional<EquipmentHandler> lazyEquipmentHandler = LazyOptional.of(() -> equipmentHandler);
     private ShipAnimationState prevAnimationShipAnimationState;
     private long lastEmotionChangedTick = -1;
@@ -124,6 +121,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     private final int equipmentCount = 4;
     private final String name;
     private final LevelingModifier levelingModifier;
+    private boolean startEatingAmmo = false;
 
     public EntityShip(EntityType<? extends PathfinderMob> entityType, ShipClass shipClass, Level level, List<EquipmentClass> equippableTypes, String name) {
         super(entityType, level);
@@ -169,7 +167,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     public void useAmmo() {
-        this.setAmmo(this.getAmmo() - this.getAmmoCost());
+        this.setAmmo(Math.max(this.getAmmo() - this.getAmmoCost(), 0.0f));
     }
 
     public boolean hasEnoughAmmo() {
@@ -196,6 +194,10 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     public float getAmmo() {
         return this.entityData.get(DATA_AMMO);
+    }
+
+    public void addAmmo(float value) {
+        this.setAmmo(this.getAmmo() + value);
     }
 
     public void setAmmo(float value) {
@@ -456,7 +458,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             }
 
             tickEquipmentHandler();
-            updateShipLeveling();
+            getAmmoFromInventory();
         }
 
     }
@@ -524,9 +526,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 //        );
 //    }
 
-    public boolean canRangeAttack() {
-        return this.equipmentHandler.hasRangeAttackWeapon() && hasEnoughAmmo();
-    }
+    public abstract boolean canRangeAttack();
 
     @Override
     public boolean canStandOnFluid(FluidState fluidState) {
@@ -1076,6 +1076,26 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
 
     public void addExp(int exp) {
         this.levelingModifier.addExp(exp);
+    }
+
+    private void getAmmoFromInventory() {
+        double maxAmmo = this.getAttributeValue(ModAttribute.MAX_AMMO.get());
+        if (this.getAmmo() / maxAmmo < 0.3f) {
+            this.startEatingAmmo = true;
+        }
+        if (this.startEatingAmmo) {
+            if (this.inventory.countItem(ModItem.AMMO.get()) == 0) {
+                this.startEatingAmmo = false;
+                return;
+            }
+            for (int i = 0; i < this.inventory.getContainerSize(); i++) {
+                if (this.inventory.getItem(i).is(ModItem.AMMO.get())) {
+                    this.addAmmo(1);
+                    this.inventory.removeItem(i, 1);
+                }
+            }
+        }
+
     }
 
 }

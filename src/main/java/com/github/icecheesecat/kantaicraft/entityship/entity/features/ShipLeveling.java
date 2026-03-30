@@ -9,7 +9,6 @@ public class ShipLeveling implements INBTSerializable<CompoundTag> {
     private int level = 0;
     private int exp;
     public static final int BASE_REQUIRED = 10;
-    private boolean dirty = true;
 
     private ShipLeveling(int shipLevel, int exp) {
         this.level = shipLevel;
@@ -27,15 +26,20 @@ public class ShipLeveling implements INBTSerializable<CompoundTag> {
      */
     public int addExp(int gainedExp) {
         if (gainedExp <= 0) return 0;
-        int levelIncremented = 0;
+
         this.exp += gainedExp;
+        int levelIncremented = expToLevelTranslator();
+        this.level += levelIncremented;
+        return levelIncremented;
+    }
+
+    private int expToLevelTranslator() {
+        int levelIncremented = 0;
         while (this.exp >= levelUpRequiredExp() && this.level <= MAX_LEVEL) {
             this.exp %= levelUpRequiredExp();
             levelIncremented++;
         }
 
-        this.level += levelIncremented;
-        makeDirty();
         return levelIncremented;
     }
 
@@ -51,26 +55,17 @@ public class ShipLeveling implements INBTSerializable<CompoundTag> {
         return exp;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
-        makeDirty();
+    public int setLevel(int level) {
+        int origin = this.level;
+        this.level = Math.min(this.MAX_LEVEL, level);
+        return this.level - origin;
     }
 
-    public void setExp(int exp) {
+    public int setExp(int exp) {
         this.exp = exp;
-        makeDirty();
-    }
-
-    public boolean isDirty() {
-        return this.dirty;
-    }
-
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
-    }
-
-    private void makeDirty() {
-        this.dirty = true;
+        int levelIncremented = expToLevelTranslator();
+        this.level += levelIncremented;
+        return levelIncremented;
     }
 
     @Override
@@ -102,5 +97,13 @@ public class ShipLeveling implements INBTSerializable<CompoundTag> {
     @Override
     public String toString() {
         return "Lv: " + this.level;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ShipLeveling shipLeveling) {
+            return this.level == shipLeveling.getLevel() && this.exp == shipLeveling.getExp();
+        }
+        return super.equals(obj);
     }
 }
