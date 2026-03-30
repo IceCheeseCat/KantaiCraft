@@ -21,8 +21,8 @@ public abstract class DestroyerEntityShip extends CannonEntityShip {
     }
 
     @Override
-    public float getAmmoCost() {
-        return 1.0f;
+    public int getAmmoCost() {
+        return 1;
     }
 
     @Override

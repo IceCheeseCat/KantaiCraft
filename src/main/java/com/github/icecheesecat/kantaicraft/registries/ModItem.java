@@ -29,7 +29,6 @@ public class ModItem
 			(ship, player) -> {
 				ship.setShipOwner(player.getUUID());
 				ship.addFuel(new FluidStack(Fluids.LAVA, 30), IFluidHandler.FluidAction.EXECUTE);
-				ship.setAmmo(100.0f);
 			}
 	, new Item.Properties()));
 

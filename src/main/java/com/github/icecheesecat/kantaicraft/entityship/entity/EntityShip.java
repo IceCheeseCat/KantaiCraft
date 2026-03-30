@@ -81,7 +81,7 @@ import java.util.*;
 public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEntity, MenuProvider, GeoEntity, Stance {
 
     public static final EntityDataAccessor<Integer> DATA_AIRCRAFT = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Float> DATA_AMMO = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.FLOAT);
+    public static final EntityDataAccessor<Integer> DATA_AMMO = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<ShipAnimationState> DATA_ANIMATION_STATE = SynchedEntityData.defineId(EntityShip.class, ModEntityDataSerializer.ANIMATION_STATE_SERIALIZER.get());
     public static final EntityDataAccessor<Integer> DATA_FOLLOW_DISTANCE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Boolean> DATA_FORCE_MELEE = SynchedEntityData.defineId(EntityShip.class, EntityDataSerializers.BOOLEAN);
@@ -167,14 +167,14 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     public void useAmmo() {
-        this.setAmmo(Math.max(this.getAmmo() - this.getAmmoCost(), 0.0f));
+        this.setAmmo(Math.max(this.getAmmo() - this.getAmmoCost(), 0));
     }
 
     public boolean hasEnoughAmmo() {
         return this.getAmmo() > this.getAmmoCost();
     }
 
-    public abstract float getAmmoCost();
+    public abstract int getAmmoCost();
 
     public int getAircraft() {
         return this.entityData.get(DATA_AIRCRAFT);
@@ -192,15 +192,15 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         return this.lavaFuelCapability.getFluidTank().fill(fluidStack, action);
     }
 
-    public float getAmmo() {
+    public int getAmmo() {
         return this.entityData.get(DATA_AMMO);
     }
 
-    public void addAmmo(float value) {
+    public void addAmmo(int value) {
         this.setAmmo(this.getAmmo() + value);
     }
 
-    public void setAmmo(float value) {
+    public void setAmmo(int value) {
         this.entityData.set(DATA_AMMO, value);
     }
 
@@ -270,7 +270,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     public boolean hasAmmo() {
-        return this.entityData.get(DATA_AMMO) > 0.0f;
+        return this.entityData.get(DATA_AMMO) > 0;
     }
 
     public int getFollowOwnerDistance() {
@@ -326,7 +326,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         super.addAdditionalSaveData(nbt);
         nbt.putBoolean("force_melee", this.entityData.get(DATA_FORCE_MELEE));
         nbt.putInt("data_aircraft", this.entityData.get(DATA_AIRCRAFT));
-        nbt.putFloat("data_ammo", this.entityData.get(DATA_AMMO));
+        nbt.putInt("data_ammo", this.entityData.get(DATA_AMMO));
         nbt.putInt("animation_state", this.entityData.get(DATA_ANIMATION_STATE).ordinal());
         nbt.putInt("previous_animation_state", this.prevAnimationShipAnimationState.ordinal());
 //        nbt.putInt("emotion_state", this.entityData.get(DATA_EMOTION_STATE).ordinal());
@@ -377,7 +377,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             this.entityData.set(DATA_AIRCRAFT, nbt.getInt("data_aircraft"));
         }
         if (nbt.contains("data_ammo")) {
-            this.entityData.set(DATA_AMMO, nbt.getFloat("data_ammo"));
+            this.entityData.set(DATA_AMMO, nbt.getInt("data_ammo"));
         }
         if (nbt.contains("animation_state")) {
             this.entityData.set(DATA_ANIMATION_STATE, ShipAnimationState.create(nbt.getInt("animation_state")));
