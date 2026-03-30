@@ -9,7 +9,9 @@ import com.github.icecheesecat.kantaicraft.menu.pagescreen.Page;
 import com.github.icecheesecat.kantaicraft.menu.pagescreen.PageScreen;
 import com.github.icecheesecat.kantaicraft.network.packet.entityship.SyncType;
 import com.github.icecheesecat.kantaicraft.registries.ModAttribute;
+import com.github.icecheesecat.kantaicraft.util.RenderingColor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -287,6 +289,11 @@ public class ShipScreen extends PageScreen<ShipMenu> {
     public void render(@NotNull GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float partialTick) {
         super.render(pGuiGraphics, pMouseX, pMouseY, partialTick);
         this.renderEntityModel(pGuiGraphics, pMouseX, pMouseY);
+        Font font = Minecraft.getInstance().font;
+        String levelString = "Lv: " + this.entityShip.getLevel();
+        String ammoString = "Ammo: " + this.entityShip.getAmmo();
+        pGuiGraphics.drawString(font, levelString, 5, (int) (this.height * 0.25f), RenderingColor.WHITE);
+        pGuiGraphics.drawString(font, ammoString, this.width - font.width(ammoString) - 5, (int) (this.height * 0.25f), RenderingColor.WHITE);
     }
 
     @Override
