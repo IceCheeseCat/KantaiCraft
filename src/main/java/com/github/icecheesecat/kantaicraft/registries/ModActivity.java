@@ -16,6 +16,7 @@ public class ModActivity {
     public static final RegistryObject<Activity> RETURN = register("return");
     public static final RegistryObject<Activity> SITTING = register("sitting");
     public static final RegistryObject<Activity> STRIKE = register("strike");
+    public static final RegistryObject<Activity> RESUPPLY = register("resupply");
 
     private static RegistryObject<Activity> register(String name) {
         return ACTIVITIES.register(name, () -> new Activity(name));

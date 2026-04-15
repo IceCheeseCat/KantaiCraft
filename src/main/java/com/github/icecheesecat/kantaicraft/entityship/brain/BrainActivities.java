@@ -40,7 +40,8 @@ public class BrainActivities {
                         Pair.of(4, new ReloadEquipmentActions(true)),
                         Pair.of(5, new MoveToTargetSink()),
                         Pair.of(6, new ReturnToSitDownActivity()),
-                        Pair.of(7, new LookAtTargetSink(45, 90))
+                        Pair.of(7, new LookAtTargetSink(45, 90)),
+                        Pair.of(8, new GuardModeAttackTargeting())
                 ));
     }
 
@@ -67,8 +68,8 @@ public class BrainActivities {
             brain.addActivityWithConditions(Activity.IDLE,
                     ImmutableList.of(
                             Pair.of(1, new OwnerHurtTarget()),
-                            Pair.of(2, new GuardModeAttackTargeting()),
                             Pair.of(3, new PickUpItem()),
+                            Pair.of(4, new ResupplyAmmoFromContainer()),
                             Pair.of(5, new FollowOwner(entityShip.getFollowOwnerDistance(), entityShip.getFollowTooCloseDistance())),
                             Pair.of(8, new RunOne<>(ImmutableList.of(
                                     Pair.of(BehaviorBuilder.triggerIf(EntityShip::canWonderAround,RandomStroll.stroll(entityShip.getNormalSpeedModifier())), 2),

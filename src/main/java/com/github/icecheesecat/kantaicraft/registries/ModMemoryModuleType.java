@@ -40,6 +40,8 @@ public class ModMemoryModuleType {
     public static final RegistryObject<MemoryModuleType<Unit>> PLANE_TIMEOUT = registerUnit("plane_timeout");
     public static final RegistryObject<MemoryModuleType<Integer>> SIT_BACK_DOWN_COUNTDOWN = register("sit_back_down_countdown", Codec.INT);
     public static final RegistryObject<MemoryModuleType<Unit>> STRIKE_COOLDOWN = registerUnit("strike_cooldown");
+    public static final RegistryObject<MemoryModuleType<Unit>> NEED_RESUPPLY = registerUnit("need_resupply");
+    public static final RegistryObject<MemoryModuleType<List<BlockPos>>> NEARBY_CHEST_WITH_AMMO = MEMORY_MODULE_TYPES.register("nearby_chest_with_ammo", () -> new MemoryModuleType<>(Optional.empty()));
 
     private static <T> RegistryObject<MemoryModuleType<T>> register(String name, Codec<T> codec) {
         return MEMORY_MODULE_TYPES.register(name, () -> new MemoryModuleType<>(Optional.of(codec)));

@@ -27,7 +27,9 @@ public class CannonShipBrain {
                 ModSensor.PLAYER_SHIP_TARGETING_SENSOR.get(),
                 ModSensor.ATTACK_TARGET_VISIBILITY_SENSOR.get(),
                 ModSensor.MOB_DROPS_SENSOR.get(),
-                ModSensor.LOOK_TOWARDS_TARGET_SENSOR.get());
+                ModSensor.LOOK_TOWARDS_TARGET_SENSOR.get(),
+                ModSensor.CONTAINER_WITH_AMMO_SENSOR.get()
+        );
         MEMORY_TYPES = List.of(
                 ModMemoryModuleType.IS_PLAYER_SHIP.get(),
                 ModMemoryModuleType.OWNERSHIP.get(),
@@ -54,7 +56,10 @@ public class CannonShipBrain {
                 ModMemoryModuleType.PICK_UP_COOLDOWN.get(),
                 ModMemoryModuleType.NEAREST_WANTED_ITEM.get(),
                 ModMemoryModuleType.IS_SITTING.get(),
-                ModMemoryModuleType.SIT_BACK_DOWN_COUNTDOWN.get());
+                ModMemoryModuleType.SIT_BACK_DOWN_COUNTDOWN.get(),
+                ModMemoryModuleType.NEARBY_CHEST_WITH_AMMO.get(),
+                ModMemoryModuleType.NEED_RESUPPLY.get()
+                );
     }
 
     public static Brain<CannonEntityShip> makeBrain(CannonEntityShip cannonShip, Dynamic<?> dyn) {

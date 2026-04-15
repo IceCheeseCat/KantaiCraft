@@ -15,6 +15,8 @@ public class GuardModeAttackTargeting extends SingleBehaviour<EntityShip> {
         super(ImmutableMap.of(
                 ModMemoryModuleType.IS_PLAYER_SHIP.get(), MemoryStatus.REGISTERED,
                 ModMemoryModuleType.IS_GUARDING.get(), MemoryStatus.VALUE_PRESENT,
+                ModMemoryModuleType.IS_SITTING.get(), MemoryStatus.VALUE_ABSENT,
+                ModMemoryModuleType.OUT_OF_FUEL.get(), MemoryStatus.VALUE_ABSENT,
                 MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), 20);
     }
 

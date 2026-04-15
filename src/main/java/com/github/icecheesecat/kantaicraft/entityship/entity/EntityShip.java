@@ -200,6 +200,14 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.setAmmo(this.getAmmo() + value);
     }
 
+    public boolean hasRoomForAmmo(int count) {
+        return maxAmmo() >= this.getAmmo() + count;
+    }
+
+    public int maxAmmo() {
+        return (int) this.getAttributeValue(ModAttribute.MAX_AMMO.get());
+    }
+
     public void setAmmo(int value) {
         this.entityData.set(DATA_AMMO, value);
     }
@@ -532,6 +540,13 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
         this.getBrain().tick((ServerLevel) this.level(), this);
         this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent(this::setTarget);
         this.updateActivity();
+        this.updateResupply();
+    }
+
+    private void updateResupply() {
+        if (this.ammoLowerThan(100)) {
+            this.getBrain().setMemory(ModMemoryModuleType.NEED_RESUPPLY.get(), Unit.INSTANCE);
+        }
     }
 
     @Override
@@ -540,7 +555,7 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     protected void updateActivity() {
-        this.getBrain().setActiveActivityToFirstValid(ImmutableList.of(ModActivity.BURN_OUT_FUELS.get(), ModActivity.SITTING.get(), Activity.FIGHT, Activity.IDLE));
+        this.getBrain().setActiveActivityToFirstValid(ImmutableList.of(ModActivity.BURN_OUT_FUELS.get(), ModActivity.SITTING.get(), Activity.FIGHT, ModActivity.RESUPPLY.get(), Activity.IDLE));
     }
 
     public void shipPickUpItem(ItemEntity itemEntity) {
@@ -1076,12 +1091,11 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
     }
 
     private void getAmmoFromInventory() {
-        double maxAmmo = this.getAttributeValue(ModAttribute.MAX_AMMO.get());
-        if (this.getAmmo() / maxAmmo < 0.3f) {
+        if (ammoLowerThan(30)) {
             this.startEatingAmmo = true;
         }
         if (this.startEatingAmmo) {
-            if (this.inventory.countItem(ModItem.AMMO.get()) == 0) {
+            if (!hasAmmoInInventory() || !hasRoomForAmmo(1)) {
                 this.startEatingAmmo = false;
                 return;
             }
@@ -1093,6 +1107,20 @@ public abstract class EntityShip extends PathfinderMob implements ISlotCheckerEn
             }
         }
 
+    }
+
+    public boolean hasAmmoInInventory() {
+        return this.inventory.countItem(ModItem.AMMO.get()) > 0;
+    }
+
+    public boolean ammoLowerThan(int percentage) {
+        double maxAmmo = this.getAttributeValue(ModAttribute.MAX_AMMO.get());
+        return this.getAmmo() / maxAmmo * 100.0f < percentage;
+    }
+
+    public boolean ammoIsFull() {
+        int maxAmmo = (int) this.getAttributeValue(ModAttribute.MAX_AMMO.get());
+        return this.getAmmo() == maxAmmo;
     }
 
 }
