@@ -45,7 +45,7 @@ public abstract class Ikazuchi extends DestroyerEntityShip {
 
         @Override
         public EntityType<?> getPlayerSideEntityType() {
-            return ModEntity.PlayerShip.IKAZUCHI.get();
+            return ModEntity.IKAZUCHI.get();
         }
     }
 

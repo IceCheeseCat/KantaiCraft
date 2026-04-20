@@ -40,21 +40,21 @@ public class KantaiCraft
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ModEntity.ENTITY_TYPES.register(modEventBus);
+        ModItem.ITEMS.register(modEventBus);
         ModMenu.MENUS.register(modEventBus);
         ModAttribute.ATTRIBUTES.register(modEventBus);
         ModActivity.ACTIVITIES.register(modEventBus);
         ModMemoryModuleType.MEMORY_MODULE_TYPES.register(modEventBus);
         ModSensor.SENSOR_TYPES.register(modEventBus);
-        MinecraftForge.EVENT_BUS.register(this);
         ModPacketHandler.registerMessages();
-        ModItem.ITEMS.register(modEventBus);
         ModBlock.BLOCKS.register(modEventBus);
         ModBlock.BLOCK_ENTITIES.register(modEventBus);
         FacilityPatterns.PATTERN_GETTERS.register(modEventBus);
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
         ModEntityDataSerializer.ENTITY_DATA_SERIALIZERS.register(modEventBus);
         EquipmentManager.init();
+        MinecraftForge.EVENT_BUS.register(this);
+        ModEntity.ENTITY_TYPES.register(modEventBus);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentTree.SPEC, KantaiCraft.MODID + "_equipment_tree.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigEquipmentStats.SPEC, KantaiCraft.MODID + "_equipment_stats.toml");

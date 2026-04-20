@@ -38,7 +38,7 @@ public abstract class Inazuma extends DestroyerEntityShip {
 
         @Override
         public EntityType<?> getPlayerSideEntityType() {
-            return ModEntity.PlayerShip.INAZUMA.get();
+            return ModEntity.INAZUMA.get();
         }
     }
 

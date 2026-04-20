@@ -45,7 +45,7 @@ public abstract class Hibiki extends DestroyerEntityShip {
 
         @Override
         public EntityType<?> getPlayerSideEntityType() {
-            return ModEntity.PlayerShip.HIBIKI.get();
+            return ModEntity.HIBIKI.get();
         }
     }
 

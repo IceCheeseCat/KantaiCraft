@@ -1,6 +1,7 @@
 package com.github.icecheesecat.kantaicraft.datagen;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
+import com.github.icecheesecat.kantaicraft.item.ShipSpawnEgg;
 import com.github.icecheesecat.kantaicraft.registries.ModItem;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -20,11 +21,17 @@ public class ModItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         this.simpleItem(ModItem.SHIP_BLUEPRINT);
         this.simpleItem(ModItem.AMMO);
+        ModItem.SPAWN_EGGS.forEach(this::spawnEggItem);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {
         return withExistingParent(item.getId().getPath(),
                 new ResourceLocation("item/generated")).texture("layer0",
                     new ResourceLocation(KantaiCraft.MODID, "item/" + item.getId().getPath()));
+    }
+
+    private ItemModelBuilder spawnEggItem(RegistryObject<ShipSpawnEgg> item) {
+        return withExistingParent(item.getId().getPath(),
+                new ResourceLocation("item/template_spawn_egg"));
     }
 }

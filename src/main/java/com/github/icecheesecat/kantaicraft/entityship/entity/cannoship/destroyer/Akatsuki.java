@@ -46,7 +46,7 @@ public abstract class Akatsuki extends DestroyerEntityShip {
 
         @Override
         public EntityType<?> getPlayerSideEntityType() {
-            return ModEntity.PlayerShip.AKATSUKI.get();
+            return ModEntity.AKATSUKI.get();
         }
     }
 

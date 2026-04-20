@@ -29,16 +29,16 @@ public class ModelEvent {
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         // Entity
 //        event.registerEntityRenderer(ModEntity.PlayerShip.DESTROYER_RO_CLASS.get(), RendererDestroyerRo::new);
-        event.registerEntityRenderer(ModEntity.PlayerShip.INAZUMA.get(), (context) -> new InazumaRenderer(context, EntityShipRenderer.NORMAL_COLOR));
-        event.registerEntityRenderer(ModEntity.PlayerShip.IKAZUCHI.get(), (context) -> new IkazuchiRenderer(context, EntityShipRenderer.NORMAL_COLOR));
-        event.registerEntityRenderer(ModEntity.PlayerShip.HIBIKI.get(), (context) -> new HibikiRenderer(context, EntityShipRenderer.NORMAL_COLOR));
-        event.registerEntityRenderer(ModEntity.PlayerShip.AKATSUKI.get(), (context) -> new AkatsukiRenderer(context, EntityShipRenderer.NORMAL_COLOR));
+        event.registerEntityRenderer(ModEntity.INAZUMA.get(), (context) -> new InazumaRenderer(context, EntityShipRenderer.NORMAL_COLOR));
+        event.registerEntityRenderer(ModEntity.IKAZUCHI.get(), (context) -> new IkazuchiRenderer(context, EntityShipRenderer.NORMAL_COLOR));
+        event.registerEntityRenderer(ModEntity.HIBIKI.get(), (context) -> new HibikiRenderer(context, EntityShipRenderer.NORMAL_COLOR));
+        event.registerEntityRenderer(ModEntity.AKATSUKI.get(), (context) -> new AkatsukiRenderer(context, EntityShipRenderer.NORMAL_COLOR));
 
         // Hostile entity
-        event.registerEntityRenderer(ModEntity.HostileShip.INAZUMA.get(), (context) -> new InazumaRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
-        event.registerEntityRenderer(ModEntity.HostileShip.IKAZUCHI.get(), (context) -> new IkazuchiRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
-        event.registerEntityRenderer(ModEntity.HostileShip.HIBIKI.get(), (context) -> new HibikiRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
-        event.registerEntityRenderer(ModEntity.HostileShip.AKATSUKI.get(), (context) -> new AkatsukiRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
+        event.registerEntityRenderer(ModEntity.HOSTILE_INAZUMA.get(), (context) -> new InazumaRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
+        event.registerEntityRenderer(ModEntity.HOSTILE_IKAZUCHI.get(), (context) -> new IkazuchiRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
+        event.registerEntityRenderer(ModEntity.HOSTILE_HIBIKI.get(), (context) -> new HibikiRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
+        event.registerEntityRenderer(ModEntity.HOSTILE_AKATSUKI.get(), (context) -> new AkatsukiRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
 
         // BlockEntity
         event.registerBlockEntityRenderer(ModBlock.COMMAND_CENTER_BETYPE.get(), CommandCenterBlockRenderer::new);
