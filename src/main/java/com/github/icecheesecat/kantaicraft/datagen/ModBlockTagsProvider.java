@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 public class ModBlockTagsProvider extends BlockTagsProvider {
 
     private static final List<Block> FACILITIES = List.of(
+            ModBlock.EXPEDITION.get(),
             ModBlock.FACILITY.get(),
             ModBlock.SHIPYARD.get(),
             ModBlock.FUEL_STATION.get(),

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "kantaicraft:expedition_block",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "two_block_part": "front"
+              }
+            }
+          ],
+          "name": "kantaicraft:expedition_block"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "kantaicraft:blocks/expedition_block"
+}

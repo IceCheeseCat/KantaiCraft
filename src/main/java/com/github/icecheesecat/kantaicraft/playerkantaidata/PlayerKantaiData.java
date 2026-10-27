@@ -22,6 +22,7 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 
     protected final List<SerializedLivingEntity> inDockShips = new ArrayList<>();
     protected final List<Equipment> equipments = new ArrayList<>();
+    public PlayerExpeditionData playerExpeditionData = new PlayerExpeditionData();
     private Player player;
 
     public PlayerKantaiData(Player player) {
@@ -34,6 +35,7 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 
         CompoundTagHelper.serializeList(nbt, "inDockShips", this.inDockShips, (SerializedLivingEntity::serializeNBT));
         CompoundTagHelper.serializeList(nbt, "equipments", this.equipments, (Equipment::serializeNBT));
+        nbt.put("playerExpeditionData", playerExpeditionData.serializeNBT());
 
         return nbt;
     }
@@ -47,6 +49,8 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         inDockShips.addAll(CompoundTagHelper.deserializeList(nbt, "inDockShips", SerializedLivingEntity::createFromNbt));
         equipments.addAll(CompoundTagHelper.deserializeList(nbt, "equipments", Equipment::makeFromCompoundTag));
 
+        this.playerExpeditionData = new PlayerExpeditionData();
+        this.playerExpeditionData.deserializeNBT(nbt.getCompound("playerExpeditionData"));
     }
 
     public void setData(PlayerKantaiData data) {
@@ -54,6 +58,7 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         this.equipments.clear();
         this.inDockShips.addAll(data.inDockShips);
         this.equipments.addAll(data.equipments);
+        this.playerExpeditionData = data.playerExpeditionData.copy();
     }
 
     public void addShipInDock(EntityShip entityShip) {

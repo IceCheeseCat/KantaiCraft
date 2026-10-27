@@ -3,6 +3,7 @@ package com.github.icecheesecat.kantaicraft.model;
 
 import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.model.block.renderer.CommandCenterBlockRenderer;
+import com.github.icecheesecat.kantaicraft.model.block.renderer.ExpeditionBlockRenderer;
 import com.github.icecheesecat.kantaicraft.model.block.renderer.FuelStationRenderer;
 import com.github.icecheesecat.kantaicraft.model.block.renderer.ShipyardRenderer;
 import com.github.icecheesecat.kantaicraft.model.ship.renderer.AkatsukiRenderer;
@@ -41,6 +42,7 @@ public class ModelEvent {
         event.registerEntityRenderer(ModEntity.HOSTILE_AKATSUKI.get(), (context) -> new AkatsukiRenderer(context, EntityShipRenderer.HOSTILE_COLOR));
 
         // BlockEntity
+        event.registerBlockEntityRenderer(ModBlock.EXPEDITION_BETYPE.get(), ExpeditionBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlock.COMMAND_CENTER_BETYPE.get(), CommandCenterBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlock.FUEL_STATION_BETYPE.get(), FuelStationRenderer::new);
         event.registerBlockEntityRenderer(ModBlock.SHIPYARD_BETYPE.get(), ShipyardRenderer::new);

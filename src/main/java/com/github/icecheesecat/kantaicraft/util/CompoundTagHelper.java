@@ -133,6 +133,7 @@ public final class CompoundTagHelper {
         for (var entry: mapObject.entrySet()) {
             nbt1.put("key" + i, keyWriter.apply(entry.getKey()));
             nbt1.put("value" + i, valueWriter.apply(entry.getValue()));
+            i++;
         }
 
         nbt.put(tagName, nbt1);
@@ -148,7 +149,7 @@ public final class CompoundTagHelper {
 
         HashMap<T,U> map = new HashMap<>();
         for (int i = 0; i < nbt1.getInt("size"); i++) {
-            if (nbt.contains("key" + i) && nbt.contains("value" + i)) {
+            if (nbt1.contains("key" + i) && nbt1.contains("value" + i)) {
                 map.put(keyReader.apply(nbt1.getCompound("key" + i)),
                         valueReader.apply(nbt1.getCompound("value" + i)));
             }

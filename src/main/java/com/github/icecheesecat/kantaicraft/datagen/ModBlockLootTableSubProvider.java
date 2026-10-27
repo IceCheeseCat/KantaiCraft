@@ -26,6 +26,7 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
+        this.dropTwoPartBlock((TwoPartBlock) ModBlock.EXPEDITION.get());
         this.dropSelf(ModBlock.FACILITY.get());
         this.dropSelf(ModBlock.FUEL_STATION.get());
         this.dropSelf(ModBlock.SHIPYARD.get());

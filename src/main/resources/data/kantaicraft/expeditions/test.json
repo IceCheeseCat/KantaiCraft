@@ -1,0 +1,9 @@
+{
+  "name": "expedition.kantaicraft.test",
+  "description": "For testing only expedition",
+  "durationTicks": 120,
+  "rewards": {
+    "AMMO": 10,
+    "FUEL": 1000
+  }
+}

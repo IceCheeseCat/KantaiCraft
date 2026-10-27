@@ -6,6 +6,7 @@ import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentStats;
 import com.github.icecheesecat.kantaicraft.config.ConfigEquipmentTree;
 import com.github.icecheesecat.kantaicraft.equipment.EquipmentManager;
 import com.github.icecheesecat.kantaicraft.menu.commandcenter.CommandCenterScreen;
+import com.github.icecheesecat.kantaicraft.menu.expedition.ExpeditionScreen;
 import com.github.icecheesecat.kantaicraft.menu.ship.ShipScreen;
 import com.github.icecheesecat.kantaicraft.menu.shipyard.ShipyardScreen;
 import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
@@ -67,6 +68,7 @@ public class KantaiCraft
         public static void clientSetup(FMLClientSetupEvent event) {
             event.enqueueWork(
                     () -> {
+                        MenuScreens.register(ModMenu.EXPEDITION_MENU.get(), ExpeditionScreen::new);
                         MenuScreens.register(ModMenu.SHIP_MENU.get(), ShipScreen::new);
                         MenuScreens.register(ModMenu.SHIPYARD_MENU.get(), ShipyardScreen::new);
                         MenuScreens.register(ModMenu.COMMAND_CENTER_MENU.get(), CommandCenterScreen::new);

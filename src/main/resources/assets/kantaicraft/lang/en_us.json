@@ -11,7 +11,10 @@
   "block.kantaicraft.facility_block": "Facility Block",
   "block.kantaicraft.fuel_station_block": "Fuel Station",
   "block.kantaicraft.shipyard_block": "Shipyard",
+  "block.kantaicraft.expedition_block": "Expedition",
   "block.kantaicraft.command_center_block": "Command Center",
+
+  "menu.kantaicraft.expedition": "Expedition",
 
   "cannon_equipment.12cm_single_gun_mount": "12 cm Single Gun Mount",
   "cannon_equipment.12cm_twin_gun_mount": "12 cm Twin Gun Mount",

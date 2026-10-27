@@ -4,6 +4,9 @@ import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.block.commandcenter.CommandCenterBlock;
 import com.github.icecheesecat.kantaicraft.block.commandcenter.CommandCenterBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.commandcenter.CommandCenterBlockItem;
+import com.github.icecheesecat.kantaicraft.block.expedition.ExpeditionBlock;
+import com.github.icecheesecat.kantaicraft.block.expedition.ExpeditionBlockEntity;
+import com.github.icecheesecat.kantaicraft.block.expedition.ExpeditionBlockItem;
 import com.github.icecheesecat.kantaicraft.block.facilities.FacilityBlock;
 import com.github.icecheesecat.kantaicraft.block.facilities.FacilityBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.facilities.fuelstation.FuelStationBlock;
@@ -29,11 +32,16 @@ public class ModBlock {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, KantaiCraft.MODID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, KantaiCraft.MODID);
     public static final RegistryObject<Block> COMMAND_CENTER = registerGeoBlock("command_center_block", () -> new CommandCenterBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).requiresCorrectToolForDrops().strength(5.0f)), CommandCenterBlockItem::new);
+    public static final RegistryObject<Block> EXPEDITION = registerGeoBlock("expedition_block",
+            () -> new ExpeditionBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)
+                    .requiresCorrectToolForDrops().strength(5.0f)), ExpeditionBlockItem::new);
     public static final RegistryObject<Block>  FACILITY = registerBlock("facility_block", FacilityBlock::new);
     public static final RegistryObject<Block> FUEL_STATION = registerBlock("fuel_station_block", FuelStationBlock::new);
     public static final RegistryObject<Block> SHIPYARD = registerBlock("shipyard_block", ShipyardBlock::new);
 
     public static final RegistryObject<BlockEntityType<CommandCenterBlockEntity>> COMMAND_CENTER_BETYPE =registerBlockEntity("command_center_block_entity", CommandCenterBlockEntity::new, COMMAND_CENTER);
+    public static final RegistryObject<BlockEntityType<ExpeditionBlockEntity>> EXPEDITION_BETYPE =
+            registerBlockEntity("expedition_block_entity", ExpeditionBlockEntity::new, EXPEDITION);
     public static final RegistryObject<BlockEntityType<ShipyardBlockEntity>> SHIPYARD_BETYPE = registerBlockEntity("shipyard_block_entity", ShipyardBlockEntity::new, SHIPYARD);
     public static final RegistryObject<BlockEntityType<FuelStationBlockEntity>> FUEL_STATION_BETYPE = registerBlockEntity("fuel_station_block_entity", FuelStationBlockEntity::new, FUEL_STATION);
     public static final RegistryObject<BlockEntityType<FacilityBlockEntity>> FACILITY_BETYPE = registerBlockEntity("facility_block_entity", FacilityBlockEntity::new, FACILITY);
