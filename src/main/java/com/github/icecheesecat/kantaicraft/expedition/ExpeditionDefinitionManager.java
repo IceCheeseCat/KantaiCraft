@@ -21,7 +21,7 @@ public class ExpeditionDefinitionManager extends SimpleJsonResourceReloadListene
 
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
     private static final Logger LOGGER = LogUtils.getLogger();
-    private ImmutableMap<ResourceLocation, ExpeditionDefinition> m_expeditions;
+    private ImmutableMap<ResourceLocation, ExpeditionDefinition> m_expeditions = ImmutableMap.of();
     private static final ExpeditionDefinitionManager INSTANCE = new ExpeditionDefinitionManager();
 
     private ExpeditionDefinitionManager() {

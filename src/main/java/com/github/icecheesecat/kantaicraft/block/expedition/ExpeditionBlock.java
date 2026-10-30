@@ -58,7 +58,8 @@ public class ExpeditionBlock extends TwoPartBlock implements EntityBlock {
             return InteractionResult.SUCCESS;
         }
 
-        NetworkHooks.openScreen((ServerPlayer) p_player, getMenuProvider(p_state, p_level, p_pos), p_pos);
+        NetworkHooks.openScreen((ServerPlayer) p_player, getMenuProvider(p_state, p_level, p_pos),
+                p_buffer -> ExpeditionMenu.writeOpeningData(p_buffer, p_pos));
         return InteractionResult.CONSUME;
     }
 

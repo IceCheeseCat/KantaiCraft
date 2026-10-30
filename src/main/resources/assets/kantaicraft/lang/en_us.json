@@ -15,6 +15,15 @@
   "block.kantaicraft.command_center_block": "Command Center",
 
   "menu.kantaicraft.expedition": "Expedition",
+  "expedition_screen.expedition": "Expedition",
+  "expedition_screen.detail_panel": "Expedition Details",
+  "expedition_screen.name": "Expedition Name",
+  "expedition_screen.overview": "Overview",
+  "expedition_screen.select_expedition": "Select an expedition to view its overview.",
+  "expedition_screen.list": "Expeditions",
+  "expedition_screen.empty": "No expeditions available.",
+  "expedition_screen.duration": "Duration: %s s",
+  "expedition.kantaicraft.test": "Test Expedition",
 
   "cannon_equipment.12cm_single_gun_mount": "12 cm Single Gun Mount",
   "cannon_equipment.12cm_twin_gun_mount": "12 cm Twin Gun Mount",
