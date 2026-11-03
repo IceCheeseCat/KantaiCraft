@@ -8,6 +8,7 @@ import com.github.icecheesecat.kantaicraft.util.CompoundTagHelper;
 import com.github.icecheesecat.kantaicraft.util.SerializedLivingEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -67,20 +68,19 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
             return;
         }
         this.inDockShips.add(serialized);
-        updateToClient();
+        updateToSelf();
     }
 
     public void addShipInDock(EntityType<?> entityType, ServerLevel serverLevel) {
         var entityShip = (EntityShip) entityType.create(serverLevel);
         this.addShipInDock(entityShip);
-        updateToClient();
     }
 
     public Optional<SerializedLivingEntity> removeShipInDock(UUID uuid) {
         var optional = this.inDockShips.stream().filter(serializedLivingEntity -> serializedLivingEntity.getUuid().equals(uuid)).findFirst();
         if (optional.isPresent()) {
             this.inDockShips.remove(optional.get());
-            updateToClient();
+            updateToSelf();
             return optional;
         }
 
@@ -89,7 +89,7 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
 
     public void addEquipment(Equipment equipment) {
         this.equipments.add(equipment);
-        updateToClient();
+        updateToSelf();
     }
 
     public List<SerializedLivingEntity> getInDockShips() {
@@ -104,8 +104,8 @@ public class PlayerKantaiData implements INBTSerializable<CompoundTag> {
         return player;
     }
 
-    public void updateToClient() {
-        ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new PlayerKantaiDataPacket(player.getId(), this));
+    public void updateToSelf() {
+        ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new PlayerKantaiDataPacket(player.getId(), this));
     }
 
     public String debugString() {

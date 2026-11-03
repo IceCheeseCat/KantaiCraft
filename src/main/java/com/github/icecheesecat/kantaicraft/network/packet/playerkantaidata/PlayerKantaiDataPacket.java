@@ -1,111 +1,114 @@
 package com.github.icecheesecat.kantaicraft.network.packet.playerkantaidata;
 
-import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.capability.kantaidata.PlayerKantaiDataCapability;
 import com.github.icecheesecat.kantaicraft.menu.Refreshable;
-import com.github.icecheesecat.kantaicraft.network.ModPacketHandler;
 import com.github.icecheesecat.kantaicraft.playerkantaidata.PlayerKantaiData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class PlayerKantaiDataPacket {
 
-    private int playerEntityId;
-    private PlayerKantaiData playerKantaiData;
+    private int m_playerEntityId;
+    private CompoundTag m_data;
 
-    public PlayerKantaiDataPacket(int playerEntityId, PlayerKantaiData data) {
-        this.playerEntityId = playerEntityId;
-        this.playerKantaiData = data;
+    public PlayerKantaiDataPacket(int p_playerEntityId, PlayerKantaiData p_data) {
+        this(p_playerEntityId, p_data.serializeNBT());
     }
 
-    public static void encode(PlayerKantaiDataPacket packet, FriendlyByteBuf buf) {
-        buf.writeInt(packet.playerEntityId);
-        buf.writeNbt(packet.playerKantaiData.serializeNBT());
+    private PlayerKantaiDataPacket(int p_playerEntityId, CompoundTag p_data) {
+        setPlayerEntityId(p_playerEntityId);
+        setData(p_data);
     }
 
-    public static PlayerKantaiDataPacket decode(FriendlyByteBuf buf) {
-        int playerEntityId = buf.readInt();
-        CompoundTag nbt = buf.readNbt();
-        PlayerKantaiData data;
-        if (Minecraft.getInstance().level != null && Minecraft.getInstance().level.getEntity(playerEntityId) instanceof Player player) {
-            data = new PlayerKantaiData(player);
-        }
-        else {
-            data = new PlayerKantaiData(null);
-        }
-
-        PlayerKantaiDataPacket packet = new PlayerKantaiDataPacket(playerEntityId, null);
-        if (nbt != null) {
-            data.deserializeNBT(nbt);
-            packet.playerKantaiData = data;
-        }
-        else {
-            KantaiCraft.LOGGER.warning("PlayerKantaiDataPacket => Player's Kantai data missing. (Can be ignore)");
-        }
-
-        return packet;
+    public int getPlayerEntityId() {
+        return m_playerEntityId;
     }
 
-    /**
-     *  Sync {@link PlayerKantaiData} from server to client
-     */
-    public static void handle(PlayerKantaiDataPacket packet, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                if (Minecraft.getInstance().level != null) {
-                    var clientPlayer = packet.playerKantaiData.getPlayer();
-                    if (clientPlayer != null) {
-                        clientPlayer.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(playerKantaiData1 -> {
+    public void setPlayerEntityId(int p_playerEntityId) {
+        m_playerEntityId = p_playerEntityId;
+    }
 
-                            playerKantaiData1.setData(packet.playerKantaiData);
-                            if (Minecraft.getInstance().screen instanceof Refreshable refreshable) {
-                                refreshable.refresh();
-                            }
+    public CompoundTag getData() {
+        return m_data.copy();
+    }
 
-                        });
-                    }
-                }
+    public void setData(CompoundTag p_data) {
+        m_data = Objects.requireNonNull(p_data).copy();
+    }
 
-            });
+    public static void encode(PlayerKantaiDataPacket p_packet, FriendlyByteBuf p_buf) {
+        p_buf.writeInt(p_packet.getPlayerEntityId());
+        p_buf.writeNbt(p_packet.getData());
+    }
+
+    public static PlayerKantaiDataPacket decode(FriendlyByteBuf p_buf) {
+        int playerEntityId = p_buf.readInt();
+        CompoundTag data = p_buf.readNbt();
+
+        return new PlayerKantaiDataPacket(playerEntityId, data);
+    }
+
+    public static void handle(PlayerKantaiDataPacket p_packet, Supplier<NetworkEvent.Context> p_context) {
+        p_context.get().enqueueWork(() ->
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> applyToClient(p_packet)));
+        p_context.get().setPacketHandled(true);
+    }
+
+    private static void applyToClient(PlayerKantaiDataPacket p_packet) {
+        var minecraft = Minecraft.getInstance();
+        var player = minecraft.player;
+
+        if (player == null || player.getId() != p_packet.getPlayerEntityId()) return;
+
+        player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(p_data -> {
+            p_data.deserializeNBT(p_packet.getData());
+            if (minecraft.screen instanceof Refreshable refreshable) {
+                refreshable.refresh();
+            }
         });
-        ctx.get().setPacketHandled(true);
     }
 
     public static class Request {
 
-        int playerId;
-        public Request(int playerId) {
-            this.playerId = playerId;
+        private int m_playerId;
+
+        public Request(int p_playerId) {
+            setPlayerId(p_playerId);
         }
 
-        public static void encode(Request packet, FriendlyByteBuf buf) {
-            buf.writeInt(packet.playerId);
+        public int getPlayerId() {
+            return m_playerId;
         }
 
-        public static Request decode(FriendlyByteBuf buf) {
-            return new Request(buf.readInt());
+        public void setPlayerId(int p_playerId) {
+            m_playerId = p_playerId;
         }
 
-        public static void handle(Request packet, Supplier<NetworkEvent.Context> ctx) {
-            ctx.get().enqueueWork(() -> {
-                if (ctx.get().getSender().level().getEntity(packet.playerId) instanceof Player player) {
-                    player.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(pkd -> {
-                        ModPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new PlayerKantaiDataPacket(packet.playerId, pkd));
-                    });
-                }
+        public static void encode(Request p_packet, FriendlyByteBuf p_buf) {
+            p_buf.writeInt(p_packet.getPlayerId());
+        }
 
+        public static Request decode(FriendlyByteBuf p_buf) {
+            return new Request(p_buf.readInt());
+        }
+
+        public static void handle(Request p_packet, Supplier<NetworkEvent.Context> p_context) {
+            p_context.get().enqueueWork(() -> {
+                var sender = p_context.get().getSender();
+
+                // Keep the legacy ID on the wire, but only the authenticated sender may request their data.
+                if (sender == null) return;
+
+                sender.getCapability(PlayerKantaiDataCapability.TOKEN).ifPresent(PlayerKantaiData::updateToSelf);
             });
-            ctx.get().setPacketHandled(true);
+            p_context.get().setPacketHandled(true);
         }
-
     }
-
 }

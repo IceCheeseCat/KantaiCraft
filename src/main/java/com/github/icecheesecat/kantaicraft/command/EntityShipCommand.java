@@ -98,7 +98,7 @@ public class EntityShipCommand {
                 playerKantaiData -> {
                     playerKantaiData.getInDockShips().forEach(serializedEntityShip -> source.sendSuccess(() -> Component.literal("Removed " + serializedEntityShip.getEntityType() + " from in dock"), true));
                     playerKantaiData.getInDockShips().clear();
-                    playerKantaiData.updateToClient();
+                    playerKantaiData.updateToSelf();
                 }
         );
 

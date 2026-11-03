@@ -18,8 +18,11 @@ import com.github.icecheesecat.kantaicraft.network.packet.shipyard.ShipyardSpawn
 import com.github.icecheesecat.kantaicraft.network.packet.trajectory.ClientSetDestroyTrajectoryPacket;
 import com.github.icecheesecat.kantaicraft.network.packet.trajectory.TrajectoryPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
+
+import java.util.Optional;
 
 public class ModPacketHandler {
 
@@ -94,7 +97,8 @@ public class ModPacketHandler {
                 PlayerKantaiDataPacket.class,
                 PlayerKantaiDataPacket::encode,
                 PlayerKantaiDataPacket::decode,
-                PlayerKantaiDataPacket::handle
+                PlayerKantaiDataPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
 
 
@@ -103,7 +107,8 @@ public class ModPacketHandler {
                 PlayerKantaiDataPacket.Request.class,
                 PlayerKantaiDataPacket.Request::encode,
                 PlayerKantaiDataPacket.Request::decode,
-                PlayerKantaiDataPacket.Request::handle
+                PlayerKantaiDataPacket.Request::handle,
+                Optional.of(NetworkDirection.PLAY_TO_SERVER)
         );
 
         INSTANCE.registerMessage(
