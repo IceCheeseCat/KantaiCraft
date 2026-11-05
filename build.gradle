@@ -56,6 +56,20 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    ivy {
+        name = 'LDLib2Release'
+        url = 'https://github.com/weiliangyan/LDLib2-1.20.1-Forge/releases/download'
+        patternLayout {
+            artifact '[revision]/[artifact]-[classifier].[ext]'
+        }
+        metadataSources { artifact() }
+        content { includeGroup 'com.lowdragmc.ldlib2' }
+    }
+    maven {
+        name = 'Modrinth'
+        url = 'https://api.modrinth.com/maven'
+        content { includeGroup 'maven.modrinth' }
+    }
     maven {
         name = 'GeckoLib'
         url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
@@ -70,7 +84,10 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
     implementation("com.eliotlash.mclib:mclib:20")
-
+    implementation fg.deobf("com.lowdragmc.ldlib2:${ldlib_artifact}:${ldlib_release}:all@jar")
+    runtimeOnly(fg.deobf("maven.modrinth:kotlin-for-forge:${kotlin_for_forge_version}")) {
+        transitive = false
+    }
 }
 
 tasks.named('processResources', ProcessResources).configure {
@@ -80,6 +97,7 @@ tasks.named('processResources', ProcessResources).configure {
             loader_version_range: loader_version_range,
             mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
             mod_authors: mod_authors, mod_description: mod_description,
+            ldlib_version: ldlib_version,
     ]
     inputs.properties replaceProperties
 
