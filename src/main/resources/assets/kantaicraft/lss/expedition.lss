@@ -1,0 +1,39 @@
+.expedition_panel {
+  background: rect(#fff3ebdd);
+}
+
+.expedition_panel .expedition_text,
+.expedition_panel .__button_text__ {
+  text-color: #ff4e4b40;
+  text-shadow: false;
+}
+
+.expedition_section {
+  text-color: #ff247d85;
+  text-shadow: false;
+}
+
+.expedition_panel .__scroller_view_view-port__ {
+  background: rect(#fff3ebdd);
+}
+
+.expedition_row {
+  base-background: rect(#ffe8dfcd);
+  hover-background: rect(#ffd5eae4);
+  pressed-background: rect(#ffafe2df);
+}
+
+.expedition_row.expedition_selected {
+  base-background: rect(#ffafe2df);
+}
+
+#expedition_status {
+  base-background: rect(#ffe8dfcd);
+  hover-background: rect(#ffd5eae4);
+  pressed-background: rect(#ffafe2df);
+}
+
+.expedition_panel scroller-view,
+#expedition_status {
+  focus-overlay: sdf(#00000000, 0, 1, #ff247d85);
+}

@@ -4,15 +4,31 @@ import com.github.icecheesecat.kantaicraft.exception.KantaiCraftException;
 import com.github.icecheesecat.kantaicraft.expedition.ExpeditionAssignment;
 import com.github.icecheesecat.kantaicraft.util.CompoundTagHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class PlayerExpeditionData implements INBTSerializable<CompoundTag> {
 
-    public Map<UUID, ExpeditionAssignment> m_inProgressAssignments = new HashMap<>();
+    private Map<UUID, ExpeditionAssignment> m_inProgressAssignments = new HashMap<>();
+
+    public Map<UUID, ExpeditionAssignment> getInProgressAssignments() {
+        return Map.copyOf(m_inProgressAssignments);
+    }
+
+    public void setInProgressAssignments(Map<UUID, ExpeditionAssignment> p_assignments) {
+        m_inProgressAssignments = new HashMap<>(p_assignments);
+    }
+
+    public Optional<ExpeditionAssignment> findAssignment(ResourceLocation p_definitionId) {
+        return m_inProgressAssignments.values().stream()
+                .filter(p_assignment -> p_definitionId.equals(p_assignment.getDefinitionId()))
+                .findFirst();
+    }
 
     public void put(UUID p_assignmentId, ExpeditionAssignment p_assignment) {
         if (this.m_inProgressAssignments.containsKey(p_assignmentId)) {

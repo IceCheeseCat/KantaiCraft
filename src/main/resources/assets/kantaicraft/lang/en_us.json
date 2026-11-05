@@ -23,6 +23,12 @@
   "expedition_screen.list": "Expeditions",
   "expedition_screen.empty": "No expeditions available.",
   "expedition_screen.duration": "Duration: %s s",
+  "expedition_screen.status_only": "Status display only",
+  "expedition_screen.status.no_selection": "Select an expedition",
+  "expedition_screen.status.unavailable": "Data unavailable",
+  "expedition_screen.status.ready": "Ready",
+  "expedition_screen.status.in_progress": "In Progress",
+  "expedition_screen.status.done": "Done",
   "expedition.kantaicraft.test": "Test Expedition",
 
   "cannon_equipment.12cm_single_gun_mount": "12 cm Single Gun Mount",
