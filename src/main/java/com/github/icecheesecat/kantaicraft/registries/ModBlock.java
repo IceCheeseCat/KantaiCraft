@@ -4,6 +4,8 @@ import com.github.icecheesecat.kantaicraft.KantaiCraft;
 import com.github.icecheesecat.kantaicraft.block.commandcenter.CommandCenterBlock;
 import com.github.icecheesecat.kantaicraft.block.commandcenter.CommandCenterBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.commandcenter.CommandCenterBlockItem;
+import com.github.icecheesecat.kantaicraft.block.example.LDLibBlock;
+import com.github.icecheesecat.kantaicraft.block.example.LDLibBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.expedition.ExpeditionBlock;
 import com.github.icecheesecat.kantaicraft.block.expedition.ExpeditionBlockEntity;
 import com.github.icecheesecat.kantaicraft.block.expedition.ExpeditionBlockItem;
@@ -38,6 +40,7 @@ public class ModBlock {
     public static final RegistryObject<Block>  FACILITY = registerBlock("facility_block", FacilityBlock::new);
     public static final RegistryObject<Block> FUEL_STATION = registerBlock("fuel_station_block", FuelStationBlock::new);
     public static final RegistryObject<Block> SHIPYARD = registerBlock("shipyard_block", ShipyardBlock::new);
+    public static final RegistryObject<Block> LDLIB_BLOCK = registerBlock("ldlib_block", LDLibBlock::new);
 
     public static final RegistryObject<BlockEntityType<CommandCenterBlockEntity>> COMMAND_CENTER_BETYPE =registerBlockEntity("command_center_block_entity", CommandCenterBlockEntity::new, COMMAND_CENTER);
     public static final RegistryObject<BlockEntityType<ExpeditionBlockEntity>> EXPEDITION_BETYPE =
@@ -45,7 +48,7 @@ public class ModBlock {
     public static final RegistryObject<BlockEntityType<ShipyardBlockEntity>> SHIPYARD_BETYPE = registerBlockEntity("shipyard_block_entity", ShipyardBlockEntity::new, SHIPYARD);
     public static final RegistryObject<BlockEntityType<FuelStationBlockEntity>> FUEL_STATION_BETYPE = registerBlockEntity("fuel_station_block_entity", FuelStationBlockEntity::new, FUEL_STATION);
     public static final RegistryObject<BlockEntityType<FacilityBlockEntity>> FACILITY_BETYPE = registerBlockEntity("facility_block_entity", FacilityBlockEntity::new, FACILITY);
-
+    public static final RegistryObject<BlockEntityType<LDLibBlockEntity>> LDLIB_BETYPE = registerBlockEntity("ldlib_block_entity", LDLibBlockEntity::new, LDLIB_BLOCK);
 
     private static RegistryObject<Block> registerBlock(String name, Supplier<Block> supplier) {
         return registerBlock(name, supplier, BlockItem::new);
